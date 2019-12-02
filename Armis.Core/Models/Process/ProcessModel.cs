@@ -8,6 +8,6 @@ namespace Armis.Core.Models.Process
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CustomerId { get; set; } //This could be a customer model.  Will have to see in the future.  TODO: Customer Model??
+        public int CustomerId { get; set; } //This could be a customer model.  Will have to see in the future.  TODO: Customer Model???
     }
 }
