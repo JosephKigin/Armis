@@ -1,0 +1,11 @@
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.csprojAssemblyReference.cache
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.AssemblyInfoInputs.cache
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.AssemblyInfo.cs
+C:\Users\jkigin\source\repos\Armis\Armis.Services\bin\Debug\netcoreapp3.0\Armis.Services.deps.json
+C:\Users\jkigin\source\repos\Armis\Armis.Services\bin\Debug\netcoreapp3.0\Armis.Services.dll
+C:\Users\jkigin\source\repos\Armis\Armis.Services\bin\Debug\netcoreapp3.0\Armis.Services.pdb
+C:\Users\jkigin\source\repos\Armis\Armis.Services\bin\Debug\netcoreapp3.0\Armis.Core.dll
+C:\Users\jkigin\source\repos\Armis\Armis.Services\bin\Debug\netcoreapp3.0\Armis.Core.pdb
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.csproj.CopyComplete
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.dll
+C:\Users\jkigin\source\repos\Armis\Armis.Services\obj\Debug\netcoreapp3.0\Armis.Services.pdb

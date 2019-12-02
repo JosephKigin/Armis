@@ -1,0 +1,8 @@
+C:\Users\jkigin\source\repos\Armis\Armis.Core\obj\Debug\netcoreapp3.0\Armis.Core.csprojAssemblyReference.cache
+C:\Users\jkigin\source\repos\Armis\Armis.Core\obj\Debug\netcoreapp3.0\Armis.Core.AssemblyInfoInputs.cache
+C:\Users\jkigin\source\repos\Armis\Armis.Core\obj\Debug\netcoreapp3.0\Armis.Core.AssemblyInfo.cs
+C:\Users\jkigin\source\repos\Armis\Armis.Core\bin\Debug\netcoreapp3.0\Armis.Core.deps.json
+C:\Users\jkigin\source\repos\Armis\Armis.Core\bin\Debug\netcoreapp3.0\Armis.Core.dll
+C:\Users\jkigin\source\repos\Armis\Armis.Core\bin\Debug\netcoreapp3.0\Armis.Core.pdb
+C:\Users\jkigin\source\repos\Armis\Armis.Core\obj\Debug\netcoreapp3.0\Armis.Core.dll
+C:\Users\jkigin\source\repos\Armis\Armis.Core\obj\Debug\netcoreapp3.0\Armis.Core.pdb
