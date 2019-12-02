@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Armis.Data.DatabaseContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,8 +29,8 @@ namespace Armis.Api
         {
             services.AddControllers();
 
-            //services.AddDbContext<ARMISContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("ARMISContext")));
+            services.AddDbContext<ARMISContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("ARMISContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

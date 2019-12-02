@@ -1267,6 +1267,21 @@
           "bin/placeholder/Armis.Core.dll": {}
         }
       },
+      "Armis.Data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.0",
+        "dependencies": {
+          "Armis.Core": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "3.0.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.0.1"
+        },
+        "compile": {
+          "bin/placeholder/Armis.Data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Armis.Data.dll": {}
+        }
+      },
       "Armis.Services/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.0",
@@ -4936,6 +4951,11 @@
       "path": "../Armis.Core/Armis.Core.csproj",
       "msbuildProject": "../Armis.Core/Armis.Core.csproj"
     },
+    "Armis.Data/1.0.0": {
+      "type": "project",
+      "path": "../Armis.Data/Armis.Data.csproj",
+      "msbuildProject": "../Armis.Data/Armis.Data.csproj"
+    },
     "Armis.Services/1.0.0": {
       "type": "project",
       "path": "../Armis.Services/Armis.Services.csproj",
@@ -4945,6 +4965,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.0": [
       "Armis.Core >= 1.0.0",
+      "Armis.Data >= 1.0.0",
       "Armis.Services >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 3.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.0.1",
@@ -4983,6 +5004,9 @@
           "projectReferences": {
             "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Core\\Armis.Core.csproj": {
               "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Core\\Armis.Core.csproj"
+            },
+            "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj"
             },
             "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj": {
               "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj"

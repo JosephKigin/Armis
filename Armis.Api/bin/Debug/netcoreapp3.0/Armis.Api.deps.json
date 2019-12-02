@@ -25,6 +25,7 @@
       "Armis.Api/1.0.0": {
         "dependencies": {
           "Armis.Core": "1.0.0",
+          "Armis.Data": "1.0.0",
           "Armis.Services": "1.0.0",
           "Microsoft.EntityFrameworkCore.Design": "3.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.0.1",
@@ -1182,6 +1183,19 @@
         },
         "compile": {
           "Armis.Core.dll": {}
+        }
+      },
+      "Armis.Data/1.0.0": {
+        "dependencies": {
+          "Armis.Core": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "3.0.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.0.1"
+        },
+        "runtime": {
+          "Armis.Data.dll": {}
+        },
+        "compile": {
+          "Armis.Data.dll": {}
         }
       },
       "Armis.Services/1.0.0": {
@@ -3432,6 +3446,11 @@
       "hashPath": "system.xml.xmlserializer.4.3.0.nupkg.sha512"
     },
     "Armis.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Armis.Data/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
