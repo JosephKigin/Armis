@@ -2696,7 +2696,7 @@
           "bin/placeholder/Armis.Data.dll": {}
         }
       },
-      "Armis.Services/1.0.0": {
+      "Armis.DataLogic/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
@@ -2704,10 +2704,10 @@
           "Armis.Data": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/Armis.Services.dll": {}
+          "bin/placeholder/Armis.DataLogic.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Armis.Services.dll": {}
+          "bin/placeholder/Armis.DataLogic.dll": {}
         }
       }
     }
@@ -8480,16 +8480,16 @@
       "path": "../Armis.Data/Armis.Data.csproj",
       "msbuildProject": "../Armis.Data/Armis.Data.csproj"
     },
-    "Armis.Services/1.0.0": {
+    "Armis.DataLogic/1.0.0": {
       "type": "project",
-      "path": "../Armis.Services/Armis.Services.csproj",
-      "msbuildProject": "../Armis.Services/Armis.Services.csproj"
+      "path": "../Armis.Services/Armis.DataLogic.csproj",
+      "msbuildProject": "../Armis.Services/Armis.DataLogic.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "Armis.Data >= 1.0.0",
-      "Armis.Services >= 1.0.0",
+      "Armis.DataLogic >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 3.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.0.1",
       "Microsoft.EntityFrameworkCore.Sqlite >= 3.0.0",
@@ -8531,8 +8531,8 @@
             "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj": {
               "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj"
             },
-            "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj": {
-              "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj"
+            "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj"
             }
           }
         }

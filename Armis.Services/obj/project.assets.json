@@ -4887,9 +4887,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj",
-      "projectName": "Armis.Services",
-      "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj",
+      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj",
+      "projectName": "Armis.DataLogic",
+      "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj",
       "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\obj\\",
       "projectStyle": "PackageReference",

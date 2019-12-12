@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Armis.Data\Armis.Data.csproj" />
-    <ProjectReference Include="..\Armis.Services\Armis.Services.csproj" />
+    <ProjectReference Include="..\Armis.Services\Armis.DataLogic.csproj" />
   </ItemGroup>
 
 </Project>

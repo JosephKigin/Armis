@@ -136,12 +136,12 @@
         }
       }
     },
-    "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj": {
+    "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj",
-        "projectName": "Armis.Services",
-        "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj",
+        "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj",
+        "projectName": "Armis.DataLogic",
+        "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj",
         "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\obj\\",
         "projectStyle": "PackageReference",
@@ -227,8 +227,8 @@
               "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj": {
                 "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Data\\Armis.Data.csproj"
               },
-              "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj": {
-                "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.Services.csproj"
+              "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj": {
+                "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.Services\\Armis.DataLogic.csproj"
               }
             }
           }
