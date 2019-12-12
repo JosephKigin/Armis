@@ -7,24 +7,24 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public SubOpRevision()
         {
-            ProcessSubOprList = new HashSet<ProcessSubOprList>();
+            ProcessSubOprSeq = new HashSet<ProcessSubOprSeq>();
             ProcessVarOverride = new HashSet<ProcessVarOverride>();
-            SubOpStepList = new HashSet<SubOpStepList>();
+            SubOpStepSeq = new HashSet<SubOpStepSeq>();
         }
 
-        public int SubOpRevId { get; set; }
         public int SubOpId { get; set; }
+        public int SubOpRevId { get; set; }
         public short CreatedByEmp { get; set; }
         public DateTime DateCreated { get; set; }
         public TimeSpan TimeCreated { get; set; }
         public string Comments { get; set; }
-        public string Status { get; set; }
+        public string RevStatusCd { get; set; }
 
         public virtual Employee CreatedByEmpNavigation { get; set; }
-        public virtual Status StatusNavigation { get; set; }
+        public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual SubOperation SubOp { get; set; }
-        public virtual ICollection<ProcessSubOprList> ProcessSubOprList { get; set; }
+        public virtual ICollection<ProcessSubOprSeq> ProcessSubOprSeq { get; set; }
         public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
-        public virtual ICollection<SubOpStepList> SubOpStepList { get; set; }
+        public virtual ICollection<SubOpStepSeq> SubOpStepSeq { get; set; }
     }
 }

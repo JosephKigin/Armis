@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.Api", "Armis.Api\Armis.Api.csproj", "{5DC4A579-2D76-4A20-A06A-574BC46709E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.Core", "Armis.Core\Armis.Core.csproj", "{4807EBA8-224F-471D-8AAD-9EAC8F228A09}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.Services", "Armis.Services\Armis.Services.csproj", "{25952BFE-0920-4F10-AB75-C97D2727DE30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.Data", "Armis.Data\Armis.Data.csproj", "{34248AFD-B506-40E8-9286-AD35D9A835D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.Test", "Armis.Test\Armis.Test.csproj", "{38C1E493-A9EC-45E5-BF12-F528C724E472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Armis.BusinessModels", "Armis.BusinessModels\Armis.BusinessModels.csproj", "{054C26B0-A0B1-4EBA-BAF1-1161C1692372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,6 @@ Global
 		{5DC4A579-2D76-4A20-A06A-574BC46709E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DC4A579-2D76-4A20-A06A-574BC46709E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DC4A579-2D76-4A20-A06A-574BC46709E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4807EBA8-224F-471D-8AAD-9EAC8F228A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4807EBA8-224F-471D-8AAD-9EAC8F228A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4807EBA8-224F-471D-8AAD-9EAC8F228A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4807EBA8-224F-471D-8AAD-9EAC8F228A09}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25952BFE-0920-4F10-AB75-C97D2727DE30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25952BFE-0920-4F10-AB75-C97D2727DE30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25952BFE-0920-4F10-AB75-C97D2727DE30}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{34248AFD-B506-40E8-9286-AD35D9A835D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34248AFD-B506-40E8-9286-AD35D9A835D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34248AFD-B506-40E8-9286-AD35D9A835D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38C1E493-A9EC-45E5-BF12-F528C724E472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38C1E493-A9EC-45E5-BF12-F528C724E472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38C1E493-A9EC-45E5-BF12-F528C724E472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38C1E493-A9EC-45E5-BF12-F528C724E472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{054C26B0-A0B1-4EBA-BAF1-1161C1692372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{054C26B0-A0B1-4EBA-BAF1-1161C1692372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{054C26B0-A0B1-4EBA-BAF1-1161C1692372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{054C26B0-A0B1-4EBA-BAF1-1161C1692372}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,18 +8,18 @@ namespace Armis.Data.DatabaseContext.Entities
         public StepVariable()
         {
             ProcessVarOverride = new HashSet<ProcessVarOverride>();
-            StepVarList = new HashSet<StepVarList>();
+            StepVarSeq = new HashSet<StepVarSeq>();
         }
 
         public int StepVariableId { get; set; }
-        public string VariableCode { get; set; }
-        public string StepVarName { get; set; }
+        public int? VarTemplateId { get; set; }
         public string Uomcd { get; set; }
-        public decimal DefaultMin { get; set; }
-        public decimal DefaultMax { get; set; }
+        public decimal? DefaultMin { get; set; }
+        public decimal? DefaultMax { get; set; }
 
         public virtual Uomcode UomcdNavigation { get; set; }
+        public virtual StepVarTemplate VarTemplate { get; set; }
         public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
-        public virtual ICollection<StepVarList> StepVarList { get; set; }
+        public virtual ICollection<StepVarSeq> StepVarSeq { get; set; }
     }
 }

@@ -12,11 +12,8 @@ namespace Armis.Data.DatabaseContext.Entities
             CustomerStatusNavigation = new HashSet<Customer>();
             OrderHead = new HashSet<OrderHead>();
             PlateResult = new HashSet<PlateResult>();
-            ProcessRevision = new HashSet<ProcessRevision>();
             Session = new HashSet<Session>();
             ShipTo = new HashSet<ShipTo>();
-            Step = new HashSet<Step>();
-            SubOpRevision = new HashSet<SubOpRevision>();
         }
 
         public string StatusCd { get; set; }
@@ -28,10 +25,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<Customer> CustomerStatusNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
-        public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
         public virtual ICollection<Session> Session { get; set; }
         public virtual ICollection<ShipTo> ShipTo { get; set; }
-        public virtual ICollection<Step> Step { get; set; }
-        public virtual ICollection<SubOpRevision> SubOpRevision { get; set; }
     }
 }

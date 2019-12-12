@@ -29,8 +29,10 @@ namespace Armis.Api
         {
             services.AddControllers();
 
+            
+
             services.AddDbContext<ARMISContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("ARMISContext")));
+            options.UseSqlServer(Configuration.GetConnectionString("ARMISContextOnConfiguring")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

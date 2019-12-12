@@ -10,7 +10,7 @@ namespace Armis.Data.DatabaseContext.Entities
             Operation = new HashSet<Operation>();
         }
 
-        public string OperationGroupCd { get; set; }
+        public int OperGroupId { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<Operation> Operation { get; set; }

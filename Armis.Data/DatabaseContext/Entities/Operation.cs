@@ -11,22 +11,21 @@ namespace Armis.Data.DatabaseContext.Entities
             OprLoadPrice = new HashSet<OprLoadPrice>();
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
             OprThickPrice = new HashSet<OprThickPrice>();
-            ProcessSubOprList = new HashSet<ProcessSubOprList>();
+            ProcessSubOprSeq = new HashSet<ProcessSubOprSeq>();
         }
 
         public int OperationId { get; set; }
         public string OperationCd { get; set; }
         public string Name { get; set; }
-        public string OperationGroupCd { get; set; }
-        public int? DefaultDueDays { get; set; }
+        public int OperGroupId { get; set; }
+        public short? DefaultDueDays { get; set; }
         public bool? ThicknessIsRequired { get; set; }
-        public string Type { get; set; }
 
-        public virtual OperationGroup OperationGroupCdNavigation { get; set; }
+        public virtual OperationGroup OperGroup { get; set; }
         public virtual ICollection<DeptOperations> DeptOperations { get; set; }
         public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }
-        public virtual ICollection<ProcessSubOprList> ProcessSubOprList { get; set; }
+        public virtual ICollection<ProcessSubOprSeq> ProcessSubOprSeq { get; set; }
     }
 }

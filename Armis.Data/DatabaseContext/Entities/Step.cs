@@ -8,21 +8,21 @@ namespace Armis.Data.DatabaseContext.Entities
         public Step()
         {
             ProcessVarOverride = new HashSet<ProcessVarOverride>();
-            StepVarList = new HashSet<StepVarList>();
-            SubOpStepList = new HashSet<SubOpStepList>();
+            StepVarSeq = new HashSet<StepVarSeq>();
+            SubOpStepSeq = new HashSet<SubOpStepSeq>();
         }
 
         public int StepId { get; set; }
         public string StepCategoryCd { get; set; }
-        public string Status { get; set; }
+        public string RevStatusCd { get; set; }
         public string StepName { get; set; }
         public bool? SignOffIsRequired { get; set; }
         public string Instructions { get; set; }
 
-        public virtual Status StatusNavigation { get; set; }
+        public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual StepCategory StepCategoryCdNavigation { get; set; }
         public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
-        public virtual ICollection<StepVarList> StepVarList { get; set; }
-        public virtual ICollection<SubOpStepList> SubOpStepList { get; set; }
+        public virtual ICollection<StepVarSeq> StepVarSeq { get; set; }
+        public virtual ICollection<SubOpStepSeq> SubOpStepSeq { get; set; }
     }
 }
