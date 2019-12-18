@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ArmisWebsite.DataAccess/1.0.0": {
+        "dependencies": {
+          "Armis.BusinessModels": "1.0.0"
+        },
+        "runtime": {
+          "ArmisWebsite.DataAccess.dll": {}
+        }
+      },
+      "Armis.BusinessModels/1.0.0": {
+        "runtime": {
+          "Armis.BusinessModels.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ArmisWebsite.DataAccess/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Armis.BusinessModels/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -22,7 +22,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         //CREATE
         public int CreateNewProcess(Process process)
         {
-            if(process == null) { throw new NullReferenceException("Process cannot be null."); }
+            if (process == null) { throw new NullReferenceException("Process cannot be null."); }
             context.Process.Add(process);
 
             return process.ProcessId; //This might return as null. Careful of this.
@@ -30,7 +30,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
         public string CreateNewRevForExistingProcess(ProcessRevision newRev)
         {
-           if (newRev == null) { throw new NullReferenceException("ProcessId and NewRev cannot be null."); }
+            if (newRev == null) { throw new NullReferenceException("ProcessId and NewRev cannot be null."); }
 
             context.Add(newRev);
 
@@ -58,38 +58,57 @@ namespace Armis.DataLogic.Services.ProcessServices
                .Include(l => l.Cust)
                    .ThenInclude(m => m.Part).ToListAsync();
 
-            if(revEntities == null) { throw new NullReferenceException("No active Process Revs returned."); }
+            if (revEntities == null) { throw new NullReferenceException("No active Process Revs returned."); }
 
             return revEntities;
         }
 
         //TEST CODE TODO: DELETE THIS!!!!!!
-        public async Task<IEnumerable<ProcessRevision>> GetCompleteProcess(int aProcessId, int aProcessRevId)
+        public async Task<ProcessModel> GetCompleteProcess(int aProcessId) //TODO: SORT BY SEQ ALSO ADD NAMES TO STUFF
         {
-            var processRevEntity = await context.ProcessRevision.Where(i => i.ProcessId == aProcessId && i.ProcessRevId == aProcessRevId)
-                .Include(i => i.ProcessSubOprSeq)
-                    .ThenInclude(i => i.SubOpRev)
-                        .ThenInclude(i => i.SubOpStepSeq)
-                            .ThenInclude(i => i.Step)
-                                .ThenInclude(i => i.StepVarSeq)
-                                    .ThenInclude(i => i.StepVariable).ToListAsync();
+            var theProcessEntity = await context.Process.Where(i => i.ProcessId == aProcessId)
+                .Include(i => i.ProcessRevision)
+                    .ThenInclude(i => i.ProcessSubOprSeq)
+                        .ThenInclude(i => i.SubOpRev)
+                                .ThenInclude(i => i.SubOpStepSeq)
+                                    .ThenInclude(i => i.Step)
+                                        .ThenInclude(i => i.StepVarSeq)
+                                            .ThenInclude(i => i.StepVariable).ToListAsync();
 
+            var theProcessModel = new ProcessModel();
             
 
-            foreach (var processRev in processRevEntity)
+            //There should be only one entity in this, but FirstOrDefault can't be used with .Include.  The data needs to be loaded into a list and then iterated upon, even though there is only one thing in the list.
+            foreach (var process in theProcessEntity)
             {
-                foreach (var subOpSeq in processRev.ProcessSubOprSeq)
-                {
-                    var theSteps = new List<StepModel>();
+                var theProcessRevs = new List<ProcessRevisionModel>();
 
-                    foreach (var stepSeq in subOpSeq.SubOpRev.SubOpStepSeq)
+                foreach (var processRev in process.ProcessRevision)
+                {
+                    var theSubOpRevs = new List<SubopRevisionModel>();
+
+                    foreach (var subOpSeq in processRev.ProcessSubOprSeq)
                     {
-                        theSteps.Add(stepSeq.Step.ToModel(stepSeq));
+                        var theSteps = new List<StepModel>();
+
+                        foreach (var stepSeq in subOpSeq.SubOpRev.SubOpStepSeq)
+                        {
+                            theSteps.Add(stepSeq.Step.ToModel(stepSeq.StepSeq));
+                        }
+
+                        var theSupOpEntity = await context.SubOperation.FirstOrDefaultAsync(i => i.SubOpId == subOpSeq.SubOpId);
+
+                        theSubOpRevs.Add(subOpSeq.SubOpRev.ToHydratedModel(subOpSeq, theSteps, theSupOpEntity.Name));
+
                     }
+
+                    theProcessRevs.Add(processRev.ToModel(theSubOpRevs, process.Name));
+
                 }
+                theProcessModel = process.ToHydratedModel(theProcessRevs);
             }
 
-            return processRevEntity;
+            return theProcessModel;
         }
 
         public async Task<IEnumerable<Process>> GetAllProcessRevsForCustomer(int aCustomerId)
@@ -98,7 +117,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             var processEntities = await context.Process.Where(i => i.CustId == aCustomerId).Include(j => j.ProcessRevision).ToListAsync();
 
-            if(processEntities == null) { throw new NullReferenceException("Could not find any processes where CustomerId == " +aCustomerId + "." ); }
+            if (processEntities == null) { throw new NullReferenceException("Could not find any processes where CustomerId == " + aCustomerId + "."); }
 
             return processEntities;
         }

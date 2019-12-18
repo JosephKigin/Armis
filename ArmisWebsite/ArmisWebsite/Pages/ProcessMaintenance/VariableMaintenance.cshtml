@@ -1,0 +1,83 @@
+﻿@page
+@model ArmisWebsite.VariableMaintenanceModel
+@{
+    ViewData["Title"] = "Variable Maintenance";
+}
+
+<h1>VariableMaintenance</h1>
+<body onload="OnPageLoad()">
+    <form method="post">
+        <table>
+            <tr>
+                <td>
+                    <label>Variable Template: </label>
+                    <select id="VarTemplateSelect">
+                        @*@foreach (var template in Model.VariableTemplateModels)
+                            {
+                                <option value=@template.Name>@template.Name</option>
+                            }*@
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Unit of Measure: </label>
+                    <input type="text" asp-for="VarUOM" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Minimum Value: </label>
+                    <input type="number" asp-for="VarMin" min="0" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Maximum Value: </label>
+                    <input type="number" asp-for="VarMax" min="0" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Save</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <p id="TESTAREA"></p>
+</body>
+
+
+@section scripts
+{
+    <script>
+        function OnPageLoad() {
+            var url = "https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates";
+
+            fetch(url).then((response) => {
+                return response.text();
+            })
+                .then((result) => {
+                     TEST(result);
+                });
+        }
+
+        function TEST(data) {
+            var pElement = document.getElementById("TESTAREA");
+
+            pElement.text = data;
+        }
+
+        function SetVarTemplateSelectElement(data) {
+            var selectElement = document.getElementById("VarTemplateSelect");
+            var i;
+
+            for (i = 0; i < data.length; i++) {
+                var option = document.createElement("option");
+
+                option.text = data[i];
+                selectElement.add(option);
+            }
+        }
+    </script>
+}

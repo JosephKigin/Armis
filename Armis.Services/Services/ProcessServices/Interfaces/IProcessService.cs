@@ -1,4 +1,5 @@
-﻿using Armis.Data.DatabaseContext.Entities;
+﻿using Armis.BusinessModels.ProcessModels;
+using Armis.Data.DatabaseContext.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,6 +28,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task DeleteProcessRev(int processId, int processRevId);
 
         //Test code TODO: DELETE THIS
-        Task<IEnumerable<ProcessRevision>> GetCompleteProcess(int aProcessId, int aProcessRevId);
+        Task<ProcessModel> GetCompleteProcess(int aProcessId);
     }
 }

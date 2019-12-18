@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
-using Armis.Services.ProcessServices.Interfaces;
-using Armis.Services.ProcessServices;
 using System.Text.Json;
+using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.ProcessServices;
 
 namespace Armis.Api.Controllers
 {
@@ -36,14 +36,14 @@ namespace Armis.Api.Controllers
             set { _processService = value; }
         }
 
-        // GET: api/Processes2
+        // GET: api/Processes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Process>>> GetProcess()
         {
             return await _context.Process.ToListAsync();
         }
 
-        // GET: api/Processes2/5
+        // GET: api/Processes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Process>> GetProcess(int id)
         {
@@ -58,17 +58,17 @@ namespace Armis.Api.Controllers
         }
 
         //TEST CODE!!!! TODO: Fix this.
-        [HttpGet("GetActiveProcessRev")]
-        public async Task<ActionResult<string>> GetActiveProcessRev()
+        [HttpGet("GetCompleteProcess")]
+        public async Task<ActionResult<string>> GetCompleteProcess()
         {
-            var data = await ProcessService.GetCompleteProcess(10000, 2);
+            var data = await ProcessService.GetCompleteProcess(10000);
 
             if (data == null) { return Ok("There are no Active Revisions."); }
 
             return Ok(data);
         }
 
-        // PUT: api/Processes2/5
+        // PUT: api/Processes/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
@@ -100,7 +100,7 @@ namespace Armis.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Processes2
+        // POST: api/Processes
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
@@ -126,7 +126,7 @@ namespace Armis.Api.Controllers
             return CreatedAtAction("GetProcess", new { id = process.ProcessId }, process);
         }
 
-        // DELETE: api/Processes2/5
+        // DELETE: api/Processes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Process>> DeleteProcess(int id)
         {

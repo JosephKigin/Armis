@@ -117,9 +117,11 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\runtime
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.Data.dll
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.Services.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.Data.pdb
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.Services.pdb
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\obj\Debug\netcoreapp3.1\Armis.Test.csproj.CopyComplete
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\obj\Debug\netcoreapp3.1\Armis.Test.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\obj\Debug\netcoreapp3.1\Armis.Test.pdb
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.BusinessModels.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.DataLogic.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.DataLogic.pdb
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
