@@ -7,7 +7,7 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Operation()
         {
-            DeptOperations = new HashSet<DeptOperations>();
+            DeptOperation = new HashSet<DeptOperation>();
             OprLoadPrice = new HashSet<OprLoadPrice>();
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
             OprThickPrice = new HashSet<OprThickPrice>();
@@ -22,7 +22,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? ThicknessIsRequired { get; set; }
 
         public virtual OperationGroup OperGroup { get; set; }
-        public virtual ICollection<DeptOperations> DeptOperations { get; set; }
+        public virtual ICollection<DeptOperation> DeptOperation { get; set; }
         public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }

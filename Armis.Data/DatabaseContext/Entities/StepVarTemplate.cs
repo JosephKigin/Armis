@@ -11,8 +11,7 @@ namespace Armis.Data.DatabaseContext.Entities
             StepVariable = new HashSet<StepVariable>();
         }
 
-        public int VarTempId { get; set; }
-        public string VariableCode { get; set; }
+        public string VarTempCd { get; set; }
         public string VarName { get; set; }
         public string StepVarTypeCd { get; set; }
 

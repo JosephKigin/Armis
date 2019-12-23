@@ -42,7 +42,6 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\System.
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\System.Runtime.Caching.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\cs\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\de\Microsoft.TestPlatform.CoreUtilities.resources.dll
@@ -125,3 +124,6 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.B
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.DataLogic.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.DataLogic.pdb
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Test\bin\Debug\netcoreapp3.1\NuGet.Frameworks.dll

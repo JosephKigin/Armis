@@ -14,12 +14,11 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public int StepId { get; set; }
         public string StepCategoryCd { get; set; }
-        public string RevStatusCd { get; set; }
+        public bool Inactive { get; set; }
         public string StepName { get; set; }
         public bool? SignOffIsRequired { get; set; }
         public string Instructions { get; set; }
 
-        public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual StepCategory StepCategoryCdNavigation { get; set; }
         public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
         public virtual ICollection<StepVarSeq> StepVarSeq { get; set; }

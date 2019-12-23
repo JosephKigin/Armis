@@ -21,7 +21,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Description { get; set; }
         public string Type { get; set; }
         public bool? AllowLogin { get; set; }
-        public int? DefaultLocation { get; set; }
+        public string DefaultLocation { get; set; }
 
         public virtual Location DefaultLocationNavigation { get; set; }
         public virtual ICollection<AreaRemark> AreaRemark { get; set; }

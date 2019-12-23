@@ -44,7 +44,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string PackagingCd { get; set; }
         public int? SpecId { get; set; }
         public string ShipViaCd { get; set; }
-        public string MaterialAlloyCd { get; set; }
+        public int? MaterialAlloyId { get; set; }
         public int? ProcessId { get; set; }
         public int? ProcessRevId { get; set; }
         public bool? IsPriceApproval { get; set; }
@@ -81,7 +81,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Hardness HardnessCdNavigation { get; set; }
         public virtual Employee JobHoldByEmpNavigation { get; set; }
         public virtual Employee JobHoldToEmpNavigation { get; set; }
-        public virtual MaterialAlloy MaterialAlloyCdNavigation { get; set; }
+        public virtual MaterialAlloy MaterialAlloy { get; set; }
         public virtual MiscCharge MiscChargeCdNavigation { get; set; }
         public virtual PackageCode PackagingCdNavigation { get; set; }
         public virtual ProcessRevision Process { get; set; }

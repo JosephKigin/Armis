@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class DeptSpecs
+    public partial class DeptSpec
     {
         public short DepartmentId { get; set; }
         public int SpecId { get; set; }

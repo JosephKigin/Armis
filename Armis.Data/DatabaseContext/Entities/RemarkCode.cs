@@ -7,8 +7,9 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public int RemarkId { get; set; }
         public string Description { get; set; }
-        public bool? Inactive { get; set; }
-        public bool? Tmupdate { get; set; }
-        public bool? IsReworkType { get; set; }
+        public string QuickKey { get; set; }
+        public bool Inactive { get; set; }
+        public bool Tmupdate { get; set; }
+        public bool IsReworkType { get; set; }
     }
 }

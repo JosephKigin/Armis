@@ -8,8 +8,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public Department()
         {
             DeptArea = new HashSet<DeptArea>();
-            DeptOperations = new HashSet<DeptOperations>();
-            DeptSpecs = new HashSet<DeptSpecs>();
+            DeptOperation = new HashSet<DeptOperation>();
+            DeptSpec = new HashSet<DeptSpec>();
             Memo = new HashSet<Memo>();
             OprLoadPrice = new HashSet<OprLoadPrice>();
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
@@ -24,21 +24,21 @@ namespace Armis.Data.DatabaseContext.Entities
         public short DepartmentId { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
-        public bool? IsShowOnShopList { get; set; }
-        public decimal? PlaterBurRate { get; set; }
-        public decimal? HelperBurRate { get; set; }
-        public decimal? ReworkBurRate { get; set; }
-        public string NoTimeReportGroup { get; set; }
-        public string DepartmentType { get; set; }
+        public bool IsShownOnShopList { get; set; }
+        public decimal PlaterBurRate { get; set; }
+        public decimal HelperBurRate { get; set; }
+        public decimal ReworkBurRate { get; set; }
+        public string DeptTypeCd { get; set; }
         public short? ScheduleAreaId { get; set; }
         public decimal? LeadTime { get; set; }
         public string LoadTypeCd { get; set; }
 
+        public virtual DeptTypeCode DeptTypeCdNavigation { get; set; }
         public virtual LoadType LoadTypeCdNavigation { get; set; }
         public virtual Area ScheduleArea { get; set; }
         public virtual ICollection<DeptArea> DeptArea { get; set; }
-        public virtual ICollection<DeptOperations> DeptOperations { get; set; }
-        public virtual ICollection<DeptSpecs> DeptSpecs { get; set; }
+        public virtual ICollection<DeptOperation> DeptOperation { get; set; }
+        public virtual ICollection<DeptSpec> DeptSpec { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }

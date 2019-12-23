@@ -13,7 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
             Rack = new HashSet<Rack>();
         }
 
-        public string AlloyCd { get; set; }
+        public int AlloyId { get; set; }
         public string Description { get; set; }
         public string SeriesCd { get; set; }
 

@@ -1,84 +1,85 @@
 ﻿@page
 @model ArmisWebsite.VariableMaintenance
 @{
-    ViewData["Title"] = "Variable Maintenance";
+    ViewData["Title"] = "VariableMaintenance";
 }
 
-<h1>VariableMaintenance</h1>
-<body onload="@Model.GetAllVariableTemplates()">
-    <form method="post">
-        <table>
-            <tr>
-                <td>
-                    <label>Variable Template: </label>
-                    <select id="VarTemplateSelect" asp-items="Model.VariableTemplateOptions"></select>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Unit of Measure: </label>
-                    <input type="text" asp-for="VarUOM" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Minimum Value: </label>
-                    <input type="number" asp-for="VarMin" min="0" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Maximum Value: </label>
-                    <input type="number" asp-for="VarMax" min="0" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="submit">Save</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-    @foreach (var item in Model.VariableTemplateOptions)
-    {
-        <p>@item.Text</p>
-    }
+<h1>Variable Maintenance</h1>
+<body>
+    <div class="row">
+        <ul class="col-lg-8 list-group" style="max-height: 45em; overflow:scroll;">
+            @foreach (var template in Model.VariableTemplateModels)
+            {
+                <li class="list-group-item list-group-item-success">
+                    <h5 class="list-group-item-heading">@template.Name</h5>
+                    <p class="list-group-item-text">@template.Code (@template.Type)</p>
+                </li>
+            }
+        </ul>
+        <form method="post" class="col-lg-4">
+            <table>
+                <tr>
+                    <td>
+                        <label>Unit of Measure: </label>
+                        <select type="text" asp-items="Model.UOMSelectOptions"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Minimum Value: </label>
+                        <input type="number" asp-for="VarMin" min="0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Maximum Value: </label>
+                        <input type="number" asp-for="VarMax" min="0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit">Save</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 
 
 @*@section scripts
-{
-    <script>
-        function OnPageLoad() {
-            var url = "https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates";
+    {
+        <script>
+            function OnPageLoad() {
+                var url = "https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates";
 
-            fetch(url).then((response) => {
-                return response.text();
-            })
-                .then((result) => {
-                     TEST(result);
-                });
-        }
-
-        function TEST(data) {
-            var pElement = document.getElementById("TESTAREA");
-
-            for (var i = 0; i < data.length; i++) {
-                pElement.innerHTML += data[i];
+                fetch(url).then((response) => {
+                    return response.text();
+                })
+                    .then((result) => {
+                         TEST(result);
+                    });
             }
-            
-        }
 
-        function SetVarTemplateSelectElement(data) {
-            var selectElement = document.getElementById("VarTemplateSelect");
-            var i;
+            function TEST(data) {
+                var pElement = document.getElementById("TESTAREA");
 
-            for (i = 0; i < data.length; i++) {
-                var option = document.createElement("option");
+                for (var i = 0; i < data.length; i++) {
+                    pElement.innerHTML += data[i];
+                }
 
-                option.text = data[i];
-                selectElement.add(option);
             }
-        }
-    </script>
-}*@
+
+            function SetVarTemplateSelectElement(data) {
+                var selectElement = document.getElementById("VarTemplateSelect");
+                var i;
+
+                for (i = 0; i < data.length; i++) {
+                    var option = document.createElement("option");
+
+                    option.text = data[i];
+                    selectElement.add(option);
+                }
+            }
+        </script>
+    }*@

@@ -1583,7 +1583,8 @@
       },
       "ArmisWebsite.DataAccess/1.0.0": {
         "dependencies": {
-          "Armis.BusinessModels": "1.0.0"
+          "Armis.BusinessModels": "1.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "3.1.0"
         },
         "runtime": {
           "ArmisWebsite.DataAccess.dll": {}

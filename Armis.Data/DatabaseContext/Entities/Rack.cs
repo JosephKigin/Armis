@@ -13,7 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int RackId { get; set; }
         public string Description { get; set; }
         public string Dimensions { get; set; }
-        public string MaterialCd { get; set; }
+        public int? MaterialCd { get; set; }
         public short? AreaId { get; set; }
         public int? ExtensionQty { get; set; }
         public string Photo { get; set; }

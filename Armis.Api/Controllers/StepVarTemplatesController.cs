@@ -54,9 +54,9 @@ namespace Armis.Api.Controllers
 
         // GET: api/StepVarTemplates/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StepVarTemplate>> GetStepVarTemplate(int id)
+        public async Task<ActionResult<StepVarTemplate>> GetStepVarTemplate(string aCode)
         {
-            var stepVarTemplate = await _context.StepVarTemplate.FindAsync(id);
+            var stepVarTemplate = await _context.StepVarTemplate.FindAsync(aCode);
 
             if (stepVarTemplate == null)
             {
@@ -70,9 +70,9 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStepVarTemplate(int id, StepVarTemplate stepVarTemplate)
+        public async Task<IActionResult> PutStepVarTemplate(string aCode, StepVarTemplate stepVarTemplate)
         {
-            if (id != stepVarTemplate.VarTempId)
+            if (aCode != stepVarTemplate.VarTempCd)
             {
                 return BadRequest();
             }
@@ -85,7 +85,7 @@ namespace Armis.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StepVarTemplateExists(id))
+                if (!StepVarTemplateExists(aCode))
                 {
                     return NotFound();
                 }
@@ -111,7 +111,7 @@ namespace Armis.Api.Controllers
             }
             catch (DbUpdateException)
             {
-                if (StepVarTemplateExists(stepVarTemplate.VarTempId))
+                if (StepVarTemplateExists(stepVarTemplate.VarTempCd))
                 {
                     return Conflict();
                 }
@@ -121,7 +121,7 @@ namespace Armis.Api.Controllers
                 }
             }
 
-            return CreatedAtAction("GetStepVarTemplate", new { id = stepVarTemplate.VarTempId }, stepVarTemplate);
+            return CreatedAtAction("GetStepVarTemplate", new { aCode = stepVarTemplate.VarTempCd }, stepVarTemplate);
         }
 
         // DELETE: api/StepVarTemplates/5
@@ -140,9 +140,9 @@ namespace Armis.Api.Controllers
             return stepVarTemplate;
         }
 
-        private bool StepVarTemplateExists(int id)
+        private bool StepVarTemplateExists(string aCode)
         {
-            return _context.StepVarTemplate.Any(e => e.VarTempId == id);
+            return _context.StepVarTemplate.Any(e => e.VarTempCd == aCode);
         }
     }
 }

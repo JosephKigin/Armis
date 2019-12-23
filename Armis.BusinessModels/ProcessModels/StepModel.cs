@@ -8,7 +8,6 @@ namespace Armis.BusinessModels.ProcessModels
     {
         public int StepId { get; set; }
         public string StepCategoryCd { get; set; }
-        public string RevStatusCd { get; set; }
         public string StepName { get; set; }
         public bool? SignOffIsRequired { get; set; }
         public string Instructions { get; set; }

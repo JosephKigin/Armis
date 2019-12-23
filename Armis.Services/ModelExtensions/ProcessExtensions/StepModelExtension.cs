@@ -26,7 +26,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             var theStep = new Step()
             {
                 Instructions = aStepModel.Instructions,
-                RevStatusCd = aStepModel.RevStatusCd,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
                 StepCategoryCd = aStepModel.StepCategoryCd,
                 StepId = aStepModel.StepId,

@@ -16,13 +16,38 @@ namespace ArmisWebsite
 {
     public class VariableMaintenance : PageModel
     {
-        private readonly IConfiguration config;
+        //Data Access
+        private IVariableDataAccess _variableDataAccess;
 
+        public IVariableDataAccess VariableDataAccess
+        {
+            get 
+            { 
+                if(_variableDataAccess == null) { _variableDataAccess = new VariableDataAccess(); }
+                return _variableDataAccess; 
+            }
+            set { _variableDataAccess = value; }
+        }
+
+        private IUOMCodeDataAccess _uomCodeDataAccess;
+
+        public IUOMCodeDataAccess UOMCodeDataAccess
+        {
+            get 
+            {
+                if(_uomCodeDataAccess == null) { _uomCodeDataAccess = new UOMCodeDataAccess(); }
+                return _uomCodeDataAccess; 
+            }
+            set { _uomCodeDataAccess = value; }
+        }
+
+
+        //Model Properties
         public IEnumerable<VariableTemplateModel> VariableTemplateModels { get; set; }
+        public IEnumerable<UOMCodeModel> UOMCodeModels { get; set; }
 
-        //View properties
-        
-        public List<SelectListItem> VariableTemplateOptions { get; set; }
+        //View Properties
+        public List<SelectListItem> UOMSelectOptions { get; set; }
         [BindProperty]
         public string VarUOM { get; set; }
         [BindProperty]
@@ -36,9 +61,7 @@ namespace ArmisWebsite
 
         public VariableMaintenance(IConfiguration config)
         {
-            this.config = config;
-            VariableTemplateModels = new List<VariableTemplateModel>();
-            VariableTemplateOptions = new List<SelectListItem>();
+            UOMSelectOptions = new List<SelectListItem>();
         }
 
         public void CreateVariable()
@@ -54,30 +77,25 @@ namespace ArmisWebsite
 
         public async Task OnGetAsync()
         {
-            await GetAllVariableTemplates();
-        }
+            try 
+            { 
+                VariableTemplateModels = await VariableDataAccess.GetAllTemplates();
+                UOMCodeModels = await UOMCodeDataAccess.GetAllUOMCodes();
 
-        public async Task<IActionResult> GetAllVariableTemplates()
-        {
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync("https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates");
-
-                if (response.IsSuccessStatusCode)
+                foreach (var uomModel in UOMCodeModels)
                 {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    VariableTemplateModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
-                    try
+                    var tempSelectListItem = new SelectListItem()
                     {
-                        foreach (var model in VariableTemplateModels) { VariableTemplateOptions.Add(new SelectListItem { Value = model.Id.ToString(), Text = model.Name }); }
-                        VariableTemplateOptions.Sort();
-                    }
-                    catch (Exception ex) { var whatNow = ex.Message; }
-                    
-                }
+                        Value = uomModel.Code,
+                        Text = uomModel.Description
+                    };
+                    UOMSelectOptions.Add(tempSelectListItem);
 
-                return Page();
+                }
             }
+            catch(Exception ex) { } //TODO: Implement error page.
         }
+
+        
     }
 }

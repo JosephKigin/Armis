@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class Uomcode
+    public partial class UOMcode
     {
-        public Uomcode()
+        public UOMcode()
         {
             StepVariable = new HashSet<StepVariable>();
         }

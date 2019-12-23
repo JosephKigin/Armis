@@ -6,33 +6,27 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.DataAccess.Process
 {
     public class VariableDataAccess : IVariableDataAccess
     {
-        public int CreateVaribale(VariableModel model)
+        public async Task<IEnumerable<VariableTemplateModel>> GetAllTemplates()
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<VariableTemplateModel> GetAllTemplates()
-        {
-            var result = new List<VariableTemplateModel>();
-            for (int i = 0; i < 10; i++)
+            using (var client = new HttpClient())
             {
-                var tempTemplate = new VariableTemplateModel()
+                try
                 {
-                    Code = "TEST",
-                    Id = 0,
-                    Name = "Test - " + i,
-                    Type = "Test Type"
-                };
+                    var response = await client.GetAsync("https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates"); //TODO: Move this to config.
 
-                result.Add(tempTemplate);
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultStringJson = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
+                    return resultStringJson;
+
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); }
             }
-
-            return result;
         }
     }
 }

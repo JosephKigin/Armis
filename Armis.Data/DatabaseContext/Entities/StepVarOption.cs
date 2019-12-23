@@ -5,9 +5,9 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class StepVarOption
     {
-        public int VarTempId { get; set; }
+        public string VarTempCd { get; set; }
         public string VarOption { get; set; }
 
-        public virtual StepVarTemplate VarTemp { get; set; }
+        public virtual StepVarTemplate VarTempCdNavigation { get; set; }
     }
 }

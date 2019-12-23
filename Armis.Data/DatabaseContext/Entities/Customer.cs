@@ -17,7 +17,7 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHead = new HashSet<OrderHead>();
             Part = new HashSet<Part>();
             Process = new HashSet<Process>();
-            SamplePlan = new HashSet<SamplePlan>();
+            SamplePlanHead = new HashSet<SamplePlanHead>();
             ShipAccountNavigation = new HashSet<ShipAccount>();
         }
 
@@ -86,7 +86,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OrderHead> OrderHead { get; set; }
         public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<Process> Process { get; set; }
-        public virtual ICollection<SamplePlan> SamplePlan { get; set; }
+        public virtual ICollection<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual ICollection<ShipAccount> ShipAccountNavigation { get; set; }
     }
 }
