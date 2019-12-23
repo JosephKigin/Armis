@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,9 @@ namespace Armis.Api.Controllers
             {
                 var data = await VarService.GetAllVariableTemplates();
 
-                return Ok(data);
+                var jsonData = JsonSerializer.Serialize(data);
+
+                return Ok(jsonData);
             }
             catch (Exception)
             {

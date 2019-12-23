@@ -27,6 +27,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             var theResult = new List<VariableTemplateModel>();
 
             foreach(var entity in theEntities) { theResult.Add(entity.ToModel()); }
+            
 
             return theResult;
         }

@@ -1,22 +1,17 @@
 ﻿@page
-@model ArmisWebsite.VariableMaintenanceModel
+@model ArmisWebsite.VariableMaintenance
 @{
     ViewData["Title"] = "Variable Maintenance";
 }
 
 <h1>VariableMaintenance</h1>
-<body onload="OnPageLoad()">
+<body onload="@Model.GetAllVariableTemplates()">
     <form method="post">
         <table>
             <tr>
                 <td>
                     <label>Variable Template: </label>
-                    <select id="VarTemplateSelect">
-                        @*@foreach (var template in Model.VariableTemplateModels)
-                            {
-                                <option value=@template.Name>@template.Name</option>
-                            }*@
-                    </select>
+                    <select id="VarTemplateSelect" asp-items="Model.VariableTemplateOptions"></select>
                 </td>
             </tr>
             <tr>
@@ -44,11 +39,14 @@
             </tr>
         </table>
     </form>
-    <p id="TESTAREA"></p>
+    @foreach (var item in Model.VariableTemplateOptions)
+    {
+        <p>@item.Text</p>
+    }
 </body>
 
 
-@section scripts
+@*@section scripts
 {
     <script>
         function OnPageLoad() {
@@ -65,7 +63,10 @@
         function TEST(data) {
             var pElement = document.getElementById("TESTAREA");
 
-            pElement.text = data;
+            for (var i = 0; i < data.length; i++) {
+                pElement.innerHTML += data[i];
+            }
+            
         }
 
         function SetVarTemplateSelectElement(data) {
@@ -80,4 +81,4 @@
             }
         }
     </script>
-}
+}*@
