@@ -1,0 +1,42 @@
+﻿@page
+@model ArmisWebsite.VariableTemplateMaintenance
+@{
+    ViewData["Title"] = "VariableTemplateMaintenance";
+}
+
+<h1>Variable Template Maintenance</h1>
+<body>
+    <div class="row">
+        <ul class="col-lg-8 list-group" style="max-height: 45em; overflow:scroll;">
+            @foreach (var template in Model.VariableTemplateModels)
+            {
+                <li class="list-group-item list-group-item-success" id="@template.Code">
+                    <h5>@template.Name</h5>
+                    <p>@template.Code (@template.Type)</p>
+                </li>
+            }
+        </ul>
+        <form method="post" class="col-lg-4">
+            <table>
+                <tr>
+                    <td> <label>Type: </label> </td>
+                    <td> <select asp-for="NewVarTemplateType" asp-items="Model.VariableTypeSelectItems"></select> </td>
+                </tr>
+                <tr>
+                    <td><label>Name: </label></td>
+                    <td><input type="text" asp-for="NewVarTemplateName" /></td>
+                </tr>
+                <tr>
+                    <td><label>Code: </label></td>
+                    @{bool isCodeValid = true; }
+                    <td><input asp-for="NewVarTemplateCode" onkeypress="@isCodeValid = @Model.VerifyUniqueCode()" style="background-color:@if (isCodeValid) { } "/></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit" onclick="@Model.">Save</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>

@@ -12,7 +12,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 {
     public class VariableService : IVariableService
     {
-        private readonly ARMISContext context;
+        private ARMISContext context;
 
         public VariableService(ARMISContext context)
         {
@@ -22,7 +22,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         {
             var theEntities = await context.StepVarTemplate.ToListAsync();
 
-            if(theEntities == null) { throw new NullReferenceException("No variable Templates returned."); }
+            if(theEntities == null) { throw new NullReferenceException("No variable templates returned."); }
 
             var theResult = new List<VariableTemplateModel>();
 
@@ -30,6 +30,12 @@ namespace Armis.DataLogic.Services.ProcessServices
             
 
             return theResult;
+        }
+
+        public async Task PostVariableTemplate(VariableTemplateModel aTemplateModel)
+        {
+            context.StepVarTemplate.Add(aTemplateModel.ToEntity());
+            await context.SaveChangesAsync();
         }
     }
 }

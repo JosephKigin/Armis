@@ -10,6 +10,7 @@ using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.BusinessModels.ProcessModels;
 
 namespace Armis.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
         private IVariableService _varService;
-        public IVariableService VarService 
+        public IVariableService VariableService 
         {
             get 
             {
@@ -40,7 +41,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await VarService.GetAllVariableTemplates();
+                var data = await VariableService.GetAllVariableTemplates();
 
                 var jsonData = JsonSerializer.Serialize(data);
 
@@ -102,26 +103,18 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<StepVarTemplate>> PostStepVarTemplate(StepVarTemplate stepVarTemplate)
+        public async Task<ActionResult> PostStepVarTemplate([FromBody]VariableTemplateModel aVariableTemplateModel)
         {
-            _context.StepVarTemplate.Add(stepVarTemplate);
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (StepVarTemplateExists(stepVarTemplate.VarTempCd))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                await VariableService.PostVariableTemplate(aVariableTemplateModel);
 
-            return CreatedAtAction("GetStepVarTemplate", new { aCode = stepVarTemplate.VarTempCd }, stepVarTemplate);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message); //TODO: Error handling
+            }
         }
 
         // DELETE: api/StepVarTemplates/5

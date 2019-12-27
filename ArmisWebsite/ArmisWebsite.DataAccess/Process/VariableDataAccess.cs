@@ -28,5 +28,35 @@ namespace ArmisWebsite.DataAccess.Process
                 catch (Exception ex) { throw new Exception(ex.Message); }
             }
         }
+
+        public async Task<IEnumerable<VariableTypeModel>> GetAllVarTypes()
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync("https://localhost:44316/api/stepvartypes"); //TODO: Move this to config.
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultStringJson = JsonSerializer.Deserialize<List<VariableTypeModel>>(responseString);
+                    return resultStringJson;
+
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); }
+            }
+        }
+
+        public async Task PostVariableTemplate(VariableTemplateModel aVariableTemplateModel)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    StringContent data = new StringContent(JsonSerializer.Serialize(aVariableTemplateModel));
+                    await client.PostAsync("https://localhost:44316/api/StepVarTemplates", data); //TODO: Move this to config.
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); }
+            }
+        }
     }
 }

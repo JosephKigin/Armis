@@ -17,5 +17,15 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 Type = anEntity.StepVarTypeCd
             };
         }
+
+        public static StepVarTemplate ToEntity(this VariableTemplateModel aModel)
+        {
+            return new StepVarTemplate()
+            {
+                VarTempCd = aModel.Code,
+                VarName = aModel.Name,
+                StepVarTypeCd = aModel.Type
+            };
+        }
     }
 }
