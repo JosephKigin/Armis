@@ -6,6 +6,11 @@
 
 <h1>Variable Template Maintenance</h1>
 <body>
+    @if (Model.LocalBannerMessage != "" && Model.LocalBannerMessage != null)
+    {
+        if (Model.IsLocalBannerSuccess) { <div class="alert alert-success">@Model.LocalBannerMessage</div>}
+        else { <div class="alert alert-danger">@Model.LocalBannerMessage</div>}
+    }
     <div class="row">
         <ul class="col-lg-8 list-group" style="max-height: 45em; overflow:scroll;">
             @foreach (var template in Model.VariableTemplateModels)

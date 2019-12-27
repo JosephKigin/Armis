@@ -11,6 +11,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
     {
         Task<IEnumerable<VariableTemplateModel>> GetAllTemplates();
         Task<IEnumerable<VariableTypeModel>> GetAllVarTypes();
-        Task PostVariableTemplate(VariableTemplateModel aVariableTemplateModel);
+        Task<HttpResponseMessage> PostVariableTemplate(VariableTemplateModel aVariableTemplateModel);
     }
 }

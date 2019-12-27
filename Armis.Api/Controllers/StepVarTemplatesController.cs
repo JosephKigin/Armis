@@ -113,7 +113,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message); //TODO: Error handling
+                return BadRequest(ex.Message + ex.InnerException.Message); //TODO: Error handling
             }
         }
 

@@ -35,6 +35,8 @@ namespace ArmisWebsite
         public IEnumerable<VariableTypeModel> VariableTypes { get; set; }
 
         //View Properties
+        public string LocalBannerMessage { get; set; }
+        public bool IsLocalBannerSuccess { get; set; }
         public List<SelectListItem> VariableTypeSelectItems { get; set; }
         [BindProperty]
         [Required]
@@ -45,6 +47,7 @@ namespace ArmisWebsite
         public string NewVarTemplateName { get; set; }
         [BindProperty]
         [Required]
+        [MaxLength(10)]
         public string NewVarTemplateCode{ get; set; }
 
         public VariableTemplateMaintenance(IConfiguration config)
@@ -60,13 +63,20 @@ namespace ArmisWebsite
                 VariableTypes = await VariableDataAccess.GetAllVarTypes();
 
                 foreach(var type in VariableTypes) { VariableTypeSelectItems.Add(new SelectListItem { Text = type.Description, Value = type.Code }); }
+
             }
             catch(Exception ex) { } //TODO: Implement error page.
         }
 
         public async Task OnPostAsync()
         {
-            await VariableDataAccess.PostVariableTemplate(new VariableTemplateModel() { Type = NewVarTemplateType, Name = NewVarTemplateName, Code = NewVarTemplateCode});
+            var response = await VariableDataAccess.PostVariableTemplate(new VariableTemplateModel() { Type = NewVarTemplateType, Name = NewVarTemplateName, Code = NewVarTemplateCode});
+
+            if (response.IsSuccessStatusCode)
+            {
+                IsLocalBannerSuccess = true;
+                LocalBannerMessage += "Your template has been saved successfully.";
+            }
         }
 
         //Front-end validation
