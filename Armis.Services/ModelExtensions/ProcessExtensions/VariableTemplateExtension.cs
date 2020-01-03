@@ -14,7 +14,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 Code = anEntity.VarTempCd,
                 Name = anEntity.VarName,
-                Type = anEntity.StepVarTypeCd
+                Type = anEntity.StepVarTypeCdNavigation.ToModel()
             };
         }
 
@@ -24,7 +24,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 VarTempCd = aModel.Code,
                 VarName = aModel.Name,
-                StepVarTypeCd = aModel.Type
+                StepVarTypeCd = aModel.Type.Code
             };
         }
     }

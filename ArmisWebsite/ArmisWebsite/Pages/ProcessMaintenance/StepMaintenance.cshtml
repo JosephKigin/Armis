@@ -4,5 +4,104 @@
     ViewData["Title"] = "StepMaintenance";
 }
 
-<h1>StepMaintenance</h1>
+<head>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+</head>
+<h1>Step Maintenance</h1>
 
+<body>
+    <div class="row">
+
+        <div class="col-lg-6">
+            <form method="post">
+                <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+                    @{int tempCount = 0; }
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        <li class="list-group-item" id="@template.Code" tabindex="@tempCount">
+                            <p>
+                                <strong>@template.Name</strong> @template.Code (@template.Type.Description)
+                                <button class="btn" style="float:right" onclick="AddTemplate(@template)"><i class="fa fa-arrow-right"></i></button>
+                            </p>
+                        </li>
+                        tempCount++;
+                    }
+                </ul>
+            </form>
+        </div>
+
+        <div class="col-lg-1">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <button class="btn"><i class="fa fa-arrow-right" onclick=""></i></button>
+        </div>
+
+        <div class="col-lg-5">
+            <h3>
+                <u>Create A New Step</u>
+            </h3>
+            <form method="post" class="" asp-page-handler="NewStep">
+                <div class="form-group">
+                    <label>Step Name: </label>
+                    <input type="text" class="form-control" />
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label>Instructions: </label>
+                    <textarea class="form-control"></textarea>
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label>Is sign-off required? </label>
+                    <select class="form-control">
+                        <option value="0"></option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                    </select>
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label>Step Category: </label>
+                    <input type="text" class="form-control" />
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <ul class="list-group" style="max-height:12em" overflow:scroll>
+                    <li class="list-group-item">
+                        <h6>Hello, World!</h6>
+                    </li>
+                    @foreach (var template in Model.AssignedVariableTemplateModels)
+                    {
+                        <li class="list-group-item" id="@template.Code">
+                            <p>
+                                <strong>@template.Name</strong> @template.Code (@template.Type)
+                                <button class="btn" style="float:right"><i class="fa fa-arrow-right"></i></button>
+                            </p>
+                        </li>
+                    }
+                </ul>
+
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    function AddTemplate(templateModel) {
+        @Model.VariableTemplateModels.
+    }
+</script>

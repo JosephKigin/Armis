@@ -47,9 +47,9 @@ namespace Armis.Api.Controllers
 
                 return Ok(jsonData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -113,7 +113,8 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message + ex.InnerException.Message); //TODO: Error handling
+                var result = BadRequest("EXCEPTION: " + ex.Message + "\r\n" + "INNER EXCEPTION: " + ex.InnerException.Message);
+                return result; //TODO: Error handling
             }
         }
 

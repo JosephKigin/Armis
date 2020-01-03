@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ProcessServices
 {
-    class StepService : IStepService
+    public class StepService : IStepService
     {
         private ARMISContext _context;
 
@@ -54,7 +54,14 @@ namespace Armis.DataLogic.Services.ProcessServices
 
         public async Task<IEnumerable<StepModel>> GetAll()
         {
-            var theStepEntities = await Context.Step.ToListAsync();
+            var theStepEntities = await Context.Step
+                                        .Include(i => i.StepVarSeq)
+                                            .ThenInclude(j => j.StepVariable)
+                                                .ThenInclude(m => m.UomcdNavigation)
+                                        .Include(i => i.StepVarSeq)
+                                            .ThenInclude(j => j.StepVariable)
+                                                .ThenInclude(k => k.VarTempCdNavigation)
+                                                    .ThenInclude(l => l.StepVarTypeCdNavigation).ToListAsync();
 
             if(theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
@@ -62,7 +69,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             foreach (var step in theStepEntities)
             {
-                theStepModels.Add(step.ToModel(0));
+                theStepModels.Add(step.ToModel(0));  //There is no sequence needed at this point, so a 0 is passed in for sequence number
             }
 
             return theStepModels;

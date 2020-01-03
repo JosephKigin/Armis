@@ -17,15 +17,17 @@ namespace ArmisWebsite
 {
     public class VariableTemplateMaintenance : PageModel
     {
+        private readonly IConfiguration Config;
+
         //Data Access
         private IVariableDataAccess _variableDataAccess;
 
         public IVariableDataAccess VariableDataAccess
         {
-            get 
-            { 
-                if(_variableDataAccess == null) { _variableDataAccess = new VariableDataAccess(); }
-                return _variableDataAccess; 
+            get
+            {
+                if (_variableDataAccess == null) { _variableDataAccess = new VariableDataAccess(Config); }
+                return _variableDataAccess;
             }
             set { _variableDataAccess = value; }
         }
@@ -38,57 +40,84 @@ namespace ArmisWebsite
         public string LocalBannerMessage { get; set; }
         public bool IsLocalBannerSuccess { get; set; }
         public List<SelectListItem> VariableTypeSelectItems { get; set; }
+
         [BindProperty]
         [Required]
-        public string NewVarTemplateType { get; set; }
+        public string Type { get; set; }
+
         [BindProperty]
         [Required]
         [MaxLength(50)]
-        public string NewVarTemplateName { get; set; }
+        public string Name { get; set; }
+
         [BindProperty]
         [Required]
         [MaxLength(10)]
-        public string NewVarTemplateCode{ get; set; }
+        public string Code { get; set; }
 
-        public VariableTemplateMaintenance(IConfiguration config)
+        public VariableTemplateMaintenance(IConfiguration aConfig)
         {
+            Config = aConfig;
             VariableTypeSelectItems = new List<SelectListItem>();
+            VariableTemplateModels = new List<VariableTemplateModel>();
         }
 
         public async Task OnGetAsync()
         {
-            try 
-            { 
-                VariableTemplateModels = await VariableDataAccess.GetAllTemplates();
-                VariableTypes = await VariableDataAccess.GetAllVarTypes();
-
-                foreach(var type in VariableTypes) { VariableTypeSelectItems.Add(new SelectListItem { Text = type.Description, Value = type.Code }); }
-
-            }
-            catch(Exception ex) { } //TODO: Implement error page.
+            await SetUpPage();
         }
 
         public async Task OnPostAsync()
         {
-            var response = await VariableDataAccess.PostVariableTemplate(new VariableTemplateModel() { Type = NewVarTemplateType, Name = NewVarTemplateName, Code = NewVarTemplateCode});
-
-            if (response.IsSuccessStatusCode)
+            if (ModelState.IsValid)
             {
-                IsLocalBannerSuccess = true;
-                LocalBannerMessage += "Your template has been saved successfully.";
+                var theType = VariableTypes.SingleOrDefault(i => i.Description == Type);
+
+                var response = await VariableDataAccess.PostVariableTemplate(new VariableTemplateModel() { Type = theType, Name = Name, Code = Code });
+
+                if (response.IsSuccessStatusCode)
+                { SetLocalBanner("Your template has been saved successfully.", true); }
+                else
+                { SetLocalBanner("Your template save failed.\r\n" + response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), false); }
             }
+
+            await SetUpPage();
+
+        }
+
+        public async Task<IActionResult> SetUpPage()
+        {
+            try
+            {
+                VariableTemplateModels = await VariableDataAccess.GetAllTemplates();
+                VariableTypes = await VariableDataAccess.GetAllVarTypes();
+                VariableTypeSelectItems.Add(new SelectListItem { Text = "", Value = "" });
+                foreach (var type in VariableTypes) { VariableTypeSelectItems.Add(new SelectListItem { Text = type.Description, Value = type.Code }); }
+                
+            }
+            catch (Exception ex)
+            {
+                SetLocalBanner("Could not load data from database.  Please contact IT. \r\n" + "EXCEPTION: " + ex.Message, false);
+            } //TODO: Implement error page.
+            return new PageResult();
+        }
+
+        public void SetLocalBanner(string aMessage, bool aState)
+        {
+            LocalBannerMessage = aMessage;
+            IsLocalBannerSuccess = aState;
         }
 
         //Front-end validation
         public bool VerifyUniqueCode()
         {
-            foreach (var templateModel in VariableTemplateModels) 
-            { 
-                if(templateModel.Code == NewVarTemplateCode) 
+            foreach (var templateModel in VariableTemplateModels)
+            {
+                if (templateModel.Code == Code)
                 {
-                    
-                    return false; 
-                } 
+
+                    return false;
+                }
             }
 
             return true;
@@ -96,12 +125,3 @@ namespace ArmisWebsite
 
     }
 }
-
-/*
- * This is a bunch of stuff not needed for this page but will be needed in the StepMaintenance page.
- * public List<SelectListItem> UOMSelectOptions { get; set; }
- * UOMSelectOptions = new List<SelectListItem>();
- * UOMCodeModels = await UOMCodeDataAccess.GetAllUOMCodes();
-
-                foreach (var uomModel in UOMCodeModels) { UOMSelectOptions.Add( new SelectListItem() { Value = uomModel.Code, Text = uomModel.Description }); }
- */

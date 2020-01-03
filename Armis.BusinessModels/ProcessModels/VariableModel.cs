@@ -6,10 +6,10 @@ namespace Armis.BusinessModels.ProcessModels
 {
     public class VariableModel
     {
-        public string UnitOfMeasure { get; set; }
-        public float Min { get; set; }
-        public float Max { get; set; }
-        public int TemplateId { get; set; }
+        public UOMCodeModel UnitOfMeasure { get; set; }
+        public decimal? Min { get; set; }
+        public decimal? Max { get; set; }
+        public VariableTemplateModel Template { get; set; }
 
     }
 }

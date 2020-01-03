@@ -10,7 +10,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
     {
         public static StepModel ToModel(this Step aStep, int aSeq)
         {
-            return new StepModel()
+            var result = new StepModel()
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
@@ -19,6 +19,18 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 StepName = aStep.StepName,
                 Sequence = aSeq
             };
+
+            var variableList = new List<VariableModel>();
+
+            foreach (var variableSeq in aStep.StepVarSeq)
+            {
+                variableList.Add(variableSeq.StepVariable.ToModel());
+            }
+
+            result.Variables = variableList;
+
+            return result;
+
         }
 
         public static Step ToEntity(this StepModel aStepModel)

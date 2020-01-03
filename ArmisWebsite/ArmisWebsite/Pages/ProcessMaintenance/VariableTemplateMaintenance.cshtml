@@ -6,42 +6,46 @@
 
 <h1>Variable Template Maintenance</h1>
 <body>
-    @if (Model.LocalBannerMessage != "" && Model.LocalBannerMessage != null)
+    @if (!string.IsNullOrEmpty(Model.LocalBannerMessage))
     {
-        if (Model.IsLocalBannerSuccess) { <div class="alert alert-success">@Model.LocalBannerMessage</div>}
-        else { <div class="alert alert-danger">@Model.LocalBannerMessage</div>}
+        @if (Model.IsLocalBannerSuccess)
+        {<div class="alert alert-success" style="white-space:pre-wrap">@Model.LocalBannerMessage</div>}
+    else
+    { <div class="alert alert-danger" style="white-space:pre-wrap">@Model.LocalBannerMessage</div>}
     }
     <div class="row">
-        <ul class="col-lg-8 list-group" style="max-height: 45em; overflow:scroll;">
-            @foreach (var template in Model.VariableTemplateModels)
-            {
-                <li class="list-group-item list-group-item-success" id="@template.Code">
-                    <h5>@template.Name</h5>
-                    <p>@template.Code (@template.Type)</p>
-                </li>
-            }
-        </ul>
-        <form method="post" class="col-lg-4">
-            <table>
-                <tr>
-                    <td> <label>Type: </label> </td>
-                    <td> <select asp-for="NewVarTemplateType" asp-items="Model.VariableTypeSelectItems"></select> </td>
-                </tr>
-                <tr>
-                    <td><label>Name: </label></td>
-                    <td><input type="text" asp-for="NewVarTemplateName" /></td>
-                </tr>
-                <tr>
-                    <td><label>Code: </label></td>
-                    @{bool isCodeValid = true; }
-                    <td><input asp-for="NewVarTemplateCode" onkeypress="@isCodeValid = @Model.VerifyUniqueCode()" style="background-color:@if (isCodeValid) { } "/></td>
-                </tr>
-                <tr>
-                    <td>
-                        <button type="submit" onclick="@Model.">Save</button>
-                    </td>
-                </tr>
-            </table>
-        </form>
+
+        <div class="col-lg-6">
+            <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+                @foreach (var template in Model.VariableTemplateModels)
+                {
+                    <li class="list-group-item" id="@template.Code">
+                        <p><strong>@template.Name</strong> @template.Code (@template.Type)</p>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-lg-6">
+            <form method="post">
+                <div class="form-group">
+                    <label>Type: </label>
+                    <select asp-for="Type" asp-items="Model.VariableTypeSelectItems" class="form-control"></select>
+                    <span asp-validation-for="@Model.Type" class="alert-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Name: </label>
+                    <input type="text" asp-for="Name" class="form-control" />
+                    <span asp-validation-for="@Model.Name" class="alert-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Code: </label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="@Model.Code" class="alert-danger"></span>
+                </div>
+                <button class="btn btn-outline-secondary" type="submit">Save</button>
+            </form>
+        </div>
+
     </div>
 </body>

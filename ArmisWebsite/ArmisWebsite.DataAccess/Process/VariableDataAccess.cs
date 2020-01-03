@@ -7,22 +7,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace ArmisWebsite.DataAccess.Process
 {
     public class VariableDataAccess : IVariableDataAccess
     {
+        private readonly IConfiguration Config;
+
+        public VariableDataAccess(IConfiguration aConfig)
+        {
+            Config = aConfig;
+        }
+
         public async Task<IEnumerable<VariableTemplateModel>> GetAllTemplates()
         {
             using (var client = new HttpClient())
             {
                 try
                 {
-                    var response = await client.GetAsync("https://localhost:44316/api/stepvartemplates/GetAllStepVarTemplates"); //TODO: Move this to config.
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartemplates/GetAllStepVarTemplates"); //TODO: Move this to config.
 
                     var responseString = await response.Content.ReadAsStringAsync();
-                    var resultStringJson = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
-                    return resultStringJson;
+                    var resultingModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
+                    var result = resultingModels.OrderBy(i => i.Name).ToList();
+                    return result;
 
                 }
                 catch (Exception ex) { throw new Exception(ex.Message); }
@@ -35,14 +44,14 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync("https://localhost:44316/api/stepvartypes"); //TODO: Move this to config.
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartypes"); //TODO: Move this to config.
 
                     var responseString = await response.Content.ReadAsStringAsync();
-                    var resultStringJson = JsonSerializer.Deserialize<List<VariableTypeModel>>(responseString);
-                    return resultStringJson;
+                    var resultingModels = JsonSerializer.Deserialize<List<VariableTypeModel>>(responseString);
+                    return resultingModels;
 
                 }
-                catch (Exception ex) { throw new Exception(ex.Message); }
+                catch (Exception ex) { throw new Exception(ex.Message); } //TODO: error handle better
             }
         }
 
@@ -53,11 +62,11 @@ namespace ArmisWebsite.DataAccess.Process
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aVariableTemplateModel), Encoding.UTF8, "application/json");
-                    var doesItReturnSomething = await client.PostAsync("https://localhost:44316/api/StepVarTemplates", data); //TODO: Move this to config.
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/StepVarTemplates", data); //TODO: Move this to config.
 
-                    return doesItReturnSomething;
+                    return response;
                 }
-                catch (Exception ex) { throw new Exception(ex.Message); }
+                catch (Exception ex) { throw new Exception(ex.Message); } //TODO: Error handle better
             }
         }
     }

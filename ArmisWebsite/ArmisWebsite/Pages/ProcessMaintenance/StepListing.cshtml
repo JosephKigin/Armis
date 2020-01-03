@@ -1,0 +1,27 @@
+﻿@page
+@model ArmisWebsite.StepListingModel
+@{
+    ViewData["Title"] = "StepListing";
+}
+
+<h1>Step Listing</h1>
+
+<body>
+    <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+        @foreach (var step in Model.Steps)
+        {
+            <li class="list-group-item" id="@step.StepId">
+
+                <div style="clear: both"><h5>@step.StepId @step.StepName</h5> Sign off? @step.SignOffIsRequired</div>
+                @step.Instructions
+                @foreach (var variable in step.Variables)
+                {
+                    <p>@variable.Template.Name</p>
+                    @if (variable.UnitOfMeasure != null) {<p>@variable.UnitOfMeasure.Description</p>}
+                    @if (variable.Min != null) {<p>Min: @variable.Min</p>}
+                    @if (variable.Max != null) {<p>Max: @variable.Max</p>}
+                }
+            </li>
+        }
+    </ul>
+</body>

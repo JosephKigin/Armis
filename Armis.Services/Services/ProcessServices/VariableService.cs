@@ -20,7 +20,8 @@ namespace Armis.DataLogic.Services.ProcessServices
         }
         public async Task<IEnumerable<VariableTemplateModel>> GetAllVariableTemplates()
         {
-            var theEntities = await context.StepVarTemplate.ToListAsync();
+            var theEntities = await context.StepVarTemplate
+                                .Include(i => i.StepVarTypeCdNavigation).ToListAsync();
 
             if(theEntities == null) { throw new NullReferenceException("No variable templates returned."); }
 
