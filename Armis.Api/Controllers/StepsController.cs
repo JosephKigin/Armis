@@ -44,7 +44,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await StepService.GetAll();
+                var data = await StepService.GetAllHydrated();
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -56,16 +56,18 @@ namespace Armis.Api.Controllers
 
         // GET: api/Steps/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Step>> GetStep(int id)
+        public async Task<ActionResult<Step>> GetStepById(int id)
         {
-            var step = await _context.Step.FindAsync(id);
-
-            if (step == null)
+            try
             {
-                return NotFound();
-            }
+                var data = await StepService.GetHydratedStepById(id);
 
-            return step;
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+            }
         }
 
         // PUT: api/Steps/5
@@ -104,16 +106,32 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Step>> PostStep(StepModel aStep)
+        public async Task<ActionResult<int>> PostStep(StepModel aStep)
         {
             try
             {
-                await StepService.CreateStep(aStep);
+                var data = await StepService.CreateStep(aStep);
 
-                return Ok();
+                return Ok(data);
             }
             catch (Exception ex)
             {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{aStepModel}")]
+        public async Task<ActionResult<int>> PostVariablesToStep(StepModel aStepModel) //TODO: Can you pass in a model like this??????
+        {
+            try
+            {
+                var data = await StepService.AddVariablesToStep(aStepModel);
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+
                 return BadRequest(ex.Message);
             }
         }

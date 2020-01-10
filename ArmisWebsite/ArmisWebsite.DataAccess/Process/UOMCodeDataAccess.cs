@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ArmisWebsite.DataAccess.Process
 {
-    public class UOMCodeDataAccess : IUOMCodeDataAccess
+    public class UOMCodeDataAccess : IUomCodeDataAccess
     {
         private readonly IConfiguration Config;
 

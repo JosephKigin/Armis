@@ -7,6 +7,7 @@ using ArmisWebsite.DataAccess.Process;
 using ArmisWebsite.DataAccess.Process.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite
@@ -16,77 +17,99 @@ namespace ArmisWebsite
         private readonly IConfiguration Config;
 
         //Data Access
-        private IVariableDataAccess _variableDataAccess;
-        public IVariableDataAccess VariableDataAccess
-        {
-            get
-            {
-                if (_variableDataAccess == null) { _variableDataAccess = new VariableDataAccess(Config); }
-                return _variableDataAccess;
-            }
-            set { _variableDataAccess = value; }
-        }
+        private readonly IVariableDataAccess VariableDataAccess;
+
+        private readonly IStepDataAccess StepDataAccess;
+
+        private readonly IUomCodeDataAccess UOMDataAccess;
 
         //Business Model Properties
-        private List<VariableTemplateModel> _variableTemplateModels;
-        public List<VariableTemplateModel> VariableTemplateModels 
-        {
-            get
-            {
-                if(_variableTemplateModels == null) { _variableTemplateModels = new List<VariableTemplateModel>(); }
-                return _variableTemplateModels;
-            }
-            set 
-            {
-                if (_variableTemplateModels == null) { _variableTemplateModels = new List<VariableTemplateModel>(); }
-                _variableTemplateModels = value; 
-            } 
-        }
+        public List<VariableTemplateModel> VariableTemplateModels { get; set; }
+        public List<VariableTemplateModel> AssignedVariableTemplateModels { get; set; }
 
-        private IEnumerable<VariableTemplateModel> _assignedVariableTemplateModels;
-        public IEnumerable<VariableTemplateModel> AssignedVariableTemplateModels 
-        {
-            get
-            {
-                if(_assignedVariableTemplateModels == null) { _assignedVariableTemplateModels = new List<VariableTemplateModel>(); }
-                return _assignedVariableTemplateModels;
-            }
-            set { _assignedVariableTemplateModels = value; }
-        }
+        public List<SelectListItem> UOMSelectItems { get; set; }
 
-        public StepMaintenanceModel(IConfiguration aConfig)
+        public StepModel Step { get; set; }
+
+        //Web properties
+        [BindProperty]
+        public string StepName { get; set; }
+
+        [BindProperty]
+        public bool IsSignOffRequired { get; set; }
+
+        [BindProperty]
+        public string StepCategory { get; set; }
+
+        [BindProperty]
+        public string StepInstructions { get; set; }
+        
+        [BindProperty]
+        public string VariableTemplateToAdd { get; set; }
+
+        public StepMaintenanceModel(IConfiguration aConfig, 
+                                    IStepDataAccess aStepDataAccess, 
+                                    IUomCodeDataAccess aUOMDataAccess, 
+                                    IVariableDataAccess aVariableDataAccess)
         {
             Config = aConfig;
+            StepDataAccess = aStepDataAccess;
+            UOMDataAccess = aUOMDataAccess;
+            VariableDataAccess = aVariableDataAccess;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int aStepId = 0)
         {
             await SetUpPage();
-        }
+            if (aStepId > 0)
+            {
+                Step = await StepDataAccess.GetStepById(aStepId);
 
-        public async Task<IActionResult> OnPostMoveVarTemplateToAssignedAsync()
-        {
-            var willThisGetHit = "Who knows?";
+                StepCategory = Step.StepCategoryCd;
+                StepName = Step.StepName;
+                StepInstructions = Step.Instructions;
+                IsSignOffRequired = (Step.SignOffIsRequired == true) ? true : false;
+            }
+
             return Page();
         }
 
-        public void OnPostNewStep()
+        public async Task<IActionResult> OnPostAsync()
         {
+            if(Step == null) { Step = new StepModel(); }
+            Step.Instructions = StepInstructions;
+            Step.SignOffIsRequired = IsSignOffRequired;
+            Step.StepName = StepName;
+            Step.StepCategoryCd = "NONE";
 
+            //var theStepId = await StepDataAccess.PostNewStep(Step);
+
+            return RedirectToPage("StepVariableMaintenance", new {aStepId = 3 });
         }
 
-        private async Task<IActionResult> SetUpPage()
+        private async Task SetUpPage()
         {
             try
             {
                 var theTempModels = await VariableDataAccess.GetAllTemplates();
                 VariableTemplateModels = theTempModels.ToList();
+
+                var resultUOMs = await UOMDataAccess.GetAllUOMCodes();
+                var theUOMsList = resultUOMs.ToList();
+                UOMSelectItems = new List<SelectListItem>();
+                foreach (var uom in theUOMsList)
+                {
+                    UOMSelectItems.Add(new SelectListItem
+                    {
+                        Text = uom.Description,
+                        Value = uom.Code
+                    });
+                }
             }
             catch (Exception ex)
             {
 
             }
-            return new PageResult();
         }
     }
 }

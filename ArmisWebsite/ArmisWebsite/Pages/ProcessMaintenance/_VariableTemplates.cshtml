@@ -1,0 +1,14 @@
+﻿@using Armis.BusinessModels.ProcessModels
+@model List<VariableTemplateModel>
+
+<div class="card">
+    <div class="card-header"><h3>Select a Variable Template</h3></div>
+</div>
+<select id="slctVariableTemplate" class="list-group" size="16">
+    @foreach (var template in Model)
+    {
+        <option class="list-group-item" value="@template.Code">
+            @template.Name (@template.Type.Description)
+        </option>
+    }
+</select>

@@ -20,18 +20,43 @@ namespace ArmisWebsite.DataAccess.Process
             Config = aConfig;
         }
 
-        public async Task<HttpResponseMessage> PostNewStep(StepModel aStepModel)
+        public async Task<int> PostNewStep(StepModel aStepModel)
         {
             using(var client = new HttpClient())
             {
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("", data); //TODO: Move this to config
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data); //TODO: Move this to config
 
-                    return response;
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<int>(responseString);
+
+                    return result;
                 }
                 catch(Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
+            }
+        }
+
+        public async Task<int> AddVariablesToStep(StepModel aStepModel)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<int>(responseString);
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+
+                    throw; //TODO: Error handle gooder...
+                }
             }
         }
 
@@ -49,6 +74,23 @@ namespace ArmisWebsite.DataAccess.Process
                     return result;
                 }
                 catch (Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
+            }
+        }
+
+        public async Task<StepModel> GetStepById(int aStepId)
+        {
+            using(var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepId);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultingModel = JsonSerializer.Deserialize<StepModel>(responseString);
+
+                    return resultingModel;
+                }
+                catch(Exception ex) { throw new Exception(ex.Message); }
             }
         }
     }

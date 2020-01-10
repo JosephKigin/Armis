@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArmisWebsite.DataAccess.Process.Interfaces
 {
-    public interface IUOMCodeDataAccess
+    public interface IUomCodeDataAccess
     {
         Task<IEnumerable<UOMCodeModel>> GetAllUOMCodes();
     }

@@ -1,7 +1,7 @@
-﻿@page
+﻿@page "{aStepId:int?}"
 @model ArmisWebsite.StepMaintenanceModel
 @{
-    ViewData["Title"] = "StepMaintenance";
+    ViewData["Title"] = "Step Maintenance";
 }
 
 <head>
@@ -12,60 +12,42 @@
 <body>
     <div class="row">
 
+        @*<div id="variableTemplateModal" class="modal">
+            <div class="modal-content">
+                    <div class="card">
+                        <div class="card-header"><h3>Select a Variable Template</h3></div>
+                        <select id="slctVariableTemplate" class="list-group" size="16" asp-for="VariableTemplateToAdd">
+                            @foreach (var template in Model.VariableTemplateModels)
+                            {
+                                <option class="list-group-item" value="@template.Code">
+                                    @template.Name (@template.Type.Description)
+                                </option>
+                            }
+                        </select>
+                        <button id="btnCloseVariableTemplateModal" class="btn btn-primary">Add Variable Template</button>
+                    </div>
+            </div>
+        </div>*@
+
         <div class="col-lg-6">
-            <form method="post">
-                <ul class="list-group" style="max-height: 42em; overflow:scroll;">
-                    @{int tempCount = 0; }
-                    @foreach (var template in Model.VariableTemplateModels)
-                    {
-                        <li class="list-group-item" id="@template.Code" tabindex="@tempCount">
-                            <p>
-                                <strong>@template.Name</strong> @template.Code (@template.Type.Description)
-                                <button class="btn" style="float:right" onclick="AddTemplate(@template)"><i class="fa fa-arrow-right"></i></button>
-                            </p>
-                        </li>
-                        tempCount++;
-                    }
-                </ul>
-            </form>
-        </div>
+            <form method="post" asp-page-handler="NewStep">
+                <h3>Create A New Step</h3>
 
-        <div class="col-lg-1">
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <button class="btn"><i class="fa fa-arrow-right" onclick=""></i></button>
-        </div>
-
-        <div class="col-lg-5">
-            <h3>
-                <u>Create A New Step</u>
-            </h3>
-            <form method="post" class="" asp-page-handler="NewStep">
                 <div class="form-group">
-                    <label>Step Name: </label>
-                    <input type="text" class="form-control" />
+                    <label><b>Step Name: </b></label>
+                    <input type="text" asp-for="StepName" class="form-control" />
                     @*<span asp-validation-for="" class="alert-danger"></span>*@
                 </div>
 
                 <div class="form-group">
-                    <label>Instructions: </label>
-                    <textarea class="form-control"></textarea>
+                    <label><b>Instructions: </b></label>
+                    <textarea class="form-control" asp-for="StepInstructions"></textarea>
                     @*<span asp-validation-for="" class="alert-danger"></span>*@
                 </div>
 
                 <div class="form-group">
-                    <label>Is sign-off required? </label>
-                    <select class="form-control">
+                    <label><b>Is sign-off required? </b></label>
+                    <select class="form-control" asp-for="IsSignOffRequired">
                         <option value="0"></option>
                         <option value="1">Yes</option>
                         <option value="2">No</option>
@@ -74,34 +56,82 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Step Category: </label>
-                    <input type="text" class="form-control" />
+                    <label><b>Step Category: </b></label>
+                    <input type="text" asp-for="StepCategory" class="form-control" />
                     @*<span asp-validation-for="" class="alert-danger"></span>*@
                 </div>
-
-                <ul class="list-group" style="max-height:12em" overflow:scroll>
-                    <li class="list-group-item">
-                        <h6>Hello, World!</h6>
-                    </li>
-                    @foreach (var template in Model.AssignedVariableTemplateModels)
-                    {
-                        <li class="list-group-item" id="@template.Code">
-                            <p>
-                                <strong>@template.Name</strong> @template.Code (@template.Type)
-                                <button class="btn" style="float:right"><i class="fa fa-arrow-right"></i></button>
-                            </p>
-                        </li>
-                    }
-                </ul>
-
-                <button type="submit">Save</button>
+                <button type="submit" class="btn btn-outline-secondary">Save</button>
             </form>
         </div>
+
+        @*<div class="col-lg-6 col text-center">
+            <button class="btn btn-primary" id="btnOpenVariableTemplateModal">Add Variable</button>
+            <ul class="list-group" style="max-height:2em" overflow:scroll>
+                @if (Model.Step != null && Model.Step.Variables != null && Model.Step.Variables.Any())
+                {
+                    foreach (var variable in Model.Step.Variables)
+                    {
+                        <li class="list-group-item">
+                            @switch (variable.Template.Type.Code)
+                            {
+                                case "List":
+                                    <p><b>Template:</b> @variable.Template.Name</p>
+                                    break;
+                                case "LOT":
+                                    <p><b>Template:</b> @variable.Template.Name</p>
+                                    <div class="form-group">
+                                        <label><b>Min:</b></label>
+                                        <input class="form-control" type="number" value="@variable.Min" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label><b>Max:</b></label>
+                                        <input class="form-control" type="number" value="@variable.Max" />
+                                    </div>
+                                    <div class="form-group">
+                                        @{Model.UOMSelectItems.FirstOrDefault(i => i.Value == variable.UnitOfMeasure.Code).Selected = true; }
+                                        <label><b>Unit Of Measure</b></label>
+                                        <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+                                    </div>
+                                    break;
+                                case "NUM":
+                                    <p><b>Template:</b> @variable.Template.Name</p>
+                                    break;
+                                case "TEXT":
+                                    <p><b>Template:</b> @variable.Template.Name</p>
+                                    break;
+                                case "TOD":
+                                    <p><b>Template:</b> @variable.Template.Name</p>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item">
+                        <i>Your variables here</i>
+                    </li>
+                }
+
+            </ul>
+        </div>*@
+
     </div>
 </body>
 
 <script>
-    function AddTemplate(templateModel) {
-        @Model.VariableTemplateModels.
+    var varTempModal = document.getElementById("variableTemplateModal");
+    var btnOpenVarTempModal = document.getElementById("btnOpenVariableTemplateModal");
+    var btnCloseVarTempModal = document.getElementById("btnCloseVariableTemplateModal");
+    var slctVarTemp = document.getElementById("slctVariableTemplate");
+
+    btnOpenVarTempModal.onclick = function () {
+        varTempModal.style.display = "block";
+    }
+
+    btnCloseVarTempModal.onclick = function () {
+        varTempModal.style.display = "none";
     }
 </script>

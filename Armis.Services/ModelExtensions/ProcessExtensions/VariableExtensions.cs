@@ -20,5 +20,17 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 
             return result;
         }
+
+        public static StepVariable ToEntity(this VariableModel aVariableModel)
+        {
+            var result = new StepVariable();
+
+            result.VarTempCd = aVariableModel.Template.Code;
+            if(aVariableModel.Min != null) { result.DefaultMin = aVariableModel.Min; }
+            if(aVariableModel.Max != null) { result.DefaultMax = aVariableModel.Max; }
+            if(aVariableModel.UnitOfMeasure != null) { result.Uomcd = aVariableModel.UnitOfMeasure.Code; }
+
+            return result;
+        }
     }
 }

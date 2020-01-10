@@ -4,6 +4,10 @@
     ViewData["Title"] = "StepListing";
 }
 
+<head>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+</head>
+
 <h1>Step Listing</h1>
 
 <body>
@@ -17,10 +21,15 @@
                 @foreach (var variable in step.Variables)
                 {
                     <p>@variable.Template.Name</p>
-                    @if (variable.UnitOfMeasure != null) {<p>@variable.UnitOfMeasure.Description</p>}
-                    @if (variable.Min != null) {<p>Min: @variable.Min</p>}
-                    @if (variable.Max != null) {<p>Max: @variable.Max</p>}
+                    @if (variable.UnitOfMeasure != null)
+                    {<p>@variable.UnitOfMeasure.Description</p>}
+                    @if (variable.Min != null)
+                    {<p>Min: @variable.Min</p>}
+                    @if (variable.Max != null)
+                    {<p>Max: @variable.Max</p>}
+
                 }
+                <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
             </li>
         }
     </ul>

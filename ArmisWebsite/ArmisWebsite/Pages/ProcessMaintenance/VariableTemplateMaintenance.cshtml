@@ -20,7 +20,7 @@
                 @foreach (var template in Model.VariableTemplateModels)
                 {
                     <li class="list-group-item" id="@template.Code">
-                        <p><strong>@template.Name</strong> @template.Code (@template.Type)</p>
+                        <p><strong>@template.Name</strong> @template.Code (@template.Type.Description)</p>
                     </li>
                 }
             </ul>

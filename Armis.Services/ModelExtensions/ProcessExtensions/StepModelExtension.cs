@@ -8,7 +8,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {
-        public static StepModel ToModel(this Step aStep, int aSeq)
+        public static StepModel ToModel(this Step aStep, int aSeq = 0)
         {
             var result = new StepModel()
             {

@@ -8,10 +8,12 @@ namespace Armis.DataLogic.ProcessServices.Interfaces
 {
     public interface IStepService
     {
-        Task<IEnumerable<StepModel>> GetAll();
+        Task<IEnumerable<StepModel>> GetAllHydrated();
+        Task<StepModel> GetHydratedStepById(int aStepId);
         Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory);
         Task<int> CreateStep(StepModel aStepModel);
         Task<int> UpdateStep(int aStepId, StepModel aStepModel);
         Task<int> DeactivateStep(int aStepId);
+        Task<int> AddVariablesToStep(StepModel aStepModel);
     }
 }

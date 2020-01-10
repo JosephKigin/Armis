@@ -1,0 +1,92 @@
+﻿@page "{aStepId:int}"
+@model ArmisWebsite.StepVariableMaintenanceModel
+@{
+    ViewData["Title"] = "StepVariableMaintenance";
+}
+
+<h1>Variables For Step: @Model.Step.StepName</h1>
+
+<div class="row">
+    <form method="post" class="form-inline">
+        <div class="card col-lg-2">
+            <label><b>Min:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Max:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Unit Of Measure</b></label>
+            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+
+            <label><b>Template</b></label>
+            <select id="slctVariableTemplate" class="list-group" size="10">
+                @foreach (var template in Model.VariableTemplateModels)
+                {
+                    <option class="list-group-item" value="@template.Code">
+                        @template.Name (@template.Type.Description)
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="card col-lg-2">
+            <label><b>Min:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Max:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Unit Of Measure</b></label>
+            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+
+            <label><b>Template</b></label>
+            <select id="slctVariableTemplate" class="list-group" size="10">
+                @foreach (var template in Model.VariableTemplateModels)
+                {
+                    <option class="list-group-item" value="@template.Code">
+                        @template.Name (@template.Type.Description)
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="card col-lg-2">
+            <label><b>Min:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Max:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Unit Of Measure</b></label>
+            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+
+            <label><b>Template</b></label>
+            <select id="slctVariableTemplate" class="list-group" size="10">
+                @foreach (var template in Model.VariableTemplateModels)
+                {
+                    <option class="list-group-item" value="@template.Code">
+                        @template.Name (@template.Type.Description)
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="card col-lg-2">
+            <label><b>Min:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Max:</b></label>
+            <input class="form-control" type="number" />
+
+            <label><b>Unit Of Measure</b></label>
+            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+
+            <label><b>Template</b></label>
+            <select id="slctVariableTemplate" class="list-group" size="10">
+                @foreach (var template in Model.VariableTemplateModels)
+                {
+                    <option class="list-group-item" value="@template.Code">
+                        @template.Name (@template.Type.Description)
+                    </option>
+                }
+            </select>
+        </div>
+    </form>
+</div>

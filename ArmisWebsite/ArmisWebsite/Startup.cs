@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArmisWebsite.DataAccess.Process;
+using ArmisWebsite.DataAccess.Process.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +26,10 @@ namespace ArmisWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddScoped<IUomCodeDataAccess, UOMCodeDataAccess>();
+            services.AddScoped<IStepDataAccess, StepDataAccess>();
+            services.AddScoped<IVariableDataAccess, VariableDataAccess>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
