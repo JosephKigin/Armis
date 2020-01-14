@@ -53,7 +53,7 @@ namespace Armis.Api.Controllers
 
         // GET: api/UOMcodes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UOMcode>> GetUOMcode(string id)
+        public async Task<ActionResult<Uomcode>> GetUOMcode(string id)
         {
             var uOMcode = await _context.Uomcode.FindAsync(id);
 
@@ -69,7 +69,7 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUOMcode(string id, UOMcode uOMcode)
+        public async Task<IActionResult> PutUOMcode(string id, Uomcode uOMcode)
         {
             if (id != uOMcode.Uomcd)
             {
@@ -101,7 +101,7 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<UOMcode>> PostUOMcode(UOMcode uOMcode)
+        public async Task<ActionResult<Uomcode>> PostUOMcode(Uomcode uOMcode)
         {
             _context.Uomcode.Add(uOMcode);
             try
@@ -125,7 +125,7 @@ namespace Armis.Api.Controllers
 
         // DELETE: api/UOMcodes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UOMcode>> DeleteUOMcode(string id)
+        public async Task<ActionResult<Uomcode>> DeleteUOMcode(string id)
         {
             var uOMcode = await _context.Uomcode.FindAsync(id);
             if (uOMcode == null)

@@ -16,7 +16,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 CreatedByEmp = aProcessRev.CreatedByEmp,
                 DateCreated = aProcessRev.DateCreated,
                 DueDays = aProcessRev.DueDays,
-                Notes = aProcessRev.Notes,
+                Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
                 RevStatusCd = aProcessRev.RevStatusCd,

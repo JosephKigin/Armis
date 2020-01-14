@@ -7,11 +7,12 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Certification()
         {
+            CustForm = new HashSet<CustForm>();
             Customer = new HashSet<Customer>();
             OrderHead = new HashSet<OrderHead>();
         }
 
-        public string CertCd { get; set; }
+        public byte CertId { get; set; }
         public decimal? ChargeAmt { get; set; }
         public string Stamp { get; set; }
         public int SpecId { get; set; }
@@ -20,6 +21,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual QualityStandard QualStdCdNavigation { get; set; }
         public virtual Specification Spec { get; set; }
+        public virtual ICollection<CustForm> CustForm { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
     }

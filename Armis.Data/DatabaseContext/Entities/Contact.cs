@@ -26,13 +26,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public string EmailAddress { get; set; }
         public string PhoneNum { get; set; }
         public string FaxNum { get; set; }
-        public string TitleCd { get; set; }
+        public short? TitleId { get; set; }
         public bool? Inactive { get; set; }
         public string Comments { get; set; }
 
         public virtual Customer Cust { get; set; }
         public virtual ShipTo ShipTo { get; set; }
-        public virtual ContactTitle TitleCdNavigation { get; set; }
+        public virtual ContactTitle Title { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<NotifyContact> NotifyContact { get; set; }

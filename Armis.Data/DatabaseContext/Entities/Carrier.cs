@@ -13,7 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public string CarrierCd { get; set; }
         public string Name { get; set; }
-        public string OurAccount { get; set; }
+        public string OurAcctNum { get; set; }
         public string Type { get; set; }
 
         public virtual ICollection<ShipAccount> ShipAccount { get; set; }

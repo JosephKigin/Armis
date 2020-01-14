@@ -58,7 +58,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal? LotCharge { get; set; }
         public string OrderComments { get; set; }
         public decimal? SubTotal { get; set; }
-        public string CertCd { get; set; }
+        public byte? CertId { get; set; }
         public string ShipChargeCd { get; set; }
         public string HandlingChargeCd { get; set; }
         public string MiscChargeCd { get; set; }
@@ -73,7 +73,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Stattn { get; set; }
         public string ExpediteStatus { get; set; }
 
-        public virtual Certification CertCdNavigation { get; set; }
+        public virtual Certification Cert { get; set; }
         public virtual Employee CreditAuthByEmpNavigation { get; set; }
         public virtual Customer Cust { get; set; }
         public virtual Status ExpediteStatusNavigation { get; set; }

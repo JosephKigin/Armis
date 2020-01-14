@@ -5,88 +5,103 @@
 }
 
 <h1>Variables For Step: @Model.Step.StepName</h1>
+<button class="btn btn-primary" onclick="addVariableCard">Add Variable</button>
+<div class="container-fluid">
+    <div class="row">
+        <form method="post" class="form-inline">
+            <div class="card col-lg-3">
+                <label><b>Min:</b></label>
+                <input class="form-control" type="number" asp-for="Min1" />
 
-<div class="row">
-    <form method="post" class="form-inline">
-        <div class="card col-lg-2">
-            <label><b>Min:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Max:</b></label>
+                <input class="form-control" type="number" asp-for="Max1" />
 
-            <label><b>Max:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Unit Of Measure</b></label>
+                <select class="form-control" asp-items="Model.UOMSelectItems" asp-for="UomCode1"></select>
 
-            <label><b>Unit Of Measure</b></label>
-            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+                <label><b>Template</b></label>
+                <select id="slctVariableTemplate" class="list-group" size="8" asp-for="TemplateCode1">
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                            @template.Name (@template.Type.Description)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="card col-lg-3">
+                <label><b>Min:</b></label>
+                <input class="form-control" type="number" asp-for="Min2" />
 
-            <label><b>Template</b></label>
-            <select id="slctVariableTemplate" class="list-group" size="10">
-                @foreach (var template in Model.VariableTemplateModels)
-                {
-                    <option class="list-group-item" value="@template.Code">
-                        @template.Name (@template.Type.Description)
-                    </option>
-                }
-            </select>
-        </div>
-        <div class="card col-lg-2">
-            <label><b>Min:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Max:</b></label>
+                <input class="form-control" type="number" asp-for="Max2" />
 
-            <label><b>Max:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Unit Of Measure</b></label>
+                <select class="form-control" asp-items="Model.UOMSelectItems" asp-for="UomCode2"></select>
 
-            <label><b>Unit Of Measure</b></label>
-            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+                <label><b>Template</b></label>
+                <select id="slctVariableTemplate" class="list-group" size="8" asp-for="TemplateCode2">
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                            @template.Name (@template.Type.Description)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="card col-lg-3">
+                <label><b>Min:</b></label>
+                <input class="form-control" type="number" asp-for="Min3" />
 
-            <label><b>Template</b></label>
-            <select id="slctVariableTemplate" class="list-group" size="10">
-                @foreach (var template in Model.VariableTemplateModels)
-                {
-                    <option class="list-group-item" value="@template.Code">
-                        @template.Name (@template.Type.Description)
-                    </option>
-                }
-            </select>
-        </div>
-        <div class="card col-lg-2">
-            <label><b>Min:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Max:</b></label>
+                <input class="form-control" type="number" asp-for="Max3" />
 
-            <label><b>Max:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Unit Of Measure</b></label>
+                <select class="form-control" asp-items="Model.UOMSelectItems" asp-for="UomCode3"></select>
 
-            <label><b>Unit Of Measure</b></label>
-            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+                <label><b>Template</b></label>
+                <select id="slctVariableTemplate" class="list-group" size="8" asp-for="TemplateCode3">
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                            @template.Name (@template.Type.Description)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="card col-lg-3">
+                <label><b>Min:</b></label>
+                <input class="form-control" type="number" asp-for="Min4" />
 
-            <label><b>Template</b></label>
-            <select id="slctVariableTemplate" class="list-group" size="10">
-                @foreach (var template in Model.VariableTemplateModels)
-                {
-                    <option class="list-group-item" value="@template.Code">
-                        @template.Name (@template.Type.Description)
-                    </option>
-                }
-            </select>
-        </div>
-        <div class="card col-lg-2">
-            <label><b>Min:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Max:</b></label>
+                <input class="form-control" type="number" asp-for="Max4" />
 
-            <label><b>Max:</b></label>
-            <input class="form-control" type="number" />
+                <label><b>Unit Of Measure</b></label>
+                <select class="form-control" asp-items="Model.UOMSelectItems" asp-for="UomCode4"></select>
 
-            <label><b>Unit Of Measure</b></label>
-            <select class="form-control" asp-items="Model.UOMSelectItems"></select>
+                <label><b>Template</b></label>
+                <select id="slctVariableTemplate" class="list-group" size="8" asp-for="TemplateCode4">
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                            @template.Name (@template.Type.Description)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div id="dynamicInput">
 
-            <label><b>Template</b></label>
-            <select id="slctVariableTemplate" class="list-group" size="10">
-                @foreach (var template in Model.VariableTemplateModels)
-                {
-                    <option class="list-group-item" value="@template.Code">
-                        @template.Name (@template.Type.Description)
-                    </option>
-                }
-            </select>
-        </div>
-    </form>
+            </div>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </form>
+    </div>
 </div>
+
+@*<script>
+    function addVariableCard() {
+        var newDiv = document.createElement('div');
+        newDiv.className = "card col-lg-3"
+        newDiv.innerHTML = "<label><b>Min:</b></label> <input class='form-control' type='number' asp-for='Min4' /> <label><b>Max:</b></label> <input class='form-control' type='number' asp-for='Max4' /> <label><b>Unit Of Measure</b></label> <select class='form-control' asp-items='Model.UOMSelectItems' asp-for='UomCode4'></select> <label><b>Template</b></label> <select id='slctVariableTemplate' class='list-group' size='8' asp-for='TemplateCode4'> @foreach (var template in Model.VariableTemplateModels) { <option class='list-group-item' value='@template.Code' style='white-space:pre-wrap'> @template.Name (@template.Type.Description) </option> } </select>";
+         document.getElementById("dynamicInput").appendChild(newdiv);
+    }
+</script>*@

@@ -20,7 +20,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 Sequence = aSeq
             };
 
-            var variableList = new List<VariableModel>();
+            var variableList = new List<StepVariableModel>();
 
             foreach (var variableSeq in aStep.StepVarSeq)
             {

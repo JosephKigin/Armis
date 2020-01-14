@@ -24,6 +24,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string DefaultLocation { get; set; }
 
         public virtual Location DefaultLocationNavigation { get; set; }
+        public virtual DeptTypeCode TypeNavigation { get; set; }
         public virtual ICollection<AreaRemark> AreaRemark { get; set; }
         public virtual ICollection<Department> Department { get; set; }
         public virtual ICollection<DeptArea> DeptArea { get; set; }

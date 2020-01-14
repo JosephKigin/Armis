@@ -10,9 +10,9 @@ namespace Armis.Data.DatabaseContext.Entities
             Contact = new HashSet<Contact>();
         }
 
-        public string ContactTitleCd { get; set; }
+        public short ContactTitleId { get; set; }
         public string TitleName { get; set; }
-        public bool? Inactive { get; set; }
+        public bool Inactive { get; set; }
 
         public virtual ICollection<Contact> Contact { get; set; }
     }

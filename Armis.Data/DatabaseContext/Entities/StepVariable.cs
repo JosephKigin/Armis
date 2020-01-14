@@ -17,7 +17,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal? DefaultMax { get; set; }
         public string Uomcd { get; set; }
 
-        public virtual UOMcode UomcdNavigation { get; set; }
+        public virtual Uomcode UomcdNavigation { get; set; }
         public virtual StepVarTemplate VarTempCdNavigation { get; set; }
         public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
         public virtual ICollection<StepVarSeq> StepVarSeq { get; set; }

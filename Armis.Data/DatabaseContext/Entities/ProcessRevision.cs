@@ -19,7 +19,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public TimeSpan TimeCreated { get; set; }
         public string RevStatusCd { get; set; }
         public int? DueDays { get; set; }
-        public string Notes { get; set; }
+        public string Comments { get; set; }
 
         public virtual Employee CreatedByEmpNavigation { get; set; }
         public virtual Process Process { get; set; }

@@ -29,13 +29,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public byte? DefaultShift { get; set; }
-        public bool? Inactive { get; set; }
-        public bool? IsPriceTraining { get; set; }
-        public bool? IsShippingLogin { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsPriceTraining { get; set; }
+        public bool IsShippingLogin { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNum { get; set; }
         public string ExtUserId { get; set; }
-        public bool? CanExpedite { get; set; }
+        public bool CanExpedite { get; set; }
         public short? AreaId { get; set; }
 
         public virtual Area Area { get; set; }

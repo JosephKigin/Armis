@@ -12,6 +12,6 @@ namespace Armis.BusinessModels.ProcessModels
         public bool? SignOffIsRequired { get; set; }
         public string Instructions { get; set; }
         public int Sequence { get; set; }
-        public IEnumerable<VariableModel> Variables { get; set; }
+        public IEnumerable<StepVariableModel> Variables { get; set; }
     }
 }

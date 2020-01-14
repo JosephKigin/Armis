@@ -8,9 +8,9 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class VariableExtensions
     {
-        public static VariableModel ToModel(this StepVariable aVariable)
+        public static StepVariableModel ToModel(this StepVariable aVariable)
         {
-            var result = new VariableModel();
+            var result = new StepVariableModel();
 
 
             result.Template = aVariable.VarTempCdNavigation.ToModel();
@@ -21,7 +21,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return result;
         }
 
-        public static StepVariable ToEntity(this VariableModel aVariableModel)
+        public static StepVariable ToEntity(this StepVariableModel aVariableModel)
         {
             var result = new StepVariable();
 

@@ -23,7 +23,7 @@ namespace Armis.BusinessModels.ProcessModels
         public TimeSpan TimeCreated { get; set; }
         public string RevStatusCd { get; set; }
         public int? DueDays { get; set; }
-        public string Notes { get; set; }
+        public string Comments { get; set; }
 
         public IEnumerable<SubopRevisionModel> SubOpRevisions { get; set; }
     }

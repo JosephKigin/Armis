@@ -8,7 +8,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class UOMExtensions
     {
-        public static UOMCodeModel ToModel(this UOMcode anEntity)
+        public static UOMCodeModel ToModel(this Uomcode anEntity)
         {
             return new UOMCodeModel()
             {
