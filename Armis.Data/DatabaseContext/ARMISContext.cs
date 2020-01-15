@@ -2,13 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Armis.Data.DatabaseContext.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace Armis.Data.DatabaseContext
 {
     public partial class ARMISContext : DbContext
     {
-        public ARMISContext()
+        private IConfiguration config;
+        public ARMISContext(IConfiguration aConfig)
         {
+            config = aConfig;
         }
 
         public ARMISContext(DbContextOptions<ARMISContext> options)
@@ -114,7 +117,7 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
+                optionsBuilder.UseSqlServer(config.GetConnectionString("ArmisContextOnConfiguration"));
             }
         }
 
