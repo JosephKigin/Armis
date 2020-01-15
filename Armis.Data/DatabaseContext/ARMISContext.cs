@@ -8,10 +8,8 @@ namespace Armis.Data.DatabaseContext
 {
     public partial class ARMISContext : DbContext
     {
-        private IConfiguration config;
-        public ARMISContext(IConfiguration aConfig)
+        public ARMISContext()
         {
-            config = aConfig;
         }
 
         public ARMISContext(DbContextOptions<ARMISContext> options)
@@ -116,8 +114,8 @@ namespace Armis.Data.DatabaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(config.GetConnectionString("ArmisContextOnConfiguration"));
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer(config.GetConnectionString("ArmisContextOnConfiguration"));
             }
         }
 

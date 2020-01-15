@@ -31,10 +31,8 @@ namespace Armis.Api
         {
             services.AddControllers();
 
-            
-
             services.AddDbContext<ARMISContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("ARMISDb")));
+            options.UseSqlServer(Configuration["ConnectionStrings:ARMISDb"]));
 
             services.AddCors(options =>
             {
