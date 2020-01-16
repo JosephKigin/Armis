@@ -92,7 +92,7 @@ namespace ArmisWebsite
 
             //var theStepId = await StepDataAccess.PostNewStep(Step);
 
-            return RedirectToPage("StepVariableMaintenance", new {aStepId = 46 }); //TODO::Change this back to theStepId
+            return RedirectToPage("StepVariableMaintenance", new {aStepId = 3 }); //TODO::Change this back to theStepId
         }
 
         private async Task SetUpPage()
