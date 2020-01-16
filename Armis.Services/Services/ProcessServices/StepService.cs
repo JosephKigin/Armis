@@ -133,9 +133,10 @@ namespace Armis.DataLogic.Services.ProcessServices
             }
 
             var stepVarSeqEntities = await Context.StepVarSeq.Where(i => i.StepId == aStepModel.StepId ).ToListAsync();
+            var lastVariableIDUsed = await Context.StepVariable.MaxAsync(i => i.StepVariableId);
             short nextSeqNum = 1;
 
-            if(stepVarSeqEntities != null)
+            if(stepVarSeqEntities != null && stepVarSeqEntities.Any())
             {
                 nextSeqNum = stepVarSeqEntities.Max(i => i.VariableSeq);
                 nextSeqNum++;
@@ -150,16 +151,16 @@ namespace Armis.DataLogic.Services.ProcessServices
 
                 if(existingVariableEntity != null) { entity.StepVariableId = existingVariableEntity.StepVariableId; }
                 else
-                {
-                    var lastVariableIDUsed = await Context.StepVariable.MaxAsync(i => i.StepVariableId);
+                {                    
                     entity.StepVariableId = lastVariableIDUsed + 1;
+                    lastVariableIDUsed++;
                     Context.StepVariable.Add(entity);
                 }
 
                 Context.StepVarSeq.Add(new StepVarSeq {StepId = aStepModel.StepId, StepVariableId = entity.StepVariableId, VariableSeq = nextSeqNum });
                 nextSeqNum++;
             }
-
+            await Context.SaveChangesAsync();
             return aStepModel.StepId;
         }
     }

@@ -45,7 +45,7 @@ namespace ArmisWebsite.DataAccess.Process
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data);
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps/PostVariablesToStep", data);
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<int>(responseString);

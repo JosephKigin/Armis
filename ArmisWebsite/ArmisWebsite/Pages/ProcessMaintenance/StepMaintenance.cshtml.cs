@@ -47,6 +47,9 @@ namespace ArmisWebsite
         [BindProperty]
         public string VariableTemplateToAdd { get; set; }
 
+        [BindProperty]
+        public List<SelectListItem> SignOffReqSelectList { get; set; }
+
         public StepMaintenanceModel(IConfiguration aConfig, 
                                     IStepDataAccess aStepDataAccess, 
                                     IUomCodeDataAccess aUOMDataAccess, 
@@ -69,6 +72,11 @@ namespace ArmisWebsite
                 StepName = Step.StepName;
                 StepInstructions = Step.Instructions;
                 IsSignOffRequired = (Step.SignOffIsRequired == true) ? true : false;
+
+                if (Step.SignOffIsRequired == true) 
+                { SignOffReqSelectList.FirstOrDefault(i => i.Text == "Yes").Selected = true; }
+                else 
+                { SignOffReqSelectList.FirstOrDefault(i => i.Text == "No").Selected = true; }
             }
 
             return Page();
@@ -105,6 +113,11 @@ namespace ArmisWebsite
                         Value = uom.Code
                     });
                 }
+
+                SignOffReqSelectList = new List<SelectListItem>();
+                SignOffReqSelectList.Add(new SelectListItem { Text = "", Value = "0" });
+                SignOffReqSelectList.Add(new SelectListItem { Text = "Yes", Value = "1" });
+                SignOffReqSelectList.Add(new SelectListItem { Text = "No", Value = "2", Selected = true });
             }
             catch (Exception ex)
             {

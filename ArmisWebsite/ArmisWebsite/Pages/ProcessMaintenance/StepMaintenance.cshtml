@@ -47,10 +47,7 @@
 
                 <div class="form-group">
                     <label><b>Is sign-off required? </b></label>
-                    <select class="form-control" asp-for="IsSignOffRequired">
-                        <option value="0"></option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
+                    <select class="form-control" asp-items="Model.SignOffReqSelectList" asp-for="IsSignOffRequired">
                     </select>
                     @*<span asp-validation-for="" class="alert-danger"></span>*@
                 </div>
@@ -63,65 +60,10 @@
                 <button type="submit" class="btn btn-outline-secondary">Save</button>
             </form>
         </div>
-
-        @*<div class="col-lg-6 col text-center">
-            <button class="btn btn-primary" id="btnOpenVariableTemplateModal">Add Variable</button>
-            <ul class="list-group" style="max-height:2em" overflow:scroll>
-                @if (Model.Step != null && Model.Step.Variables != null && Model.Step.Variables.Any())
-                {
-                    foreach (var variable in Model.Step.Variables)
-                    {
-                        <li class="list-group-item">
-                            @switch (variable.Template.Type.Code)
-                            {
-                                case "List":
-                                    <p><b>Template:</b> @variable.Template.Name</p>
-                                    break;
-                                case "LOT":
-                                    <p><b>Template:</b> @variable.Template.Name</p>
-                                    <div class="form-group">
-                                        <label><b>Min:</b></label>
-                                        <input class="form-control" type="number" value="@variable.Min" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label><b>Max:</b></label>
-                                        <input class="form-control" type="number" value="@variable.Max" />
-                                    </div>
-                                    <div class="form-group">
-                                        @{Model.UOMSelectItems.FirstOrDefault(i => i.Value == variable.UnitOfMeasure.Code).Selected = true; }
-                                        <label><b>Unit Of Measure</b></label>
-                                        <select class="form-control" asp-items="Model.UOMSelectItems"></select>
-                                    </div>
-                                    break;
-                                case "NUM":
-                                    <p><b>Template:</b> @variable.Template.Name</p>
-                                    break;
-                                case "TEXT":
-                                    <p><b>Template:</b> @variable.Template.Name</p>
-                                    break;
-                                case "TOD":
-                                    <p><b>Template:</b> @variable.Template.Name</p>
-                                    break;
-                                default:
-                                    break;
-                            }
-                        </li>
-                    }
-                }
-                else
-                {
-                    <li class="list-group-item">
-                        <i>Your variables here</i>
-                    </li>
-                }
-
-            </ul>
-        </div>*@
-
     </div>
 </body>
 
-<script>
+@*<script>
     var varTempModal = document.getElementById("variableTemplateModal");
     var btnOpenVarTempModal = document.getElementById("btnOpenVariableTemplateModal");
     var btnCloseVarTempModal = document.getElementById("btnCloseVariableTemplateModal");
@@ -134,4 +76,4 @@
     btnCloseVarTempModal.onclick = function () {
         varTempModal.style.display = "none";
     }
-</script>
+</script>*@

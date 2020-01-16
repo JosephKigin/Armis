@@ -16,19 +16,25 @@
         {
             <li class="list-group-item" id="@step.StepId">
 
-                <div style="clear: both"><h5>@step.StepId @step.StepName</h5> Sign off? @step.SignOffIsRequired</div>
-                @step.Instructions
-                @foreach (var variable in step.Variables)
-                {
-                    <p>@variable.Template.Name</p>
-                    @if (variable.UnitOfMeasure != null)
-                    {<p>@variable.UnitOfMeasure.Description</p>}
-                    @if (variable.Min != null)
-                    {<p>Min: @variable.Min</p>}
-                    @if (variable.Max != null)
-                    {<p>Max: @variable.Max</p>}
+                <h5>@step.StepId @step.StepName</h5>
+                @if (step.SignOffIsRequired == true)
+                {<p class="text-danger">Sign-Off Required</p>}
+                <b>Instructions: </b>@step.Instructions
+                <div class="row">
+                    @foreach (var variable in step.Variables)
+                    {
+                        <div class="card col-lg-4">
+                            <p>@variable.Template.Name</p>
+                            @if (variable.UnitOfMeasure != null)
+                            {<p>@variable.UnitOfMeasure.Description</p>}
+                            @if (variable.Min != null && variable.Max != null)
+                            {<p>@variable.Min - @variable.Max</p>}
+                        </div>
 
-                }
+
+                    }
+                </div>
+
                 <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
             </li>
         }

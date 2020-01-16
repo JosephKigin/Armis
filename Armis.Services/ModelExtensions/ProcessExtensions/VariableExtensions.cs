@@ -22,7 +22,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         }
 
         public static StepVariable ToEntity(this StepVariableModel aVariableModel)
-        {
+         {
             var result = new StepVariable();
 
             result.VarTempCd = aVariableModel.Template.Code;
