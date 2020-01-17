@@ -47,7 +47,7 @@ namespace Armis.Api.Controllers
                 var data = await VariableTypeService.GetAllVariableTypes();
                 return Ok(JsonSerializer.Serialize(data));
             }
-            catch(Exception ex) { return BadRequest(ex.Message); } //TODO: Error handling.
+            catch(Exception ex) { return BadRequest(ex.Message); } //TODO: Error handling... This Should work
         }
 
         // GET: api/StepVarTypes/5

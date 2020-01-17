@@ -114,7 +114,7 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
                 var result = BadRequest("EXCEPTION: " + ex.Message + "\r\n" + "INNER EXCEPTION: " + ex.InnerException.Message);
-                return result; //TODO: Error handling
+                return result; //TODO: Error handling... This should work?
             }
         }
 

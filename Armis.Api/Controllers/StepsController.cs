@@ -114,7 +114,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost("{aStepModel}")]
-        public async Task<ActionResult<int>> PostVariablesToStep(StepModel aStepModel) //TODO: Can you pass in a model like this??????
+        public async Task<ActionResult<int>> PostVariablesToStep(StepModel aStepModel) 
         {
             try
             {

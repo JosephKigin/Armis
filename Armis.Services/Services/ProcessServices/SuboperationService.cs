@@ -77,7 +77,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         {
             var theToLockRevEntity = await Context.SubOpRevision.FirstOrDefaultAsync(i => i.SubOpId == aSubopRevModel.SubOpId && i.SubOpRevId == aSubopRevModel.SubOpRevId);
             try { await DeactivateSubopRev(aSubopRevModel.SubOpId, aSubopRevModel.SubOpRevId - 1); }
-            catch (Exception ex) { } //TODO: Figure out how to tell the front-end that there isn't a SupOp to deactivate.
+            catch (Exception ex) { throw new Exception("Unable to deactivate previous subop. " + ex.Message); } //TODO: Figure out how to tell the front-end that there isn't a SupOp to deactivate.  Is that better?
             
 
             theToLockRevEntity.RevStatusCd = "LOCKED";

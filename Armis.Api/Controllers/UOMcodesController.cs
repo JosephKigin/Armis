@@ -48,7 +48,7 @@ namespace Armis.Api.Controllers
 
                 return Ok(JsonSerializer.Serialize(result));
             }
-            catch(Exception ex) { return BadRequest(ex.Message); } //TODO: Implement error handling.
+            catch(Exception ex) { return BadRequest(ex.Message); } //TODO: Implement error handling... This should work
         }
 
         // GET: api/UOMcodes/5
