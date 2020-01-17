@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Armis.DataLogic.ProcessServices.Interfaces
+namespace Armis.DataLogic.Services.ProcessServices.Interfaces
 {
     public interface IStepService
     {

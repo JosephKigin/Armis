@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ProcessServices.Interfaces
 {
-    interface ISubOperationService
+    public interface ISubOperationService
     {
         //TODO: Add reads after getting more information from Patti.  See Process pseudocode in teams.
 

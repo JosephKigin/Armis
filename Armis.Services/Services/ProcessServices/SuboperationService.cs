@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ProcessServices
 {
-    class SuboperationService : ISubOperationService
+    public class SuboperationService : ISubOperationService
     {
         private ARMISContext _context;
 

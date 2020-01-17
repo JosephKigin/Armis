@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.Data.DatabaseContext;
+using Armis.DataLogic.Services.ProcessServices;
+using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +44,14 @@ namespace Armis.Api
                     builder.WithOrigins(Configuration.GetSection("SectionCORS:AllowedSites").Value);
                 });
             });
+
+            //Setting up dependency injection
+            services.AddScoped<IStepService, StepService>();
+            services.AddScoped<IProcessService, ProcessService>();
+            services.AddScoped<ISubOperationService, SuboperationService>();
+            services.AddScoped<IUOMService, UOMService>();
+            services.AddScoped<IVariableService, VariableService>();
+            services.AddScoped<IVariableTypeService, VariableTypeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

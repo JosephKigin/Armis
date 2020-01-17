@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
-using Armis.DataLogic.ProcessServices.Interfaces;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.BusinessModels.ProcessModels;
 using System.Text.Json;
+using Armis.DataLogic.Services.ProcessServices.Interfaces;
 
 namespace Armis.Api.Controllers
 {
@@ -22,20 +22,13 @@ namespace Armis.Api.Controllers
 
         private IStepService _stepService;
 
-        public IStepService StepService
-        {
-            get 
-            {
-                if(_stepService == null) { _stepService = new StepService(_context); }
-                return _stepService; 
-            }
-            set { _stepService = value; }
-        }
+        public IStepService StepService { get; set; }
 
 
-        public StepsController(ARMISContext context)
+        public StepsController(ARMISContext context, IStepService aStepService)
         {
             _context = context;
+            StepService = aStepService;
         }
 
         // GET: api/Steps

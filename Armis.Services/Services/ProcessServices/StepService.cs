@@ -2,7 +2,7 @@
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.ProcessExtensions;
-using Armis.DataLogic.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
