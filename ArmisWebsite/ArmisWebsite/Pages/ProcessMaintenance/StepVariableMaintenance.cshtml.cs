@@ -66,6 +66,7 @@ namespace ArmisWebsite
         {
             try
             {
+                //TODO delete the next line
                 int failTest = int.Parse("Hello");
 
                 var test = HttpContext.Request.Form["Uom 0"];
@@ -109,7 +110,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new {exMessage = ex.Message });
+                return RedirectToPage("/Error", new {exMessage = ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
             }
 
         }

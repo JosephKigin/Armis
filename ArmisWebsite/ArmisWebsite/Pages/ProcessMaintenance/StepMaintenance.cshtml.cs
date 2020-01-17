@@ -43,16 +43,16 @@ namespace ArmisWebsite
 
         [BindProperty]
         public string StepInstructions { get; set; }
-        
+
         [BindProperty]
         public string VariableTemplateToAdd { get; set; }
 
         [BindProperty]
         public List<SelectListItem> SignOffReqSelectList { get; set; }
 
-        public StepMaintenanceModel(IConfiguration aConfig, 
-                                    IStepDataAccess aStepDataAccess, 
-                                    IUomCodeDataAccess aUOMDataAccess, 
+        public StepMaintenanceModel(IConfiguration aConfig,
+                                    IStepDataAccess aStepDataAccess,
+                                    IUomCodeDataAccess aUOMDataAccess,
                                     IVariableDataAccess aVariableDataAccess)
         {
             Config = aConfig;
@@ -63,42 +63,61 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGetAsync(int aStepId = 0)
         {
-            await SetUpPage();
-            if (aStepId > 0)
+            try
             {
-                Step = await StepDataAccess.GetStepById(aStepId);
+                await SetUpPage();
+                if (aStepId > 0)
+                {
+                    Step = await StepDataAccess.GetStepById(aStepId);
 
-                StepCategory = Step.StepCategoryCd;
-                StepName = Step.StepName;
-                StepInstructions = Step.Instructions;
-                IsSignOffRequired = (Step.SignOffIsRequired == true) ? true : false;
+                    StepCategory = Step.StepCategoryCd;
+                    StepName = Step.StepName;
+                    StepInstructions = Step.Instructions;
+                    IsSignOffRequired = (Step.SignOffIsRequired == true) ? true : false;
 
-                if (Step.SignOffIsRequired == true) 
-                { SignOffReqSelectList.FirstOrDefault(i => i.Text == "Yes").Selected = true; }
-                else 
-                { SignOffReqSelectList.FirstOrDefault(i => i.Text == "No").Selected = true; }
+                    if (Step.SignOffIsRequired == true)
+                    { SignOffReqSelectList.FirstOrDefault(i => i.Text == "Yes").Selected = true; }
+                    else
+                    { SignOffReqSelectList.FirstOrDefault(i => i.Text == "No").Selected = true; }
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. \r\nERROR: " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
             }
 
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if(Step == null) { Step = new StepModel(); }
-            Step.Instructions = StepInstructions;
-            Step.SignOffIsRequired = IsSignOffRequired;
-            Step.StepName = StepName;
-            Step.StepCategoryCd = "NONE";
+            try
+            {
+                if (Step == null) { Step = new StepModel(); }
+                Step.Instructions = StepInstructions;
+                Step.SignOffIsRequired = IsSignOffRequired;
+                Step.StepName = StepName;
+                Step.StepCategoryCd = "NONE";
 
-            //var theStepId = await StepDataAccess.PostNewStep(Step);
+                //var theStepId = await StepDataAccess.PostNewStep(Step);
 
-            return RedirectToPage("StepVariableMaintenance", new {aStepId = 3 }); //TODO::Change this back to theStepId
+                return RedirectToPage("StepVariableMaintenance", new { aStepId = 3 }); //TODO::Change this back to theStepId
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { exMessage = ex.Message });  ////Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+            }
+
         }
 
         private async Task SetUpPage()
         {
             try
             {
+                //TODO Delete the next line
+                int BADVARIABLE = int.Parse("Hello");
+
                 var theTempModels = await VariableDataAccess.GetAllTemplates();
                 VariableTemplateModels = theTempModels.ToList();
 
@@ -121,7 +140,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-
+                throw new Exception(ex.Message);
             }
         }
     }

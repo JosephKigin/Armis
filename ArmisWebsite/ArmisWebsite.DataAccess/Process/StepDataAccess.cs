@@ -27,7 +27,7 @@ namespace ArmisWebsite.DataAccess.Process
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data); //TODO: Move this to config
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data);
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<int>(responseString);
@@ -55,7 +55,7 @@ namespace ArmisWebsite.DataAccess.Process
                 catch (Exception ex)
                 {
 
-                    throw; //TODO: Error handle gooder...
+                    throw new Exception("Could not add variables to step. " + ex.Message); //TODO: Error handle gooder...
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps"); //TODO: Move this to config.
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModels = JsonSerializer.Deserialize<List<StepModel>>(responseString);

@@ -26,7 +26,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartemplates/GetAllStepVarTemplates"); //TODO: Move this to config.
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartemplates/GetAllStepVarTemplates");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
@@ -44,7 +44,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartypes"); //TODO: Move this to config.
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartypes");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModels = JsonSerializer.Deserialize<List<VariableTypeModel>>(responseString);
@@ -62,7 +62,7 @@ namespace ArmisWebsite.DataAccess.Process
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aVariableTemplateModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/StepVarTemplates", data); //TODO: Move this to config.
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/StepVarTemplates", data);
 
                     return response;
                 }
