@@ -20,8 +20,6 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
 
-        private IStepService _stepService;
-
         public IStepService StepService { get; set; }
 
 

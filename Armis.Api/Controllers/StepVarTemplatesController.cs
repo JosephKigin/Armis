@@ -20,19 +20,13 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
         private IVariableService _varService;
-        public IVariableService VariableService 
-        {
-            get 
-            {
-                if(_varService == null) { _varService = new VariableService(_context); } 
-                return _varService; 
-            }
-            set { _varService = value; } 
-        }
+        public IVariableService VariableService { get; set; }
 
-        public StepVarTemplatesController(ARMISContext context)
+        public StepVarTemplatesController(ARMISContext context,
+                                          IVariableService aVariableService)
         {
             _context = context;
+            VariableService = aVariableService;
         }
 
         // GET: api/StepVarTemplates

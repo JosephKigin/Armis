@@ -19,21 +19,13 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
 
-        public ProcessesController(ARMISContext context)
+        public IProcessService ProcessService { get; set; }
+
+        public ProcessesController(ARMISContext context,
+                                   IProcessService aProcessService)
         {
             _context = context;
-        }
-
-        private IProcessService _processService;
-
-        public IProcessService ProcessService
-        {
-            get
-            {
-                if (_processService == null) { _processService = new ProcessService(_context); };
-                return _processService;
-            }
-            set { _processService = value; }
+            ProcessService = aProcessService;
         }
 
         // GET: api/Processes

@@ -20,22 +20,14 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
 
-        private IUOMService _uomService;
-
-        public IUOMService Service
-        {
-            get 
-            {
-                if(_uomService == null) { _uomService = new UOMService(_context); }
-                return _uomService; 
-            }
-            set { _uomService = value; }
-        }
+        public IUOMService UomService { get; set; }
 
 
-        public UOMcodesController(ARMISContext context)
+        public UOMcodesController(ARMISContext context,
+                                  IUOMService aUomService)
         {
             _context = context;
+            UomService = aUomService;
         }
 
         // GET: api/UOMcodes
@@ -44,7 +36,7 @@ namespace Armis.Api.Controllers
         {
             try 
             {
-                var result = await Service.GetAllUOMs();
+                var result = await UomService.GetAllUOMs();
 
                 return Ok(JsonSerializer.Serialize(result));
             }
