@@ -13,7 +13,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<IEnumerable<Process>> GetAllActiveProcessRevs();
         Task<IEnumerable<ProcessRevision>> GetAllRevsForProcessId(int processId);
         Task<IEnumerable<Process>> GetAllProcessRevsForCustomer(int cutomerId);
-        Task<IEnumerable<SubOpRevision>> GetAllSubOpsForProcessRevId(int processId, int processRevId);
 
         //CREATE
         string CreateNewRevForExistingProcess(ProcessRevision newRev);

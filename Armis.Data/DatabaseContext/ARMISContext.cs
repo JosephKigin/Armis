@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Armis.Data.DatabaseContext.Entities;
-using Microsoft.Extensions.Configuration;
 
 namespace Armis.Data.DatabaseContext
 {
@@ -71,8 +70,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<Process> Process { get; set; }
         public virtual DbSet<ProcessLoad> ProcessLoad { get; set; }
         public virtual DbSet<ProcessRevision> ProcessRevision { get; set; }
-        public virtual DbSet<ProcessSubOprSeq> ProcessSubOprSeq { get; set; }
-        public virtual DbSet<ProcessVarOverride> ProcessVarOverride { get; set; }
+        public virtual DbSet<ProcessStepSeq> ProcessStepSeq { get; set; }
         public virtual DbSet<QualityStandard> QualityStandard { get; set; }
         public virtual DbSet<Rack> Rack { get; set; }
         public virtual DbSet<RemarkCode> RemarkCode { get; set; }
@@ -99,9 +97,6 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<StepVarTemplate> StepVarTemplate { get; set; }
         public virtual DbSet<StepVarType> StepVarType { get; set; }
         public virtual DbSet<StepVariable> StepVariable { get; set; }
-        public virtual DbSet<SubOpRevision> SubOpRevision { get; set; }
-        public virtual DbSet<SubOpStepSeq> SubOpStepSeq { get; set; }
-        public virtual DbSet<SubOperation> SubOperation { get; set; }
         public virtual DbSet<TaxAuthLevelCode> TaxAuthLevelCode { get; set; }
         public virtual DbSet<TaxAuthority> TaxAuthority { get; set; }
         public virtual DbSet<TaxJurisAuthority> TaxJurisAuthority { get; set; }
@@ -114,8 +109,8 @@ namespace Armis.Data.DatabaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(config.GetConnectionString("ArmisContextOnConfiguration"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
             }
         }
 
@@ -2023,10 +2018,10 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_ProcessRevision_RevStatusCd_RevisionStatus_RevStatusCd");
             });
 
-            modelBuilder.Entity<ProcessSubOprSeq>(entity =>
+            modelBuilder.Entity<ProcessStepSeq>(entity =>
             {
-                entity.HasKey(e => new { e.ProcessId, e.ProcessRevId, e.SubOpSeq })
-                    .HasName("PK_ProcessSubOprSeq_ProcessID_ProcessRevID_SubOpSeq");
+                entity.HasKey(e => new { e.ProcessId, e.ProcessRevId, e.StepSeq })
+                    .HasName("PK_ProcessStepSeq_ProcessID_ProcessRevID_StepSeq");
 
                 entity.Property(e => e.ProcessId).HasColumnName("ProcessID");
 
@@ -2034,73 +2029,25 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.OperationId).HasColumnName("OperationID");
 
-                entity.Property(e => e.SubOpId).HasColumnName("SubOpID");
-
-                entity.Property(e => e.SubOpRevId).HasColumnName("SubOpRevID");
-
-                entity.HasOne(d => d.Operation)
-                    .WithMany(p => p.ProcessSubOprSeq)
-                    .HasForeignKey(d => d.OperationId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessSubOprSeq_OperationID_Operation_OperationID");
-
-                entity.HasOne(d => d.Process)
-                    .WithMany(p => p.ProcessSubOprSeq)
-                    .HasForeignKey(d => new { d.ProcessId, d.ProcessRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessSubOprSeq_ProcessRevID_ProcessRevision_ProcessRevID");
-
-                entity.HasOne(d => d.SubOpRev)
-                    .WithMany(p => p.ProcessSubOprSeq)
-                    .HasForeignKey(d => new { d.SubOpId, d.SubOpRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessSubOprSeq_SubOpRevID_SubOpRevision_SubOpRevID");
-            });
-
-            modelBuilder.Entity<ProcessVarOverride>(entity =>
-            {
-                entity.HasKey(e => new { e.ProcessId, e.ProcessRevId, e.SubOpId, e.SubOpRevId, e.StepId, e.StepVariableId })
-                    .HasName("PK_ProcessVarOverride_ProcessID_ProcessRevID_SubOpID_SubOpRevID_StepID_StepVariableID");
-
-                entity.Property(e => e.ProcessId).HasColumnName("ProcessID");
-
-                entity.Property(e => e.ProcessRevId).HasColumnName("ProcessRevID");
-
-                entity.Property(e => e.SubOpId).HasColumnName("SubOpID");
-
-                entity.Property(e => e.SubOpRevId).HasColumnName("SubOpRevID");
-
                 entity.Property(e => e.StepId).HasColumnName("StepID");
 
-                entity.Property(e => e.StepVariableId).HasColumnName("StepVariableID");
-
-                entity.Property(e => e.OverrideMax).HasColumnType("decimal(9, 4)");
-
-                entity.Property(e => e.OverrideMin).HasColumnType("decimal(9, 4)");
+                entity.HasOne(d => d.Operation)
+                    .WithMany(p => p.ProcessStepSeq)
+                    .HasForeignKey(d => d.OperationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProcessStepSeq_OperationID_Operation_OperationID");
 
                 entity.HasOne(d => d.Step)
-                    .WithMany(p => p.ProcessVarOverride)
+                    .WithMany(p => p.ProcessStepSeq)
                     .HasForeignKey(d => d.StepId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessVarOverride_StepID_Step_StepID");
-
-                entity.HasOne(d => d.StepVariable)
-                    .WithMany(p => p.ProcessVarOverride)
-                    .HasForeignKey(d => d.StepVariableId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessVarOverride_StepVariableID_StepVariable_StepVariableID");
+                    .HasConstraintName("FK_ProcessStepSeq_StepID_Step_StepID");
 
                 entity.HasOne(d => d.Process)
-                    .WithMany(p => p.ProcessVarOverride)
+                    .WithMany(p => p.ProcessStepSeq)
                     .HasForeignKey(d => new { d.ProcessId, d.ProcessRevId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessVarOverride_ProcessRevID_ProcessRevision_ProcessRevID");
-
-                entity.HasOne(d => d.SubOp)
-                    .WithMany(p => p.ProcessVarOverride)
-                    .HasForeignKey(d => new { d.SubOpId, d.SubOpRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProcessVarOverride_SubOpRevID_SubOpRevision_SubOpRevID");
+                    .HasConstraintName("FK_ProcessStepSeq_ProcessRevID_ProcessRevision_ProcessRevID");
             });
 
             modelBuilder.Entity<QualityStandard>(entity =>
@@ -2769,87 +2716,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.VarTempCd)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_StepVariable_VarTempCd_StepVarTemplate_VarTempCd");
-            });
-
-            modelBuilder.Entity<SubOpRevision>(entity =>
-            {
-                entity.HasKey(e => new { e.SubOpId, e.SubOpRevId })
-                    .HasName("PK_SubOpRevision_SubOpID_SubOpRevID");
-
-                entity.Property(e => e.SubOpId).HasColumnName("SubOpID");
-
-                entity.Property(e => e.SubOpRevId).HasColumnName("SubOpRevID");
-
-                entity.Property(e => e.Comments)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DateCreated).HasColumnType("date");
-
-                entity.Property(e => e.RevStatusCd)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TimeCreated).HasColumnType("time(0)");
-
-                entity.HasOne(d => d.CreatedByEmpNavigation)
-                    .WithMany(p => p.SubOpRevision)
-                    .HasForeignKey(d => d.CreatedByEmp)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SubOpRevision_CreatedByEmp_Employee_EmpID");
-
-                entity.HasOne(d => d.RevStatusCdNavigation)
-                    .WithMany(p => p.SubOpRevision)
-                    .HasForeignKey(d => d.RevStatusCd)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SubOpRevision_RevStatusCd_RevisionStatus_RevStatusCd");
-
-                entity.HasOne(d => d.SubOp)
-                    .WithMany(p => p.SubOpRevision)
-                    .HasForeignKey(d => d.SubOpId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SubOpRevision_SubOpID_SubOperation_SubOpID");
-            });
-
-            modelBuilder.Entity<SubOpStepSeq>(entity =>
-            {
-                entity.HasKey(e => new { e.SubOpId, e.SubOpRevId, e.StepSeq })
-                    .HasName("PK_SubOpStepSeq_SubOpID_SubOpRevID_StepSeq");
-
-                entity.Property(e => e.SubOpId).HasColumnName("SubOpID");
-
-                entity.Property(e => e.SubOpRevId).HasColumnName("SubOpRevID");
-
-                entity.Property(e => e.StepId).HasColumnName("StepID");
-
-                entity.HasOne(d => d.Step)
-                    .WithMany(p => p.SubOpStepSeq)
-                    .HasForeignKey(d => d.StepId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SubOpStepSeq_StepID_Step_StepID");
-
-                entity.HasOne(d => d.SubOp)
-                    .WithMany(p => p.SubOpStepSeq)
-                    .HasForeignKey(d => new { d.SubOpId, d.SubOpRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SubOpStepSeq_SubOpRevID_SubOpRevision_SubOpRevID");
-            });
-
-            modelBuilder.Entity<SubOperation>(entity =>
-            {
-                entity.HasKey(e => e.SubOpId)
-                    .HasName("PK_SubOperation_SubOpID");
-
-                entity.Property(e => e.SubOpId)
-                    .HasColumnName("SubOpID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TaxAuthLevelCode>(entity =>

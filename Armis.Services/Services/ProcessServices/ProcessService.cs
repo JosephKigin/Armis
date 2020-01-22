@@ -49,67 +49,6 @@ namespace Armis.DataLogic.Services.ProcessServices
         }
 
         //READ
-        public async Task<IEnumerable<Process>> GetAllActiveProcessRevs()
-        {
-            //This code is definately not ok.  Just using it as a test.  TODO: Fix this to actually be useful.
-            var revEntities = await context.Process
-               .Include(i => i.ProcessRevision.Where(j => j.RevStatusCd == "LOCKED"))
-                   .ThenInclude(k => k.ProcessSubOprSeq)
-               .Include(l => l.Cust)
-                   .ThenInclude(m => m.Part).ToListAsync();
-
-            if (revEntities == null) { throw new NullReferenceException("No active Process Revs returned."); }
-
-            return revEntities;
-        }
-
-        //TEST CODE TODO: DELETE THIS!!!!!!
-        public async Task<ProcessModel> GetCompleteProcess(int aProcessId) //TODO: SORT BY SEQ ALSO ADD NAMES TO STUFF
-        {
-            var theProcessEntity = await context.Process.Where(i => i.ProcessId == aProcessId)
-                .Include(i => i.ProcessRevision)
-                    .ThenInclude(i => i.ProcessSubOprSeq)
-                        .ThenInclude(i => i.SubOpRev)
-                                .ThenInclude(i => i.SubOpStepSeq)
-                                    .ThenInclude(i => i.Step)
-                                        .ThenInclude(i => i.StepVarSeq)
-                                            .ThenInclude(i => i.StepVariable).ToListAsync();
-
-            var theProcessModel = new ProcessModel();
-            
-
-            //There should be only one entity in this, but FirstOrDefault can't be used with .Include.  The data needs to be loaded into a list and then iterated upon, even though there is only one thing in the list.
-            foreach (var process in theProcessEntity)
-            {
-                var theProcessRevs = new List<ProcessRevisionModel>();
-
-                foreach (var processRev in process.ProcessRevision)
-                {
-                    var theSubOpRevs = new List<SubopRevisionModel>();
-
-                    foreach (var subOpSeq in processRev.ProcessSubOprSeq)
-                    {
-                        var theSteps = new List<StepModel>();
-
-                        foreach (var stepSeq in subOpSeq.SubOpRev.SubOpStepSeq)
-                        {
-                            theSteps.Add(stepSeq.Step.ToModel(stepSeq.StepSeq));
-                        }
-
-                        var theSupOpEntity = await context.SubOperation.FirstOrDefaultAsync(i => i.SubOpId == subOpSeq.SubOpId);
-
-                        theSubOpRevs.Add(subOpSeq.SubOpRev.ToHydratedModel(subOpSeq, theSteps, theSupOpEntity.Name));
-
-                    }
-
-                    theProcessRevs.Add(processRev.ToModel(theSubOpRevs, process.Name));
-
-                }
-                theProcessModel = process.ToHydratedModel(theProcessRevs);
-            }
-
-            return theProcessModel;
-        }
 
         public async Task<IEnumerable<Process>> GetAllProcessRevsForCustomer(int aCustomerId)
         {
@@ -123,11 +62,6 @@ namespace Armis.DataLogic.Services.ProcessServices
         }
 
         public Task<IEnumerable<ProcessRevision>> GetAllRevsForProcessId(int processId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<SubOpRevision>> GetAllSubOpsForProcessRevId(int processId, int processRevId)
         {
             throw new NotImplementedException();
         }
@@ -149,6 +83,16 @@ namespace Armis.DataLogic.Services.ProcessServices
             context.Add(aStep);
 
             return aStep.StepId.ToString();
+        }
+
+        public Task<IEnumerable<Process>> GetAllActiveProcessRevs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ProcessModel> GetCompleteProcess(int aProcessId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

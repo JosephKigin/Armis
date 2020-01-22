@@ -48,7 +48,6 @@ namespace Armis.Api
             //Setting up dependency injection
             services.AddScoped<IStepService, StepService>();
             services.AddScoped<IProcessService, ProcessService>();
-            services.AddScoped<ISubOperationService, SuboperationService>();
             services.AddScoped<IUOMService, UOMService>();
             services.AddScoped<IVariableService, VariableService>();
             services.AddScoped<IVariableTypeService, VariableTypeService>();

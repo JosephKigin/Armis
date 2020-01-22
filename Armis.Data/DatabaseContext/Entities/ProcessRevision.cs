@@ -8,8 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public ProcessRevision()
         {
             OrderHead = new HashSet<OrderHead>();
-            ProcessSubOprSeq = new HashSet<ProcessSubOprSeq>();
-            ProcessVarOverride = new HashSet<ProcessVarOverride>();
+            ProcessStepSeq = new HashSet<ProcessStepSeq>();
         }
 
         public int ProcessId { get; set; }
@@ -25,7 +24,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Process Process { get; set; }
         public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
-        public virtual ICollection<ProcessSubOprSeq> ProcessSubOprSeq { get; set; }
-        public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
+        public virtual ICollection<ProcessStepSeq> ProcessStepSeq { get; set; }
     }
 }

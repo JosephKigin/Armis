@@ -67,46 +67,47 @@ namespace ArmisWebsite
             try
             {
                 //TODO delete the next line
-                int failTest = int.Parse("Hello");
+                //int failTest = int.Parse("Hello");
 
-                var test = HttpContext.Request.Form["Uom 0"];
+                //var test = HttpContext.Request.Form["Uom 0"];
 
-                var theStepVariablesToAdd = new List<StepVariableModel>();
-                var theStepToAdd = JsonSerializer.Deserialize<StepModel>(StepJson);
-                var theUomModels = JsonSerializer.Deserialize<List<UOMCodeModel>>(UomModelsJson);
-                var theVariableTemplateModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(VariableTemplateModelsJson);
+                //var theStepVariablesToAdd = new List<StepVariableModel>();
+                //var theStepToAdd = JsonSerializer.Deserialize<StepModel>(StepJson);
+                //var theUomModels = JsonSerializer.Deserialize<List<UOMCodeModel>>(UomModelsJson);
+                //var theVariableTemplateModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(VariableTemplateModelsJson);
 
-                var theAmountOfVariables = int.Parse(HttpContext.Request.Form["variableCardCount"]);
+                //var theAmountOfVariables = int.Parse(HttpContext.Request.Form["variableCardCount"]);
 
-                //Reading all the values from the page and loading them into the class properties
-                for (int i = 0; i < theAmountOfVariables; i++)
-                {
-                    var min = HttpContext.Request.Form["Min " + i];
-                    var max = HttpContext.Request.Form["Max " + i];
-                    var uom = HttpContext.Request.Form["Uom " + i];
-                    var template = HttpContext.Request.Form["Template " + i];
+                ////Reading all the values from the page and loading them into the class properties
+                //for (int i = 0; i < theAmountOfVariables; i++)
+                //{
+                //    var min = HttpContext.Request.Form["Min " + i];
+                //    var max = HttpContext.Request.Form["Max " + i];
+                //    var uom = HttpContext.Request.Form["Uom " + i];
+                //    var template = HttpContext.Request.Form["Template " + i];
 
-                    var stepVariable = new StepVariableModel();
+                //    var stepVariable = new StepVariableModel();
 
-                    if (string.IsNullOrEmpty(min)) { stepVariable.Min = null; }
-                    else { stepVariable.Min = decimal.Parse(min); }
+                //    if (string.IsNullOrEmpty(min)) { stepVariable.Min = null; }
+                //    else { stepVariable.Min = decimal.Parse(min); }
 
-                    if (string.IsNullOrEmpty(max)) { stepVariable.Max = null; }
-                    else { stepVariable.Max = decimal.Parse(max); }
+                //    if (string.IsNullOrEmpty(max)) { stepVariable.Max = null; }
+                //    else { stepVariable.Max = decimal.Parse(max); }
 
-                    stepVariable.UnitOfMeasure = theUomModels.FirstOrDefault(i => i.Code == uom);
-                    stepVariable.Template = theVariableTemplateModels.FirstOrDefault(i => i.Code == template);
+                //    stepVariable.UnitOfMeasure = theUomModels.FirstOrDefault(i => i.Code == uom);
+                //    stepVariable.Template = theVariableTemplateModels.FirstOrDefault(i => i.Code == template);
+                //    //TODO: If template is null, throw an error!
 
-                    theStepVariablesToAdd.Add(stepVariable);
-                }
+                //    theStepVariablesToAdd.Add(stepVariable);
+                //}
 
-                theStepToAdd.Variables = theStepVariablesToAdd;
+                //theStepToAdd.Variables = theStepVariablesToAdd;
 
-                await StepDataAccess.AddVariablesToStep(theStepToAdd);
+                //await StepDataAccess.AddVariablesToStep(theStepToAdd);
 
                 TempData.Clear();
 
-                return Page();
+                return RedirectToPage("/Success", new { aMessage = "Your variables were saved to the step."});
             }
             catch (Exception ex)
             {

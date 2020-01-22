@@ -22,7 +22,6 @@ namespace Armis.Data.DatabaseContext.Entities
             SpecialHandlingNotifyEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingReviewReqByEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingSpecialPrintByEmpNavigation = new HashSet<SpecialHandling>();
-            SubOpRevision = new HashSet<SubOpRevision>();
         }
 
         public short EmpId { get; set; }
@@ -54,6 +53,5 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<SpecialHandling> SpecialHandlingNotifyEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingReviewReqByEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingSpecialPrintByEmpNavigation { get; set; }
-        public virtual ICollection<SubOpRevision> SubOpRevision { get; set; }
     }
 }

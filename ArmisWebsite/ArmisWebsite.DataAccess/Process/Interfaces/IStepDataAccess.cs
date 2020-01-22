@@ -13,5 +13,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
         Task<IEnumerable<StepModel>> GetAllHydratedSteps();
         Task<StepModel> GetStepById(int aStepId);
         Task<int> AddVariablesToStep(StepModel aStepModel);
+        Task<List<StepModel>> GetStepByName(string aStepName);
     }
 }

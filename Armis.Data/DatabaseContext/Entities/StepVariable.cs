@@ -7,7 +7,6 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public StepVariable()
         {
-            ProcessVarOverride = new HashSet<ProcessVarOverride>();
             StepVarSeq = new HashSet<StepVarSeq>();
         }
 
@@ -19,7 +18,6 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual Uomcode UomcdNavigation { get; set; }
         public virtual StepVarTemplate VarTempCdNavigation { get; set; }
-        public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
         public virtual ICollection<StepVarSeq> StepVarSeq { get; set; }
     }
 }

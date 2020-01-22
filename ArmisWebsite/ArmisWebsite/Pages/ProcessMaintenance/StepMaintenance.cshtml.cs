@@ -17,17 +17,12 @@ namespace ArmisWebsite
         private readonly IConfiguration Config;
 
         //Data Access
-        private readonly IVariableDataAccess VariableDataAccess;
-
         private readonly IStepDataAccess StepDataAccess;
 
-        private readonly IUomCodeDataAccess UOMDataAccess;
-
         //Business Model Properties
-        public List<VariableTemplateModel> VariableTemplateModels { get; set; }
         public List<VariableTemplateModel> AssignedVariableTemplateModels { get; set; }
 
-        public List<SelectListItem> UOMSelectItems { get; set; }
+        public List<StepModel> AllSteps { get; set; }
 
         public StepModel Step { get; set; }
 
@@ -45,27 +40,28 @@ namespace ArmisWebsite
         public string StepInstructions { get; set; }
 
         [BindProperty]
-        public string VariableTemplateToAdd { get; set; }
+        public List<SelectListItem> SignOffReqSelectList { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string StepSearch { get; set; }
 
         [BindProperty]
-        public List<SelectListItem> SignOffReqSelectList { get; set; }
+        public string Message { get; set; }
 
         public StepMaintenanceModel(IConfiguration aConfig,
                                     IStepDataAccess aStepDataAccess,
-                                    IUomCodeDataAccess aUOMDataAccess,
-                                    IVariableDataAccess aVariableDataAccess)
+                                    IUomCodeDataAccess aUOMDataAccess)
         {
             Config = aConfig;
             StepDataAccess = aStepDataAccess;
-            UOMDataAccess = aUOMDataAccess;
-            VariableDataAccess = aVariableDataAccess;
         }
 
-        public async Task<IActionResult> OnGetAsync(int aStepId = 0)
+        public async Task<IActionResult> OnGetAsync(int aStepId = 0 , string aMessage = "")
         {
             try
             {
                 await SetUpPage();
+                if(aMessage != "") { Message = aMessage; }
                 if (aStepId > 0)
                 {
                     Step = await StepDataAccess.GetStepById(aStepId);
@@ -81,11 +77,25 @@ namespace ArmisWebsite
                     { SignOffReqSelectList.FirstOrDefault(i => i.Text == "No").Selected = true; }
                 }
 
+                if(!string.IsNullOrEmpty(StepSearch))
+                {
+                    var tempSteps = new List<StepModel>();
+                    tempSteps.AddRange(AllSteps);
+
+                    foreach (var step in tempSteps)
+                    {
+                        if(!step.StepName.ToLower().Contains(StepSearch.ToLower()))
+                        {
+                            AllSteps.Remove(step);
+                        }
+                    }
+                }
+
                 return Page();
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. \r\nERROR: " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
             }
 
         }
@@ -100,9 +110,16 @@ namespace ArmisWebsite
                 Step.StepName = StepName;
                 Step.StepCategoryCd = "NONE";
 
-                //var theStepId = await StepDataAccess.PostNewStep(Step);
+                var currentStepsWithSameName = await StepDataAccess.GetStepByName(StepName);
+                if (currentStepsWithSameName != null && currentStepsWithSameName.Any())
+                {
+                    var stepExistsMessage = "A step with that name already exists.";
+                    return RedirectToPage("StepMaintenance", new { aMessage = stepExistsMessage });
+                }
 
-                return RedirectToPage("StepVariableMaintenance", new { aStepId = 3 }); //TODO::Change this back to theStepId
+                var theStepId = await StepDataAccess.PostNewStep(Step);
+
+                return RedirectToPage("StepMaintenance", new { aStepId = theStepId});
             }
             catch (Exception ex)
             {
@@ -115,23 +132,8 @@ namespace ArmisWebsite
         {
             try
             {
-                //TODO Delete the next line
-                int BADVARIABLE = int.Parse("Hello");
-
-                var theTempModels = await VariableDataAccess.GetAllTemplates();
-                VariableTemplateModels = theTempModels.ToList();
-
-                var resultUOMs = await UOMDataAccess.GetAllUOMCodes();
-                var theUOMsList = resultUOMs.ToList();
-                UOMSelectItems = new List<SelectListItem>();
-                foreach (var uom in theUOMsList)
-                {
-                    UOMSelectItems.Add(new SelectListItem
-                    {
-                        Text = uom.Description,
-                        Value = uom.Code
-                    });
-                }
+                var theSteps = await StepDataAccess.GetAllHydratedSteps();
+                AllSteps = theSteps.ToList();
 
                 SignOffReqSelectList = new List<SelectListItem>();
                 SignOffReqSelectList.Add(new SelectListItem { Text = "", Value = "0" });

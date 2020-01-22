@@ -90,7 +90,24 @@ namespace ArmisWebsite.DataAccess.Process
 
                     return resultingModel;
                 }
-                catch(Exception ex) { throw new Exception(ex.Message); }
+                catch(Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
+            }
+        }
+
+        public async Task<List<StepModel>> GetStepByName(string aStepName)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepName);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultingModel = JsonSerializer.Deserialize<List<StepModel>>(responseString);
+
+                    return resultingModel;
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
             }
         }
     }

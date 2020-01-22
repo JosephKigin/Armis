@@ -115,3 +115,4 @@ C:\Users\jkigin\Source\Repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcor
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\StepListing.cshtml.g.cs
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\_VariableTemplates.cshtml.g.cs
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\StepVariableMaintenance.cshtml.g.cs
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\Success.cshtml.g.cs

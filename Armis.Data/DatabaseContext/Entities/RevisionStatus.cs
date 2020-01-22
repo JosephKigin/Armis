@@ -8,13 +8,11 @@ namespace Armis.Data.DatabaseContext.Entities
         public RevisionStatus()
         {
             ProcessRevision = new HashSet<ProcessRevision>();
-            SubOpRevision = new HashSet<SubOpRevision>();
         }
 
         public string RevStatusCd { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
-        public virtual ICollection<SubOpRevision> SubOpRevision { get; set; }
     }
 }

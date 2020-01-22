@@ -46,7 +46,7 @@ namespace Armis.Api.Controllers
         }
 
         // GET: api/Steps/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Step>> GetStepById(int id)
         {
             try
@@ -56,6 +56,22 @@ namespace Armis.Api.Controllers
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch(Exception ex)
+            {
+                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+            }
+        }
+
+        //GET: api/Steps/zincplate
+        [HttpGet("{stepName}")]
+        public async Task<ActionResult<StepModel>> GetStepByName(string stepName)
+        {
+            try
+            {
+                var data = await StepService.GetHydratedByName(stepName);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
             }
