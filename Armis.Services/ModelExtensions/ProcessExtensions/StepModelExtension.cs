@@ -8,7 +8,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {
-        public static StepModel ToModel(this Step aStep, int aSeq = 0)
+        public static StepModel ToModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
         {
             var result = new StepModel()
             {
@@ -17,7 +17,24 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 StepCategoryCd = aStep.StepCategoryCd,
                 StepId = aStep.StepId,
                 StepName = aStep.StepName,
-                Sequence = aSeq
+                Sequence = aSeq,
+                Operation = anOperation
+            };
+
+            return result;
+        }
+
+        public static StepModel ToHydratedModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        {
+            var result = new StepModel()
+            {
+                Instructions = aStep.Instructions,
+                SignOffIsRequired = aStep.SignOffIsRequired,
+                StepCategoryCd = aStep.StepCategoryCd,
+                StepId = aStep.StepId,
+                StepName = aStep.StepName,
+                Sequence = aSeq,
+                Operation = anOperation
             };
 
             var variableList = new List<StepVariableModel>();

@@ -1,0 +1,17 @@
+﻿@page
+@model ArmisWebsite.ProcessListingModel
+@{
+    ViewData["Title"] = "ProcessListing";
+}
+
+<h1>Process Listing</h1>
+
+<ul class="list-group" style="max-height: 42em; overflow:scroll;">
+    @foreach (var process in Model.Processes)
+    {
+        <li class="list-group-item" id="@process.ProcessId">
+            <h5>@process.ProcessId @process.Name</h5>
+            <p>Most Recent Revision: @process.Revisions.Last().ProcessRevId</p>
+        </li>
+    }
+</ul>

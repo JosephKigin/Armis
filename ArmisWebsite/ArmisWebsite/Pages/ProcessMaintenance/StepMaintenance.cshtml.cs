@@ -114,7 +114,7 @@ namespace ArmisWebsite
                 if (currentStepsWithSameName != null && currentStepsWithSameName.Any())
                 {
                     var stepExistsMessage = "A step with that name already exists.";
-                    return RedirectToPage("StepMaintenance", new { aMessage = stepExistsMessage });
+                    return RedirectToPage("StepMaintenance", new {aStepId = currentStepsWithSameName[0].StepId, aMessage = stepExistsMessage });
                 }
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);

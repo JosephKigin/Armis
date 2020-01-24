@@ -32,32 +32,31 @@ namespace Armis.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Process>>> GetProcess()
         {
-            return await _context.Process.ToListAsync();
+            try
+            {
+                var data = await ProcessService.GetAllProcesses();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong, please contact IT.");
+            }
         }
 
         // GET: api/Processes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Process>> GetProcess(int id)
         {
-            var process = await _context.Process.FindAsync(id);
-
-            if (process == null)
+            try
             {
-                return NotFound();
+                var process = await ProcessService.GetHydratedProcess(id);
+                return Ok(JsonSerializer.Serialize(process));
             }
-
-            return process;
-        }
-
-        //TEST CODE!!!! TODO: Fix this.
-        [HttpGet("GetCompleteProcess")]
-        public async Task<ActionResult<string>> GetCompleteProcess()
-        {
-            var data = await ProcessService.GetCompleteProcess(10000);
-
-            if (data == null) { return Ok("There are no Active Revisions."); }
-
-            return Ok(data);
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // PUT: api/Processes/5

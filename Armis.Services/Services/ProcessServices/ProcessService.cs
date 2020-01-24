@@ -19,25 +19,18 @@ namespace Armis.DataLogic.Services.ProcessServices
             context = aContext;
         }
 
-        //CREATE
-        public int CreateNewProcess(Process process)
+        //Create
+        public Task<ProcessModel> CreateNewProcess(Process process)
         {
-            if (process == null) { throw new NullReferenceException("Process cannot be null."); }
-            context.Process.Add(process);
-
-            return process.ProcessId; //This might return as null. Careful of this.
+            throw new NotImplementedException();
         }
 
-        public string CreateNewRevForExistingProcess(ProcessRevision newRev)
+        public Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev)
         {
-            if (newRev == null) { throw new NullReferenceException("ProcessId and NewRev cannot be null."); }
-
-            context.Add(newRev);
-
-            return newRev.ProcessId + " " + newRev.ProcessRevId;
+            throw new NotImplementedException();
         }
 
-        //DELETE
+        //Delete
         public Task DeleteProcess(int processId)
         {
             throw new NotImplementedException();
@@ -48,49 +41,83 @@ namespace Armis.DataLogic.Services.ProcessServices
             throw new NotImplementedException();
         }
 
-        //READ
-
-        public async Task<IEnumerable<Process>> GetAllProcessRevsForCustomer(int aCustomerId)
+        //Read
+        public async Task<IEnumerable<ProcessModel>> GetAllProcesses()
         {
-            if (aCustomerId == 0) { throw new NullReferenceException("No CustomerId provided."); }
+            var processEntities = await context.Process.Include(i => i.ProcessRevision).ToListAsync();
 
-            var processEntities = await context.Process.Where(i => i.CustId == aCustomerId).Include(j => j.ProcessRevision).ToListAsync();
+            var result = new List<ProcessModel>();
 
-            if (processEntities == null) { throw new NullReferenceException("Could not find any processes where CustomerId == " + aCustomerId + "."); }
+            foreach (var entity in processEntities)
+            {
+                var theRevs = new List<ProcessRevisionModel>();
+                
+                foreach (var rev in entity.ProcessRevision) 
+                { theRevs.Add(rev.ToModel()); }
 
-            return processEntities;
+                result.Add(entity.ToHydratedModel(theRevs));
+            }
+
+            return result;
         }
 
-        public Task<IEnumerable<ProcessRevision>> GetAllRevsForProcessId(int processId)
+        public async Task<IEnumerable<ProcessModel>> GetAllProcessRevsForCustomer(int aCustomerId)
+        {
+            var processEntities = await context.Process.Where(i => i.CustId == aCustomerId).Include(i => i.ProcessRevision).ToListAsync();
+
+            var result = new List<ProcessModel>();
+
+            foreach (var entity in processEntities)
+            {
+                var theRevs = new List<ProcessRevisionModel>();
+
+                foreach (var rev in entity.ProcessRevision)
+                { theRevs.Add(rev.ToModel()); }
+
+                result.Add(entity.ToHydratedModel(theRevs));
+            }
+
+            return result;
+        }
+
+        public async Task<ProcessModel> GetHydratedProcess(int processId)
+        {
+            var processEntity = await context.Process.Where(i => i.ProcessId == processId)
+                                                     .Include(i => i.ProcessRevision)
+                                                        .ThenInclude(i => i.ProcessStepSeq)
+                                                            .ThenInclude(i => i.Operation)
+                                                                .ThenInclude(i => i.OperGroup)
+                                                     .Include(i => i.ProcessRevision)
+                                                        .ThenInclude(i => i.ProcessStepSeq)
+                                                            .ThenInclude(i => i.Step).SingleOrDefaultAsync();
+
+            if(processEntity == null) { throw new NullReferenceException("No process with id " + processId + " exists."); }
+
+            var revs = new List<ProcessRevisionModel>();
+
+            foreach (var rev in processEntity.ProcessRevision)
+            {
+                var revSteps = new List<StepModel>();
+                
+                foreach (var stepSeq in rev.ProcessStepSeq)
+                {
+                    var step = stepSeq.Step.ToModel(stepSeq.StepSeq, stepSeq.Operation.ToModel());
+                    revSteps.Add(step);
+                }
+
+                revs.Add(rev.ToHydratedModel(revSteps));
+            }
+
+            return processEntity.ToHydratedModel(revs);
+        }
+
+        //Update
+        public Task<ProcessModel> UpdateProcess(Process process)
         {
             throw new NotImplementedException();
         }
 
-        //UPDATE
-        public Task UpdateProcess(Process process)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateProcessRev(ProcessRevision processRev)
-        {
-            throw new NotImplementedException();
-        }
-
-        //ONLY FOR TESTING TODO:Remove the following method!!!!!!!!!!
-        public async Task<string> AddStepTEST(Step aStep)
-        {
-            context.Add(aStep);
-
-            return aStep.StepId.ToString();
-        }
-
-        public Task<IEnumerable<Process>> GetAllActiveProcessRevs()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ProcessModel> GetCompleteProcess(int aProcessId)
+        public Task<ProcessRevisionModel> UpdateProcessRev(ProcessRevision processRev)
         {
             throw new NotImplementedException();
         }

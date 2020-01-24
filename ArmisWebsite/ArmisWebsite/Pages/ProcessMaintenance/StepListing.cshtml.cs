@@ -16,21 +16,13 @@ namespace ArmisWebsite
         private readonly IConfiguration Config;
         private IStepDataAccess _stepDataAccess;
 
-        public IStepDataAccess StepDataAccess
-        {
-            get 
-            {
-                if(_stepDataAccess == null) { _stepDataAccess = new StepDataAccess(Config); }
-                return _stepDataAccess; 
-            }
-            set { _stepDataAccess = value; }
-        }
-
+        public IStepDataAccess StepDataAccess { get; set; }
         public List<StepModel> Steps { get; set; }
 
-        public StepListingModel(IConfiguration aConfig)
+        public StepListingModel(IConfiguration aConfig, IStepDataAccess aStepDataAccess)
         {
             Config = aConfig;
+            StepDataAccess = aStepDataAccess;
         }
 
         public async Task OnGet()

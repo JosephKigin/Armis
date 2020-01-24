@@ -53,6 +53,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepToDelete.StepId;
         }
 
+        //Get
         public async Task<IEnumerable<StepModel>> GetAllHydrated()
         {
             var theStepEntities = await Context.Step
@@ -70,7 +71,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             foreach (var step in theStepEntities)
             {
-                theStepModels.Add(step.ToModel());
+                theStepModels.Add(step.ToHydratedModel());
             }
 
             return theStepModels;
@@ -90,7 +91,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
 
-            return theStepEntity.ToModel();
+            return theStepEntity.ToHydratedModel();
         }
 
         public async Task<List<StepModel>> GetHydratedByName(string aStepName)
@@ -109,7 +110,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             var result = new List<StepModel>();
 
-            foreach (var step in theStepEntities) { result.Add(step.ToModel()); }
+            foreach (var step in theStepEntities) { result.Add(step.ToHydratedModel()); }
 
             return result;
         }
