@@ -9,5 +9,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public int RemarkId { get; set; }
 
         public virtual Area Area { get; set; }
+        public virtual RemarkCode Remark { get; set; }
     }
 }

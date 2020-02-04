@@ -1,0 +1,42 @@
+﻿@page
+@model ArmisWebsite.StepListingModel
+@{
+    ViewData["Title"] = "StepListing";
+}
+
+<head>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+</head>
+
+<h1>Step Listing</h1>
+
+<body>
+    <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+        @foreach (var step in Model.Steps)
+        {
+            <li class="list-group-item" id="@step.StepId">
+
+                <h5>@step.StepId @step.StepName</h5>
+                @if (step.SignOffIsRequired == true)
+                {<p class="text-danger">Sign-Off Required</p>}
+                <b>Instructions: </b>@step.Instructions
+                <div class="row">
+                    @foreach (var variable in step.Variables)
+                    {
+                        <div class="card col-lg-4">
+                            <p>@variable.Template.Name</p>
+                            @if (variable.UnitOfMeasure != null)
+                            {<p>@variable.UnitOfMeasure.Description</p>}
+                            @if (variable.Min != null && variable.Max != null)
+                            {<p>@variable.Min - @variable.Max</p>}
+                        </div>
+
+
+                    }
+                </div>
+
+                <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
+            </li>
+        }
+    </ul>
+</body>

@@ -5,12 +5,17 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class TaxAuthority
     {
-        public byte TaxAuthId { get; set; }
-        public string Name { get; set; }
-        public decimal? SalesTaxPerc { get; set; }
-        public string AuthorityLevel { get; set; }
-        public int JurisdictionId { get; set; }
+        public TaxAuthority()
+        {
+            TaxJurisAuthority = new HashSet<TaxJurisAuthority>();
+        }
 
-        public virtual TaxJurisdiction Jurisdiction { get; set; }
+        public int TaxAuthId { get; set; }
+        public string Name { get; set; }
+        public decimal SalesTaxPerc { get; set; }
+        public string AuthorityLevelCd { get; set; }
+
+        public virtual TaxAuthLevelCode AuthorityLevelCdNavigation { get; set; }
+        public virtual ICollection<TaxJurisAuthority> TaxJurisAuthority { get; set; }
     }
 }

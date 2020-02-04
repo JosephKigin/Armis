@@ -12,10 +12,19 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         {
             return new VariableTemplateModel()
             {
-                Id = anEntity.VarTempId,
-                Code =anEntity.VariableCode,
+                Code = anEntity.VarTempCd,
                 Name = anEntity.VarName,
-                Type = anEntity.StepVarTypeCd
+                Type = anEntity.StepVarTypeCdNavigation.ToModel()
+            };
+        }
+
+        public static StepVarTemplate ToEntity(this VariableTemplateModel aModel)
+        {
+            return new StepVarTemplate()
+            {
+                VarTempCd = aModel.Code,
+                VarName = aModel.Name,
+                StepVarTypeCd = aModel.Type.Code
             };
         }
     }

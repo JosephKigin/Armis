@@ -1,8 +1,99 @@
-﻿@page
+﻿@page "{aStepId:int?}/{aMessage?}"
 @model ArmisWebsite.StepMaintenanceModel
 @{
-    ViewData["Title"] = "StepMaintenance";
+    ViewData["Title"] = "Step Maintenance";
 }
 
-<h1>StepMaintenance</h1>
+<head>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+</head>
+<h1>Step Maintenance</h1>
 
+<body>
+    <div class="row">
+
+        <div class="col-lg-6">
+            <form method="post" asp-page-handler="NewStep">
+                <h3>Create A New Step</h3>
+                @if (Model.Message != "" && Model.Message != null)
+                {<label class="alert alert-danger">@Model.Message</label>}
+                <div class="form-group">
+                    <label><b>Step Name: </b></label>
+                    <input type="text" asp-for="StepName" class="form-control" />
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label><b>Instructions: </b></label>
+                    <textarea class="form-control" asp-for="StepInstructions"></textarea>
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label><b>Is sign-off required? </b></label>
+                    <select class="form-control" asp-items="Model.SignOffReqSelectList" asp-for="IsSignOffRequired">
+                    </select>
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+
+                <div class="form-group">
+                    <label><b>Step Category: </b></label>
+                    <input type="text" asp-for="StepCategory" class="form-control" />
+                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                </div>
+                <button type="submit" class="btn btn-outline-primary">Save</button>
+            </form>
+        </div>
+
+        <div class="col-lg-6">
+            <form method="get" class="form-group">
+                <label><b>Search: </b></label><input type="text" asp-for="StepSearch" class="form-control" />
+                <button type="submit" class="btn btn-outline-secondary">Search</button>
+            </form>
+
+            <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+                @foreach (var step in Model.AllSteps)
+                {
+                    <li class="list-group-item" id="@step.StepId">
+
+                        <h5>@step.StepId @step.StepName</h5>
+                        @if (step.SignOffIsRequired == true)
+                        {<p class="text-danger">Sign-Off Required</p>}
+                        <b>Instructions: </b>@step.Instructions
+                        <div class="row">
+                            @foreach (var variable in step.Variables)
+                            {
+                                <div class="card col-lg-4">
+                                    <p>@variable.Template.Name</p>
+                                    @if (variable.UnitOfMeasure != null)
+                                    {<p>@variable.UnitOfMeasure.Description</p>}
+                                    @if (variable.Min != null && variable.Max != null)
+                                    {<p>@variable.Min - @variable.Max</p>}
+                                </div>
+
+
+                            }
+                        </div>
+
+                        <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</body>
+
+@*<script>
+        var varTempModal = document.getElementById("variableTemplateModal");
+        var btnOpenVarTempModal = document.getElementById("btnOpenVariableTemplateModal");
+        var btnCloseVarTempModal = document.getElementById("btnCloseVariableTemplateModal");
+        var slctVarTemp = document.getElementById("slctVariableTemplate");
+
+        btnOpenVarTempModal.onclick = function () {
+            varTempModal.style.display = "block";
+        }
+
+        btnCloseVarTempModal.onclick = function () {
+            varTempModal.style.display = "none";
+        }
+    </script>*@

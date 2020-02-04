@@ -1,0 +1,35 @@
+﻿@page
+@model ArmisWebsite.ProcessListingModel
+@{
+    ViewData["Title"] = "ProcessListing";
+}
+<head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+</head>
+
+<h1>Process Listing</h1>
+
+<div id="sortable" class="list-group" style="max-height: 42em; overflow:scroll;">
+    @foreach (var process in Model.Processes)
+    {
+        <div class="list-group-item" id="@process.ProcessId">
+            <p><i class="fa fa-arrows-alt handle"></i><b>@process.ProcessId @process.Name</b></p>
+            <p>Most Recent Revision: @process.Revisions.Last().ProcessRevId</p>
+        </div>
+    }
+</div>
+
+@section Scripts{
+
+
+
+    <script>
+        new Sortable(sortable,
+            {
+                handle: '.handle',
+                animation: 150,
+                ghostClass: 'bg-warning'
+            });
+    </script>
+}

@@ -12,6 +12,15 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Content Include="$(NuGetPackageRoot)odetocode.usenodemodules\3.0.0\contentFiles\any\netcoreapp3.0\Properties\launchSettings.json" Condition="Exists('$(NuGetPackageRoot)odetocode.usenodemodules\3.0.0\contentFiles\any\netcoreapp3.0\Properties\launchSettings.json')">
+      <NuGetPackageId>OdeToCode.UseNodeModules</NuGetPackageId>
+      <NuGetPackageVersion>3.0.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <Private>False</Private>
+      <Link>Properties\launchSettings.json</Link>
+    </Content>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\jkigin\.nuget\packages\microsoft.codeanalysis.analyzers\2.9.4</PkgMicrosoft_CodeAnalysis_Analyzers>
   </PropertyGroup>

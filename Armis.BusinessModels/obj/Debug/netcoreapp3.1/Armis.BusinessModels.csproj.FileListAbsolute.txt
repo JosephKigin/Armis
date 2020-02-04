@@ -1,8 +1,8 @@
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\bin\Debug\netcoreapp3.1\Armis.BusinessModels.deps.json
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\bin\Debug\netcoreapp3.1\Armis.BusinessModels.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
-C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.csprojAssemblyReference.cache
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.AssemblyInfoInputs.cache
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.AssemblyInfo.cs
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
+C:\Users\jkigin\source\repos\ArmisApi\Armis.BusinessModels\obj\Debug\netcoreapp3.1\Armis.BusinessModels.csprojAssemblyReference.cache

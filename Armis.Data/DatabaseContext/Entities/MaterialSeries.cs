@@ -13,7 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public string SeriesCd { get; set; }
         public string Description { get; set; }
-        public string BaseMetal { get; set; }
+        public string Type { get; set; }
 
         public virtual ICollection<MaterialAlloy> MaterialAlloy { get; set; }
         public virtual ICollection<Part> Part { get; set; }

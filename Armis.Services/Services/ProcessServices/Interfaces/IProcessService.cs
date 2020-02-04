@@ -10,24 +10,22 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
     public interface IProcessService
     {
         //READ
-        Task<IEnumerable<Process>> GetAllActiveProcessRevs();
-        Task<IEnumerable<ProcessRevision>> GetAllRevsForProcessId(int processId);
-        Task<IEnumerable<Process>> GetAllProcessRevsForCustomer(int cutomerId);
-        Task<IEnumerable<SubOpRevision>> GetAllSubOpsForProcessRevId(int processId, int processRevId);
+        Task<IEnumerable<ProcessModel>> GetAllProcesses();
+        Task<ProcessModel> GetHydratedProcess(int processId);
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs();
+        Task<ProcessRevisionModel> GetCurrentProcessRevWithSteps(int aProcessId);
 
         //CREATE
-        string CreateNewRevForExistingProcess(ProcessRevision newRev);
-        int CreateNewProcess(Process process);  //Returns ProcessId
+        Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev);
+        Task<ProcessModel> CreateNewProcess(Process process);  //Returns ProcessId
+        Task TestCreateProcess();
 
         //UPDATE
-        Task UpdateProcess(Process process);
-        Task UpdateProcessRev(ProcessRevision processRev);
+        Task<ProcessModel> UpdateProcess(Process process);
+        Task<ProcessRevisionModel> UpdateProcessRev(ProcessRevision processRev);
 
         //DELETE
         Task DeleteProcess(int processId); //Must delete all revs linked to this process
         Task DeleteProcessRev(int processId, int processRevId);
-
-        //Test code TODO: DELETE THIS
-        Task<ProcessModel> GetCompleteProcess(int aProcessId);
     }
 }

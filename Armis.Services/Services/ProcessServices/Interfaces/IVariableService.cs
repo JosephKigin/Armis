@@ -9,5 +9,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
     public interface IVariableService
     {
         Task<IEnumerable<VariableTemplateModel>> GetAllVariableTemplates();
+        Task PostVariableTemplate(VariableTemplateModel aTemplateModel);
     }
 }

@@ -18,12 +18,15 @@ namespace ArmisWebsite.Pages
 
         private readonly ILogger<ErrorModel> _logger;
 
+        [BindProperty(SupportsGet = true)]
+        public string ExMessage { get; set; }
+
         public ErrorModel(ILogger<ErrorModel> logger)
         {
             _logger = logger;
         }
 
-        public void OnGet()
+        public void OnGet(string stack)
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }

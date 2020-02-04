@@ -8,7 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int OprMaterialPriceId { get; set; }
         public int? OperationId { get; set; }
         public short? DepartmentId { get; set; }
-        public string MaterialCd { get; set; }
+        public int? MaterialCd { get; set; }
         public int? CustId { get; set; }
         public decimal? PercInc { get; set; }
         public decimal? MinLotInc { get; set; }

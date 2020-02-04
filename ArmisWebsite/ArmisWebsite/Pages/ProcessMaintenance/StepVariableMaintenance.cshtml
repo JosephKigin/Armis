@@ -1,0 +1,127 @@
+﻿@page "{aStepId:int}"
+@model ArmisWebsite.StepVariableMaintenanceModel
+@{
+    ViewData["Title"] = "StepVariableMaintenance";
+}
+
+    <script>
+    var variableCardCount = 0;
+
+    function incrementVarCount() {
+        variableCardCount++;
+        var countHolder = document.getElementById("variableCardCount");
+        countHolder.value = variableCardCount;
+    }
+
+    function addVariableCard() {
+        var newDiv = document.createElement('div');
+        var countHolder = document.getElementById("variableCardCount");
+
+        newDiv.className = 'col-lg-3 card';
+        newDiv.style = "padding:16px";
+        newDiv.innerHTML = `<h5>Variable #: ` + (variableCardCount+1) +`</h5>
+                            <label><b>Template</b></label>
+
+                            <select class="list-group" size="6" name="Template `+ variableCardCount +`">
+                            @foreach (var template in Model.VariableTemplateModels)
+                            {
+                                <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                                    @template.Name (@template.Type.Description)
+                                </option>
+                            }
+                            </select>
+
+                            <label> <b>Min:</b></label>
+                            <input class="form-control" type="number" step="0.0001" name="Min `+ variableCardCount +`" />
+
+                            <label><b>Max:</b></label>
+                            <input class="form-control" type="number" step="0.0001" name="Max `+ variableCardCount +`" />
+
+                            <label><b>Unit Of Measure</b></label>
+                            <select class="mdb-select md-form colorful-select dropdown-primary" name="Uom `+ variableCardCount +`">
+                                <option value=""></option>
+                                @foreach (var uom in Model.UomModels)
+                                {
+                                    <option value="@uom.Code">
+                                        @uom.Description
+                                    </option>
+                                }
+                            </select>`;
+
+        document.getElementById("variableAdditions").append(newDiv);
+
+        variableCardCount++;
+        countHolder.value = variableCardCount;
+    }
+    </script>
+
+<h1>Variables For Step: @Model.Step.StepName</h1>
+<button class="btn btn-primary" onclick="addVariableCard()">Add Variable</button>
+<form method="post">
+    <input name="variableCardCount" id="variableCardCount" type="number" asp-for="VariableCount" />
+    <div id="variableAdditions" class="row">
+        @foreach (var variable in Model.Step.Variables)
+        {
+            <div class="col-lg-3 card" style="padding:16px">
+                <h5>Variable #: @(Model.VariableCount + 1)</h5>
+                <label><b>Template</b></label>
+
+                <select class="list-group" size="6" name="Template @Model.VariableCount">
+                    @foreach (var template in Model.VariableTemplateModels)
+                    {
+                        if (variable.Template.Code == template.Code)
+                        {
+                            <option class="list-group-item" value="@template.Code" selected="selected" style="white-space:pre-wrap">
+                                @template.Name (@template.Type.Description)
+                            </option>
+                        }
+                        else
+                        {
+                            <option class="list-group-item" value="@template.Code" style="white-space:pre-wrap">
+                                @template.Name (@template.Type.Description)
+                            </option>
+                        }
+                    }
+                </select>
+
+                <label> <b>Min:</b></label>
+                <input class="form-control" value="@variable.Min" type="number" step="0.0001" name="Min @Model.VariableCount" />
+
+                <label><b>Max:</b></label>
+                <input class="form-control" value="@variable.Max" type="number" step="0.0001" name="Max @Model.VariableCount" />
+
+                <label><b>Unit Of Measure</b></label>
+                <select class="mdb-select md-form colorful-select dropdown-primary" name="Uom @Model.VariableCount">
+                    <option value=""></option>
+                    @foreach (var uom in Model.UomModels)
+                    {
+                        if (variable.UnitOfMeasure == null)
+                        {
+                            <option value="@uom.Code">
+                                @uom.Description
+                            </option>
+                        }
+                        else
+                        {
+                            if (variable.UnitOfMeasure.Code != null && variable.UnitOfMeasure.Code == uom.Code)
+                            {
+                                <option value="@uom.Code" selected="selected">
+                                    @uom.Description
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@uom.Code">
+                                    @uom.Description
+                                </option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <script>incrementVarCount();</script>
+            <label hidden="hidden">@(Model.VariableCount++)</label>
+        }
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+</form>

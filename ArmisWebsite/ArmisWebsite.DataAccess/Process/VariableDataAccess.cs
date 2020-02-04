@@ -6,33 +6,68 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace ArmisWebsite.DataAccess.Process
 {
     public class VariableDataAccess : IVariableDataAccess
     {
-        public int CreateVaribale(VariableModel model)
+        private readonly IConfiguration Config;
+
+        public VariableDataAccess(IConfiguration aConfig)
         {
-            throw new NotImplementedException();
+            Config = aConfig;
         }
 
-        public IEnumerable<VariableTemplateModel> GetAllTemplates()
+        public async Task<IEnumerable<VariableTemplateModel>> GetAllTemplates()
         {
-            var result = new List<VariableTemplateModel>();
-            for (int i = 0; i < 10; i++)
+            using (var client = new HttpClient())
             {
-                var tempTemplate = new VariableTemplateModel()
+                try
                 {
-                    Code = "TEST",
-                    Id = 0,
-                    Name = "Test - " + i,
-                    Type = "Test Type"
-                };
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartemplates/GetAllStepVarTemplates");
 
-                result.Add(tempTemplate);
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultingModels = JsonSerializer.Deserialize<List<VariableTemplateModel>>(responseString);
+                    var result = resultingModels.OrderBy(i => i.Name).ToList();
+                    return result;
+
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); }
             }
+        }
 
-            return result;
+        public async Task<IEnumerable<VariableTypeModel>> GetAllVarTypes()
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/stepvartypes");
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var resultingModels = JsonSerializer.Deserialize<List<VariableTypeModel>>(responseString);
+                    return resultingModels;
+
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); } //TODO: error handle better
+            }
+        }
+
+        public async Task<HttpResponseMessage> PostVariableTemplate(VariableTemplateModel aVariableTemplateModel)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    StringContent data = new StringContent(JsonSerializer.Serialize(aVariableTemplateModel), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/StepVarTemplates", data);
+
+                    return response;
+                }
+                catch (Exception ex) { throw new Exception(ex.Message); } //TODO: Error handle better
+            }
         }
     }
 }

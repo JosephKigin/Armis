@@ -7,11 +7,11 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public int OrderId { get; set; }
         public byte OrderLine { get; set; }
-        public int LocationId { get; set; }
+        public string LocationCd { get; set; }
         public string ContainerCd { get; set; }
 
         public virtual Container ContainerCdNavigation { get; set; }
-        public virtual Location Location { get; set; }
+        public virtual Location LocationCdNavigation { get; set; }
         public virtual OrderDetail Order { get; set; }
     }
 }

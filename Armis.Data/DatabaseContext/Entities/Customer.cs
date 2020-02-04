@@ -17,15 +17,18 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHead = new HashSet<OrderHead>();
             Part = new HashSet<Part>();
             Process = new HashSet<Process>();
-            SamplePlan = new HashSet<SamplePlan>();
+            SamplePlanHead = new HashSet<SamplePlanHead>();
             ShipAccountNavigation = new HashSet<ShipAccount>();
+            ShipToNavigation = new HashSet<ShipTo>();
         }
 
         public int CustId { get; set; }
         public string SearchName { get; set; }
+        public string Name { get; set; }
+        public byte? PriorityId { get; set; }
         public short? SalesPerson { get; set; }
         public string Status { get; set; }
-        public string DefaultShipVia { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public bool? IsInspectAll { get; set; }
         public bool? IsPrePriceAll { get; set; }
         public string TaxExemptNum { get; set; }
@@ -35,47 +38,39 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? TaxJurisdId { get; set; }
         public bool? IsChargeHandling { get; set; }
         public string CreditStatus { get; set; }
-        public DateTime? NoCredHoldUntil { get; set; }
-        public string CertCd { get; set; }
+        public DateTime? LeaveOffCredHoldUntil { get; set; }
+        public byte? CertId { get; set; }
         public bool? IsKioskValid { get; set; }
         public string Source { get; set; }
-        public string TermsCd { get; set; }
+        public byte? TermsId { get; set; }
         public bool? IsBillRework { get; set; }
         public bool? IsTmcustomer { get; set; }
-        public bool? IsStopReminders { get; set; }
+        public bool? SendReminderComp { get; set; }
         public bool? IsBillPartialShipments { get; set; }
         public bool? IsSendPartialCerts { get; set; }
         public bool? IsBillPartialCerts { get; set; }
         public bool? IsIgnoreDupePos { get; set; }
         public short? DefaultShipToId { get; set; }
         public byte? FreeExpPerMonth { get; set; }
-        public string Alias { get; set; }
-        public string Name { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string Address3 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
-        public string Country { get; set; }
-        public string PhoneNum { get; set; }
-        public string FaxNum { get; set; }
-        public string DefaultShipViaCd { get; set; }
+        public string DefaultShipVia { get; set; }
         public int? DefaultContactNum { get; set; }
         public byte? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
 
-        public virtual Certification CertCdNavigation { get; set; }
-        public virtual Status CreditStatusNavigation { get; set; }
+        public virtual Certification Cert { get; set; }
+        public virtual CreditStatus CreditStatusNavigation { get; set; }
         public virtual Contact DefaultContactNumNavigation { get; set; }
-        public virtual ShipVia DefaultShipViaCdNavigation { get; set; }
         public virtual ShipVia DefaultShipViaNavigation { get; set; }
+        public virtual Priority Priority { get; set; }
         public virtual Employee SalesPersonNavigation { get; set; }
         public virtual ShipAccount ShipAccount { get; set; }
         public virtual ShipTo ShipTo { get; set; }
         public virtual Status StatusNavigation { get; set; }
         public virtual TaxJurisdiction TaxJurisd { get; set; }
-        public virtual Terms TermsCdNavigation { get; set; }
+        public virtual Terms Terms { get; set; }
+        public virtual CustBillTo CustBillTo { get; set; }
+        public virtual CustComment CustComment { get; set; }
+        public virtual CustForm CustForm { get; set; }
         public virtual ICollection<Contact> Contact { get; set; }
         public virtual ICollection<Driver> Driver { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
@@ -86,7 +81,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OrderHead> OrderHead { get; set; }
         public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<Process> Process { get; set; }
-        public virtual ICollection<SamplePlan> SamplePlan { get; set; }
+        public virtual ICollection<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual ICollection<ShipAccount> ShipAccountNavigation { get; set; }
+        public virtual ICollection<ShipTo> ShipToNavigation { get; set; }
     }
 }

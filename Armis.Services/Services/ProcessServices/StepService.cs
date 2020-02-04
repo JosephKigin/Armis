@@ -1,7 +1,8 @@
 ﻿using Armis.BusinessModels.ProcessModels;
 using Armis.Data.DatabaseContext;
+using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.ProcessExtensions;
-using Armis.DataLogic.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ProcessServices
 {
-    class StepService : IStepService
+    public class StepService : IStepService
     {
         private ARMISContext _context;
 
@@ -28,7 +29,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
         public async Task<int> CreateStep(StepModel aStepModel)
         {
-            if(aStepModel == null) { throw new NullReferenceException("No step model was given."); }
+            if (aStepModel == null) { throw new NullReferenceException("No step model was given."); }
 
             var theStepEntity = aStepModel.ToEntity();
 
@@ -52,33 +53,79 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepToDelete.StepId;
         }
 
-        public async Task<IEnumerable<StepModel>> GetAll()
+        //Get
+        public async Task<IEnumerable<StepModel>> GetAllHydrated()
         {
-            var theStepEntities = await Context.Step.ToListAsync();
+            var theStepEntities = await Context.Step
+                                        .Include(i => i.StepVarSeq)
+                                            .ThenInclude(j => j.StepVariable)
+                                                .ThenInclude(m => m.UomcdNavigation)
+                                        .Include(i => i.StepVarSeq)
+                                            .ThenInclude(j => j.StepVariable)
+                                                .ThenInclude(k => k.VarTempCdNavigation)
+                                                    .ThenInclude(l => l.StepVarTypeCdNavigation).ToListAsync();
 
-            if(theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
+            if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
             var theStepModels = new List<StepModel>();
 
             foreach (var step in theStepEntities)
             {
-                theStepModels.Add(step.ToModel(0));
+                theStepModels.Add(step.ToHydratedModel());
             }
 
             return theStepModels;
+        }
+
+        public async Task<StepModel> GetHydratedStepById(int aStepId)
+        {
+            var theStepEntity = await Context.Step.Where(i => i.StepId == aStepId)
+                                                  .Include(i => i.StepVarSeq)
+                                                    .ThenInclude(j => j.StepVariable)
+                                                        .ThenInclude(m => m.UomcdNavigation)
+                                                  .Include(i => i.StepVarSeq)
+                                                    .ThenInclude(j => j.StepVariable)
+                                                        .ThenInclude(k => k.VarTempCdNavigation)
+                                                            .ThenInclude(l => l.StepVarTypeCdNavigation)
+                                                  .SingleOrDefaultAsync();
+
+            if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
+
+            return theStepEntity.ToHydratedModel();
+        }
+
+        public async Task<List<StepModel>> GetHydratedByName(string aStepName)
+        {
+            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName)
+                                                 .Include(i => i.StepVarSeq)
+                                                   .ThenInclude(j => j.StepVariable)
+                                                       .ThenInclude(m => m.UomcdNavigation)
+                                                 .Include(i => i.StepVarSeq)
+                                                   .ThenInclude(j => j.StepVariable)
+                                                       .ThenInclude(k => k.VarTempCdNavigation)
+                                                           .ThenInclude(l => l.StepVarTypeCdNavigation)
+                                                 .ToListAsync();
+
+            if (theStepEntities == null) { throw new NullReferenceException("There is no step with that name."); }
+
+            var result = new List<StepModel>();
+
+            foreach (var step in theStepEntities) { result.Add(step.ToHydratedModel()); }
+
+            return result;
         }
 
         public async Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory)
         {
             var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd == aCategory).ToListAsync();
 
-            if(theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps returned that belong to " + aCategory + "."); }
+            if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps returned that belong to " + aCategory + "."); }
 
             var theStepModels = new List<StepModel>();
 
             foreach (var step in theStepEntities)
             {
-                theStepModels.Add(step.ToModel(0));
+                theStepModels.Add(step.ToModel());
             }
 
             return theStepModels;
@@ -88,7 +135,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         {
             var theStepEntityToChange = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
 
-            if(theStepEntityToChange == null) { throw new NullReferenceException("There is currently no Step with that Id in the database."); }
+            if (theStepEntityToChange == null) { throw new NullReferenceException("There is currently no Step with that Id in the database."); }
 
             var theNewStepEntity = aStepModel.ToEntity();
 
@@ -96,6 +143,47 @@ namespace Armis.DataLogic.Services.ProcessServices
             await Context.SaveChangesAsync();
 
             return theStepEntityToChange.StepId;
+        }
+
+        public async Task<int> AddVariablesToStep(StepModel aStepModel)
+        {
+            var variableEntitiesToAdd = new List<StepVariable>();
+
+            foreach (var model in aStepModel.Variables)
+            {
+                variableEntitiesToAdd.Add(model.ToEntity());
+            }
+
+            var stepVarSeqEntities = await Context.StepVarSeq.Where(i => i.StepId == aStepModel.StepId).ToListAsync();
+            var lastVariableIDUsed = await Context.StepVariable.MaxAsync(i => i.StepVariableId);
+            short nextSeqNum = 1;
+
+            if (stepVarSeqEntities != null && stepVarSeqEntities.Any())
+            {
+                nextSeqNum = stepVarSeqEntities.Max(i => i.VariableSeq);
+                nextSeqNum++;
+            }
+
+            foreach (var entity in variableEntitiesToAdd)
+            {
+                var existingVariableEntity = await Context.StepVariable.FirstOrDefaultAsync(i => i.DefaultMin == entity.DefaultMin &&
+                                                                                            i.DefaultMax == entity.DefaultMax &&
+                                                                                            i.Uomcd == entity.Uomcd &&
+                                                                                            i.VarTempCd == entity.VarTempCd);
+
+                if (existingVariableEntity != null) { entity.StepVariableId = existingVariableEntity.StepVariableId; }
+                else
+                {
+                    entity.StepVariableId = lastVariableIDUsed + 1;
+                    lastVariableIDUsed++;
+                    Context.StepVariable.Add(entity);
+                }
+
+                Context.StepVarSeq.Add(new StepVarSeq { StepId = aStepModel.StepId, StepVariableId = entity.StepVariableId, VariableSeq = nextSeqNum });
+                nextSeqNum++;
+            }
+            await Context.SaveChangesAsync();
+            return aStepModel.StepId;
         }
     }
 }

@@ -8,8 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public ProcessRevision()
         {
             OrderHead = new HashSet<OrderHead>();
-            ProcessSubOprSeq = new HashSet<ProcessSubOprSeq>();
-            ProcessVarOverride = new HashSet<ProcessVarOverride>();
+            ProcessStepSeq = new HashSet<ProcessStepSeq>();
         }
 
         public int ProcessId { get; set; }
@@ -19,13 +18,12 @@ namespace Armis.Data.DatabaseContext.Entities
         public TimeSpan TimeCreated { get; set; }
         public string RevStatusCd { get; set; }
         public int? DueDays { get; set; }
-        public string Notes { get; set; }
+        public string Comments { get; set; }
 
         public virtual Employee CreatedByEmpNavigation { get; set; }
         public virtual Process Process { get; set; }
         public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
-        public virtual ICollection<ProcessSubOprSeq> ProcessSubOprSeq { get; set; }
-        public virtual ICollection<ProcessVarOverride> ProcessVarOverride { get; set; }
+        public virtual ICollection<ProcessStepSeq> ProcessStepSeq { get; set; }
     }
 }

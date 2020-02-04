@@ -1,4 +1,3 @@
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.csprojAssemblyReference.cache
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
@@ -11,6 +10,8 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.Ap
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.Api.Views.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.Api.Views.pdb
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Razor.Language.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
@@ -127,6 +128,7 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.Da
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.Data.pdb
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.DataLogic.pdb
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
+C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.csprojAssemblyReference.cache
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\staticwebassets\Armis.Api.StaticWebAssets.Manifest.cache
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\staticwebassets\Armis.Api.StaticWebAssets.xml
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.MvcApplicationPartsAssemblyInfo.cache
@@ -154,5 +156,3 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Ap
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.csproj.CopyComplete
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.pdb
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\jkigin\source\repos\ArmisApi\Armis.Api\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll

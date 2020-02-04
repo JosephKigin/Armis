@@ -22,20 +22,19 @@ namespace Armis.Data.DatabaseContext.Entities
             SpecialHandlingNotifyEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingReviewReqByEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingSpecialPrintByEmpNavigation = new HashSet<SpecialHandling>();
-            SubOpRevision = new HashSet<SubOpRevision>();
         }
 
         public short EmpId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public byte? DefaultShift { get; set; }
-        public bool? Inactive { get; set; }
-        public bool? IsPriceTraining { get; set; }
-        public bool? IsShippingLogin { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsPriceTraining { get; set; }
+        public bool IsShippingLogin { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNum { get; set; }
         public string ExtUserId { get; set; }
-        public bool? CanExpedite { get; set; }
+        public bool CanExpedite { get; set; }
         public short? AreaId { get; set; }
 
         public virtual Area Area { get; set; }
@@ -54,6 +53,5 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<SpecialHandling> SpecialHandlingNotifyEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingReviewReqByEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingSpecialPrintByEmpNavigation { get; set; }
-        public virtual ICollection<SubOpRevision> SubOpRevision { get; set; }
     }
 }

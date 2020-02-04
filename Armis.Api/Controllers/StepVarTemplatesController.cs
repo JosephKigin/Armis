@@ -10,6 +10,7 @@ using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.BusinessModels.ProcessModels;
 
 namespace Armis.Api.Controllers
 {
@@ -19,19 +20,13 @@ namespace Armis.Api.Controllers
     {
         private readonly ARMISContext _context;
         private IVariableService _varService;
-        public IVariableService VarService 
-        {
-            get 
-            {
-                if(_varService == null) { _varService = new VariableService(_context); } 
-                return _varService; 
-            }
-            set { _varService = value; } 
-        }
+        public IVariableService VariableService { get; set; }
 
-        public StepVarTemplatesController(ARMISContext context)
+        public StepVarTemplatesController(ARMISContext context,
+                                          IVariableService aVariableService)
         {
             _context = context;
+            VariableService = aVariableService;
         }
 
         // GET: api/StepVarTemplates
@@ -40,23 +35,23 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await VarService.GetAllVariableTemplates();
+                var data = await VariableService.GetAllVariableTemplates();
 
                 var jsonData = JsonSerializer.Serialize(data);
 
                 return Ok(jsonData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
         // GET: api/StepVarTemplates/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<StepVarTemplate>> GetStepVarTemplate(int id)
+        public async Task<ActionResult<StepVarTemplate>> GetStepVarTemplate(string aCode)
         {
-            var stepVarTemplate = await _context.StepVarTemplate.FindAsync(id);
+            var stepVarTemplate = await _context.StepVarTemplate.FindAsync(aCode);
 
             if (stepVarTemplate == null)
             {
@@ -70,9 +65,9 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStepVarTemplate(int id, StepVarTemplate stepVarTemplate)
+        public async Task<IActionResult> PutStepVarTemplate(string aCode, StepVarTemplate stepVarTemplate)
         {
-            if (id != stepVarTemplate.VarTempId)
+            if (aCode != stepVarTemplate.VarTempCd)
             {
                 return BadRequest();
             }
@@ -85,7 +80,7 @@ namespace Armis.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StepVarTemplateExists(id))
+                if (!StepVarTemplateExists(aCode))
                 {
                     return NotFound();
                 }
@@ -102,26 +97,19 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<StepVarTemplate>> PostStepVarTemplate(StepVarTemplate stepVarTemplate)
+        public async Task<ActionResult> PostStepVarTemplate([FromBody]VariableTemplateModel aVariableTemplateModel)
         {
-            _context.StepVarTemplate.Add(stepVarTemplate);
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (StepVarTemplateExists(stepVarTemplate.VarTempId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                await VariableService.PostVariableTemplate(aVariableTemplateModel);
 
-            return CreatedAtAction("GetStepVarTemplate", new { id = stepVarTemplate.VarTempId }, stepVarTemplate);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                var result = BadRequest("EXCEPTION: " + ex.Message + "\r\n" + "INNER EXCEPTION: " + ex.InnerException.Message);
+                return result; //TODO: Error handling... This should work?
+            }
         }
 
         // DELETE: api/StepVarTemplates/5
@@ -140,9 +128,9 @@ namespace Armis.Api.Controllers
             return stepVarTemplate;
         }
 
-        private bool StepVarTemplateExists(int id)
+        private bool StepVarTemplateExists(string aCode)
         {
-            return _context.StepVarTemplate.Any(e => e.VarTempId == id);
+            return _context.StepVarTemplate.Any(e => e.VarTempCd == aCode);
         }
     }
 }

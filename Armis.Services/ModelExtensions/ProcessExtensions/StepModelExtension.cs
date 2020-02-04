@@ -8,17 +8,46 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {
-        public static StepModel ToModel(this Step aStep, int aSeq)
+        public static StepModel ToModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
         {
-            return new StepModel()
+            var result = new StepModel()
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
                 StepCategoryCd = aStep.StepCategoryCd,
                 StepId = aStep.StepId,
                 StepName = aStep.StepName,
-                Sequence = aSeq
+                Sequence = aSeq,
+                Operation = anOperation
             };
+
+            return result;
+        }
+
+        public static StepModel ToHydratedModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        {
+            var result = new StepModel()
+            {
+                Instructions = aStep.Instructions,
+                SignOffIsRequired = aStep.SignOffIsRequired,
+                StepCategoryCd = aStep.StepCategoryCd,
+                StepId = aStep.StepId,
+                StepName = aStep.StepName,
+                Sequence = aSeq,
+                Operation = anOperation
+            };
+
+            var variableList = new List<StepVariableModel>();
+
+            foreach (var variableSeq in aStep.StepVarSeq)
+            {
+                variableList.Add(variableSeq.StepVariable.ToModel());
+            }
+
+            result.Variables = variableList;
+
+            return result;
+
         }
 
         public static Step ToEntity(this StepModel aStepModel)
@@ -26,7 +55,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             var theStep = new Step()
             {
                 Instructions = aStepModel.Instructions,
-                RevStatusCd = aStepModel.RevStatusCd,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
                 StepCategoryCd = aStepModel.StepCategoryCd,
                 StepId = aStepModel.StepId,

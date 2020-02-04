@@ -10,62 +10,84 @@ using Armis.Data.DatabaseContext.Entities;
 using System.Text.Json;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Armis.DataLogic.Services.ProcessServices;
+using Armis.BusinessModels.ProcessModels;
 
 namespace Armis.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ProcessesController : ControllerBase
     {
         private readonly ARMISContext _context;
 
-        public ProcessesController(ARMISContext context)
+        public IProcessService ProcessService { get; set; }
+
+        public ProcessesController(ARMISContext context,
+                                   IProcessService aProcessService)
         {
             _context = context;
-        }
-
-        private IProcessService _processService;
-
-        public IProcessService ProcessService
-        {
-            get
-            {
-                if (_processService == null) { _processService = new ProcessService(_context); };
-                return _processService;
-            }
-            set { _processService = value; }
+            ProcessService = aProcessService;
         }
 
         // GET: api/Processes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Process>>> GetProcess()
+        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetProcess()
         {
-            return await _context.Process.ToListAsync();
+            try
+            {
+                var data = await ProcessService.GetAllProcesses();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong, please contact IT.");
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetHydratedProcesses()
+        {
+            try
+            {
+                var data = await ProcessService.GetHydratedProcessRevs();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Something went wrong, please contact IT. " + ex.Message);
+            }
         }
 
         // GET: api/Processes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Process>> GetProcess(int id)
+        public async Task<ActionResult<ProcessModel>> GetProcess(int id)
         {
-            var process = await _context.Process.FindAsync(id);
-
-            if (process == null)
+            try
             {
-                return NotFound();
+                var process = await ProcessService.GetHydratedProcess(id);
+                return Ok(JsonSerializer.Serialize(process));
             }
-
-            return process;
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        //TEST CODE!!!! TODO: Fix this.
-        [HttpGet("GetCompleteProcess")]
-        public async Task<ActionResult<string>> GetCompleteProcess()
+        [HttpGet("{id}")] //This requires a PROCESS id to be sent in.
+        public async Task<ActionResult<ProcessRevisionModel>> GetHydratedProcessRevision(int id)
         {
-            var data = await ProcessService.GetCompleteProcess(10000);
+            try
+            {
+                var data = await ProcessService.GetCurrentProcessRevWithSteps(id);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
 
-            if (data == null) { return Ok("There are no Active Revisions."); }
-
-            return Ok(data);
+                return NotFound(ex.Message);
+            }
         }
 
         // PUT: api/Processes/5
@@ -103,27 +125,33 @@ namespace Armis.Api.Controllers
         // POST: api/Processes
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Process>> PostProcess(Process process)
-        {
-            _context.Process.Add(process);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ProcessExists(process.ProcessId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //[HttpPost]
+        //public async Task<ActionResult<Process>> PostProcess(Process process)
+        //{
+        //    _context.Process.Add(process);
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (ProcessExists(process.ProcessId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return CreatedAtAction("GetProcess", new { id = process.ProcessId }, process);
+        //    return CreatedAtAction("GetProcess", new { id = process.ProcessId }, process);
+        //}
+
+        [HttpPost]
+        public async Task TestPostProcess()
+        {
+            await ProcessService.TestCreateProcess();
         }
 
         // DELETE: api/Processes/5

@@ -2,6 +2,27 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
+      "Microsoft.Extensions.Configuration.Abstractions/3.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "3.1.0"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Primitives/3.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.Primitives.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.Primitives.dll": {}
+        }
+      },
       "Armis.BusinessModels/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
@@ -15,6 +36,38 @@
     }
   },
   "libraries": {
+    "Microsoft.Extensions.Configuration.Abstractions/3.1.0": {
+      "sha512": "ESz6bVoDQX7sgWdKHF6G9Pq672T8k+19AFb/txDXwdz7MoqaNQj2/in3agm/3qae9V+WvQZH86LLTNVo0it8vQ==",
+      "type": "package",
+      "path": "microsoft.extensions.configuration.abstractions/3.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll",
+        "lib/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.xml",
+        "microsoft.extensions.configuration.abstractions.3.1.0.nupkg.sha512",
+        "microsoft.extensions.configuration.abstractions.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "Microsoft.Extensions.Primitives/3.1.0": {
+      "sha512": "LEKAnX7lhUhSoIc2XraCTK3M4IU/LdVUzCe464Sa4+7F4ZJuXHHRzZli2mDbiT4xzAZhgqXbvfnb5+CNDcQFfg==",
+      "type": "package",
+      "path": "microsoft.extensions.primitives/3.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp3.1/Microsoft.Extensions.Primitives.dll",
+        "lib/netcoreapp3.1/Microsoft.Extensions.Primitives.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Primitives.xml",
+        "microsoft.extensions.primitives.3.1.0.nupkg.sha512",
+        "microsoft.extensions.primitives.nuspec",
+        "packageIcon.png"
+      ]
+    },
     "Armis.BusinessModels/1.0.0": {
       "type": "project",
       "path": "../../Armis.BusinessModels/Armis.BusinessModels.csproj",
@@ -23,7 +76,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "Armis.BusinessModels >= 1.0.0"
+      "Armis.BusinessModels >= 1.0.0",
+      "Microsoft.Extensions.Configuration.Abstractions >= 3.1.0"
     ]
   },
   "packageFolders": {
@@ -33,11 +87,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj",
+      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj",
       "projectName": "ArmisWebsite.DataAccess",
-      "projectPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj",
+      "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj",
       "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\obj\\",
+      "outputPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -56,8 +110,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj": {
-              "projectPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj"
+            "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj"
             }
           }
         }
@@ -70,6 +124,12 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": {
+            "target": "Package",
+            "version": "[3.1.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

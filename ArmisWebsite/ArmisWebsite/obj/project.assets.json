@@ -609,6 +609,25 @@
           "lib/netstandard1.6/NuGet.Frameworks.dll": {}
         }
       },
+      "OdeToCode.UseNodeModules/3.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/OdeToCode.UseNodeModules.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/OdeToCode.UseNodeModules.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ],
+        "contentFiles": {
+          "contentFiles/any/netcoreapp3.0/Properties/launchSettings.json": {
+            "buildAction": "Content",
+            "codeLanguage": "any",
+            "copyToOutput": false
+          }
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
         "type": "package",
         "runtimeTargets": {
@@ -1906,7 +1925,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "Armis.BusinessModels": "1.0.0"
+          "Armis.BusinessModels": "1.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "3.1.0"
         },
         "compile": {
           "bin/placeholder/ArmisWebsite.DataAccess.dll": {}
@@ -2861,6 +2881,20 @@
         "lib/netstandard1.6/NuGet.Frameworks.xml",
         "nuget.frameworks.4.7.0.nupkg.sha512",
         "nuget.frameworks.nuspec"
+      ]
+    },
+    "OdeToCode.UseNodeModules/3.0.0": {
+      "sha512": "w1Xdc8oDggU4nucBSnoR4pPT9oHf/JtYGOisaeaFd8jiOoBcByddyuIPmWI2GiNUpXGKMPQROD4wl1aeEZ5aaA==",
+      "type": "package",
+      "path": "odetocode.usenodemodules/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Properties/launchSettings.json",
+        "contentFiles/any/netcoreapp3.0/Properties/launchSettings.json",
+        "lib/netcoreapp3.0/OdeToCode.UseNodeModules.dll",
+        "odetocode.usenodemodules.3.0.0.nupkg.sha512",
+        "odetocode.usenodemodules.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -6284,7 +6318,8 @@
     ".NETCoreApp,Version=v3.1": [
       "ArmisWebsite.DataAccess >= 1.0.0",
       "Microsoft.Extensions.Logging.Debug >= 3.1.0",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.0"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.0",
+      "OdeToCode.UseNodeModules >= 3.0.0"
     ]
   },
   "packageFolders": {
@@ -6294,11 +6329,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\ArmisWebsite.csproj",
+      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\ArmisWebsite.csproj",
       "projectName": "ArmisWebsite",
-      "projectPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\ArmisWebsite.csproj",
+      "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\ArmisWebsite.csproj",
       "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\obj\\",
+      "outputPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -6317,8 +6352,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj": {
-              "projectPath": "C:\\Users\\jkigin\\Source\\Repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj"
+            "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\ArmisWebsite\\ArmisWebsite.DataAccess\\ArmisWebsite.DataAccess.csproj"
             }
           }
         }
@@ -6339,6 +6374,10 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[3.1.0, )"
+          },
+          "OdeToCode.UseNodeModules": {
+            "target": "Package",
+            "version": "[3.0.0, )"
           }
         },
         "imports": [
