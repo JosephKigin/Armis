@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.DataAccess.Process
 {
-    class ProcessDataAccess : IProcessDataAccess
+    public class ProcessDataAccess : IProcessDataAccess
     {
         private readonly IConfiguration Config;
         public ProcessDataAccess(IConfiguration aConfig)
@@ -24,7 +24,27 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes");
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetProcess");
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw; //TODO: Implement better error handling
+                }
+            }
+        }
+
+        public async Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses()
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetHydratedProcesses");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);

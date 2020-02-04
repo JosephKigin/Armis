@@ -1,0 +1,7 @@
+{
+  "name": "armiswebsite",
+  "version": "1.0.0",
+  "dependencies": {
+    "sortablejs": "^1.10.2"
+  }
+}

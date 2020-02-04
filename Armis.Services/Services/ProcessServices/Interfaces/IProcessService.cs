@@ -12,11 +12,13 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         //READ
         Task<IEnumerable<ProcessModel>> GetAllProcesses();
         Task<ProcessModel> GetHydratedProcess(int processId);
-        Task<IEnumerable<ProcessModel>> GetAllProcessRevsForCustomer(int aCustomerId);
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs();
+        Task<ProcessRevisionModel> GetCurrentProcessRevWithSteps(int aProcessId);
 
         //CREATE
         Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev);
         Task<ProcessModel> CreateNewProcess(Process process);  //Returns ProcessId
+        Task TestCreateProcess();
 
         //UPDATE
         Task<ProcessModel> UpdateProcess(Process process);

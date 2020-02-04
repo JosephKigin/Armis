@@ -8,6 +8,7 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
 {
     public interface IProcessDataAccess
     {
-        public Task<IEnumerable<ProcessModel>> GetAllProcesses();
+        Task<IEnumerable<ProcessModel>> GetAllProcesses();
+        Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
     }
 }

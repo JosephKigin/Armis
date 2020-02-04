@@ -31,6 +31,7 @@ namespace ArmisWebsite
             services.AddScoped<IUomCodeDataAccess, UOMCodeDataAccess>();
             services.AddScoped<IStepDataAccess, StepDataAccess>();
             services.AddScoped<IVariableDataAccess, VariableDataAccess>();
+            services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
 
         }
 
@@ -50,6 +51,7 @@ namespace ArmisWebsite
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseNodeModules();
 
             app.UseRouting();
 

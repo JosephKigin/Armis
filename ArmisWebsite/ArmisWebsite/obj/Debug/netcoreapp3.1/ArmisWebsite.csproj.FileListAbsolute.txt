@@ -102,7 +102,6 @@ C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcor
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\ArmisWebsite.pdb
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\ArmisWebsite.Views.dll
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\ArmisWebsite.Views.pdb
-C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\ArmisWebsite.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\ArmisWebsite.Views.pdb
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\ArmisWebsite.dll
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\ArmisWebsite.pdb
@@ -117,3 +116,10 @@ C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcor
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\StepVariableMaintenance.cshtml.g.cs
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\Success.cshtml.g.cs
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\ProcessMenu.cshtml.g.cs
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\ProcessListing.cshtml.g.cs
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\Razor\Pages\ProcessMaintenance\ProcessMaintenance.cshtml.g.cs
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\libman.json
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\package-lock.json
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\package.json
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\bin\Debug\netcoreapp3.1\OdeToCode.UseNodeModules.dll
+C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite\obj\Debug\netcoreapp3.1\ArmisWebsite.MvcApplicationPartsAssemblyInfo.cache

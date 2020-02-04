@@ -10,7 +10,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public short StepSeq { get; set; }
         public int StepId { get; set; }
         public int OperationId { get; set; }
-        public short OperationSeq { get; set; }
 
         public virtual Operation Operation { get; set; }
         public virtual ProcessRevision Process { get; set; }
