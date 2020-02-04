@@ -27,8 +27,8 @@ namespace ArmisWebsite
         [BindProperty]
         public ProcessRevisionModel CurrentRev { get; set; }
 
-        [BindProperty]
-        public int TempProcessRevId { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string CurrentProcessId { get; set; }
 
         public ProcessMaintenanceModel(IProcessDataAccess aProcessDataAccess, IStepDataAccess aStepDataAccess)
         {
@@ -36,29 +36,36 @@ namespace ArmisWebsite
             StepDataAccess = aStepDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(int aProcessId = 0, string aMessage = "")
+        public async Task<IActionResult> OnGetAsync(int aProcessId = 0, string aMessage = "")
         {
-            await SetUpProperties();
-
-            CurrentRev = new ProcessRevisionModel();
-            CurrentRev.Steps = new List<StepModel>();
-
-            if (aProcessId != 0)
-            {
-                CurrentProcess = AllProcesses.FirstOrDefault(i => i.ProcessId == aProcessId);
-                CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
-            }
+            await SetUpProperties(aProcessId);
 
             return Page();
         }
 
-        public async Task SetUpProperties()
+        public async Task<IActionResult> OnGetEditRevAsync()
+        {
+            await SetUpProperties(int.Parse(CurrentProcessId));
+
+            return Page();
+        }
+
+        public async Task SetUpProperties(int aProcessId = 0)
         {
             var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
             AllProcesses = theProcesses.ToList();
 
             var theSteps = await StepDataAccess.GetAllHydratedSteps();
             AllSteps = theSteps.ToList();
+
+            CurrentRev = new ProcessRevisionModel();
+            CurrentRev.Steps = new List<StepModel>();
+
+            if (aProcessId > 0)
+            {
+                CurrentProcess = AllProcesses.FirstOrDefault(i => i.ProcessId == aProcessId);
+                CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
+            }
         }
     }
 }
