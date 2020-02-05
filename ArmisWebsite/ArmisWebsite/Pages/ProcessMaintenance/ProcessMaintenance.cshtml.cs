@@ -38,19 +38,19 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGetAsync(int aProcessId = 0, string aMessage = "")
         {
+            if(CurrentProcessId != null && aProcessId == 0) { aProcessId = int.Parse(CurrentProcessId); }
             await SetUpProperties(aProcessId);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnGetEditRevAsync()
+        public async Task<IActionResult> OnPost()
         {
-            await SetUpProperties(int.Parse(CurrentProcessId));
-
             return Page();
         }
+        
 
-        public async Task SetUpProperties(int aProcessId = 0)
+        public async Task SetUpProperties(int aProcessId)
         {
             var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
             AllProcesses = theProcesses.ToList();
