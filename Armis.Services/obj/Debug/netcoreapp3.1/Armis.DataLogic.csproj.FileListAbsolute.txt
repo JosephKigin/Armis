@@ -11,16 +11,3 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Services\obj\Debug\netcoreapp3.1\Arm
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.csproj.CopyComplete
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.DataLogic.deps.json
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.DataLogic.dll
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.DataLogic.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.BusinessModels.dll
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.Data.dll
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\bin\Debug\netcoreapp3.1\Armis.Data.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.csprojAssemblyReference.cache
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.AssemblyInfoInputs.cache
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.AssemblyInfo.cs
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.csproj.CopyComplete
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.dll
-C:\Users\bjohnson\Source\Repos\armisapi\Armis.Services\obj\Debug\netcoreapp3.1\Armis.DataLogic.pdb

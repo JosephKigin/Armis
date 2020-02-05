@@ -9,14 +9,3 @@ C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite.DataAccess\bin\D
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.csproj.CopyComplete
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.dll
 C:\Users\jkigin\source\repos\ArmisApi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\bin\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.deps.json
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\bin\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.dll
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\bin\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\bin\Debug\netcoreapp3.1\Armis.BusinessModels.dll
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\bin\Debug\netcoreapp3.1\Armis.BusinessModels.pdb
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.csprojAssemblyReference.cache
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.AssemblyInfoInputs.cache
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.AssemblyInfo.cs
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.csproj.CopyComplete
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.dll
-C:\Users\bjohnson\Source\Repos\armisapi\ArmisWebsite\ArmisWebsite.DataAccess\obj\Debug\netcoreapp3.1\ArmisWebsite.DataAccess.pdb
