@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArmisWebsite.DataAccess.Customer;
+using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Process;
 using ArmisWebsite.DataAccess.Process.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +34,7 @@ namespace ArmisWebsite
             services.AddScoped<IStepDataAccess, StepDataAccess>();
             services.AddScoped<IVariableDataAccess, VariableDataAccess>();
             services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
-
+            services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

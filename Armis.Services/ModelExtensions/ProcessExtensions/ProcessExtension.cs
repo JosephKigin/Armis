@@ -67,5 +67,15 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 ProcessId = aProcess.ProcessId
             };
         }
+
+        //To entity
+        public static Process ToEntity(this ProcessModel aProcessModel)
+        {
+            return new Process()
+            {
+                CustId = aProcessModel.CustId,
+                Name = aProcessModel.Name
+            };
+        }
     }
 }

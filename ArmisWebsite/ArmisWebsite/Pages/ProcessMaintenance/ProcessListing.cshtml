@@ -3,33 +3,92 @@
 @{
     ViewData["Title"] = "ProcessListing";
 }
+
 <head>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 </head>
 
 <h1>Process Listing</h1>
+<div id="stepList">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="input-group my-1">
+                <input id="searchProcesses" class="form-control border-right-0" onkeyup="searchProcessList()" />
+                <span class="input-group-append bg-white border-left-0">
+                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                </span>
+            </div>
+            <ul id="processList" class="list-group" style="max-height: 42em; overflow:scroll;">
+                @foreach (var process in Model.Processes)
+                {
+                    <li class="list-group-item" id="process-@process.ProcessId">
+                        <h4><b>@process.ProcessId: @process.Name</b></h4>
 
-<div id="sortable" class="list-group" style="max-height: 42em; overflow:scroll;">
-    @foreach (var process in Model.Processes)
-    {
-        <div class="list-group-item" id="@process.ProcessId">
-            <p><i class="fa fa-arrows-alt handle"></i><b>@process.ProcessId @process.Name</b></p>
-            <p>Most Recent Revision: @process.Revisions.Last().ProcessRevId</p>
+                        @if (process.Revisions != null && process.Revisions.Any())
+                        {<p>Current Revision: @process.Revisions.Last().ProcessRevId</p>}
+                        <a id="@process.ProcessId" class="fa fa-info-circle float-right" onmousedown="loadSteps(@process.ProcessId, '@process.Name')"></a>
+
+                    </li>
+                }
+            </ul>
         </div>
-    }
+
+        <div class="col-lg-6">
+            <h5 id="stepTitle"></h5>
+            <ul id="stepsPlaceholder" class="list-group">
+            </ul>
+        </div>
+
+    </div>
 </div>
 
-@section Scripts{
+<script>
+    function searchProcessList() {
+        var searchTerm = document.getElementById("searchProcesses").value.toUpperCase();
+        var processList = document.getElementById("processList");
+        var processListItems = processList.getElementsByTagName("li");
 
+        for (var i = 0; i < processListItems.length; i++) {
+            if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
+                processListItems[i].style.display = "none";
+            }
+            else {
+                processListItems[i].style.display = "block";
+            }
+        }
+    }
 
+    function loadSteps(aProcessId, aProcessName) {
+        if (aProcessId > 0) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://localhost:44316/api/processes/GetHydratedProcessRevision/' + aProcessId, true);
+            xhr.send();
 
-    <script>
-        new Sortable(sortable,
-            {
-                handle: '.handle',
-                animation: 150,
-                ghostClass: 'bg-warning'
-            });
-    </script>
-}
+            xhr.onload = function () {
+                var rev = JSON.parse(xhr.responseText);
+                var stepItemsHtml = '';
+
+                for (var i = 0; i < rev.Steps.length; i++) {
+                    var signOffReqHtml = '';
+                    if (rev.Steps[i].SignOffIsRequired == true) {
+                        signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
+                    }
+                    stepItemsHtml +=
+
+                        `<li class="list-group-item">
+                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.Steps[i].StepName + `</a>
+                                                <div id="stepItem` + i + `" class="collapse">
+                                                    <div class="card card-body">`+
+                        signOffReqHtml +
+                        `<p>` + rev.Steps[i].Instructions + `</p>
+                                                    </div>
+                                                </div>
+                                            </li>`
+                };
+
+                document.getElementById("stepsPlaceholder").innerHTML = stepItemsHtml;
+                document.getElementById("stepTitle").innerHTML = aProcessName.toString();
+            }
+        }
+    }
+</script>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.Data.DatabaseContext;
+using Armis.DataLogic.Services.CustomerServices;
+using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +53,7 @@ namespace Armis.Api
             services.AddScoped<IUOMService, UOMService>();
             services.AddScoped<IVariableService, VariableService>();
             services.AddScoped<IVariableTypeService, VariableTypeService>();
+            services.AddScoped<ICustomerService, CustomerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

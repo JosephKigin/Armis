@@ -10,5 +10,7 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
     {
         Task<IEnumerable<ProcessModel>> GetAllProcesses();
         Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
+        Task<bool> CheckIfNameIsUnique(string aName);
+        Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
     }
 }

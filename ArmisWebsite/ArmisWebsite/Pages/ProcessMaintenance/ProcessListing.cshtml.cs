@@ -25,12 +25,12 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGet()
         {
-            await SetUpPage();
+            await SetUpProperties();
 
             return Page();
         }
 
-        public async Task SetUpPage()
+        public async Task SetUpProperties()
         {
             var theProcesses = await ProcessDataAccess.GetAllProcesses();
             Processes = theProcesses.ToList();

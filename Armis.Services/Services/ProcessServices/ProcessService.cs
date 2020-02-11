@@ -20,9 +20,18 @@ namespace Armis.DataLogic.Services.ProcessServices
         }
 
         //Create
-        public Task<ProcessModel> CreateNewProcess(Process process)
+        public async Task<ProcessModel> CreateNewProcess(ProcessModel process)
         {
-            throw new NotImplementedException();
+            var entity = process.ToEntity();
+
+            var lastUsedId = await context.Process.MaxAsync(i => i.ProcessId);
+
+            entity.ProcessId = lastUsedId + 1;
+
+            context.Process.Add(entity);
+            await context.SaveChangesAsync();
+
+            return entity.ToModel();
         }
 
         public Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev)
@@ -75,17 +84,6 @@ namespace Armis.DataLogic.Services.ProcessServices
             context.RemoveRange(removeDisThang.ProcessRevision);
             context.Remove(removeDisThang);
             await context.SaveChangesAsync();
-        }
-
-        //Delete
-        public Task DeleteProcess(int processId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteProcessRev(int processId, int processRevId)
-        {
-            throw new NotImplementedException();
         }
 
         //Read
@@ -165,6 +163,14 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entity.ToHydratedModel();
         }
 
+        public async Task<bool> CheckIfNameIsUnique(string aName)
+        {
+            var entity = await context.Process.FirstOrDefaultAsync(i => i.Name == aName);
+
+            if(entity != null) { return false; }
+            else { return true; }
+        }
+
         //Update
         public async Task<ProcessModel> UpdateProcess(Process process)
         {
@@ -195,6 +201,17 @@ namespace Armis.DataLogic.Services.ProcessServices
                 throw new Exception("");
             }
             return new ProcessRevisionModel();
+        }
+
+        //Delete
+        public Task DeleteProcess(int processId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteProcessRev(int processId, int processRevId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

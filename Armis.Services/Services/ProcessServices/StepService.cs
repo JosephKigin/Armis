@@ -14,13 +14,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 {
     public class StepService : IStepService
     {
-        private ARMISContext _context;
-
-        public ARMISContext Context
-        {
-            get { return _context; }
-            set { _context = value; }
-        }
+        private ARMISContext Context;
 
         public StepService(ARMISContext aContext)
         {

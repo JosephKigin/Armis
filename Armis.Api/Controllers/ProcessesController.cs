@@ -90,6 +90,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet("{name}")]
+        public async Task<ActionResult<bool>> CheckIfNameIsUnique(string name)
+        {
+            try
+            {
+                var data = await ProcessService.CheckIfNameIsUnique(name);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest("Something went wrong.");
+            }
+        }
+
         // PUT: api/Processes/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -149,9 +164,17 @@ namespace Armis.Api.Controllers
         //}
 
         [HttpPost]
-        public async Task TestPostProcess()
+        public async Task<ActionResult<ProcessModel>> PostProcess(ProcessModel aProcessModel)
         {
-            await ProcessService.TestCreateProcess();
+            try
+            {
+                var data = await ProcessService.CreateNewProcess(aProcessModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Could not process request.");
+            }
         }
 
         // DELETE: api/Processes/5

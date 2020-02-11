@@ -1,216 +1,136 @@
-﻿@page "{aProcessId:int?}/{aMessage?}"
+﻿@page "{message?}"
 @model ArmisWebsite.ProcessMaintenanceModel
 @{
     ViewData["Title"] = "Process Maintenance";
 }
 
-<head>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
-
-    <script>
-
-    </script>
-
-</head>
-<body>
-
-    <script>
-        function LoadStepModal(aProcessId, aProcessName) {
-            if (aProcessId > 0) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://localhost:44316/api/processes/GetHydratedProcessRevision/' + aProcessId, true)
-                xhr.send();
-
-                xhr.onload = function () {
-                    var rev = JSON.parse(xhr.responseText);
-                    console.log(rev);
-                    var stepItemsHtml = '';
-                    for (var i = 0; i < rev.Steps.length; i++) {
-                        var signOffReqHtml = '';
-                        if (rev.Steps[i].SignOffIsRequired == true) {
-                            signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
-                        }
-                        stepItemsHtml +=
-                            
-                            `<li class="list-group-item">
-                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.Steps[i].StepName + `</a>
-                                                <div id="stepItem` + i + `" class="collapse">
-                                                    <div class="card card-body">`+
-                                                        signOffReqHtml + 
-                                                        `<p>` + rev.Steps[i].Instructions + `</p>
-                                                    </div>
-                                                </div>
-                                            </li>`
-                    };
-
-                    document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
-                    document.getElementById("modalStepTitle").innerHTML = aProcessName.toString();
-                };
-            }
-        };
-    </script>
-
-    <h1>Process Maintenance</h1>
-
-    <button class="btn btn-primary" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
-
-    <div class="modal fade" id="modalProcessSelect">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Choose a Process Revision To Edit</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <form method="get">
-                                    <select class="list-group" size="12" asp-for="CurrentProcessId">
-                                        @foreach (var process in Model.AllProcesses)
-                                        {
-                                            <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
-                                                @process.Name - 
-                                                Rev: @process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId
-                                                @if (process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().RevStatusCd == "UNLOCKED")
-                                                { @process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().RevStatusCd }
-                                            </option>
-                                        }
-                                    </select>
-                                    <button class="btn btn-primary">Edit</button>
-                                </form>
-                            </div>
-                            <div class="col-lg-6">
-                                <h5 id="modalStepTitle"></h5>
-                                <ul id="modalStepPlaceholder" class="list-group">
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+<h1>Create Process</h1>
+@*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
+@if (Model.Message != "" && Model.Message != null)
+{
+    if (Model.IsMessageGood)
+    {<label class="alert alert-success">@Model.Message</label> }
+else
+{ <label class="alert alert-danger">@Model.Message</label>}
+}
+<br />
+@*Process input*@
+<form method="post">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-2 mr-1">
+                <h5>Process Name: </h5>
+            </div>
+            <div class="col-lg-9">
+                <input type="text" asp-for="ProcessName" class="form-control" />
+                <span asp-validation-for="ProcessName" class="alert-danger"></span>
             </div>
         </div>
     </div>
+    @*Customer name input.  The Id and Full Name fields are read only and are populated by the modal.  The modal is a listing of customers that can be selected to populate the form.*@
+    <div class="row">
+        <div class="col-lg-2 mr-1">
+            <div class="btn btn-primary" data-toggle="modal" data-target="#custListModal">Customer</div>
+            <small class="form-text text-muted">A customer is not required.</small>
+        </div>
+        <div class="col-lg-9">
+            <input id="custNameInput" class="form-control w-25" asp-for="ProcessCustomerSearchName" onkeyup="manuallyLoadCustomer()" />
+            <b>Id: </b><input id="custIdInput" type="text" class="form-control w-25" asp-for="ProcessCustomerId" readonly />
+            <b>Full Name: </b><input id="custFullNameInput" type="text" class="form-control w-50" asp-for="ProcessCustomerFullName" readonly />
+        </div>
+    </div>
 
-    <form method="post">
-        <div class="row">
-            <div class="col-lg-4">
-                <h5>Process Details</h5>
+    <button type="submit" class="btn btn-primary m-3">Save</button>
+</form>
+
+@*This will clear the id and full name fields if a character is typed into the name field.*@
+<script>
+    function manuallyLoadCustomer() {
+
+        document.getElementById("custIdInput").value = "";
+        document.getElementById("custFullNameInput").value = "";
+    }
+</script>
+
+@*This is the customer modal.  A customer can be searched by their search name or their full name.  When a customer is selected and the Ok button is pressed, the customer data will be filled into the form above in the name, id, and full name input fields.*@
+<div id="custListModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label>Search by...</label>
                 <div class="form-group">
-                    <label><b>ID: </b></label>
-                    <input class="form-control" type="number" asp-for="CurrentProcess.ProcessId" />
+                    <b>Customer Code: </b><input id="inputCustCode" type="text" class="form-control" onkeyup="codeFilterFunction()" />
+                </div>
+                <div class="form-group">
+                    <b>Customer Name: </b><input id="inputCustName" type="text" class="form-control" onkeyup="nameFilterFunction()" />
                 </div>
 
-                <div class="form-group">
-                    <label><b>Name: </b></label>
-                    <input class="form-control" type="text" asp-for="CurrentProcess.Name" />
-                </div>
+                <select id="selectCust" class="list-group w-100" size="12">
+                    @foreach (var customer in Model.CustomerList)
+                    {
+                        <option id="@customer.Id" class="list-group-item" value="@customer.SearchName">
+                            @customer.Name (@customer.SearchName)
+                        </option>
+                    }
+                </select>
 
-                <div class="form-group">
-                    <label><b>Customer: </b></label>
-                    <input class="form-control" type="text" asp-for="CurrentProcess.CustId" />
-                </div>
+                <button id="btnCustSelect" class="btn btn-primary my-1" onclick="chooseCustomer()">Ok</button>
+                @*1st function is for the search name filter.  2nd is for the full name filter.  3rd is to load the data into the page.*@
+                <script>
+                    function codeFilterFunction() {
+                        var input = document.getElementById("inputCustCode");
+                        var filter = input.value.toUpperCase();
+                        var selectList = document.getElementById("selectCust");
+                        var options = selectList.getElementsByTagName("option");
 
-                <div class="form-group">
-                    <label><b>Current Rev: </b></label>
-                    <input class="form-control" type="number" asp-for="CurrentRev.ProcessRevId" />
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <h5>Current Steps</h5>
-                <div class="p-3" style="border:dashed green;">
-                    <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
-                        @if (Model.CurrentRev != null && Model.CurrentRev.Steps != null)
-                        {
-                            foreach (var step in Model.CurrentRev.Steps)
-                            {
-                                <li class="list-group-item" id="currentStep-@step.StepId">
-                                    <h5>
-                                        <i class="fa fa-arrows-alt handle"></i>
-                                        <a data-toggle="collapse" href="#stepDetails-@step.StepId">@step.StepName</a>
-                                    </h5>
-                                    <div id="stepDetails-@step.StepId" class="collapse">
-                                        <div class="card card-body">
-                                            @if (step.SignOffIsRequired == true)
-                                            {<p class="text-danger">Sign-Off Required</p>}
-                                            <b>Instructions: </b>@step.Instructions
-                                        </div>
-                                    </div>
-                                </li>
+                        for (var i = 0; i < options.length; i++) {
+                            if (!options[i].value.includes(filter)) {
+                                options[i].style.display = "none";
+                            }
+                            else {
+                                options[i].style.display = "block";
                             }
                         }
-
-                    </ul>
-                </div>
-                <div id="sortableTrash" class="mt-3" style="width:inherit; height:80px; border:dashed red; text-align:center;">
-                    <i class="fas fa-trash" style="color:red;"></i>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <h5>All Steps</h5>
-                <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
-                    @foreach (var step in Model.AllSteps)
-                    {
-                        <li class="list-group-item" id="allStep-@step.StepId">
-                            <h5>
-                                <i class="fa fa-arrows-alt handle"></i>
-                                <a data-toggle="collapse" href="#stepDetails-@step.StepId">@step.StepName</a>
-                            </h5>
-                            <div id="stepDetails-@step.StepId" class="collapse">
-                                <div class="card card-body">
-                                    @if (step.SignOffIsRequired == true)
-                                    {<p class="text-danger">Sign-Off Required</p>}
-                                    <b>Instructions: </b>@step.Instructions
-                                </div>
-                            </div>
-                        </li>
                     }
-                </ul>
+
+                    function nameFilterFunction() {
+                        var input = document.getElementById("inputCustName");
+                        var filter = input.value.toUpperCase();
+                        var selectList = document.getElementById("selectCust");
+                        var options = selectList.getElementsByTagName("option");
+
+
+
+
+                        for (var i = 0; i < options.length; i++) {
+                            //String manipulation to get the correct value from the innerHtml
+                            var cleanInnerHtml = options[i].innerHTML.trim();
+                            var endIndex = cleanInnerHtml.indexOf("(");
+                            var name = cleanInnerHtml.slice(0, endIndex);
+                            //End of string manipulation
+
+                            if (!name.includes(filter)) {
+                                options[i].style.display = "none";
+                            }
+                            else {
+                                options[i].style.display = "block";
+                            }
+                        }
+                    }
+
+                    //Gets selected customer within the modal and loads the information into the main customer inputs.
+                    function chooseCustomer() {
+                        var selectCustomer = document.getElementById("selectCust");
+                        var chosenOption = selectCustomer.options[selectCustomer.selectedIndex];
+
+                        document.getElementById("custNameInput").value = chosenOption.value;
+                        document.getElementById("custIdInput").value = chosenOption.id;
+                        document.getElementById("custFullNameInput").value = chosenOption.textContent.trim(); //innerHttp returns & as &amp; .textContent is a much beter alternative. 
+                        $("#custListModal").modal("hide");
+                    }
+
+                </script>
             </div>
-
         </div>
-    </form>
-</body>
-
-<script>
-    new Sortable(sortableAllSteps,
-        {
-            group: {
-                name: 'steps',
-                pull: 'clone'
-            },
-            handle: '.handle',
-            animation: 150,
-            ghostClass: 'bg-warning',
-            sort: false,
-            onAdd: function (evt) {
-                var el = evt.item;
-                el.parentNode.removeChild(evt.item);
-            }
-        });
-
-    new Sortable(sortableCurrentSteps,
-        {
-            group: {
-                name: 'steps'
-            },
-            handle: '.handle',
-            animation: 150,
-            ghostClass: 'bg-warning'
-        });
-
-    new Sortable(sortableTrash,
-        {
-            group: {
-                name: 'steps'
-            },
-            onAdd: function (evt) {
-                var el = evt.item;
-                el.parentNode.removeChild(evt.item);
-            }
-        });
-</script>
+    </div>
+</div>

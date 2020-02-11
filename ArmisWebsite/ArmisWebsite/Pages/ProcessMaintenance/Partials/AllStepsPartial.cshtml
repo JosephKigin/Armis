@@ -1,0 +1,21 @@
+﻿@model List<Armis.BusinessModels.ProcessModels.StepModel>
+
+<h5>All Steps</h5>
+<ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
+    @foreach (var step in Model)
+    {
+        <li class="list-group-item" id="allStep-@step.StepId">
+            <h5>
+                <i class="fa fa-arrows-alt handle"></i>
+                <a data-toggle="collapse" href="#stepDetails-@step.StepId">@step.StepName</a>
+            </h5>
+            <div id="stepDetails-@step.StepId" class="collapse">
+                <div class="card card-body">
+                    @if (step.SignOffIsRequired == true)
+                    {<p class="text-danger">Sign-Off Required</p>}
+                    <b>Instructions: </b>@step.Instructions
+                </div>
+            </div>
+        </li>
+    }
+</ul>

@@ -24,7 +24,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetProcess");
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetHydratedProcesses");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);
@@ -53,7 +53,51 @@ namespace ArmisWebsite.DataAccess.Process
                 }
                 catch (Exception ex)
                 {
-                    throw; //TODO: Implement better error handling
+                    throw; //TODO: Implement better error handling on this whole page
+                }
+            }
+        }
+
+        public async Task<bool> CheckIfNameIsUnique(string aName)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<bool>(responseString);
+
+                    return result;
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+        }
+
+        public async Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel)
+        {
+            using(var client = new HttpClient())
+            {
+                try
+                {
+                    StringContent data = new StringContent(JsonSerializer.Serialize(aProcessModel), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/processes/postprocess", data);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<ProcessModel>(responseString);
+
+                    return result;
+                }
+                catch (Exception)
+                {
+
+                    throw;
                 }
             }
         }
