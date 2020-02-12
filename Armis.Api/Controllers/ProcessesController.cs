@@ -86,7 +86,7 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
 
-                return NotFound(ex.Message);
+                return NotFound(JsonSerializer.Serialize("ERROR: " + ex.Message));
             }
         }
 

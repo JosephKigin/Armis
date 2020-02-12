@@ -12,27 +12,33 @@
 <div id="stepList">
     <div class="row">
         <div class="col-lg-6">
+            @*Search bar*@
             <div class="input-group my-1">
                 <input id="searchProcesses" class="form-control border-right-0" onkeyup="searchProcessList()" />
                 <span class="input-group-append bg-white border-left-0">
                     <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                 </span>
             </div>
-            <ul id="processList" class="list-group" style="max-height: 42em; overflow:scroll;">
+            @*Process list*@
+            <select id="processList" class="list-group w-100" size="12" style="overflow:scroll;">
                 @foreach (var process in Model.Processes)
                 {
-                    <li class="list-group-item" id="process-@process.ProcessId">
-                        <h4><b>@process.ProcessId: @process.Name</b></h4>
-
+                    <option class="list-group-item" id="process-@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name')">
+                        @process.ProcessId: @process.Name
+                        (Rev:
                         @if (process.Revisions != null && process.Revisions.Any())
-                        {<p>Current Revision: @process.Revisions.Last().ProcessRevId</p>}
-                        <a id="@process.ProcessId" class="fa fa-info-circle float-right" onmousedown="loadSteps(@process.ProcessId, '@process.Name')"></a>
-
-                    </li>
+                        {
+                            @process.Revisions.Last().ProcessRevId
+                        }
+                        else
+                        {
+                            <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
+                        })
+                    </option>
                 }
-            </ul>
+            </select>
         </div>
-
+        @*This is where the steps will be loaded*@
         <div class="col-lg-6">
             <h5 id="stepTitle"></h5>
             <ul id="stepsPlaceholder" class="list-group">
@@ -46,7 +52,7 @@
     function searchProcessList() {
         var searchTerm = document.getElementById("searchProcesses").value.toUpperCase();
         var processList = document.getElementById("processList");
-        var processListItems = processList.getElementsByTagName("li");
+        var processListItems = processList.getElementsByTagName("option");
 
         for (var i = 0; i < processListItems.length; i++) {
             if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
@@ -61,33 +67,39 @@
     function loadSteps(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://localhost:44316/api/processes/GetHydratedProcessRevision/' + aProcessId, true);
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true);
             xhr.send();
 
             xhr.onload = function () {
+
                 var rev = JSON.parse(xhr.responseText);
+                console.log(rev);
                 var stepItemsHtml = '';
+                if (xhr.status != 404) {
+                    for (var i = 0; i < rev.Steps.length; i++) {
+                        var signOffReqHtml = '';
+                        if (rev.Steps[i].SignOffIsRequired == true) {
+                            signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
+                        }
+                        stepItemsHtml +=
 
-                for (var i = 0; i < rev.Steps.length; i++) {
-                    var signOffReqHtml = '';
-                    if (rev.Steps[i].SignOffIsRequired == true) {
-                        signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
-                    }
-                    stepItemsHtml +=
-
-                        `<li class="list-group-item">
+                            `<li class="list-group-item">
                                                 <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.Steps[i].StepName + `</a>
                                                 <div id="stepItem` + i + `" class="collapse">
                                                     <div class="card card-body">`+
-                        signOffReqHtml +
-                        `<p>` + rev.Steps[i].Instructions + `</p>
+                            signOffReqHtml +
+                            `<p>` + rev.Steps[i].Instructions + `</p>
                                                     </div>
                                                 </div>
                                             </li>`
-                };
-
+                    };
+                }
+                else {
+                    stepItemsHtml = 'There are no steps for this process.'
+                }
                 document.getElementById("stepsPlaceholder").innerHTML = stepItemsHtml;
                 document.getElementById("stepTitle").innerHTML = aProcessName.toString();
+
             }
         }
     }

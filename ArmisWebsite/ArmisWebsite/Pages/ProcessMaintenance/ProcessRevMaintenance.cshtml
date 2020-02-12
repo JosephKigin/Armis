@@ -32,12 +32,23 @@
                                     <select class="list-group" size="12" asp-for="CurrentProcessId">
                                         @foreach (var process in Model.AllProcesses)
                                         {
-                                            <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
-                                                @process.Name -
-                                                Rev: @process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId
-                                                @if (process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().RevStatusCd == "UNLOCKED")
-                                                {@process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().RevStatusCd}
-                                            </option>
+                                        <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
+                                            @process.Name -
+                                            Rev:
+                                            @if (process.Revisions != null && process.Revisions.Any())
+                                            {
+                                                @process.Revisions.Last().ProcessRevId
+                                                if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
+                                                { 
+                                                    @process.Revisions.Last().RevStatusCd 
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
+                                            }
+
+                                        </option>
                                         }
                                     </select>
                                     <button class="btn btn-primary my-2">Ok</button>
@@ -124,7 +135,9 @@
     function LoadStepModal(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://localhost:44316/api/processes/GetHydratedProcessRevision/' + aProcessId, true) //TODO:!!!!!!!!!!!!!!!!!!!!!Move this to config!!!!!!!!!!!!!!!!!!!!!!!!
+            var CONFIG = require("./appsettings.json");
+            console.log(CONFIG);
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true) //TODO:!!!!!!!!!!!!!!!!!!!!!Move this to config!!!!!!!!!!!!!!!!!!!!!!!!
             xhr.send();
 
             xhr.onload = function () {
