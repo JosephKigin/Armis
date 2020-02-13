@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ArmisWebsite</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -21,7 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/ProcessMaintenance/ProcessMenu">Process Menu</a>
                         </li>
-                    </ul> 
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -35,6 +36,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2019 - ArmisWebsite - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <b class="float-right">@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") </b>
         </div>
     </footer>
 

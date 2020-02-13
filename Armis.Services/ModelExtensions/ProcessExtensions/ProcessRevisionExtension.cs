@@ -56,6 +56,21 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return theRev;
         }
 
+        public static ProcessRevision ToEntity(this ProcessRevisionModel aProcessRevModel)
+        {
+            return new ProcessRevision()
+            {
+                Comments = aProcessRevModel.Comments,
+                CreatedByEmp = aProcessRevModel.CreatedByEmp,
+                DateCreated = aProcessRevModel.DateCreated,
+                DueDays = aProcessRevModel.DueDays,
+                ProcessId = aProcessRevModel.ProcessId,
+                ProcessRevId = aProcessRevModel.ProcessRevId,
+                RevStatusCd = aProcessRevModel.RevStatusCd,
+                TimeCreated = aProcessRevModel.TimeCreated
+            };
+        }
+
         public static ProcessRevision ToHydratedEntity(this ProcessRevisionModel aProcessRevisionModel, List<ProcessStepSeq> aStepSeq)
         {
             return new ProcessRevision()

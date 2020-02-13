@@ -17,16 +17,16 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<bool> CheckIfNameIsUnique(string aName);
 
         //CREATE
-        Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev);
+        Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev);
         Task<ProcessModel> CreateNewProcess(ProcessModel process);  //Returns ProcessId
-        Task TestCreateProcess();
 
         //UPDATE
         Task<ProcessModel> UpdateProcess(Process process);
-        Task<ProcessRevisionModel> UpdateProcessRev(ProcessRevision processRev);
+        Task<ProcessRevisionModel> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqs);
+        Task<ProcessRevisionModel> UpdateUnlockToLockRev(ProcessRevisionModel aProcessRevModel);
 
         //DELETE
         Task DeleteProcess(int processId); //Must delete all revs linked to this process
-        Task DeleteProcessRev(int processId, int processRevId);
+        Task DeleteProcessRev(ProcessRevisionModel aProcessRevModel);
     }
 }

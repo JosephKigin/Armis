@@ -52,7 +52,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 
         public static Step ToEntity(this StepModel aStepModel)
         {
-            var theStep = new Step()
+            return new Step()
             {
                 Instructions = aStepModel.Instructions,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
@@ -60,10 +60,17 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 StepId = aStepModel.StepId,
                 StepName = aStepModel.StepName
             };
+        }
 
-            if (aStepModel.StepId != 0) { theStep.StepId = aStepModel.StepId; }
+        public static IEnumerable<Step> ToEntity(this IEnumerable<StepModel> aStepModels)
+        {
+            var theStepEntities = new List<Step>();
+            foreach (var aStep in aStepModels)
+            {
+                theStepEntities.Add(aStep.ToEntity());
+            }
 
-            return theStep;
+            return theStepEntities;
         }
     }
 }

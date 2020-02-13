@@ -34,56 +34,29 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entity.ToModel();
         }
 
-        public Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev)
+        public async Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev)
         {
-            throw new NotImplementedException();
-        }
+            newRev.RevStatusCd = "UNLOCKED";
+            var currentRev = await context.ProcessRevision.Where(i => i.ProcessId == newRev.ProcessId).OrderByDescending(i => i.RevStatusCd).FirstAsync();
 
-        public async Task TestCreateProcess()
-        {
-            //var revs = new List<ProcessRevision>();
-
-            //var rev1 = new ProcessRevision()
-            //{
-            //    ProcessRevId = 1,
-            //    ProcessId = 1,
-            //    CreatedByEmp = 991,
-            //    DateCreated = DateTime.Now.Date,
-            //    TimeCreated = DateTime.Now.TimeOfDay,
-            //    RevStatusCd = "INACTIVE",
-            //    DueDays = 4,
-            //    Comments = "This is a test."
-            //};
-
-            //var rev2 = new ProcessRevision()
-            //{
-            //    ProcessRevId = 2,
-            //    ProcessId = 1,
-            //    CreatedByEmp = 991,
-            //    DateCreated = DateTime.Now.Date,
-            //    TimeCreated = DateTime.Now.TimeOfDay,
-            //    RevStatusCd = "LOCKED",
-            //    DueDays = 4,
-            //    Comments = "This is a second test."
-            //};
-
-            //revs.Add(rev1);
-            //revs.Add(rev2);
-
-            //var result = new Process()
-            //{
-            //    CustId = 1,
-            //    Name = "TEST PROCESS",
-            //    ProcessId = 1,
-            //    ProcessRevision = revs
-            //};
-
-            //context.Process.Add(result);
-
-            var removeDisThang = await context.Process.Where(i => i.ProcessId == 1).Include(i => i.ProcessRevision).FirstOrDefaultAsync();
-            context.RemoveRange(removeDisThang.ProcessRevision);
-            context.Remove(removeDisThang);
+            if (currentRev == null)
+            {
+                newRev.ProcessRevId = 1;
+            }
+            else if (currentRev.RevStatusCd == "UNLOCKED")
+            {
+                throw new InvalidOperationException("Cannot Rev-Up a process whos most current revision is unlocked.");
+            }
+            else
+            {
+                newRev.ProcessRevId = currentRev.ProcessRevId + 1;
+            }
+            newRev.DateCreated = DateTime.Now;
+            newRev.TimeCreated = DateTime.Now.TimeOfDay;
+            context.ProcessRevision.Add(newRev.ToEntity());
             await context.SaveChangesAsync();
+
+            return newRev;
         }
 
         //Read
@@ -167,7 +140,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         {
             var entity = await context.Process.FirstOrDefaultAsync(i => i.Name == aName);
 
-            if(entity != null) { return false; }
+            if (entity != null) { return false; }
             else { return true; }
         }
 
@@ -184,23 +157,59 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theProcessToUpdate.ToModel();
         }
 
-        public async Task<ProcessRevisionModel> UpdateProcessRev(ProcessRevision aProcessRev)
+        public async Task<ProcessRevisionModel> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqs)
         {
-            var currentRev = await context.ProcessRevision.SingleOrDefaultAsync(i => i.ProcessId == aProcessRev.ProcessId && i.ProcessRevId == aProcessRev.ProcessRevId);
+            var firstStepSeq = aStepSeqs.First();  //This is only used for pulling the rev and process id.  All step sequences in aStepSeqs have the same process and revision id.
+            var theRev = await context.ProcessRevision.Include(i => i.ProcessStepSeq).FirstOrDefaultAsync(i => i.ProcessId == firstStepSeq.ProcessId && i.ProcessRevId == firstStepSeq.RevisionId);
 
-            if (currentRev.RevStatusCd == "LOCKED")
+            if (theRev.RevStatusCd == "LOCKED" || theRev.RevStatusCd == "INACTIVE")
             {
-                aProcessRev.ProcessRevId = currentRev.ProcessRevId + 1;
+                throw new InvalidOperationException("Cannot change steps on a locked or inactive revision. \r\n" + DateTime.Now);
             }
-            else if (currentRev.RevStatusCd == "UNLOCKED")
+
+            if (theRev.ProcessStepSeq != null && theRev.ProcessStepSeq.Any())
             {
-                aProcessRev.ProcessRevId = currentRev.ProcessRevId;
+                foreach (var stepSeq in theRev.ProcessStepSeq) //Delete all step seq current for that rev.
+                {
+                    context.ProcessStepSeq.Remove(stepSeq);
+                }
             }
-            else if(currentRev.RevStatusCd == "")
+
+            context.ProcessStepSeq.AddRange(aStepSeqs.ToEntities());
+            await context.SaveChangesAsync();
+
+            var result = await context.ProcessRevision.Include(i => i.ProcessStepSeq).FirstOrDefaultAsync(i => i.ProcessId == firstStepSeq.ProcessId && i.ProcessRevId == firstStepSeq.RevisionId);
+
+            return result.ToModel();
+        }
+
+        public async Task<ProcessRevisionModel> UpdateUnlockToLockRev(ProcessRevisionModel aProcessRevModel)
+        {
+            //Grabs the current revision with the ProcessId and Revision Id being passed in.  This revision NEEDS to be locked.
+            var currentRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessRevModel.ProcessId && i.ProcessRevId == aProcessRevModel.ProcessRevId);
+
+            if (currentRev.RevStatusCd != "UNLOCKED")
             {
-                throw new Exception("");
+                throw new InvalidOperationException("The most current revision for that process is not unlocked. \r\n" + DateTime.Now);
             }
-            return new ProcessRevisionModel();
+            
+            if (currentRev.ProcessId > 1)
+            {
+                var previousRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId - 1);
+
+                if (previousRev.RevStatusCd != "LOCKED") //The previous revision before the unlocked needs to be locked.
+                {
+                    throw new InvalidOperationException("The previous revision of this unlocked revision is not locked.  Process Id: " + aProcessRevModel.ProcessId + "\r\n" + DateTime.Now);
+                }
+
+                previousRev.RevStatusCd = "INACTIVE";
+            }
+
+            currentRev.RevStatusCd = "LOCKED";
+
+            await context.SaveChangesAsync();
+
+            return currentRev.ToModel();
         }
 
         //Delete
@@ -209,9 +218,18 @@ namespace Armis.DataLogic.Services.ProcessServices
             throw new NotImplementedException();
         }
 
-        public Task DeleteProcessRev(int processId, int processRevId)
+        public async Task DeleteProcessRev(ProcessRevisionModel aProcessRevModel)
         {
-            throw new NotImplementedException();
+            var entity = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessRevModel.ProcessId && i.ProcessRevId == aProcessRevModel.ProcessRevId);
+
+            if(entity.RevStatusCd != "UNLOCKED")
+            {
+                throw new InvalidOperationException("Cannot delete a Process Revision that isn't unlocked. \r\n" + DateTime.Now);
+            }
+
+            context.ProcessRevision.Remove(entity);
+
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -137,32 +137,6 @@ namespace Armis.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Processes
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        //[HttpPost]
-        //public async Task<ActionResult<Process>> PostProcess(Process process)
-        //{
-        //    _context.Process.Add(process);
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (ProcessExists(process.ProcessId))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return CreatedAtAction("GetProcess", new { id = process.ProcessId }, process);
-        //}
-
         [HttpPost]
         public async Task<ActionResult<ProcessModel>> PostProcess(ProcessModel aProcessModel)
         {
@@ -171,9 +145,51 @@ namespace Armis.Api.Controllers
                 var data = await ProcessService.CreateNewProcess(aProcessModel);
                 return Ok(JsonSerializer.Serialize(data));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Could not process request.");
+                return BadRequest("Could not process request. " + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> PostNewRev(ProcessRevisionModel aProcessRevModel)
+        {
+            try
+            {
+                var data = await ProcessService.CreateNewRevForExistingProcess(aProcessRevModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevUnlockedToLocked(ProcessRevisionModel aProcessRevModel)
+        {
+            try
+            {
+                var data = await ProcessService.UpdateUnlockToLockRev(aProcessRevModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);                
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsToRev(IEnumerable<StepSeqModel> aStepSeqModels)
+        {
+            try
+            {
+                var data = await ProcessService.UpdateStepsForRev(aStepSeqModels);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -191,6 +207,22 @@ namespace Armis.Api.Controllers
             await _context.SaveChangesAsync();
 
             return process;
+        }
+
+        [HttpDelete("{aProcessRevModel}")]
+        public async Task<ActionResult> DeleteProcessRevision(ProcessRevisionModel aProcessRevModel)
+        {
+            try
+            {
+                await ProcessService.DeleteProcessRev(aProcessRevModel);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         private bool ProcessExists(int id)
