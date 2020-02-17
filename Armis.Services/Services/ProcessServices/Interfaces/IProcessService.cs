@@ -27,6 +27,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
 
         //DELETE
         Task DeleteProcess(int processId); //Must delete all revs linked to this process
-        Task DeleteProcessRev(ProcessRevisionModel aProcessRevModel);
+        Task DeleteProcessRev(int aProcessId, int aProcessRevId);
     }
 }

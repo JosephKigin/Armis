@@ -193,28 +193,12 @@ namespace Armis.Api.Controllers
             }
         }
 
-        // DELETE: api/Processes/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Process>> DeleteProcess(int id)
-        {
-            var process = await _context.Process.FindAsync(id);
-            if (process == null)
-            {
-                return NotFound();
-            }
-
-            _context.Process.Remove(process);
-            await _context.SaveChangesAsync();
-
-            return process;
-        }
-
-        [HttpDelete("{aProcessRevModel}")]
-        public async Task<ActionResult> DeleteProcessRevision(ProcessRevisionModel aProcessRevModel)
+        [HttpDelete("{aProcessId}/{aProcessRevId}")]
+        public async Task<ActionResult> DeleteProcessRevision(int aProcessId, int aProcessRevId)
         {
             try
             {
-                await ProcessService.DeleteProcessRev(aProcessRevModel);
+                await ProcessService.DeleteProcessRev(aProcessId, aProcessRevId);
 
                 return Ok();
             }

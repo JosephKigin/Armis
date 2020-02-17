@@ -36,12 +36,15 @@ namespace Armis.DataLogic.Services.ProcessServices
 
         public async Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev)
         {
-            newRev.RevStatusCd = "UNLOCKED";
-            var currentRev = await context.ProcessRevision.Where(i => i.ProcessId == newRev.ProcessId).OrderByDescending(i => i.RevStatusCd).FirstAsync();
+            var newRevEntity = newRev.ToEntity();
+            newRevEntity.RevStatusCd = "UNLOCKED";
+            var currentRevs = await context.ProcessRevision.Where(i => i.ProcessId == newRev.ProcessId).Include(i => i.ProcessStepSeq).ToListAsync();
+            var currentRev = (currentRevs != null && currentRevs.Any()) ? currentRevs.OrderByDescending(i => i.ProcessRevId).First() : null;
 
-            if (currentRev == null)
+
+            if (currentRevs == null || !currentRevs.Any())
             {
-                newRev.ProcessRevId = 1;
+                newRevEntity.ProcessRevId = 1;
             }
             else if (currentRev.RevStatusCd == "UNLOCKED")
             {
@@ -49,11 +52,23 @@ namespace Armis.DataLogic.Services.ProcessServices
             }
             else
             {
-                newRev.ProcessRevId = currentRev.ProcessRevId + 1;
+                newRevEntity.ProcessRevId = currentRev.ProcessRevId + 1;
+                foreach (var stepSeq in currentRev.ProcessStepSeq)
+                {
+                    var newStepSeq = new ProcessStepSeq()
+                    {
+                        ProcessRevId = newRevEntity.ProcessRevId,
+                        OperationId = stepSeq.OperationId,
+                        ProcessId = stepSeq.ProcessId,
+                        StepId = stepSeq.StepId,
+                        StepSeq = stepSeq.StepSeq
+                    };
+                    newRevEntity.ProcessStepSeq.Add(newStepSeq);
+                }
             }
-            newRev.DateCreated = DateTime.Now;
-            newRev.TimeCreated = DateTime.Now.TimeOfDay;
-            context.ProcessRevision.Add(newRev.ToEntity());
+            newRevEntity.DateCreated = DateTime.Now;
+            newRevEntity.TimeCreated = DateTime.Now.TimeOfDay;
+            context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
 
             return newRev;
@@ -192,7 +207,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             {
                 throw new InvalidOperationException("The most current revision for that process is not unlocked. \r\n" + DateTime.Now);
             }
-            
+
             if (currentRev.ProcessId > 1)
             {
                 var previousRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId - 1);
@@ -218,16 +233,20 @@ namespace Armis.DataLogic.Services.ProcessServices
             throw new NotImplementedException();
         }
 
-        public async Task DeleteProcessRev(ProcessRevisionModel aProcessRevModel)
+        public async Task DeleteProcessRev(int aProcessId, int aProcessRevId)
         {
-            var entity = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessRevModel.ProcessId && i.ProcessRevId == aProcessRevModel.ProcessRevId);
+            var entity = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessId && i.ProcessRevId == aProcessRevId);
 
-            if(entity.RevStatusCd != "UNLOCKED")
+            if (entity.RevStatusCd != "UNLOCKED")
             {
                 throw new InvalidOperationException("Cannot delete a Process Revision that isn't unlocked. \r\n" + DateTime.Now);
             }
 
             context.ProcessRevision.Remove(entity);
+
+            var stepSeqEntities = await context.ProcessStepSeq.Where(i => i.ProcessId == aProcessId && i.ProcessRevId == aProcessRevId).ToListAsync();
+
+            context.ProcessStepSeq.RemoveRange(stepSeqEntities);
 
             await context.SaveChangesAsync();
         }

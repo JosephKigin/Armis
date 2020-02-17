@@ -82,7 +82,7 @@ namespace ArmisWebsite.DataAccess.Process
 
         public async Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel)
         {
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 try
                 {
@@ -95,6 +95,45 @@ namespace ArmisWebsite.DataAccess.Process
                     return result;
                 }
                 catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+        }
+
+        public async Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId) //This will return the response from the API in string format.
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.DeleteAsync(Config["APIAddress"] + "api/processes/DeleteProcessRevision/" + aProcessId + "/"+ aProcessRevId);
+
+                    return response.StatusCode.ToString();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+
+        public async Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    StringContent data = new StringContent(JsonSerializer.Serialize(aProcessRevModel), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/processes/PostNewRev", data);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<ProcessRevisionModel>(responseString);
+
+                    return result;
+                }
+                catch (Exception ex)
                 {
 
                     throw;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.ProcessModels;
@@ -25,16 +26,30 @@ namespace ArmisWebsite
 
         //Page Properties
         [BindProperty]
-        public ProcessModel CurrentProcess { get; set; }
+        public string Message { get; set; }
+        public bool IsMessageGood { get; set; }
 
         [BindProperty]
+        public ProcessModel CurrentProcess { get; set; }
+
+        [BindProperty(SupportsGet = true)]
         public ProcessRevisionModel CurrentRev { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string CurrentProcessId { get; set; }
+        public int CurrentProcessId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int CurrentRevId { get; set; }
+
+        [BindProperty]
+        [MaxLength(100)]
+        public string Comment { get; set; } //Validation is done through javascript on the front-end
+
+        [BindProperty]
+        public short EmpNumber { get; set; } //Validation is done through javascript on the front-end
 
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
-                                          IStepDataAccess aStepDataAccess, 
+                                          IStepDataAccess aStepDataAccess,
                                           IConfiguration aConfig)//Config is injected only to grab the APIAddress for the javascript calls on the web page.
         {
             ProcessDataAccess = aProcessDataAccess;
@@ -42,9 +57,11 @@ namespace ArmisWebsite
             _apiAddress = aConfig["APIAddress"];
         }
 
+
+
         public async Task<IActionResult> OnGetAsync(int aProcessId = 0, string aMessage = "")
         {
-            if (CurrentProcessId != null && aProcessId == 0) { aProcessId = int.Parse(CurrentProcessId); }
+            if (CurrentProcessId != 0 && aProcessId == 0) { aProcessId = CurrentProcessId; }
             await SetUpProperties(aProcessId);
 
             return Page();
@@ -55,6 +72,33 @@ namespace ArmisWebsite
             return Page();
         }
 
+        public async Task<IActionResult> OnPostDelete()
+        {
+            var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
+
+            Message = "Revision deleted successfully.";
+            IsMessageGood = true;
+
+            await SetUpProperties(CurrentProcessId);
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostRevUp()
+        {
+            CurrentRev.Comments = Comment;
+            CurrentRev.CreatedByEmp = EmpNumber;
+            CurrentRev.ProcessId = CurrentProcessId;
+
+            var result = await ProcessDataAccess.RevUp(CurrentRev);
+
+            CurrentRev = result;
+
+            Message = "A new revision has been created.";
+            IsMessageGood = true;
+            await SetUpProperties(CurrentProcessId);
+            return Page();
+        }
 
         public async Task SetUpProperties(int aProcessId)
         {
@@ -69,14 +113,25 @@ namespace ArmisWebsite
             var theSteps = await StepDataAccess.GetAllHydratedSteps();
             AllSteps = theSteps.ToList();
 
-            CurrentRev = new ProcessRevisionModel();
+            CurrentProcess = new ProcessModel(); //This needs to be created even if there isn't a process being passed in so the front-end doesn't throw a null reference exception when looking for a name.
+
+            CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end does throw a null reference exception when loading the current step list.
             CurrentRev.Steps = new List<StepModel>();
 
-            CurrentProcess = new ProcessModel();
             if (aProcessId > 0)
             {
                 CurrentProcess = AllProcesses.FirstOrDefault(i => i.ProcessId == aProcessId);
-                CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
+                if (CurrentProcess.Revisions.Any())
+                {
+                    ModelState.Remove("CurrentRevId"); //The input field wasn't updating when deleting an unlocked revision.  This clears the model state for just this property
+                    CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
+                    if (CurrentRev != null) { CurrentRevId = CurrentRev.ProcessRevId; }
+                }
+                else
+                {
+                    ModelState.Remove("CurrentRevId"); //The input field wasn't updating when deleting an unlocked revision.  This clears the model state for just this property
+                    CurrentRevId = 0;
+                }
             }
         }
     }

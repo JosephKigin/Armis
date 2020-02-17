@@ -8,16 +8,25 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 
-    <script>
-
-    </script>
-
 </head>
 <body>
-    <h1>Process Rev Maintenance</h1> <a class="btn btn-danger" href="ProcessRevMaintenance">Clear</a>
+    <h1>Process Rev Maintenance</h1>
+    @*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
+    <p>
+        @if (Model.Message != "" && Model.Message != null)
+        {
+            if (Model.IsMessageGood)
+            {<label class="alert alert-success">@Model.Message</label> }
+        else
+        { <label class="alert alert-danger">@Model.Message</label>}
+}
+    </p>
 
+    @*Buttons on the top of the screen*@
+    <a class="btn btn-danger" href="ProcessRevMaintenance">Clear</a>
     <button class="btn btn-primary" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
 
+    @**@
     <div class="modal fade" id="modalProcessSelect">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -44,7 +53,7 @@
                                             }
                                             else
                                             {
-                                                <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
+                                                <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
                                             }
 
                                         </option>
@@ -65,103 +74,99 @@
         </div>
     </div>
 
+    @*Main section that displays information about the current Process and the current Revision.*@
     <div class="row">
         <div class="col-lg-4">
             <h3>Process Details</h3>
-            <div class="card card-body">
-                <h5><b>Name: </b>@Model.CurrentProcess.Name</h5>
-                <h5><b>Customer: </b>@Model.CurrentProcess.CustId</h5>
-                @if (Model.CurrentRev != null)
-                {
-                    <h5><b>Current Rev: </b>@Model.CurrentRev.ProcessRevId</h5>
-                    <h5><b>Status: </b>@Model.CurrentRev.RevStatusCd</h5>
-                }
-                else
-                {
-                    <h5><b>Current Rev: </b>NONE</h5>
-                }
-
-            </div>
-
-            <div class="card card-body">
-                @{
-                    var btnRevUpDisable = "disabled";
-                    var btnRevUpClasses = "btn btn-outline-secondary m-1";
-
-                    var btnLockDisable = "disabled";
-                    var btnLockClasses = "btn btn-outline-secondary m-1";
-
-                    var btnSaveDisable = "disabled";
-                    var btnSaveClasses = "btn btn-outline-secondary m-1";
-
-                    var btnDeleteDisable = "disabled";
-                    var btnDeleteClasses = "btn btn-outline-secondary m-1";
-
-                    if (Model.CurrentRev == null)
+            <form method="post">
+                <div class="card card-body">
+                    <h5><b>Process ID: </b></h5><input asp-for="CurrentProcessId" class="form-control" type="number" readonly />
+                    <h5><b>Name: </b>@Model.CurrentProcess.Name</h5>
+                    <h5><b>Customer: </b>@Model.CurrentProcess.CustId</h5>
+                    @if (Model.CurrentRev != null)
                     {
-                        btnRevUpDisable = "";
-                        btnRevUpClasses = "btn btn-primary m-1";
+                        <h5><b>Current Rev: </b></h5><input asp-for="CurrentRevId" class="form-control" type="number" readonly />
+                        <h5><b>Status: </b>@Model.CurrentRev.RevStatusCd</h5>
                     }
-                    else if (Model.CurrentRev.RevStatusCd == "LOCKED")
+                    else
                     {
-                        btnRevUpDisable = "";
-                        btnRevUpClasses = "btn btn-primary m-1";
+                        <h5><b>Current Rev: </b>NONE</h5>
+                    }
+
+                </div>
+
+                <div class="card card-body">
+                    @*
+                        There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
+                        the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
+                        everything else is enabled.
+                    *@
+                    @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
+                    {
+                        <input type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#modalRevUpComment" value="Rev Up" />
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" asp-page-handler="Delete" disabled>Delete</button>
                     }
                     else if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                     {
-                        btnLockDisable = "";
-                        btnLockClasses = "btn btn-primary m-1";
-                        btnSaveDisable = "";
-                        btnSaveClasses = "btn btn-primary m-1";
-                        btnDeleteDisable = "";
-                        btnDeleteClasses = "btn btn-danger m-1";
+                        <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
+                        <button type="submit" class="btn btn-primary m-1">Lock</button>
+                        <button type="submit" class="btn btn-primary m-1">Save</button>
+                        <button type="submit" class="btn btn-danger m-1" asp-page-handler="Delete">Delete</button>
                     }
-                }
-                @*4 different forms.  One for the "Additional Details" modal, and 3 for the buttons "lock", "Save", and "Delete"*@
-                <button class="@btnRevUpClasses" @btnRevUpDisable data-toggle="modal" data-target="#modalRevUpComment">Rev Up</button>
-                <button type="submit" class="@btnLockClasses" @btnLockDisable>Lock</button>
-                <button type="submit" class="@btnSaveClasses" @btnSaveDisable>Save</button>
-                <button type="submit" class="@btnDeleteClasses" @btnDeleteDisable>Delete</button>
+                    else
+                    {
+                        <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" asp-page-handler="Delete" disabled>Delete</button>
+                    }
+                </div>
+            </form>
 
-                <div class="modal fade" id="modalRevUpComment">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Additional Details</h5>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label><b>Comment:</b></label>
-                                        <textarea class="form-control"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label><b>Employee Number:</b></label>
-                                        <input class="form-control" type="text" />
-                                    </div>
-                                    <button type="submit" class="@btnRevUpClasses" @btnRevUpDisable>Rev Up</button>
-                                </form>
-
-                            </div>
+            @*Modal for Rev Up for the user to add in a comment and their employee number.*@
+            <div class="modal fade" id="modalRevUpComment">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Additional Details</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                <input asp-for="CurrentProcessId" hidden />
+                                <div class="form-group">
+                                    <label><b>Comment:</b></label>
+                                    <input id="txtRevUpComment" class="form-control" asp-for="Comment" onkeyup="validateRevUpCommentEmp()" />
+                                </div>
+                                <div class="form-group">
+                                    @*TODO: delete this once Azure AD Login is implemented.*@
+                                    <label><b>Employee Number:</b></label>
+                                    <input id="numRevUpEmp" class="form-control" type="number" asp-for="EmpNumber" onkeyup="validateRevUpCommentEmp()" />
+                                    <span id="spanEmpNumeberWarning" class="alert-danger" hidden>Not a valid Employee Number</span>
+                                </div>
+                                <button id="btnRevUpCommentEmp" type="submit" class="btn btn-primary m-1" asp-page-handler="RevUp" disabled>Rev Up</button>
+                            </form>
 
                         </div>
+
                     </div>
                 </div>
-
             </div>
+
+
         </div>
 
+        @*Loads a partial view that will display the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
         <div class="col-lg-4">
-            @if (Model.CurrentRev != null)
+            @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
             {
-                @if (Model.CurrentRev.Steps.Any())
-                {
-                    <partial name="Partials/CurrentStepsPartial" model="Model.CurrentRev" />
-                }
+                <partial name="Partials/CurrentStepsPartial" model="Model.CurrentRev" />
             }
 
         </div>
 
+        @*Loads a list of all the steps that can be dragged into the current steps.  This will only load if the current Rev is unlocked.*@
         <div class="col-lg-4">
             @if (Model.CurrentRev != null)
             {
@@ -177,6 +182,7 @@
 
 <script>
  //TODO:This is the same code that is in Process Listing. See if this can be put into its own file and pulled into each of these htmls.
+    //This will get all the steps for a process and load them into the process select modal dynamically.  When a process is clicked, the steps are loaded.
     function LoadStepModal(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
@@ -187,7 +193,7 @@
                 var rev = JSON.parse(xhr.responseText);
                 console.log(rev);
                 var stepItemsHtml = '';
-                if (xhr.status != 404) {
+                if (xhr.status == 200) {
                     for (var i = 0; i < rev.Steps.length; i++) {
                         var signOffReqHtml = '';
                         if (rev.Steps[i].SignOffIsRequired == true) {
@@ -214,6 +220,47 @@
                 document.getElementById("modalStepTitle").innerHTML = aProcessName.toString();
             };
         }
+    };
+
+    //Validation for the Rev Up Modal
+    function validateRevUpCommentEmp() {
+        var txtComment = document.getElementById("txtRevUpComment");
+        var numEmp = document.getElementById("numRevUpEmp"); //TODO: delete this once Azure AD Login is implemented.
+        var empNumWarning = document.getElementById("spanEmpNumeberWarning");
+        var btnRevUp = document.getElementById("btnRevUpCommentEmp");
+
+        if (txtComment.value.length >= 1 && numEmp.value > 0) {
+            //TODO: delete this once Azure AD Login is implemented.
+            //Sets up the connection to the employee controller in the API and fires off the request.
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '@Model._apiAddress' + 'api/employee/CheckIfEmployeeNumberExists/' + numEmp.value, true)
+            xhr.send();
+
+            //When the request loads, checks if the employee number exists.  If it does, the span displaying the validation message disappears and the rev up button is enabled.  If the employee number does not exist, the validation span is displayed and the rev up button is disabled.
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var empNumExists = JSON.parse(xhr.responseText);
+                    console.log(empNumExists);
+                    if (empNumExists == true) {
+                        btnRevUp.disabled = false;
+                        empNumWarning.hidden = true;
+                    }
+                    else {
+                        empNumWarning.hidden = false;
+                    }
+                }
+            };
+
+        }
+        else {
+            btnRevUp.disabled = true;
+            empNumWarning.hidden = true;
+        }
+    };
+
+    
+    function checkIfEmpNumberExists(empNum) {
+
     };
 
 </script>
