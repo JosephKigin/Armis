@@ -10,5 +10,7 @@ namespace Armis.BusinessModels.ProcessModels
         public string Code { get; set; }
         public string Name { get; set; }
         public string Group { get; set; }
+        public short? DefaultDueDays { get; set; }
+        public bool ThicknessIsRequired { get; set; }
     }
 }
