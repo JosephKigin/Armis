@@ -21,7 +21,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
         public async Task<IEnumerable<OperationModel>> GetAllOperations()
         {
-            var entities = await context.Operation.ToListAsync();
+            var entities = await context.Operation.Include(i => i.OperGroup).ToListAsync();
 
             return entities.ToModels();
         }
