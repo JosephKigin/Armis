@@ -55,6 +55,7 @@ namespace Armis.Api
             services.AddScoped<IVariableTypeService, VariableTypeService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IOperationService, OperationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
