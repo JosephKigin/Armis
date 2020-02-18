@@ -8,3 +8,13 @@ C:\Users\jkigin\source\repos\ArmisApi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.D
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.AssemblyInfo.cs
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.dll
 C:\Users\jkigin\source\repos\ArmisApi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.pdb
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\bin\Debug\netcoreapp3.1\Armis.Data.deps.json
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\bin\Debug\netcoreapp3.1\Armis.Data.runtimeconfig.json
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\bin\Debug\netcoreapp3.1\Armis.Data.runtimeconfig.dev.json
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\bin\Debug\netcoreapp3.1\Armis.Data.dll
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\bin\Debug\netcoreapp3.1\Armis.Data.pdb
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.csprojAssemblyReference.cache
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.AssemblyInfoInputs.cache
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.AssemblyInfo.cs
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.dll
+C:\Users\bjohnson\Source\Repos\armisapi\Armis.Data\obj\Debug\netcoreapp3.1\Armis.Data.pdb
