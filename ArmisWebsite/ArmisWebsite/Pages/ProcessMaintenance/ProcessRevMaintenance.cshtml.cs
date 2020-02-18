@@ -74,10 +74,18 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnPostDelete()
         {
-            var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
+            try
+            {
+                var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
 
-            Message = "Revision deleted successfully.";
-            IsMessageGood = true;
+                Message = "Revision deleted successfully.";
+                IsMessageGood = true;
+            }
+            catch (Exception ex)
+            {
+                Message = "Revision was not deleted: " + ex.Message;
+                IsMessageGood = false;
+            }
 
             await SetUpProperties(CurrentProcessId);
 
@@ -90,12 +98,19 @@ namespace ArmisWebsite
             CurrentRev.CreatedByEmp = EmpNumber;
             CurrentRev.ProcessId = CurrentProcessId;
 
-            var result = await ProcessDataAccess.RevUp(CurrentRev);
+            try
+            {
+                var result = await ProcessDataAccess.RevUp(CurrentRev);
+                CurrentRev = result;
+                Message = "A new revision has been created.";
+                IsMessageGood = true;
+            }
+            catch (Exception ex)
+            {
+                Message = "Something went wrong: " + ex.Message;
+                IsMessageGood = false;
+            }
 
-            CurrentRev = result;
-
-            Message = "A new revision has been created.";
-            IsMessageGood = true;
             await SetUpProperties(CurrentProcessId);
             return Page();
         }

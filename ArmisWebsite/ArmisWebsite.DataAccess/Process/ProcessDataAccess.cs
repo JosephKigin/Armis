@@ -106,15 +106,15 @@ namespace ArmisWebsite.DataAccess.Process
         {
             using (var client = new HttpClient())
             {
-                try
-                {
-                    var response = await client.DeleteAsync(Config["APIAddress"] + "api/processes/DeleteProcessRevision/" + aProcessId + "/"+ aProcessRevId);
+                var response = await client.DeleteAsync(Config["APIAddress"] + "api/processes/DeleteProcessRevision/" + aProcessId + "/" + aProcessRevId);
 
-                    return response.StatusCode.ToString();
-                }
-                catch (Exception ex)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    throw new Exception(ex.Message);
+                    return "Process deleted successfully.";
+                }
+                else
+                {
+                    return "Something went wrong.";
                 }
             }
         }
@@ -123,20 +123,19 @@ namespace ArmisWebsite.DataAccess.Process
         {
             using (var client = new HttpClient())
             {
-                try
-                {
-                    StringContent data = new StringContent(JsonSerializer.Serialize(aProcessRevModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/processes/PostNewRev", data);
+                StringContent data = new StringContent(JsonSerializer.Serialize(aProcessRevModel), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(Config["APIAddress"] + "api/processes/PostNewRev", data);
 
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<ProcessRevisionModel>(responseString);
 
                     return result;
                 }
-                catch (Exception ex)
+                else
                 {
-
-                    throw;
+                    throw new Exception(await response.Content.ReadAsStringAsync());
                 }
             }
         }

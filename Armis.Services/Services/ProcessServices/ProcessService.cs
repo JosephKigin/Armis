@@ -48,7 +48,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             }
             else if (currentRev.RevStatusCd == "UNLOCKED")
             {
-                throw new InvalidOperationException("Cannot Rev-Up a process whos most current revision is unlocked.");
+                throw new InvalidOperationException("Cannot Rev-Up a process whose most current revision is unlocked.");
             }
             else
             {

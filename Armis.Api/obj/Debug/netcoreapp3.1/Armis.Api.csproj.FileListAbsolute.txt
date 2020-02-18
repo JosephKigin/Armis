@@ -316,3 +316,5 @@ C:\Users\bjohnson\Source\Repos\armisapi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.
 C:\Users\bjohnson\Source\Repos\armisapi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.csproj.CopyComplete
 C:\Users\bjohnson\Source\Repos\armisapi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.dll
 C:\Users\bjohnson\Source\Repos\armisapi\Armis.Api\obj\Debug\netcoreapp3.1\Armis.Api.pdb
+C:\Users\jkigin\Source\Repos\armisapi\Armis.Api\bin\Debug\netcoreapp3.1\appsettings.LIVE.json
+C:\Users\jkigin\Source\Repos\armisapi\Armis.Api\bin\Debug\netcoreapp3.1\appsettings.STAGING.json

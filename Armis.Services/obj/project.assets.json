@@ -4940,23 +4940,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\bjohnson\\.nuget\\packages\\": {},
+    "C:\\Users\\jkigin\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.Services\\Armis.DataLogic.csproj",
+      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.Services\\Armis.DataLogic.csproj",
       "projectName": "Armis.DataLogic",
-      "projectPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.Services\\Armis.DataLogic.csproj",
-      "packagesPath": "C:\\Users\\bjohnson\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.Services\\obj\\",
+      "projectPath": "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.Services\\Armis.DataLogic.csproj",
+      "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "\\\\SRV-FILE\\RedirectedFolders\\bjohnson\\Application Data\\NuGet\\NuGet.Config",
+        "C:\\Users\\jkigin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4969,11 +4969,11 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj": {
-              "projectPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj"
+            "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj"
             },
-            "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.Data\\Armis.Data.csproj": {
-              "projectPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.Data\\Armis.Data.csproj"
+            "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.Data\\Armis.Data.csproj": {
+              "projectPath": "C:\\Users\\jkigin\\source\\repos\\armisapi\\Armis.Data\\Armis.Data.csproj"
             }
           }
         }
