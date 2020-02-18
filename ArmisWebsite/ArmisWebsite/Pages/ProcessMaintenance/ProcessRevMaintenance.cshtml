@@ -153,13 +153,65 @@
 
         </div>
 
-        @*Loads a partial view that will display the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
+        @*Loads a display with the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
         <div class="col-lg-4">
             @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
             {
-                <partial name="Partials/CurrentStepsPartial" model="Model.CurrentRev" />
-            }
 
+                var borderColor = "grey";
+                if (Model.CurrentRev.RevStatusCd == "UNLOCKED") { borderColor = "green"; }
+
+                <h5>Current Steps</h5>
+                <div class="p-3" style="border:dashed @borderColor;">
+                    <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
+
+                        @foreach (var step in Model.CurrentRev.Steps)
+                        {
+                            <li class="list-group-item" id="currentStep-@step.StepId">
+                                <h5>
+                                    <i class="fa fa-arrows-alt handle"></i>
+                                    <a data-toggle="collapse" href="#currentStepDetails-@step.StepId">@step.StepName [@step.Operation.Code]</a>
+                                </h5>
+                                <div id="currentStepDetails-@step.StepId" class="collapse">
+                                    <div class="card card-body">
+                                        @if (step.SignOffIsRequired == true)
+                                        {<p class="text-danger">Sign-Off Required</p>}
+                                        <p><b>Instructions: </b>@step.Instructions</p>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                {
+                    <div id="sortableTrash" class="mt-3" style="width:inherit; height:80px; border:dashed red; text-align:center;">
+                        <i class="fas fa-trash" style="color:red;"></i>
+                    </div>
+                    <script>
+                        new Sortable(sortableTrash,
+                            {
+                                group: {
+                                    name: 'steps'
+                                },
+                                onAdd: function (evt) {
+                                    var el = evt.item;
+                                    el.parentNode.removeChild(evt.item);
+                                }
+                            });
+
+                        new Sortable(sortableCurrentSteps,
+                            {
+                                group: {
+                                    name: 'steps'
+                                },
+                                handle: '.handle',
+                                animation: 150,
+                                ghostClass: 'bg-warning'
+                            });
+                    </script>
+                }
+            }
         </div>
 
         @*Loads a list of all the steps that can be dragged into the current steps.  This will only load if the current Rev is unlocked.*@
@@ -168,7 +220,43 @@
             {
                 @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                 {
-                    <partial name="Partials/AllStepsPartial" model="Model.AllSteps" />
+                    <h5>All Steps</h5>
+                    <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
+                        @foreach (var step in Model.AllSteps)
+                        {
+                            <li class="list-group-item" id="allStep-@step.StepId">
+                                <h5>
+                                    <i class="fa fa-arrows-alt handle"></i>
+                                    <a data-toggle="collapse" href="#allStepDetails-@step.StepId">@step.StepName</a>
+                                </h5>
+                                <div id="allStepDetails-@step.StepId" class="collapse">
+                                    <div class="card card-body">
+                                        @if (step.SignOffIsRequired == true)
+                                        {<p class="text-danger">Sign-Off Required</p>}
+                                        <b>Instructions: </b>@step.Instructions
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <script>
+                        new Sortable(sortableAllSteps,
+                            {
+                                group: {
+                                    name: 'steps',
+                                    pull: 'clone'
+                                },
+                                handle: '.handle',
+                                animation: 150,
+                                ghostClass: 'bg-warning',
+                                sort: false,
+                                onAdd: function (evt) {
+                                    var el = evt.item;
+                                    el.parentNode.removeChild(evt.item);
+                                }
+                            });
+                    </script>
                 }
             }
 
