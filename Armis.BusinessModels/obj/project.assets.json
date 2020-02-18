@@ -8,23 +8,23 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\jkigin\\.nuget\\packages\\": {},
+    "C:\\Users\\bjohnson\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj",
+      "projectUniqueName": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj",
       "projectName": "Armis.BusinessModels",
-      "projectPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.BusinessModels\\Armis.BusinessModels.csproj",
-      "packagesPath": "C:\\Users\\jkigin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jkigin\\source\\repos\\ArmisApi\\Armis.BusinessModels\\obj\\",
+      "projectPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.BusinessModels\\Armis.BusinessModels.csproj",
+      "packagesPath": "C:\\Users\\bjohnson\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\bjohnson\\Source\\Repos\\armisapi\\Armis.BusinessModels\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\jkigin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "\\\\SRV-FILE\\RedirectedFolders\\bjohnson\\Application Data\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
