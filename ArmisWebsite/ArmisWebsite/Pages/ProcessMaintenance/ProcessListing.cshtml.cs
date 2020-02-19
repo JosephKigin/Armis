@@ -3,6 +3,7 @@ using ArmisWebsite.DataAccess.Process.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace ArmisWebsite
         public List<ProcessModel> Processes { get; set; }
 
         //Front-End
+        public string PopUpMessage { get; set; }
 
         public ProcessListingModel(IProcessDataAccess aProcessDataAccess, IConfiguration aConfig) //Config is injected only to grab the APIAddress for the javascript calls on the web page.
         {
@@ -30,18 +32,30 @@ namespace ArmisWebsite
         {
             await SetUpProperties();
 
-            return Page();
+            return Page(); 
         }
 
         public async Task SetUpProperties()
         {
-            var theProcesses = await ProcessDataAccess.GetAllProcesses();
-            Processes = theProcesses.ToList();
-
-            foreach (var process in Processes)
+            try
             {
-                process.Revisions.OrderBy(i => i.ProcessRevId);
+                var theProcesses = await ProcessDataAccess.GetAllProcesses();
+
+                Processes = theProcesses.ToList();
+
+                foreach (var process in Processes)
+                {
+                    process.Revisions.OrderBy(i => i.ProcessRevId);
+                }
+
+                PopUpMessage += "Everything loaded correctly!!!!!!\r\n";
+            }
+            catch (Exception ex)
+            {
+                PopUpMessage += "Error: " + ex.Message;
             }
         }
+
+
     }
 }

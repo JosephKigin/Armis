@@ -8,12 +8,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 
-    <script>
-        function popUpMessage(aMessage) {
-            alert(aMessage);
-        };
-    </script>
-
 </head>
 <body>
     <h1>Process Rev Maintenance</h1>
@@ -22,7 +16,7 @@
     <a class="btn btn-danger" href="ProcessRevMaintenance">Clear</a>
     <button class="btn btn-primary" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
 
-    @**@
+    @*Modal for selecting a process to work on*@
     <div class="modal fade" id="modalProcessSelect">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -183,6 +177,8 @@
                         }
                     </ul>
                 </div>
+
+                @*Creates a sortable trash that deletes anything dropped into it.  There is also a chunk of script for making the current steps and all steps lists sortable.  The reason it is here is because these are all the sortable events that happen when an "UNLOCKED" revision is selected.*@
                 @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                 {
                     <div id="sortableTrash" class="mt-3" style="width:inherit; height:80px; border:dashed red; text-align:center;">
@@ -264,10 +260,7 @@
     </div>
 
     @*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
-    @if (Model.Message != "" && Model.Message != null)
-    {
-        <script>popUpMessage('@Model.Message')</script>
-    }
+    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
 
 </body>
 
@@ -349,4 +342,7 @@
         }
     };
 
+    function popUpMessage(aMessage) {
+            alert(aMessage);
+        };
 </script>

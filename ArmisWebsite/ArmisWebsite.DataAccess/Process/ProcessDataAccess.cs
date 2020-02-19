@@ -114,7 +114,7 @@ namespace ArmisWebsite.DataAccess.Process
                 }
                 else
                 {
-                    return "Something went wrong.";
+                    throw new Exception(await response.Content.ReadAsStringAsync());
                 }
             }
         }
