@@ -48,6 +48,10 @@
     </div>
 </div>
 
+@*Pop up message*@
+<partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
+
+
 <script>
     function searchProcessList() {
         var searchTerm = document.getElementById("searchProcesses").value.toUpperCase();
@@ -77,26 +81,32 @@
                 console.log(rev);
                 var stepItemsHtml = '';
                 if (xhr.status != 404) {
-                    for (var i = 0; i < rev.Steps.length; i++) {
-                        var signOffReqHtml = '';
-                        if (rev.Steps[i].SignOffIsRequired == true) {
-                            signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
-                        }
-                        stepItemsHtml +=
+                    if (rev.Steps.length > 0) {
+                        for (var i = 0; i < rev.Steps.length; i++) {
+                            var signOffReqHtml = '';
+                            if (rev.Steps[i].SignOffIsRequired == true) {
+                                signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
+                            }
+                            stepItemsHtml +=
 
-                            `<li class="list-group-item">
+                                `<li class="list-group-item">
                                                 <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.Steps[i].StepName + `</a>
                                                 <div id="stepItem` + i + `" class="collapse">
                                                     <div class="card card-body">`+
-                            signOffReqHtml +
-                            `<p>` + rev.Steps[i].Instructions + `</p>
+                                signOffReqHtml +
+                                `<p>` + rev.Steps[i].Instructions + `</p>
                                                     </div>
                                                 </div>
                                             </li>`
-                    };
+                        };
+                    }
+                    else {
+                        stepItemsHtml = 'There are no steps in the current revision.'
+                    }
+
                 }
                 else {
-                    stepItemsHtml = 'There are no steps for this process.'
+                    stepItemsHtml = 'There are no revisions for this process.'
                 }
                 document.getElementById("stepsPlaceholder").innerHTML = stepItemsHtml;
                 document.getElementById("stepTitle").innerHTML = aProcessName.toString();

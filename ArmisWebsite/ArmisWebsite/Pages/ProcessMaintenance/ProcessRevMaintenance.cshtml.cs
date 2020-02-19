@@ -25,9 +25,7 @@ namespace ArmisWebsite
         public ProcessRevisionModel RevToAdd { get; set; }
 
         //Page Properties
-        [BindProperty]
-        public string Message { get; set; }
-        public bool IsMessageGood { get; set; }
+        public string PopUpMessage { get; set; }
 
         [BindProperty]
         public ProcessModel CurrentProcess { get; set; }
@@ -57,17 +55,23 @@ namespace ArmisWebsite
             _apiAddress = aConfig["APIAddress"];
         }
 
-
-
-        public async Task<IActionResult> OnGetAsync(int aProcessId = 0, string aMessage = "")
+        //General page start up method.  If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
+        public async Task<IActionResult> OnGetAsync(int aProcessId = 0)
         {
-            if (CurrentProcessId != 0 && aProcessId == 0) { aProcessId = CurrentProcessId; }
-            await SetUpProperties(aProcessId);
+            try
+            {
+                if (CurrentProcessId != 0 && aProcessId == 0) { aProcessId = CurrentProcessId; }
+                await SetUpProperties(aProcessId);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." });
+            }
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost() //This should never be hit.  It is here for testing purposes.
         {
             return Page();
         }
@@ -78,18 +82,24 @@ namespace ArmisWebsite
             {
                 var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
 
-                Message = "Revision deleted successfully.";
-                IsMessageGood = true;
+                PopUpMessage = "Revision deleted successfully.";
             }
             catch (Exception ex)
             {
-                Message = "Revision was not deleted: " + ex.Message;
-                IsMessageGood = false;
+                return RedirectToPage("/Error", new { ExMessage = "There was a problem deleting that revision." });
             }
 
-            await SetUpProperties(CurrentProcessId);
+            try
+            {
+                await SetUpProperties(CurrentProcessId);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception)
+            {
+                return RedirectToPage("/Error", new { ExMessage = "Revision was deleted but could not set up Process Rev Maintenance page." });
+            }
+
         }
 
         public async Task<IActionResult> OnPostRevUp()
@@ -102,13 +112,11 @@ namespace ArmisWebsite
             {
                 var result = await ProcessDataAccess.RevUp(CurrentRev);
                 CurrentRev = result;
-                Message = "A new revision has been created.";
-                IsMessageGood = true;
+                PopUpMessage += "A new revision has been created.";
             }
             catch (Exception ex)
             {
-                Message = "Something went wrong: " + ex.Message;
-                IsMessageGood = false;
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision." });
             }
 
             await SetUpProperties(CurrentProcessId);
