@@ -35,6 +35,7 @@ namespace ArmisWebsite
             services.AddScoped<IVariableDataAccess, VariableDataAccess>();
             services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
+            services.AddScoped<IOperationDataAccess, OperationDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -18,11 +18,15 @@ namespace ArmisWebsite
         //Data Access
         public IProcessDataAccess ProcessDataAccess { get; set; }
         public IStepDataAccess StepDataAccess { get; set; }
+        public IOperationDataAccess OperationDataAccess { get; set; }
 
         //Model Properties
         public List<ProcessModel> AllProcesses { get; set; }
         public List<StepModel> AllSteps { get; set; }
+        public List<OperationModel> AllOperations { get; set; }
+        public List<OperationModel> CurrentOperations { get; set; }
         public ProcessRevisionModel RevToAdd { get; set; }
+       
 
         //Page Properties
         public string PopUpMessage { get; set; }
@@ -48,10 +52,12 @@ namespace ArmisWebsite
 
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
                                           IStepDataAccess aStepDataAccess,
+                                          IOperationDataAccess anOperationDataAccess,
                                           IConfiguration aConfig)//Config is injected only to grab the APIAddress for the javascript calls on the web page.
         {
             ProcessDataAccess = aProcessDataAccess;
             StepDataAccess = aStepDataAccess;
+            OperationDataAccess = anOperationDataAccess;
             _apiAddress = aConfig["APIAddress"];
         }
 
@@ -116,7 +122,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision." });
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message});
             }
 
             await SetUpProperties(CurrentProcessId);
@@ -136,6 +142,9 @@ namespace ArmisWebsite
             var theSteps = await StepDataAccess.GetAllHydratedSteps();
             AllSteps = theSteps.ToList();
 
+            var theOperations = await OperationDataAccess.GetAllOperations();
+            AllOperations = theOperations.OrderBy(i => i.Name).ToList();
+
             CurrentProcess = new ProcessModel(); //This needs to be created even if there isn't a process being passed in so the front-end doesn't throw a null reference exception when looking for a name.
 
             CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end does throw a null reference exception when loading the current step list.
@@ -148,7 +157,23 @@ namespace ArmisWebsite
                 {
                     ModelState.Remove("CurrentRevId"); //The input field wasn't updating when deleting an unlocked revision.  This clears the model state for just this property
                     CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
-                    if (CurrentRev != null) { CurrentRevId = CurrentRev.ProcessRevId; }
+                    CurrentRevId = CurrentRev.ProcessRevId;
+
+                    CurrentOperations = new List<OperationModel>();
+                    //Finds each unique operation within the revision's steps and loads it into CurrentOperations.
+                    foreach (var step in CurrentRev.Steps) 
+                    {
+                        var shouldThisStepBeAdded = true;
+                        foreach (var operation in CurrentOperations)
+                        {
+                            if(operation.Id == step.Operation.Id)
+                            {
+                                shouldThisStepBeAdded = false;
+                            }
+                        }
+                        if (shouldThisStepBeAdded) { CurrentOperations.Add(step.Operation); }
+                    }
+
                 }
                 else
                 {

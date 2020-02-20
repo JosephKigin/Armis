@@ -5,9 +5,9 @@
 }
 
 <head>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script> @*Sortable JS*@
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" /> @*FontAwesome*@
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script> @*Jquery*@
 </head>
 <body>
     <h1>Process Rev Maintenance</h1>
@@ -21,7 +21,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Choose a Process Revision To Edit</h5>
+                    <h5 class="modal-title">Choose a Process To Edit</h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -45,7 +45,6 @@
                                             {
                                                 <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
                                             }
-
                                         </option>
                                     }
                                 </select>
@@ -82,7 +81,8 @@
                     {
                         <h5><b>Current Rev: </b>NONE</h5>
                     }
-
+                    <h5><b>Comment: </b></h5>
+                    <textarea class="form-control" readonly>@Model.CurrentRev.Comments</textarea>
                 </div>
 
                 <div class="card card-body">
@@ -90,6 +90,7 @@
                         There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
                         the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
                         everything else is enabled.
+                        TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
                     *@
                     @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
                     {
@@ -137,14 +138,10 @@
                                 </div>
                                 <button id="btnRevUpCommentEmp" type="submit" class="btn btn-primary m-1" asp-page-handler="RevUp" disabled>Rev Up</button>
                             </form>
-
                         </div>
-
                     </div>
                 </div>
             </div>
-
-
         </div>
 
         @*Loads a display with the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
@@ -153,8 +150,53 @@
             {
 
                 var borderColor = "grey";
-                if (Model.CurrentRev.RevStatusCd == "UNLOCKED") { borderColor = "green"; }
+                if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                {
+                    borderColor = "green";
+                }
 
+                @*Operation List*@
+                <div class="row">
+                    <h5 class="col-lg">Operations</h5> @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                    {<input type="button" class="mb-1 mr-3 btn-sm btn-primary col-lg" data-toggle="modal" data-target="#modalOperationSelect" value="Add" />}
+                </div>
+                <div class="p-3" style="border:dashed black">
+                    <ul class="list-group" id="currentOperations">
+                        @foreach (var operation in Model.CurrentOperations)
+                        {
+                            <li class="list-group-item">
+                                @operation.Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                @*Operation selection modal*@
+                <div class="modal fade" id="modalOperationSelect">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Operation(s) Select</h5>
+                                <span class="text-info">*Hold the [ctrl] key to select multiple</span>
+                            </div>
+                            <div class="modal-body">
+                                <form method="get">
+                                    <select id="selectAllOperations" class="list-group w-100" size="12" multiple asp-for="CurrentProcessId">
+                                        @foreach (var operation in Model.AllOperations)
+                                        {
+                                            <option value="operation-@operation.Id" class="list-group-item">
+                                                @operation.Name
+                                            </option>
+                                        }
+                                    </select>
+                                    <button class="btn btn-primary my-2">Ok</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Current step list.  If the revision is "UNLCOKED", the border will be green and the list will be sortable.  If the current revision is "LOCKED", the border will be grey and the list will be unsortable.  If there is no current revision, the list will not show up.*@
                 <h5>Current Steps</h5>
                 <div class="p-3" style="border:dashed @borderColor;">
                     <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
@@ -301,7 +343,7 @@
                 }
 
                 document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
-                document.getElementById("modalStepTitle").innerHTML = aProcessName.toString();
+                document.getElementById("modalStepTitle").innerHTML = 'Steps for ' + aProcessName.toString();
             };
         }
     };
@@ -342,7 +384,4 @@
         }
     };
 
-    function popUpMessage(aMessage) {
-            alert(aMessage);
-        };
 </script>
