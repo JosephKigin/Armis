@@ -16,6 +16,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 SignOffIsRequired = aStep.SignOffIsRequired,
                 StepCategoryCd = aStep.StepCategoryCd,
                 StepId = aStep.StepId,
+                Inactive = aStep.Inactive,
                 StepName = aStep.StepName,
                 Sequence = aSeq,
                 Operation = anOperation

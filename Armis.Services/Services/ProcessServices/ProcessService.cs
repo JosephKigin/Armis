@@ -71,7 +71,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
 
-            return newRev;
+            return newRev; //TODO: return newRevEntity ??
         }
 
         //Read
