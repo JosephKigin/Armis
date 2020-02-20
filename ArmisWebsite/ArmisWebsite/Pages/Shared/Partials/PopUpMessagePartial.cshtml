@@ -5,12 +5,13 @@
 
 <script>
     function popUpMessage(aMessage) {
-        alert(aMessage);
+        $('.toast').toast('show');
     };
 </script>
 
 @if (Model != "" && Model != null)
 {
+    <div class="toast">@Model</div>
     <script>popUpMessage('@Model')</script>
 }
 
