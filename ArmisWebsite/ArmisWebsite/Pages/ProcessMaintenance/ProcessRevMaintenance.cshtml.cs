@@ -43,6 +43,9 @@ namespace ArmisWebsite
         [BindProperty(SupportsGet = true)]
         public int CurrentRevId { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public List<int> CurrentOperationIds { get; set; }
+
         [BindProperty]
         [MaxLength(100)]
         public string Comment { get; set; } //Validation is done through javascript on the front-end
@@ -75,6 +78,14 @@ namespace ArmisWebsite
             {
                 return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." });
             }
+        }
+        
+        //Used to populate the operation section of the "UNLOCKED" page.
+        public async Task<IActionResult> OnGetUpdateOperations()
+        {
+
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost() //This should never be hit.  It is here for testing purposes.
