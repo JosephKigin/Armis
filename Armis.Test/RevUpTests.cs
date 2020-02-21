@@ -267,7 +267,7 @@ namespace Armis.Test
                     {
                         ProcessId = aProcessID,
                         RevisionId = aProcessRevID,
-                        Sequence = Convert.ToInt16(i + 1),
+                        Sequence = Convert.ToInt16(i + 1), //TODO: figure out sequencing
                         StepId = aStepIDList[i],
                         OperationId = aOperationID
                     });
