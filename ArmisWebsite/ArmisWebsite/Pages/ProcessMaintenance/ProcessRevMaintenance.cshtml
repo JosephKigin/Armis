@@ -1,4 +1,4 @@
-﻿@page 
+﻿@page "{handler?}"
 @model ArmisWebsite.ProcessRevMaintenanceModel
 @{
     ViewData["Title"] = "Process Maintenance";
@@ -57,7 +57,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -160,14 +159,14 @@
                     {<input type="button" class="mb-1 mr-3 btn-sm btn-primary col-lg" data-toggle="modal" data-target="#modalOperationSelect" value="Add" />}
                 </div>
                 <div class="p-3" style="border:dashed black">
-                    <ul class="list-group" id="currentOperations">
+                    <select class="list-group" id="currentOperations" asp-for="CurrentOperationIds">
                         @foreach (var operation in Model.CurrentOperations)
                         {
-                            <li class="list-group-item">
+                            <option class="list-group-item">
                                 @operation.Name
-                            </li>
+                            </option>
                         }
-                    </ul>
+                    </select>
                 </div>
 
                 @*Operation selection modal*@
@@ -179,17 +178,17 @@
                                 <span class="text-info">*Hold the [ctrl] key to select multiple</span>
                             </div>
                             <div class="modal-body">
-                                <form method="get">
-                                    <select id="selectAllOperations" class="list-group w-100" size="12" multiple asp-for="CurrentProcessId">
-                                        @foreach (var operation in Model.AllOperations)
-                                        {
-                                            <option value="operation-@operation.Id" class="list-group-item">
-                                                @operation.Name
-                                            </option>
-                                        }
-                                    </select>
-                                    <button class="btn btn-primary my-2">Ok</button>
-                                </form>
+                                @*<form method="get" asp-page-handler="UpdateOperations">*@
+                                <ul id="selectAllOperations" class="list-group w-100" size="12" multiple>
+                                    @foreach (var operation in Model.AllOperations)
+                                    {
+                                        <li id="operation-@operation.Id" value="@operation.Id" class="list-group-item">
+                                            @operation.Name
+                                        </li>
+                                    }
+                                </ul>
+                                <button class="btn btn-primary my-2" data-dismiss="modal" onclick="addToCurrentOperations()">Ok</button>
+                                @*</form>*@
                             </div>
                         </div>
                     </div>
@@ -383,4 +382,16 @@
         }
     };
 
+    function addToCurrentOperations() {
+        var selectOperationsOptions = document.getElementById("selectAllOperations").options;
+        var currentOperations = document.getElementById("currentOperations");
+
+        for (var i = 0; i < selectOperationsOptions.length; i++) {
+            if (selectOperationsOptions[i].selected == true) {
+                console.log(selectOperationsOptions[i].value)
+                currentOperations.innerHTML +=
+                    `<option id="` + selectOperationsOptions[i].id + `" value="` + selectOperationsOptions[i].value + `" class="list-group-item">` + selectOperationsOptions[i].innerHTML + `</option>`;
+            }
+        };
+    }
 </script>
