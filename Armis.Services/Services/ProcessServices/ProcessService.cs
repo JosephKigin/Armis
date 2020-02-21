@@ -71,7 +71,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
 
-            return newRev; //TODO: return newRevEntity ??
+            return newRevEntity.ToModel();
         }
 
         //Read
@@ -208,7 +208,7 @@ namespace Armis.DataLogic.Services.ProcessServices
                 throw new InvalidOperationException("The most current revision for that process is not unlocked. \r\n" + DateTime.Now);
             }
 
-            if (currentRev.ProcessId > 1)
+            if (currentRev.ProcessRevId > 1)
             {
                 var previousRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId - 1);
 
