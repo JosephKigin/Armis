@@ -53,6 +53,7 @@ namespace ArmisWebsite
         [BindProperty]
         public short EmpNumber { get; set; } //Validation is done through javascript on the front-end
 
+
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
                                           IStepDataAccess aStepDataAccess,
                                           IOperationDataAccess anOperationDataAccess,
@@ -65,10 +66,11 @@ namespace ArmisWebsite
         }
 
         //General page start up method.  If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
-        public async Task<IActionResult> OnGetAsync(int aProcessId = 0)
+        public async Task<IActionResult> OnGetAsync() //TODO: Both the page loading empty and the page loading with a processId go through this onget.  Seperate those to different ongets.
         {
             try
             {
+                var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
                 if (CurrentProcessId != 0 && aProcessId == 0) { aProcessId = CurrentProcessId; }
                 await SetUpProperties(aProcessId);
 
@@ -139,6 +141,11 @@ namespace ArmisWebsite
             await SetUpProperties(CurrentProcessId);
             return Page();
         }
+
+        //public async Task<IActionResult> OnPostLock()
+        //{
+        //    CurrentOperationIds = HttpContext.Request.;
+        //}
 
         public async Task SetUpProperties(int aProcessId)
         {

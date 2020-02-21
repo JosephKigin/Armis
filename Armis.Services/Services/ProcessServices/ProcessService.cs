@@ -34,7 +34,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entity.ToModel();
         }
 
-        public async Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev)
+        public async Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev) //This parameter needs comment, employee number, and processId
         {
             var newRevEntity = newRev.ToEntity();
             newRevEntity.RevStatusCd = "UNLOCKED";
