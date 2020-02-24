@@ -52,7 +52,67 @@ namespace Armis.Test
             }
             set { _stepService = value; }
         }
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task FailToDeleteOrRevUpALOCKEDProcessRevision()
+        {
+            var theReturnHydratedProcessModels = await ProcessService.GetHydratedProcessRevs();
+           
+            var theProcessRevisionModelToAttemptDelete = new ProcessRevisionModel();
 
+            foreach (var aProcessModel in theReturnHydratedProcessModels)
+            {
+                foreach (var aProcessRevModel in aProcessModel.Revisions)
+                {
+                    if (aProcessRevModel.RevStatusCd == "LOCKED")
+                    {
+                        theProcessRevisionModelToAttemptDelete = aProcessRevModel;
+                        break;
+                    }
+                }
+                if(theProcessRevisionModelToAttemptDelete.ProcessId != 0) { break; }
+            }
+
+            if(theProcessRevisionModelToAttemptDelete.ProcessId == 0) { throw new Exception("No Process Revs with LOCKED status exist"); }
+
+            var theProcessID = theProcessRevisionModelToAttemptDelete.ProcessId;
+            var theProcessRevID = theProcessRevisionModelToAttemptDelete.ProcessRevId;
+
+            await ProcessService.DeleteProcessRev(theProcessID, theProcessRevID);
+
+            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete);    
+        }
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task FailToDeleteOrRevUpAnINACTIVEProcessRevision()
+        {
+            var theReturnHydratedProcessModels = await ProcessService.GetHydratedProcessRevs();
+
+            var theProcessRevisionModelToAttemptDelete = new ProcessRevisionModel();
+
+            foreach (var aProcessModel in theReturnHydratedProcessModels)
+            {
+                foreach (var aProcessRevModel in aProcessModel.Revisions)
+                {
+                    if (aProcessRevModel.RevStatusCd == "INACTIVE")
+                    {
+                        theProcessRevisionModelToAttemptDelete = aProcessRevModel;
+                        break;
+                    }
+                }
+                if (theProcessRevisionModelToAttemptDelete.ProcessId != 0) { break; }
+            }
+
+            if (theProcessRevisionModelToAttemptDelete.ProcessId == 0) { throw new Exception("No Process Revs with LOCKED status exist"); }
+
+            var theProcessID = theProcessRevisionModelToAttemptDelete.ProcessId;
+            var theProcessRevID = theProcessRevisionModelToAttemptDelete.ProcessRevId;
+
+            await ProcessService.DeleteProcessRev(theProcessID, theProcessRevID);
+
+            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete);
+
+        }
         [TestMethod]
         public async Task CreateNewProcessRevStepsAndRevUp()
         {
