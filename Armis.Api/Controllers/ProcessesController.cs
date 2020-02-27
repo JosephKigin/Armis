@@ -165,12 +165,27 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevUnlockedToLocked(ProcessRevisionModel aProcessRevModel)
+        [HttpPost("{aProcessId}/{aRevId}")]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevToLocked(int aProcessId, int aRevId)
         {
             try
             {
-                var data = await ProcessService.UpdateUnlockToLockRev(aProcessRevModel);
+                var data = await ProcessService.UpdateUnlockToLockRev(aProcessId, aRevId);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevSaveAndLock(int aProcessId, int aRevId, List<StepSeqModel> aStepSeqList)
+        {
+            try
+            {
+                await ProcessService.UpdateStepsForRev(aStepSeqList);
+                var data = await ProcessService.UpdateUnlockToLockRev(aProcessId, aRevId);
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)

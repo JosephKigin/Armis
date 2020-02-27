@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Armis.BusinessModels.ProcessModels;
 using ArmisWebsite.DataAccess.Process.Interfaces;
@@ -26,10 +28,17 @@ namespace ArmisWebsite
         public List<OperationModel> AllOperations { get; set; }
         public List<OperationModel> CurrentOperations { get; set; }
         public ProcessRevisionModel RevToAdd { get; set; }
-       
+
 
         //Page Properties
         public string PopUpMessage { get; set; }
+        public int StepCount { get; set; }
+
+        [BindProperty]
+        public List<int> CurrentStepIds { get; set; }
+
+        [BindProperty]
+        public List<int> CurrentOperationIds { get; set; }
 
         [BindProperty]
         public ProcessModel CurrentProcess { get; set; }
@@ -42,9 +51,6 @@ namespace ArmisWebsite
 
         [BindProperty(SupportsGet = true)]
         public int CurrentRevId { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public List<int> CurrentOperationIds { get; set; }
 
         [BindProperty]
         [MaxLength(100)]
@@ -81,7 +87,7 @@ namespace ArmisWebsite
                 return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." });
             }
         }
-        
+
         //Used to populate the operation section of the "UNLOCKED" page.
         public async Task<IActionResult> OnGetUpdateOperations()
         {
@@ -135,17 +141,19 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message});
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message });
             }
 
             await SetUpProperties(CurrentProcessId);
             return Page();
         }
 
-        //public async Task<IActionResult> OnPostLock()
-        //{
-        //    CurrentOperationIds = HttpContext.Request.;
-        //}
+        public async Task<IActionResult> OnPostLock()
+        {
+
+
+            return Page();
+        }
 
         public async Task SetUpProperties(int aProcessId)
         {
@@ -179,12 +187,12 @@ namespace ArmisWebsite
 
                     CurrentOperations = new List<OperationModel>();
                     //Finds each unique operation within the revision's steps and loads it into CurrentOperations.
-                    foreach (var step in CurrentRev.Steps) 
+                    foreach (var step in CurrentRev.Steps)
                     {
                         var shouldThisStepBeAdded = true;
                         foreach (var operation in CurrentOperations)
                         {
-                            if(operation.Id == step.Operation.Id)
+                            if (operation.Id == step.Operation.Id)
                             {
                                 shouldThisStepBeAdded = false;
                             }

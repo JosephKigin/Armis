@@ -198,10 +198,10 @@ namespace Armis.DataLogic.Services.ProcessServices
             return result.ToModel();
         }
 
-        public async Task<ProcessRevisionModel> UpdateUnlockToLockRev(ProcessRevisionModel aProcessRevModel)
+        public async Task<ProcessRevisionModel> UpdateUnlockToLockRev(int aProcessId, int aRevId)
         {
             //Grabs the current revision with the ProcessId and Revision Id being passed in.  This revision NEEDS to be locked.
-            var currentRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessRevModel.ProcessId && i.ProcessRevId == aProcessRevModel.ProcessRevId);
+            var currentRev = await context.ProcessRevision.FirstOrDefaultAsync(i => i.ProcessId == aProcessId && i.ProcessRevId == aRevId);
 
             if (currentRev.RevStatusCd != "UNLOCKED")
             {
@@ -214,7 +214,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
                 if (previousRev.RevStatusCd != "LOCKED") //The previous revision before the unlocked needs to be locked.
                 {
-                    throw new InvalidOperationException("The previous revision of this unlocked revision is not locked.  Process Id: " + aProcessRevModel.ProcessId + "\r\n" + DateTime.Now);
+                    throw new InvalidOperationException("The previous revision of this unlocked revision is not locked.  Process Id: " + aProcessId + "\r\n" + DateTime.Now);
                 }
 
                 previousRev.RevStatusCd = "INACTIVE";

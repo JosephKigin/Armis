@@ -23,7 +23,7 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         //UPDATE
         Task<ProcessModel> UpdateProcess(Process process);
         Task<ProcessRevisionModel> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqs);
-        Task<ProcessRevisionModel> UpdateUnlockToLockRev(ProcessRevisionModel aProcessRevModel);
+        Task<ProcessRevisionModel> UpdateUnlockToLockRev(int aProcessId, int aRevId);
 
         //DELETE
         Task DeleteProcess(int processId); //Must delete all revs linked to this process

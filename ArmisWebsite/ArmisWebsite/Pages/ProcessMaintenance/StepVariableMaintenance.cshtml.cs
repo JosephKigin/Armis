@@ -48,7 +48,7 @@ namespace ArmisWebsite
             VariableDataAccess = aVariableDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(int aStepId)
+        public async Task<IActionResult> OnGet(int aStepId = 1)
         {
             Step = await StepDataAccess.GetStepById(aStepId);
 
