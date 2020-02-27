@@ -154,43 +154,26 @@
                     borderColor = "green";
                 }
 
-                @*Operation List !!This is dead!!
-                    <div class="row">
-                        <h5 class="col-lg">Operations</h5> @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
-                        {<input type="button" class="mb-1 mr-3 btn-sm btn-primary col-lg" data-toggle="modal" data-target="#modalOperationSelect" value="Add" />}
-                    </div>
-                    <div class="p-3" style="border:dashed black">
-                        <input id="currentOperAmnt" value="@Model.CurrentOperations.Count" /> @*Holds the amount of opertions in current operations for javascript to use.
-                        <ul class="list-group" id="currentOperations" asp-for="CurrentOperationIds">
-                            @for (int i = 0; i < Model.CurrentOperations.Count; i++)
-                            {
-                                <li class="list-group-item">
-                                    @Model.CurrentOperations[i].Name
-                                    <input id="operID-@i" form="mainForm" type="number" asp-for="CurrentOperationIds[i]" value="@Model.CurrentOperations[i].Id" hidden />
-                                </li>
-                            }
-                        </ul>
-                    </div>*@
-
                 @*Current step list.  If the revision is "UNLCOKED", the border will be green and the list will be sortable.  If the current revision is "LOCKED", the border will be grey and the list will be unsortable.  If there is no current revision, the list will not show up.*@
                 <h5>Current Steps</h5>
                 <div class="p-3" style="border:dashed @borderColor;">
                     <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
-                        @{Model.StepCount = 0;}
+                        @{Model.InitialStepSeq = 0;}
                         @foreach (var step in Model.CurrentRev.Steps)
-                        {
-                            Model.StepCount++;
-                            <li class="list-group-item" id="currentStep-@Model.StepCount">
+                        {                            
+                            <li class="list-group-item" id="currentStep-@Model.InitialStepSeq">
                                 <h5>
                                     <i class="fa fa-arrows-alt handle"></i>
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.StepCount">@step.StepName </a>
-                                    <a id="operationAnchor_@step.StepId-@Model.StepCount" onclick="openOperationModal('@step.StepName', '@step.StepId')">[@step.Operation.Code] </a>
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.InitialStepSeq">@step.StepName </a>
+                                    <a id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">[@step.Operation.Code] </a>
                                     @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                 </h5>
-                                <input id="currentStepId_@step.StepId" form="mainForm" asp-for="CurrentStepIds[Model.StepCount-1]" value="@step.StepId" hidden />
-                                <input id="currentOperationId_@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.StepCount-1]" hidden/>
+                                <input id="currentStepId_@step.StepId" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq-1]" value="@step.StepId" />
+                                @if(step.Operation != null) { <input id="currentOperationId_@step.StepId" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
+                                else { <input id="currentOperationId_@step.StepId" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]"  />}
+                                <input id="currentStepSeq_@step.StepId" value="@Model.InitialStepSeq"/>
 
-                                <div id="currentStepDetails_@step.StepId-@Model.StepCount" class="collapse">
+                                <div id="currentStepDetails_@step.StepId-@Model.InitialStepSeq" class="collapse">
                                     <div class="card card-body">
                                         @if (step.SignOffIsRequired == true)
                                         {<p class="text-danger">Sign-Off Required</p>}
@@ -198,6 +181,7 @@
                                     </div>
                                 </div>
                             </li>
+                            Model.InitialStepSeq++;
                         }
                     </ul>
                 </div>
@@ -210,6 +194,8 @@
                                 <h5 class="modal-title">Select Operation for</h5><h5 id="operationModalStepTitle"></h5>
                             </div>
                             <div class="modal-body">
+                                <input id="opModalStepIdPlaceholder" />
+                                <input id="opModalStepSeqPlaceholder" />
                                 <select id="selectAllOperations" class="list-group w-100" size="16">
                                     @foreach (var operation in Model.AllOperations)
                                     {
@@ -226,10 +212,17 @@
                 </div>
 
                 <script>
-                    function openOperationModal(aStepName, aStepId, aStepSeq) {
-                        $("#modalOperationSelect").modal("show");-
-                        console.log(aStepName);
+                    function openOperationModal(aStepDetails, aStepName) {
+                        $("#modalOperationSelect").modal("show");
+                        var theStepId = aStepDetails.id.substring((aStepDetails.id.indexOf("_") + 1), (aStepDetails.id.indexOf("-")));
+                        var theStepSeq = aStepDetails.id.substring(aStepDetails.id.indexOf("-") + 1);
+
                         document.getElementById("operationModalStepTitle").innerHTML = aStepName;
+                        document.getElementById("opModalStepIdPlaceholder").value = theStepId;
+                        document.getElementById("opModalStepSeqPlaceholder").value = theStepSeq;
+                    }
+                    function addToCurrentOperations() {
+
                     }
                 </script>
 
@@ -273,7 +266,6 @@
                                                 var theAnchors = allStepListItemChildren[i].getElementsByTagName("a");
                                                 theAnchors[0].dataset.target = theAnchors[0].dataset.target.replace("all", "current");//The collapse trigger anchor
                                                 theAnchors[1].id = theAnchors[1].id.replace("all", ""); //The operation anchor
-                                                console.log(theAnchors[1].id);
                                             }
                                             //if the step comes from the AllStepList, the collapsable section will have an id of allStepDetails-(stepId)
                                             if (allStepListItemChildren[i].id.startsWith("allStepDetails")) {
@@ -281,6 +273,13 @@
                                             }
                                         }
                                     }
+
+                                    //Renaming the input placeholders
+                                    var inputs = evt.item.getElementsByTagName("input");
+                                    for (var i = 0; i < inputs.length; i++) {
+                                        inputs[i].id = inputs[i].id.replace("all", "current");
+                                    }
+
                                     assignStepSeqNumbers();
                                 }
                             });
@@ -290,9 +289,9 @@
 
                             for (var i = 0; i < currentStepListItems.length; i++) {
                                 currentStepListItems[i].id = i;
-                                var stepIdInput = currentStepListItems[i].getElementsByTagName("input")[0];
-                                stepIdInput.name = "CurrentStepIds[" + i + "]";
-
+                                currentStepListItems[i].getElementsByTagName("input")[0].name = "CurrentStepIds[" + i + "]";
+                                currentStepListItems[i].getElementsByTagName("input")[1].name = "CurrentOperationIds[" + i + "]";
+                                currentStepListItems[i].getElementsByTagName("input")[2].value = i;
                                 //Collapse Anchor, Operation Anchor, collapsable div
                                 var theAnchors = currentStepListItems[i].getElementsByTagName("a");
 
@@ -307,17 +306,15 @@
                                             currentStepListItems[i].childNodes[j].id = detailsDivId.replace(detailsDivId.substring(detailsDivId.indexOf("-"), detailsDivId.length), "-" + i);
                                         }
                                     }
-
                                 }
                             }
                         }
-
                     </script>
                 }
             }
         </div>
 
-        @*Loads a list of all the steps that can be dragged into the current steps.  This will only load if the current Rev is unlocked.*@
+        @*All the steps that can be dragged into the current steps.  This will only load if the current Rev is unlocked.*@
         <div class="col-lg-4">
             @if (Model.CurrentRev != null)
             {
@@ -333,10 +330,14 @@
                                 <i class="fa fa-arrows-alt handle"></i>
                                 <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-">@step.StepName</a>
                                 @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
-                                <a id="alloperationAnchor_@step.StepId-" onclick="openOperationModal('@step.StepName', '@step.StepId')">[]</a>
+                                <a id="alloperationAnchor_@step.StepId-" onclick="openOperationModal(this, '@step.StepName')">[]</a>
                             </h5>
-                            <input id="allStepId_@step.StepId" form="mainForm" value="@step.StepId" hidden />
-                            <input id="currentOperationId_@step.Operation.Id" form="mainForm" hidden/>
+                            <input id="allStepId_@step.StepId" form="mainForm" value="@step.StepId" />
+                            @if (step.Operation != null)
+                            {<input id="allOperationId_@step.StepId" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
+                            else
+                            { <input id="allOperationId_@step.StepId" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
+                            <input id="allStepSeq_@step.StepId-" value="" />
 
                             <div id="allStepDetails_@step.StepId-" class="collapse">
                                 <div class="card card-body">

@@ -32,7 +32,7 @@ namespace ArmisWebsite
 
         //Page Properties
         public string PopUpMessage { get; set; }
-        public int StepCount { get; set; }
+        public int InitialStepSeq { get; set; }
 
         [BindProperty]
         public List<int> CurrentStepIds { get; set; }
