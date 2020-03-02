@@ -68,6 +68,14 @@
     <div class="row">
         <div class="col-lg-4">
             <h5>Process Details</h5>
+            @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+            {
+                <span class="text-success">Unlocked</span>
+                }
+            else if (Model.CurrentRev.RevStatusCd == "LOCKED")
+            {
+                <span class="text-danger">Locked</span>
+            }
             <form id="mainForm" method="post">
                 <div class="card card-body">
                     <h5><b>Process ID: </b></h5><input asp-for="CurrentProcessId" class="form-control" type="number" readonly />
@@ -88,10 +96,10 @@
 
                 <div class="card card-body">
                     @*
-                        There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
-                        the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
-                        everything else is enabled.
-                        TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
+                There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
+                the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
+                everything else is enabled.
+                TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
                     *@
                     <span id="btnMessage" class="text-danger"></span>
                     @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
