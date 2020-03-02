@@ -11,6 +11,7 @@ using System.Text.Json;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.BusinessModels.ProcessModels;
+using Armis.BusinessModels.ProcessModels.PassBackModels;
 
 namespace Armis.Api.Controllers
 {
@@ -180,12 +181,12 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevSaveAndLock(int aProcessId, int aRevId, List<StepSeqModel> aStepSeqList)
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevSaveAndLock(PassBackProcessRevStepSeqModel aRevStepSeqModel)
         {
             try
             {
-                await ProcessService.UpdateStepsForRev(aStepSeqList);
-                var data = await ProcessService.UpdateUnlockToLockRev(aProcessId, aRevId);
+                await ProcessService.UpdateStepsForRev(aRevStepSeqModel.StepSeqList);
+                var data = await ProcessService.UpdateUnlockToLockRev(aRevStepSeqModel.ProcessId, aRevStepSeqModel.ProcessRevisionId);
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)

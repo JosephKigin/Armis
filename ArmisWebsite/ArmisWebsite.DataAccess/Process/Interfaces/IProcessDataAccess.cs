@@ -14,5 +14,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
         Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId);
         Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel);
+        Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList);
     }
 }

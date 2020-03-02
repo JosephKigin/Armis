@@ -88,14 +88,6 @@ namespace ArmisWebsite
             }
         }
 
-        //Used to populate the operation section of the "UNLOCKED" page.
-        public async Task<IActionResult> OnGetUpdateOperations()
-        {
-
-
-            return Page();
-        }
-
         public async Task<IActionResult> OnPost() //This should never be hit.  It is here for testing purposes.
         {
             return Page();
@@ -150,9 +142,35 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnPostLock()
         {
+            try
+            {
+                var theStepSeqList = new List<StepSeqModel>();
 
+                for (int i = 0; i < CurrentStepIds.Count; i++)
+                {
+                    theStepSeqList.Add(new StepSeqModel
+                    {
+                        StepId = CurrentStepIds[i],
+                        OperationId = CurrentOperationIds[i],
+                        Sequence = Convert.ToInt16(i + 1),
+                        ProcessId = CurrentProcessId,
+                        RevisionId = CurrentRevId
+                    });
+                }
 
-            return Page();
+                var theReturnRevModel = await ProcessDataAccess.LockRevision(CurrentProcessId, CurrentRevId, theStepSeqList);
+
+                await SetUpProperties(theReturnRevModel.ProcessId);
+
+                PopUpMessage += "Revision was locked successfully. ";
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while locking a revision. " + ex.Message });
+            }
+
         }
 
         public async Task SetUpProperties(int aProcessId)
@@ -175,6 +193,9 @@ namespace ArmisWebsite
 
             CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end does throw a null reference exception when loading the current step list.
             CurrentRev.Steps = new List<StepModel>();
+
+            CurrentStepIds = null;
+            CurrentOperationIds = null;
 
             if (aProcessId > 0)
             {

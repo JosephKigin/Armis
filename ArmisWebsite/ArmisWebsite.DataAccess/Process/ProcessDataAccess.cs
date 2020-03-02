@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Armis.BusinessModels.ProcessModels.PassBackModels;
 
 namespace ArmisWebsite.DataAccess.Process
 {
@@ -125,6 +126,34 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 StringContent data = new StringContent(JsonSerializer.Serialize(aProcessRevModel), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(Config["APIAddress"] + "api/processes/PostNewRev", data);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<ProcessRevisionModel>(responseString);
+
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(await response.Content.ReadAsStringAsync());
+                }
+            }
+        }
+
+        public async Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList)
+        {
+            using (var client = new HttpClient())
+            {
+                var thePassBackModel = new PassBackProcessRevStepSeqModel
+                {
+                    ProcessId = aProcessId,
+                    ProcessRevisionId = aProcessRevId,
+                    StepSeqList = aStepList
+                };
+
+                StringContent data = new StringContent(JsonSerializer.Serialize(thePassBackModel), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(Config["APIAddress"] + "api/processes/UpdateRevSaveAndLock/", data);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {

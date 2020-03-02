@@ -47,8 +47,6 @@ namespace ArmisWebsite
                 {
                     process.Revisions.OrderBy(i => i.ProcessRevId);
                 }
-
-                PopUpMessage += "Everything loaded correctly!!!!!!\r\n";
             }
             catch (Exception ex)
             {

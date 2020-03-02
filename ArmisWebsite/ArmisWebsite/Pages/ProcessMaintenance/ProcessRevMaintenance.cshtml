@@ -9,8 +9,9 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" /> @*FontAwesome*@
 </head>
+
 <body>
-    <h1>Process Rev Maintenance</h1>
+    <h1>Process Revision Maintenance</h1>
 
     @*Buttons on the top of the screen*@
     <a class="btn btn-danger" href="ProcessRevMaintenance">Clear</a>
@@ -66,7 +67,7 @@
     @*Main section that displays information about the current Process and the current Revision.*@
     <div class="row">
         <div class="col-lg-4">
-            <h3>Process Details</h3>
+            <h5>Process Details</h5>
             <form id="mainForm" method="post">
                 <div class="card card-body">
                     <h5><b>Process ID: </b></h5><input asp-for="CurrentProcessId" class="form-control" type="number" readonly />
@@ -92,25 +93,26 @@
                         everything else is enabled.
                         TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
                     *@
+                    <span id="btnMessage" class="text-danger"></span>
                     @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
                     {
                         <input type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#modalRevUpComment" value="Rev Up" />
-                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
-                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
                         <button type="submit" class="btn btn-outline-secondary m-1" disabled>Delete</button>
                     }
                     else if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                     {
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
-                        <button type="submit" class="btn btn-primary m-1" asp-page-handler="Lock">Lock</button>
-                        <button type="submit" class="btn btn-primary m-1">Save</button>
+                        <button id="btnLock" type="submit" class="btn btn-primary m-1" asp-page-handler="Lock">Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-primary m-1">Save</button>
                         <button type="submit" class="btn btn-danger m-1" asp-page-handler="Delete">Delete</button>
                     }
                     else
                     {
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
-                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
-                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
                         <button type="submit" class="btn btn-outline-secondary m-1" disabled>Delete</button>
                     }
                 </div>
@@ -160,18 +162,32 @@
                     <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
                         @{Model.InitialStepSeq = 0;}
                         @foreach (var step in Model.CurrentRev.Steps)
-                        {                            
-                            <li class="list-group-item" id="currentStep-@Model.InitialStepSeq">
+                        {
+                            <li class="list-group-item" id="currentStep_@step.StepId-@Model.InitialStepSeq">
                                 <h5>
-                                    <i class="fa fa-arrows-alt handle"></i>
+                                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                                    {<i class="fa fa-arrows-alt handle"></i>}
                                     <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.InitialStepSeq">@step.StepName </a>
-                                    <a id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">[@step.Operation.Code] </a>
+                                    <br />
+                                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                                    {
+                                        <a id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">
+                                            [@step.Operation.Name]
+                                            <i class="far fa-object-group"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <p>[@step.Operation.Name]</p>
+                                    }
                                     @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                 </h5>
-                                <input id="currentStepId_@step.StepId" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq-1]" value="@step.StepId" />
-                                @if(step.Operation != null) { <input id="currentOperationId_@step.StepId" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
-                                else { <input id="currentOperationId_@step.StepId" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]"  />}
-                                <input id="currentStepSeq_@step.StepId" value="@Model.InitialStepSeq"/>
+                                <input id="currentStepId_@step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq]" value="@step.StepId" hidden />
+                                @if (step.Operation != null)
+                                {<input id="currentOperationId_@step.StepId-@Model.InitialStepSeq" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                else
+                                { <input id="currentOperationId_@step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                <input id="currentStepSeq_@step.StepId-@Model.InitialStepSeq" value="@Model.InitialStepSeq" hidden />
 
                                 <div id="currentStepDetails_@step.StepId-@Model.InitialStepSeq" class="collapse">
                                     <div class="card card-body">
@@ -194,8 +210,8 @@
                                 <h5 class="modal-title">Select Operation for</h5><h5 id="operationModalStepTitle"></h5>
                             </div>
                             <div class="modal-body">
-                                <input id="opModalStepIdPlaceholder" />
-                                <input id="opModalStepSeqPlaceholder" />
+                                <input id="opModalStepIdPlaceholder" hidden />
+                                <input id="opModalStepSeqPlaceholder" hidden />
                                 <select id="selectAllOperations" class="list-group w-100" size="16">
                                     @foreach (var operation in Model.AllOperations)
                                     {
@@ -221,8 +237,17 @@
                         document.getElementById("opModalStepIdPlaceholder").value = theStepId;
                         document.getElementById("opModalStepSeqPlaceholder").value = theStepSeq;
                     }
-                    function addToCurrentOperations() {
 
+                    function addToCurrentOperations() {
+                        var theStepId = document.getElementById("opModalStepIdPlaceholder").value;
+                        var theStepSeq = document.getElementById("opModalStepSeqPlaceholder").value;
+                        var theOperationSelect = document.getElementById("selectAllOperations");
+                        var theSelectedOperation = theOperationSelect.options[theOperationSelect.selectedIndex];
+
+                        document.getElementById("currentOperationId_" + theStepId + "-" + theStepSeq).value = theSelectedOperation.id;
+                        document.getElementById("operationAnchor_" + theStepId + "-" + theStepSeq).innerHTML = "[" + theSelectedOperation.innerHTML + "]" + "<i class='far fa-object-group'></i>";
+
+                        assignStepSeqNumbers();
                     }
                 </script>
 
@@ -257,6 +282,7 @@
                                 },
                                 onAdd: function (evt) {
                                     //This entire section up to the assignStepSeqNumbers() call is just to make sure the collapsables stay assigned to the correct collapse sections when a step is moved from allSteps to currentSteps.
+                                    evt.item.id = evt.item.id.replace("all", "current");
                                     var allStepListItemChildren = evt.item.childNodes;
                                     for (var i = 0; i < allStepListItemChildren.length; i++) {
                                         //if the child element has an id, if not then it doesn't need to be changed at all.
@@ -266,6 +292,7 @@
                                                 var theAnchors = allStepListItemChildren[i].getElementsByTagName("a");
                                                 theAnchors[0].dataset.target = theAnchors[0].dataset.target.replace("all", "current");//The collapse trigger anchor
                                                 theAnchors[1].id = theAnchors[1].id.replace("all", ""); //The operation anchor
+                                                theAnchors[1].innerHTML += "<i class='far fa-object-group'></i>";
                                             }
                                             //if the step comes from the AllStepList, the collapsable section will have an id of allStepDetails-(stepId)
                                             if (allStepListItemChildren[i].id.startsWith("allStepDetails")) {
@@ -286,28 +313,70 @@
                         //Assigns a seq number to all the steps.  This is called when a step is moved, deleted, or added.  This method checks what order the steps are in and then assigns the "name"(asp-for) attribute to CurrentStepIds, which is a list.  The list is submitted when "lock" or "save" are clicked.
                         function assignStepSeqNumbers() {
                             var currentStepListItems = document.getElementById("sortableCurrentSteps").getElementsByTagName("li");
+                            var doAllStepsHaveOper = true;
 
                             for (var i = 0; i < currentStepListItems.length; i++) {
-                                currentStepListItems[i].id = i;
-                                currentStepListItems[i].getElementsByTagName("input")[0].name = "CurrentStepIds[" + i + "]";
-                                currentStepListItems[i].getElementsByTagName("input")[1].name = "CurrentOperationIds[" + i + "]";
-                                currentStepListItems[i].getElementsByTagName("input")[2].value = i;
+                                currentStepListItems[i].id = currentStepListItems[i].id.substring(0, (currentStepListItems[i].id.indexOf("-") + 1)) + i;
+
+                                var currentStepIdInput = currentStepListItems[i].getElementsByTagName("input")[0];
+                                currentStepIdInput.id = currentStepIdInput.id.substring(0, currentStepIdInput.id.indexOf("-") + 1) + i;
+                                currentStepIdInput.name = "CurrentStepIds[" + i + "]";
+
+                                var currentStepOperInput = currentStepListItems[i].getElementsByTagName("input")[1];
+                                currentStepOperInput.id = currentStepOperInput.id.substring(0, currentStepOperInput.id.indexOf("-") + 1) + i;
+                                currentStepOperInput.name = "CurrentOperationIds[" + i + "]";
+                                if (currentStepOperInput.value == "") { doAllStepsHaveOper = false; }
+                                console.log("Value " + i + ": " + currentStepOperInput.value);
+                                console.log(doAllStepsHaveOper);
+
+                                var currentStepSeqInput = currentStepListItems[i].getElementsByTagName("input")[2];
+                                currentStepSeqInput.id = currentStepSeqInput.id.substring(0, currentStepSeqInput.id.indexOf("-") + 1) + i;
+                                currentStepSeqInput.value = i;
+
                                 //Collapse Anchor, Operation Anchor, collapsable div
                                 var theAnchors = currentStepListItems[i].getElementsByTagName("a");
 
                                 //This just finds the "|" and replaces the number after it, which is the the seq number
-                                theAnchors[0].dataset.target = theAnchors[0].dataset.target.replace(theAnchors[0].dataset.target.substring(theAnchors[0].dataset.target.indexOf("-"), theAnchors[0].dataset.target.length), "-" + i);
-                                theAnchors[1].id = theAnchors[1].id.replace(theAnchors[1].id.substring(theAnchors[1].id.indexOf("-"), theAnchors[1].id.length), "-" + i);
+                                theAnchors[0].dataset.target = theAnchors[0].dataset.target.substring(0, (theAnchors[0].dataset.target.indexOf("-") + 1)) + i;
+                                theAnchors[1].id = theAnchors[1].id.substring(0, (theAnchors[1].id.indexOf("-") + 1)) + i;
                                 //Finds the collapsable details div on the step and replaces to seq number
-                                for (var j = 0; j < currentStepListItems[i].childNodes.length; j++) {                                    
-                                    if (currentStepListItems[i].childNodes[j].id != undefined) {                                        
+                                for (var j = 0; j < currentStepListItems[i].childNodes.length; j++) {
+                                    if (currentStepListItems[i].childNodes[j].id != undefined) {
                                         if (currentStepListItems[i].childNodes[j].id.startsWith("currentStepDetails_")) {
                                             var detailsDivId = currentStepListItems[i].childNodes[j].id;
-                                            currentStepListItems[i].childNodes[j].id = detailsDivId.replace(detailsDivId.substring(detailsDivId.indexOf("-"), detailsDivId.length), "-" + i);
+                                            currentStepListItems[i].childNodes[j].id = detailsDivId.substring(0, (detailsDivId.indexOf("-") + 1)) + i;
                                         }
                                     }
                                 }
                             }
+
+                            if (!doAllStepsHaveOper) {
+                                var btnSave = document.getElementById("btnSave");
+                                btnSave.disabled = true;
+                                btnSave.classList.remove('btn-primary');
+                                btnSave.classList.add('btn-outline-primary');
+
+                                var btnLock = document.getElementById("btnLock");
+                                btnLock.disabled = true;
+                                btnLock.classList.remove('btn-primary');
+                                btnLock.classList.add('btn-outline-primary');
+
+                                document.getElementById("btnMessage").innerHTML = "Every step needs to have an operation in order to lock or save."
+                            }
+                            else {
+                                var btnSave = document.getElementById("btnSave");
+                                btnSave.disabled = false;
+                                btnSave.classList.remove('btn-ouline-primary');
+                                btnSave.classList.add('btn-primary');
+
+                                var btnLock = document.getElementById("btnLock");
+                                btnLock.disabled = false;
+                                btnLock.classList.remove('btn-outline-primary');
+                                btnLock.classList.add('btn-primary');
+
+                                document.getElementById("btnMessage").innerHTML = "";
+                            }
+
                         }
                     </script>
                 }
@@ -325,28 +394,26 @@
                     <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
                         @foreach (var step in Model.AllSteps)
                         {
-                        <li class="list-group-item" id="allStep-@allStepCount">
-                            <h5 id="allStepHeader-@step.StepId">
-                                <i class="fa fa-arrows-alt handle"></i>
-                                <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-">@step.StepName</a>
-                                @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
-                                <a id="alloperationAnchor_@step.StepId-" onclick="openOperationModal(this, '@step.StepName')">[]</a>
-                            </h5>
-                            <input id="allStepId_@step.StepId" form="mainForm" value="@step.StepId" />
-                            @if (step.Operation != null)
-                            {<input id="allOperationId_@step.StepId" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
-                            else
-                            { <input id="allOperationId_@step.StepId" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq-1]" />}
-                            <input id="allStepSeq_@step.StepId-" value="" />
+                            <li class="list-group-item" id="allStep_@step.StepId-0">
+                                <h5 id="allStepHeader-@step.StepId">
+                                    <i class="fa fa-arrows-alt handle"></i>
+                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName</a>
+                                    <br />
+                                    @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
+                                    <a id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
+                                </h5>
+                                <input id="allStepId_@step.StepId-0" form="mainForm" value="@step.StepId" hidden />
+                                <input id="allOperationId_@step.StepId-0" form="mainForm" hidden />
+                                <input id="allStepSeq_@step.StepId-0" value="" hidden />
 
-                            <div id="allStepDetails_@step.StepId-" class="collapse">
-                                <div class="card card-body">
-                                    @if (step.SignOffIsRequired == true)
-                                    {<p class="text-danger">Sign-Off Required</p>}
-                                    <b>Instructions: </b>@step.Instructions
+                                <div id="allStepDetails_@step.StepId-0" class="collapse">
+                                    <div class="card card-body">
+                                        @if (step.SignOffIsRequired == true)
+                                        {<p class="text-danger">Sign-Off Required</p>}
+                                        <b>Instructions: </b>@step.Instructions
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
                             allStepCount++;
                         }
                     </ul>
@@ -456,6 +523,10 @@
             empNumWarning.hidden = true;
         }
     };
+
+    String.prototype.replaceAt=function(index, replacement) {
+        return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+    }
 </script>
 
 @*
