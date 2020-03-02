@@ -141,6 +141,27 @@ namespace ArmisWebsite.DataAccess.Process
             }
         }
 
+        public async Task<ProcessRevisionModel> SaveStepSeqToRevision(List<StepSeqModel> aStepSeqModel) //Since each step seq model has the revisionId and processId already in it, there is no need to pass that information in.
+        {
+            using (var client = new HttpClient())
+            {
+                StringContent data = new StringContent(JsonSerializer.Serialize(aStepSeqModel), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(Config["APIAddress"] + "api/processes/UpdateStepsForRev", data);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<ProcessRevisionModel>(responseString);
+
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(await response.Content.ReadAsStringAsync());
+                }
+            }
+        }
+
         public async Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList)
         {
             using (var client = new HttpClient())

@@ -140,6 +140,39 @@ namespace ArmisWebsite
             return Page();
         }
 
+        public async Task<IActionResult> OnPostSave()
+        {
+            try
+            {
+                var theStepSeqList = new List<StepSeqModel>();
+
+                for (int i = 0; i < CurrentStepIds.Count; i++)
+                {
+                    theStepSeqList.Add(new StepSeqModel
+                    {
+                        StepId = CurrentStepIds[i],
+                        OperationId = CurrentOperationIds[i],
+                        Sequence = Convert.ToInt16(i + 1),
+                        ProcessId = CurrentProcessId,
+                        RevisionId = CurrentRevId
+                    });
+                }
+
+                var theReturnRevModel = await ProcessDataAccess.SaveStepSeqToRevision(theStepSeqList);
+
+                await SetUpProperties(theReturnRevModel.ProcessId);
+
+                PopUpMessage += "Process saved successfully.";
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+
+                return RedirectToPage("/Error", new { ExMessage = "Could not update revision. " + ex.Message });
+            }
+        }
+
         public async Task<IActionResult> OnPostLock()
         {
             try

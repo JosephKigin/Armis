@@ -25,7 +25,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             var theStepSeqEntities = new List<ProcessStepSeq>();
 
             foreach (var aStepSeqModel in aStepSeqModels)
-            {
+            {                
                 theStepSeqEntities.Add(aStepSeqModel.ToEntity());
             }
 

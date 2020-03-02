@@ -181,6 +181,20 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqModels)
+        {
+            try
+            {
+                var data = await ProcessService.UpdateStepsForRev(aStepSeqModels);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult<ProcessRevisionModel>> UpdateRevSaveAndLock(PassBackProcessRevStepSeqModel aRevStepSeqModel)
         {
             try
@@ -192,20 +206,6 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);                
-            }
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsToRev(IEnumerable<StepSeqModel> aStepSeqModels)
-        {
-            try
-            {
-                var data = await ProcessService.UpdateStepsForRev(aStepSeqModels);
-                return Ok(JsonSerializer.Serialize(data));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
             }
         }
 
