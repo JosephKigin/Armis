@@ -80,7 +80,7 @@ namespace Armis.Test
 
             await ProcessService.DeleteProcessRev(theProcessID, theProcessRevID);
 
-            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete);    
+            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete.ProcessId, theProcessRevisionModelToAttemptDelete.ProcessRevId);    
         }
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
@@ -110,7 +110,7 @@ namespace Armis.Test
 
             await ProcessService.DeleteProcessRev(theProcessID, theProcessRevID);
 
-            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete);
+            await ProcessService.UpdateUnlockToLockRev(theProcessRevisionModelToAttemptDelete.ProcessId, theProcessRevisionModelToAttemptDelete.ProcessRevId);
 
         }
         [TestMethod]
