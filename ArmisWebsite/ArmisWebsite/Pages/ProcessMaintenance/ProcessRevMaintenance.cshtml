@@ -32,7 +32,7 @@
                                     @foreach (var process in Model.AllProcesses)
                                     {
                                         <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
-                                            @process.Name -
+                                            @process.ProcessId: @process.Name -
                                             Rev:
                                             @if (process.Revisions != null && process.Revisions.Any())
                                             {
@@ -167,11 +167,11 @@
                                 <h5>
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {<i class="fa fa-arrows-alt handle"></i>}
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.InitialStepSeq">@step.StepName </a>
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.InitialStepSeq">@step.StepName <i class="fa fa-sort-down"></i></a>
                                     <br />
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {
-                                        <a id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">
+                                        <a class="text-info" id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">
                                             [@step.Operation.Name]
                                             <i class="far fa-object-group"></i>
                                         </a>
@@ -397,10 +397,10 @@
                             <li class="list-group-item" id="allStep_@step.StepId-0">
                                 <h5 id="allStepHeader-@step.StepId">
                                     <i class="fa fa-arrows-alt handle"></i>
-                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName</a>
+                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName <i class="fa fa-sort-down"></i></a>
                                     <br />
                                     @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
-                                    <a id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
+                                    <a class="text-info" id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
                                 </h5>
                                 <input id="allStepId_@step.StepId-0" form="mainForm" value="@step.StepId" hidden />
                                 <input id="allOperationId_@step.StepId-0" form="mainForm" hidden />
