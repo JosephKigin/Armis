@@ -1,0 +1,112 @@
+﻿@page "{anOperationId:int?}"
+@model ArmisWebsite.OperationMaintenanceModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    ViewData["Title"] = "Operation Maintenance";
+}
+
+<head>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" /> @*FontAwesome*@
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>Operation Maintenance</h1>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <form method="post">
+                <h3>Create A New Operation</h3>
+                @if (Model.CurrentOperationId != 0)
+                {
+                    <div class="form-group">
+                        <label><b>Operation ID: </b></label>
+                        <input type="text" asp-for="CurrentOperationId" class="form-control" readonly />
+                    </div>
+                }
+                <div class="form-group">
+                    <label><b>Operation Name: </b></label>
+                    <input type="text" asp-for="CurrentOperationName" class="form-control" />
+                    <span class="text-danger" asp-validation-for="CurrentOperationName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label><b>Operation Code: </b></label>
+                    <input type="text" asp-for="CurrentOperationCode" class="form-control" />
+                    <span class="text-danger" asp-validation-for="CurrentOperationCode"></span>
+                </div>
+
+                <div class="form-group">
+                    <label><b>Default Due Days: </b></label>
+                    <input type="number" class="form-control" asp-for="CurrentOperationDefaultDueDays" />
+                    <span class="text-danger" asp-validation-for="CurrentOperationDefaultDueDays"></span>
+                </div>
+
+                <div class="form-group">
+                    <label><b>Is Thickness Required?</b></label>
+                    <input type="checkbox" asp-for="CurrentOperationThicknessReq" />
+                </div>
+
+                <div class="form-group">
+                    <label><b>Operation Group: </b><input type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#operGroupsModal" value="Find" /> </label>
+                    <input id="currentOperationGroupName" type="text" class="form-control" asp-for="CurrentOperationGroupName" readonly />
+                    <input id="currentOperationGroupId" type="text" asp-for="CurrentOperationGroupId" hidden/>
+                </div>
+
+                <div id="operGroupsModal" class="modal fade">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <select id="operationGroupSelect" class="list-group w-100" size="12" >
+                                    @foreach (var operGroup in Model.AllOperationGroups)
+                                    {
+                                        <option id="@operGroup.Id" value="@operGroup.Name" class="list-group-item" onclick="chooseOperationGroup(this)">
+                                            @operGroup.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+
+            </form>
+        </div>
+
+        <div class="col-lg-6">
+            <h3>All Operations</h3>
+            <ul class="list-group border-secondary border" style="max-height: 42em; overflow:scroll; overflow-x:hidden;">
+                @foreach (var operation in Model.AllOperations)
+                {
+                    <li class="list-group-item" id="@operation.Id">
+                        <h6>@operation.Id: @operation.Name [@operation.Code]</h6>
+                        <p>Due Days: @operation.DefaultDueDays</p>
+                        @if (operation.ThicknessIsRequired)
+                        {<p class="text-danger">Thickness is required.</p>}
+
+                        <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit"></i></a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    @*Pop up partial*@
+    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
+
+</body>
+
+<script>
+    function chooseOperationGroup(theSelectedOption) {
+        console.log(theSelectedOption.id);
+        document.getElementById("currentOperationGroupName").value = theSelectedOption.value;
+        document.getElementById("currentOperationGroupId").value = theSelectedOption.id;
+
+        $("#operGroupsModal").modal("hide");
+    }
+</script>

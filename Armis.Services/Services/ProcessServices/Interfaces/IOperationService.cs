@@ -9,5 +9,8 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
     public interface IOperationService
     {
         Task<IEnumerable<OperationModel>> GetAllOperations();
+        Task<OperationModel> AddOperation(OperationModel anOperation);
+        Task<OperationModel> UpdateOperation(OperationModel anOperationModel);
+        Task<IEnumerable<OperationGroupModel>> GetAllOperationGroups();
     }
 }

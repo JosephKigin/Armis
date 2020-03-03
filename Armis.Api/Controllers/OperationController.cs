@@ -35,5 +35,52 @@ namespace Armis.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OperationGroupModel>>> GetAllOperationGroups()
+        {
+            try
+            {
+                var data = await OperationService.GetAllOperationGroups();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateOperation(OperationModel anOperationModel)
+        {
+            try
+            {
+                var data = await OperationService.AddOperation(anOperationModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateOperation(OperationModel anOperationModel) //This model NEEDS to have an Id. 
+        {
+            try
+            {
+                var data = await OperationService.UpdateOperation(anOperationModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
