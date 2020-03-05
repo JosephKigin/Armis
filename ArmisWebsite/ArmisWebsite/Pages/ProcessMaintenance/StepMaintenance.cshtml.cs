@@ -20,7 +20,6 @@ namespace ArmisWebsite
         private readonly IStepDataAccess StepDataAccess;
 
         //Business Model Properties
-        public List<VariableTemplateModel> AssignedVariableTemplateModels { get; set; }
 
         public List<StepModel> AllSteps { get; set; }
 
@@ -49,8 +48,7 @@ namespace ArmisWebsite
         public string Message { get; set; }
 
         public StepMaintenanceModel(IConfiguration aConfig,
-                                    IStepDataAccess aStepDataAccess,
-                                    IUomCodeDataAccess aUOMDataAccess)
+                                    IStepDataAccess aStepDataAccess)
         {
             Config = aConfig;
             StepDataAccess = aStepDataAccess;

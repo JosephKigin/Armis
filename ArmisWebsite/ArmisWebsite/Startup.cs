@@ -30,9 +30,7 @@ namespace ArmisWebsite
 
 
             services.AddRazorPages();
-            services.AddScoped<IUomCodeDataAccess, UOMCodeDataAccess>();
             services.AddScoped<IStepDataAccess, StepDataAccess>();
-            services.AddScoped<IVariableDataAccess, VariableDataAccess>();
             services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
             services.AddScoped<IOperationDataAccess, OperationDataAccess>();
