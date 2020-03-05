@@ -22,22 +22,17 @@ namespace ArmisWebsite.DataAccess.Customer
 
         public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
         {
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Customers/GetCustomers");
 
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<List<CustomerModel>>(responseString);
-                    var sortedResult = result.OrderBy(i => i.Name);
+                var response = await client.GetAsync(Config["APIAddress"] + "api/Customers/GetCustomers");
 
-                    return sortedResult;
-                }
-                catch (Exception ex)
-                {
-                    throw; //TODO: Add error handling.
-                }
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<List<CustomerModel>>(responseString);
+                var sortedResult = result.OrderBy(i => i.Name);
+
+                return sortedResult;
+
             }
         }
     }

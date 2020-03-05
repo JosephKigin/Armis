@@ -149,7 +149,7 @@ namespace Armis.Test
             Assert.AreEqual("UNLOCKED", theReturnedProcessRevisionModel.RevStatusCd);
             Assert.AreEqual(1, theReturnedProcessRevisionModel.ProcessRevId);
             Assert.AreEqual(theArbitraryEmpID, theReturnedProcessRevisionModel.CreatedByEmp);
-            Assert.AreEqual(0, theReturnedProcessRevisionModel.Steps.Count());
+            Assert.AreEqual(0, theReturnedProcessRevisionModel.StepSeqs.Count());
 
             await ProcessService.DeleteProcessRev(theNewAddedProcessID, 1); //delete process rev
 

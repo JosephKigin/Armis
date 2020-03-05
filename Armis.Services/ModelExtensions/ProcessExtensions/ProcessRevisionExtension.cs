@@ -24,7 +24,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         }
 
         //TODO: Refactor everything that uses this to use the methods below
-        public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aProcessRev, IEnumerable<StepModel> aSteps)
+        public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aProcessRev, IEnumerable<StepSeqModel> aStepSeqs)
         {
             return new ProcessRevisionModel()
             {
@@ -36,24 +36,24 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 ProcessRevId = aProcessRev.ProcessRevId,
                 RevStatusCd = aProcessRev.RevStatusCd,
                 TimeCreated = aProcessRev.TimeCreated,
-                Steps = aSteps
+                StepSeqs = aStepSeqs
             };
         }
 
         public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aRev)
         {
-            var theRev = aRev.ToModel();
-            var theSteps = new List<StepModel>();
+            var theRevModel = aRev.ToModel();
+            var theStepSeqModels = new List<StepSeqModel>();
 
-            foreach (var aStep in aRev.ProcessStepSeq)
+            foreach (var stepSeq in aRev.ProcessStepSeq)
             {
-                var theStep = aStep.Step.ToModel(aStep.StepSeq, aStep.Operation.ToModel());
-                theSteps.Add(theStep);
+                var theStepSeq = stepSeq.ToModel(stepSeq.Step.ToModel(), stepSeq.Operation.ToModel());
+                theStepSeqModels.Add(theStepSeq);
             }
 
-            theRev.Steps = theSteps;
+            theRevModel.StepSeqs = theStepSeqModels;
 
-            return theRev;
+            return theRevModel;
         }
 
         public static ProcessRevision ToEntity(this ProcessRevisionModel aProcessRevModel)

@@ -49,6 +49,9 @@ namespace ArmisWebsite
         [BindProperty(SupportsGet = true)]
         public int CurrentProcessId { get; set; }
 
+        [BindProperty]
+        public int SelectedProcessId { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public int CurrentRevId { get; set; }
 
@@ -58,6 +61,12 @@ namespace ArmisWebsite
 
         [BindProperty]
         public short EmpNumber { get; set; } //Validation is done through javascript on the front-end
+
+        [BindProperty]
+        public string NewProcessName { get; set; }
+
+        [BindProperty]
+        public int DueDays { get; set; }
 
 
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
@@ -77,7 +86,9 @@ namespace ArmisWebsite
             try
             {
                 var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
-                if (CurrentProcessId != 0 && aProcessId == 0) { aProcessId = CurrentProcessId; }
+                if (SelectedProcessId != 0) { CurrentProcessId = SelectedProcessId; }
+                if (CurrentProcessId != 0) { aProcessId = CurrentProcessId; }
+                
                 await SetUpProperties(aProcessId);
 
                 return Page();
@@ -103,7 +114,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "There was a problem deleting that revision." });
+                return RedirectToPage("/Error", new { ExMessage = "There was a problem deleting that revision. " + ex.Message});
             }
 
             try
@@ -201,9 +212,36 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while locking a revision. " + ex.Message });
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while locking the revision. " + ex.Message });
             }
 
+        }
+
+        public async Task<IActionResult> OnPostCopy()
+        {
+            try
+            {
+                CurrentProcess.ProcessId = CurrentProcessId;
+                CurrentProcess.Name = NewProcessName;
+                CurrentRev.Comments = Comment;
+                CurrentRev.CreatedByEmp = EmpNumber;
+                CurrentRev.DueDays = DueDays;
+                var tempRevList = new List<ProcessRevisionModel>(); //This only exists to add the current rev to and then to be assigned to the currentProcess.revisions becasue its an IEnumerable
+                tempRevList.Add(CurrentRev);
+                CurrentProcess.Revisions = tempRevList;
+                var result = await ProcessDataAccess.CopyToNewProcessFromExisting(CurrentProcess);
+
+                ModelState.Remove("CurrentProcessId");
+
+                await SetUpProperties(result.ProcessId);
+                CurrentProcessId = result.ProcessId;
+                PopUpMessage += "Process was successfully copied.";
+                return new PageResult();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while copying the process. " + ex.Message });
+            }
         }
 
         public async Task SetUpProperties(int aProcessId)
@@ -225,7 +263,7 @@ namespace ArmisWebsite
             CurrentProcess = new ProcessModel(); //This needs to be created even if there isn't a process being passed in so the front-end doesn't throw a null reference exception when looking for a name.
 
             CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end does throw a null reference exception when loading the current step list.
-            CurrentRev.Steps = new List<StepModel>();
+            CurrentRev.StepSeqs = new List<StepSeqModel>();
 
             CurrentStepIds = null;
             CurrentOperationIds = null;
@@ -233,6 +271,7 @@ namespace ArmisWebsite
             if (aProcessId > 0)
             {
                 CurrentProcess = AllProcesses.FirstOrDefault(i => i.ProcessId == aProcessId);
+                CurrentProcessId = aProcessId;
                 if (CurrentProcess.Revisions.Any())
                 {
                     ModelState.Remove("CurrentRevId"); //The input field wasn't updating when deleting an unlocked revision.  This clears the model state for just this property
@@ -241,17 +280,17 @@ namespace ArmisWebsite
 
                     CurrentOperations = new List<OperationModel>();
                     //Finds each unique operation within the revision's steps and loads it into CurrentOperations.
-                    foreach (var step in CurrentRev.Steps)
+                    foreach (var stepSeq in CurrentRev.StepSeqs)
                     {
                         var shouldThisStepBeAdded = true;
                         foreach (var operation in CurrentOperations)
                         {
-                            if (operation.Id == step.Operation.Id)
+                            if (operation.Id == stepSeq.Operation.Id)
                             {
                                 shouldThisStepBeAdded = false;
                             }
                         }
-                        if (shouldThisStepBeAdded) { CurrentOperations.Add(step.Operation); }
+                        if (shouldThisStepBeAdded) { CurrentOperations.Add(stepSeq.Operation); }
                     }
 
                 }

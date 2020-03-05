@@ -8,6 +8,22 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepSeqExtension
     {
+        //To Model
+        public static StepSeqModel ToModel(this ProcessStepSeq aStepSeq, StepModel aStep, OperationModel anOperation) //TODO: unsure if these should default to null or not or not be there at all.
+        {
+            return new StepSeqModel()
+            {
+                ProcessId = aStepSeq.ProcessId,
+                RevisionId = aStepSeq.ProcessRevId,
+                StepId = aStepSeq.StepId,
+                Sequence = aStepSeq.StepSeq,
+                OperationId = aStepSeq.OperationId,
+                Step = aStep,
+                Operation = anOperation
+            };
+        }
+
+        //To Entity
          public static ProcessStepSeq ToEntity(this StepSeqModel aStepSeqModel)
         {
             return new ProcessStepSeq()

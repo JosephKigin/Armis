@@ -18,7 +18,8 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
 
         //CREATE
         Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev);
-        Task<ProcessModel> CreateNewProcess(ProcessModel process);  //Returns ProcessId
+        Task<ProcessModel> CreateNewProcess(ProcessModel process); 
+        Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel);
 
         //UPDATE
         Task<ProcessModel> UpdateProcess(Process process);

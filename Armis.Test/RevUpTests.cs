@@ -156,13 +156,13 @@ namespace Armis.Test
             Assert.AreEqual(theReturnProcessRevision.DateCreated, theReturnProcessRevisionModelToValidate.DateCreated);
 
             //extract steps from hydrated model from query
-            var theReturnStepModelList = theReturnProcessRevision.Steps;
+            var theReturnStepModelList = theReturnProcessRevision.StepSeqs;
 
             //does the return revision have the correct number of steps that we tested with?
             Assert.AreEqual(theArbitraryNumSteps, theReturnStepModelList.Count());
             //check if Step Name is representative of where it was initialized
             string theStrToCheckStepName = TESTPREFIX + STEPPREFIX + "1";
-            Assert.AreEqual(theStrToCheckStepName, theReturnStepModelList.ElementAt(0).StepName.Substring(0, theStrToCheckStepName.Length));
+            Assert.AreEqual(theStrToCheckStepName, theReturnStepModelList.ElementAt(0).Step.StepName.Substring(0, theStrToCheckStepName.Length));
 
             //lock the rev and get a new Procees rev model to validate
             theReturnProcessRevisionModelToValidate = await ProcessService.UpdateUnlockToLockRev(theReturnProcessRevision.ProcessId, theReturnProcessRevision.ProcessRevId);
@@ -176,8 +176,8 @@ namespace Armis.Test
 
             //validate the current rev is now locked, has the required steps, and first step name is still in right spot
             Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);
-            Assert.AreEqual(theArbitraryNumSteps, theCurrProcessRevisionModelWithSteps.Steps.Count());
-            Assert.AreEqual(theStrToCheckStepName, theCurrProcessRevisionModelWithSteps.Steps.ElementAt(0).StepName.Substring(0, theStrToCheckStepName.Length));
+            Assert.AreEqual(theArbitraryNumSteps, theCurrProcessRevisionModelWithSteps.StepSeqs.Count());
+            Assert.AreEqual(theStrToCheckStepName, theCurrProcessRevisionModelWithSteps.StepSeqs.ElementAt(0).Step.StepName.Substring(0, theStrToCheckStepName.Length));
 
         }
         [TestMethod]
@@ -249,16 +249,16 @@ namespace Armis.Test
 
             var theReturnProcessRevisionModelList = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions;
             Assert.AreEqual(2, theReturnProcessRevisionModelList.Count());
-            Assert.AreEqual(theNewArbitraryStepIDListForRev2.Count(), theReturnProcessRevisionModelList.ElementAt(1).Steps.Count());
+            Assert.AreEqual(theNewArbitraryStepIDListForRev2.Count(), theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.Count());
 
             // validate step sequences are as expected
             for (int i = 0; i < theArbitraryStepIDListForRev1.Count(); i++) //rev 1
             {
-                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theReturnProcessRevisionModelList.ElementAt(0).Steps.ElementAt(i).StepId);
+                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theReturnProcessRevisionModelList.ElementAt(0).StepSeqs.ElementAt(i).StepId);
             }
             for (int i = 0; i < theNewArbitraryStepIDListForRev2.Count(); i++) //rev 2
             {
-                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theReturnProcessRevisionModelList.ElementAt(1).Steps.ElementAt(i).StepId);
+                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.ElementAt(i).StepId);
             }
 
             //LOCK and Validate
@@ -279,11 +279,11 @@ namespace Armis.Test
             // validate step sequences are as expected POST-LOCK
             for (int i = 0; i < theArbitraryStepIDListForRev1.Count(); i++) //rev 1
             {
-                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theRevision1Data.Steps.ElementAt(i).StepId);
+                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theRevision1Data.StepSeqs.ElementAt(i).StepId);
             }
             for (int i = 0; i < theNewArbitraryStepIDListForRev2.Count(); i++) //rev 2
             {
-                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theRevision2Data.Steps.ElementAt(i).StepId);
+                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theRevision2Data.StepSeqs.ElementAt(i).StepId);
             }
 
         }

@@ -138,46 +138,5 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             return result;
         }
-
-        public async Task<int> AddVariablesToStep(StepModel aStepModel)
-        {
-            var variableEntitiesToAdd = new List<StepVariable>();
-
-            foreach (var model in aStepModel.Variables)
-            {
-                variableEntitiesToAdd.Add(model.ToEntity());
-            }
-
-            var stepVarSeqEntities = await Context.StepVarSeq.Where(i => i.StepId == aStepModel.StepId).ToListAsync();
-            var lastVariableIDUsed = await Context.StepVariable.MaxAsync(i => i.StepVariableId);
-            short nextSeqNum = 1;
-
-            if (stepVarSeqEntities != null && stepVarSeqEntities.Any())
-            {
-                nextSeqNum = stepVarSeqEntities.Max(i => i.VariableSeq);
-                nextSeqNum++;
-            }
-
-            foreach (var entity in variableEntitiesToAdd)
-            {
-                var existingVariableEntity = await Context.StepVariable.FirstOrDefaultAsync(i => i.DefaultMin == entity.DefaultMin &&
-                                                                                            i.DefaultMax == entity.DefaultMax &&
-                                                                                            i.Uomcd == entity.Uomcd &&
-                                                                                            i.VarTempCd == entity.VarTempCd);
-
-                if (existingVariableEntity != null) { entity.StepVariableId = existingVariableEntity.StepVariableId; }
-                else
-                {
-                    entity.StepVariableId = lastVariableIDUsed + 1;
-                    lastVariableIDUsed++;
-                    Context.StepVariable.Add(entity);
-                }
-
-                Context.StepVarSeq.Add(new StepVarSeq { StepId = aStepModel.StepId, StepVariableId = entity.StepVariableId, VariableSeq = nextSeqNum });
-                nextSeqNum++;
-            }
-            await Context.SaveChangesAsync();
-            return aStepModel.StepId;
-        }
     }
 }

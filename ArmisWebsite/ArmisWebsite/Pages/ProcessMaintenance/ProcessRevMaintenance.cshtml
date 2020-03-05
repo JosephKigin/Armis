@@ -13,9 +13,17 @@
 <body>
     <h1>Process Revision Maintenance</h1>
 
-    @*Buttons on the top of the screen*@
-    <a class="btn btn-danger" href="ProcessRevMaintenance">Clear</a>
-    <button class="btn btn-primary" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
+    <h3>
+        Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+        Rev:  @if (Model.CurrentRevId != 0) { <b>@Model.CurrentRevId</b>  }
+        @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+        { <span class="alert-success">Unlocked</span> }
+        else if (Model.CurrentRev.RevStatusCd == "LOCKED") 
+        { <span class="alert-danger">Locked</span> }
+    </h3>
+    <input asp-for="CurrentProcessId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />
+    @if (Model.CurrentRev != null)
+    {<input asp-for="CurrentRevId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />}
 
     @*Modal for selecting a process to work on*@
     <div class="modal fade" id="modalProcessSelect">
@@ -67,43 +75,31 @@
     @*Main section that displays information about the current Process and the current Revision.*@
     <div class="row">
         <div class="col-lg-4">
-            <h5>Process Details</h5>
-            @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
-            {
-                <span class="text-success">Unlocked</span>
-                }
-            else if (Model.CurrentRev.RevStatusCd == "LOCKED")
-            {
-                <span class="text-danger">Locked</span>
-            }
+            @*Buttons on the top of the screen*@
+            <a class="btn btn-danger my-1" href="ProcessRevMaintenance">Clear</a>
+            <button class="btn btn-primary my-1" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
+
             <form id="mainForm" method="post">
                 <div class="card card-body">
-                    <h5><b>Process ID: </b></h5><input asp-for="CurrentProcessId" class="form-control" type="number" readonly />
-                    <h5><b>Name: </b>@Model.CurrentProcess.Name</h5>
-                    <h5><b>Customer: </b>@Model.CurrentProcess.CustId</h5>
-                    @if (Model.CurrentRev != null)
-                    {
-                        <h5><b>Current Rev: </b></h5><input asp-for="CurrentRevId" class="form-control" type="number" readonly />
-                        <h5><b>Status: </b>@Model.CurrentRev.RevStatusCd</h5>
-                    }
-                    else
-                    {
-                        <h5><b>Current Rev: </b>NONE</h5>
-                    }
+                    <div class="form-group row"><h5 class="col-lg-6"><b>Customer: </b></h5><input class="form-control col-lg-6" asp-for="CurrentProcess.CustId" /></div>
                     <h5><b>Comment: </b></h5>
                     <textarea class="form-control" readonly>@Model.CurrentRev.Comments</textarea>
                 </div>
 
                 <div class="card card-body">
                     @*
-                There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
-                the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
-                everything else is enabled.
-                TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
+                        There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
+                        the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
+                        everything else is enabled.
+                        TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
                     *@
                     <span id="btnMessage" class="text-danger"></span>
                     @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
                     {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-success col-lg-5 my-1 mx-2" data-toggle="modal" data-target="#modalCopyProcessDetails" value="Copy" />
+                        </div>
                         <input type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#modalRevUpComment" value="Rev Up" />
                         <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
                         <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
@@ -111,6 +107,10 @@
                     }
                     else if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                     {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
+                        </div>
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
                         <button id="btnLock" type="submit" class="btn btn-primary m-1" asp-page-handler="Lock">Lock</button>
                         <button id="btnSave" type="submit" class="btn btn-primary m-1" asp-page-handler="Save">Save</button>
@@ -118,6 +118,10 @@
                     }
                     else
                     {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
+                        </div>
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
                         <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
                         <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
@@ -154,6 +158,46 @@
             </div>
         </div>
 
+        @*Modal for Copy Process for the user to add a comment and employee number to a revision and edit any details about the process.*@
+        <div class="modal fade" id="modalCopyProcessDetails">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Additional Details</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            <input asp-for="CurrentProcessId" hidden />
+
+                            <div class="form-group">
+                                <label><b>Process Name:</b></label>
+                                <input id="txtCopyProcessName" class="form-control" asp-for="NewProcessName" autocomplete="off" onkeyup="validateCopyProcessModal()" />
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Comment:</b></label>
+                                <input id="txtCopyProcessComment" class="form-control" asp-for="Comment" autocomplete="off" onkeyup="validateCopyProcessModal()" />
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Due Days:</b></label>
+                                <input id="txtCopyDueDays" class="form-control" asp-for="DueDays" autocomplete="off" onkeyup="validateCopyProcessModal()" />
+                            </div>
+
+                            <div class="form-group">
+                                @*TODO: delete this once Azure AD Login is implemented.*@
+                                <label><b>Employee Number:</b></label>
+                                <input id="numCopyProcessEmp" class="form-control" type="number" asp-for="EmpNumber" onkeyup="validateCopyProcessModal()" />
+                                <span id="spanCopyProcessEmpNumeberWarning" class="alert-danger" hidden>Not a valid Employee Number</span>
+                            </div>
+
+                            <button id="btnCopyProcess" type="submit" class="btn btn-primary m-1" asp-page-handler="Copy" disabled>Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @*Loads a display with the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
         <div class="col-lg-4">
             @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
@@ -169,39 +213,39 @@
                 <div class="p-3" style="border:dashed @borderColor;">
                     <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
                         @{Model.InitialStepSeq = 0;}
-                        @foreach (var step in Model.CurrentRev.Steps)
+                        @foreach (var stepSeq in Model.CurrentRev.StepSeqs)
                         {
-                            <li class="list-group-item" id="currentStep_@step.StepId-@Model.InitialStepSeq">
+                            <li class="list-group-item" id="currentStep_@stepSeq.Step.StepId-@Model.InitialStepSeq">
                                 <h5>
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {<i class="fa fa-arrows-alt handle"></i>}
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@step.StepId-@Model.InitialStepSeq">@step.StepName <i class="fa fa-sort-down"></i></a>
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down"></i></a>
                                     <br />
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {
-                                        <a class="text-info" id="operationAnchor_@step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@step.StepName')">
-                                            [@step.Operation.Name]
+                                        <a class="text-info" id="operationAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@stepSeq.Step.StepName')">
+                                            [@stepSeq.Operation.Name]
                                             <i class="far fa-object-group"></i>
                                         </a>
                                     }
                                     else
                                     {
-                                        <p>[@step.Operation.Name]</p>
+                                        <p>[@stepSeq.Operation.Name]</p>
                                     }
                                     @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                 </h5>
-                                <input id="currentStepId_@step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq]" value="@step.StepId" hidden />
-                                @if (step.Operation != null)
-                                {<input id="currentOperationId_@step.StepId-@Model.InitialStepSeq" value="@step.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                <input id="currentStepId_@stepSeq.Step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq]" value="@stepSeq.Step.StepId" hidden />
+                                @if (stepSeq.Operation != null)
+                                {<input id="currentOperationId_@stepSeq.Step.StepId-@Model.InitialStepSeq" value="@stepSeq.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
                                 else
-                                { <input id="currentOperationId_@step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
-                                <input id="currentStepSeq_@step.StepId-@Model.InitialStepSeq" value="@Model.InitialStepSeq" hidden />
+                                { <input id="currentOperationId_@stepSeq.Step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                <input id="currentStepSeq_@stepSeq.Step.StepId-@Model.InitialStepSeq" value="@Model.InitialStepSeq" hidden />
 
-                                <div id="currentStepDetails_@step.StepId-@Model.InitialStepSeq" class="collapse">
+                                <div id="currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq" class="collapse">
                                     <div class="card card-body">
-                                        @if (step.SignOffIsRequired == true)
+                                        @if (stepSeq.Step.SignOffIsRequired == true)
                                         {<p class="text-danger">Sign-Off Required</p>}
-                                        <p><b>Instructions: </b>@step.Instructions</p>
+                                        <p><b>Instructions: </b>@stepSeq.Step.Instructions</p>
                                     </div>
                                 </div>
                             </li>
@@ -468,19 +512,19 @@
                 console.log(rev);
                 var stepItemsHtml = '';
                 if (xhr.status == 200) {
-                    for (var i = 0; i < rev.Steps.length; i++) {
+                    for (var i = 0; i < rev.StepSeqs.length; i++) {
                         var signOffReqHtml = '';
-                        if (rev.Steps[i].SignOffIsRequired == true) {
+                        if (rev.StepSeqs[i].Step.SignOffIsRequired == true) {
                             signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
                         }
                         stepItemsHtml +=
 
                             `<li class="list-group-item">
-                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.Steps[i].StepName + `</a>
+                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.StepSeqs[i].Step.StepName + `</a>
                                                 <div id="stepItem` + i + `" class="collapse">
                                                     <div class="card card-body">`+
                             signOffReqHtml +
-                            `<p>` + rev.Steps[i].Instructions + `</p>
+                            `<p>` + rev.StepSeqs[i].Step.Instructions + `</p>
                                                     </div>
                                                 </div>
                                             </li>`
@@ -528,6 +572,42 @@
         }
         else {
             btnRevUp.disabled = true;
+            empNumWarning.hidden = true;
+        }
+    };
+
+    function validateCopyProcessModal() {
+        var txtName = document.getElementById("txtCopyProcessName");
+        var txtComment = document.getElementById("txtCopyProcessComment");
+        var numEmp = document.getElementById("numCopyProcessEmp"); //TODO: delete this once Azure AD Login is implemented.
+        var empNumWarning = document.getElementById("spanCopyProcessEmpNumeberWarning");
+        var btnCopyProcess = document.getElementById("btnCopyProcess");
+
+        if (txtComment.value.length >= 1 && numEmp.value > 0 && txtName.value.length >= 1) {
+            //TODO: delete this once Azure AD Login is implemented.
+            //Sets up the connection to the employee controller in the API and fires off the request.
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '@Model._apiAddress' + 'api/employee/CheckIfEmployeeNumberExists/' + numEmp.value, true)
+            xhr.send();
+
+            //When the request loads, checks if the employee number exists.  If it does, the span displaying the validation message disappears and the rev up button is enabled.  If the employee number does not exist, the validation span is displayed and the rev up button is disabled.
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var empNumExists = JSON.parse(xhr.responseText);
+                    console.log(empNumExists);
+                    if (empNumExists == true) {
+                        btnCopyProcess.disabled = false;
+                        empNumWarning.hidden = true;
+                    }
+                    else {
+                        empNumWarning.hidden = false;
+                    }
+                }
+            };
+
+        }
+        else {
+            btnCopyProcess.disabled = true;
             empNumWarning.hidden = true;
         }
     };

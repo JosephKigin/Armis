@@ -14,7 +14,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<int> CreateStep(StepModel aStepModel);
         Task<int> UpdateStep(int aStepId, StepModel aStepModel);
         Task<int> DeactivateStep(int aStepId);
-        Task<int> AddVariablesToStep(StepModel aStepModel);
         Task<List<StepModel>> GetHydratedByName(string aStepName);
     }
 }

@@ -127,22 +127,6 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpPost("{aStepModel}")]
-        public async Task<ActionResult<int>> PostVariablesToStep(StepModel aStepModel) 
-        {
-            try
-            {
-                var data = await StepService.AddVariablesToStep(aStepModel);
-
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest(ex.Message);
-            }
-        }
-
         // DELETE: api/Steps/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Step>> DeleteStep(int id)

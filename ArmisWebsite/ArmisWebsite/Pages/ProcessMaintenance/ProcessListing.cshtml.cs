@@ -39,7 +39,7 @@ namespace ArmisWebsite
         {
             try
             {
-                var theProcesses = await ProcessDataAccess.GetAllProcesses();
+                var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
 
                 Processes = theProcesses.ToList();
 

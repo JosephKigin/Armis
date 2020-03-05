@@ -20,6 +20,10 @@
     <ProjectReference Include="..\ArmisWebsite.DataAccess\ArmisWebsite.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\ProcessMaintenance\Partials\" />
+  </ItemGroup>
+
 
 
 </Project>

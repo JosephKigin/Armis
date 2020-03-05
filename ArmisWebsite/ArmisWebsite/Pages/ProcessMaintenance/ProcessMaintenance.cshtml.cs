@@ -32,7 +32,7 @@ namespace ArmisWebsite
 
         [BindProperty]
         public string ProcessCustomerSearchName { get; set; }
-        
+
         [BindProperty]
         public string ProcessCustomerId { get; set; }
 
@@ -60,7 +60,7 @@ namespace ArmisWebsite
         {
             await SetUpProperties();
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 //Small chunk of validation... ToDo: Maybe move this to a custom validation that can be applied to the SearchName property?
                 var doesCustNameExist = CustomerList.FirstOrDefault(i => i.SearchName.ToLower() == ProcessCustomerSearchName.ToLower());
@@ -93,8 +93,18 @@ namespace ArmisWebsite
         //Loads the model properties
         public async Task SetUpProperties()
         {
-            var tempCustList = await CustomerDataAccess.GetAllCustomers();
-            CustomerList = tempCustList.ToList();
+            try
+            {
+                var tempCustList = await CustomerDataAccess.GetAllCustomers();
+                CustomerList = tempCustList.ToList();
+
+            }
+            catch (Exception ex)
+            {
+
+                RedirectToPage("/Error", new { ExMessage = "There was a problem loading the page. " + ex.Message });
+            }
+
         }
     }
 }

@@ -34,6 +34,56 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entity.ToModel();
         }
 
+        //Takes a current process and makes a copy of it with the only revision on it being the locked rev of the existing process
+        public async Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel)
+        {
+            var theProcessEntity = aProcessModel.ToEntity();
+            var lastUsedProcessId = await context.Process.MaxAsync(i => i.ProcessId);
+            theProcessEntity.ProcessId = lastUsedProcessId + 1;
+
+            //Grabs the locked revision of the process being copied.
+            var theOldRevisionEntity = await context.ProcessRevision.Where(i => i.ProcessId == aProcessModel.ProcessId && i.RevStatusCd == "LOCKED" )
+                                                            .Include(i => i.ProcessStepSeq)
+                                                                .ThenInclude(i => i.Operation)
+                                                                    .ThenInclude(i => i.OperGroup)
+                                                            .Include(i => i.ProcessStepSeq)
+                                                                .ThenInclude(i => i.Step).FirstOrDefaultAsync();
+            var theRevisionEntity = new ProcessRevision();
+            theRevisionEntity.ProcessRevId = 1;
+            theRevisionEntity.RevStatusCd = "UNLOCKED";
+            theRevisionEntity.DateCreated = DateTime.Now;
+            theRevisionEntity.TimeCreated = DateTime.Now.TimeOfDay;
+            theRevisionEntity.ProcessId = theProcessEntity.ProcessId;
+            theRevisionEntity.Comments = aProcessModel.Revisions.FirstOrDefault().Comments;
+            theRevisionEntity.CreatedByEmp = aProcessModel.Revisions.FirstOrDefault().CreatedByEmp;
+            theRevisionEntity.DueDays = aProcessModel.Revisions.FirstOrDefault().DueDays;
+
+            var theNewStepSeqEntities = new List<ProcessStepSeq>();
+
+            foreach (var stepSeq in theOldRevisionEntity.ProcessStepSeq)
+            {
+                theNewStepSeqEntities.Add(new ProcessStepSeq
+                {
+                    StepId = stepSeq.StepId,
+                    StepSeq = stepSeq.StepSeq,
+                    ProcessId = theProcessEntity.ProcessId,
+                    ProcessRevId = theRevisionEntity.ProcessRevId,
+                    OperationId = stepSeq.OperationId
+                });
+            }
+
+            theRevisionEntity.ProcessStepSeq = theNewStepSeqEntities;
+            theProcessEntity.ProcessRevision.Add(theRevisionEntity);
+            
+            context.Process.Add(theProcessEntity);
+
+            await context.SaveChangesAsync();
+
+            var result = await GetHydratedProcess(theProcessEntity.ProcessId);
+
+            return result;
+        }
+
         public async Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev) //This parameter needs comment, employee number, and processId
         {
             var newRevEntity = newRev.ToEntity();
@@ -108,7 +158,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             return result;
         }
 
-        public async Task<ProcessModel> GetHydratedProcess(int processId) //TODO: Use the hydrated extension.
+        public async Task<ProcessModel> GetHydratedProcess(int processId)
         {
             var processEntity = await context.Process.Where(i => i.ProcessId == processId)
                                                      .Include(i => i.ProcessRevision)
@@ -121,22 +171,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             if (processEntity == null) { throw new NullReferenceException("No process with id " + processId + " exists."); }
 
-            var revs = new List<ProcessRevisionModel>();
-
-            foreach (var rev in processEntity.ProcessRevision)
-            {
-                var revSteps = new List<StepModel>();
-
-                foreach (var stepSeq in rev.ProcessStepSeq)
-                {
-                    var step = stepSeq.Step.ToModel(stepSeq.StepSeq, stepSeq.Operation.ToModel());
-                    revSteps.Add(step);
-                }
-
-                revs.Add(rev.ToHydratedModel(revSteps));
-            }
-
-            return processEntity.ToHydratedModel(revs);
+            return processEntity.ToHydratedModel();
         }
 
         public async Task<ProcessRevisionModel> GetCurrentProcessRevWithSteps(int aProcessId)

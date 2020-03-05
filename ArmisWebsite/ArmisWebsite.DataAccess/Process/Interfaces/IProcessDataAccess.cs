@@ -8,7 +8,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
 {
     public interface IProcessDataAccess
     {
-        Task<IEnumerable<ProcessModel>> GetAllProcesses();
         Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
         Task<bool> CheckIfNameIsUnique(string aName);
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
@@ -16,5 +15,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
         Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel);
         Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList);
         Task<ProcessRevisionModel> SaveStepSeqToRevision(List<StepSeqModel> aStepSeqModel);
+        Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel);
     }
 }

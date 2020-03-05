@@ -18,69 +18,7 @@ namespace ArmisWebsite.DataAccess.Process
         {
             Config = aConfig;
         }
-
-        public async Task<IEnumerable<ProcessModel>> GetAllProcesses()
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetHydratedProcesses");
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw; //TODO: Implement better error handling
-                }
-            }
-        }
-
-        public async Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses()
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetHydratedProcesses");
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw; //TODO: Implement better error handling on this whole page
-                }
-            }
-        }
-
-        public async Task<bool> CheckIfNameIsUnique(string aName)
-        {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<bool>(responseString);
-
-                    return result;
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
-
-        }
-
+        //CREATE
         public async Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel)
         {
             using (var client = new HttpClient())
@@ -99,23 +37,6 @@ namespace ArmisWebsite.DataAccess.Process
                 {
 
                     throw;
-                }
-            }
-        }
-
-        public async Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId) //This will return the response from the API in string format.
-        {
-            using (var client = new HttpClient())
-            {
-                var response = await client.DeleteAsync(Config["APIAddress"] + "api/processes/DeleteProcessRevision/" + aProcessId + "/" + aProcessRevId);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    return "Process deleted successfully.";
-                }
-                else
-                {
-                    throw new Exception(await response.Content.ReadAsStringAsync());
                 }
             }
         }
@@ -141,7 +62,8 @@ namespace ArmisWebsite.DataAccess.Process
             }
         }
 
-        public async Task<ProcessRevisionModel> SaveStepSeqToRevision(List<StepSeqModel> aStepSeqModel) //Since each step seq model has the revisionId and processId already in it, there is no need to pass that information in.
+        //Since each step seq model has the revisionId and processId already in it, there is no need to pass that information in.
+        public async Task<ProcessRevisionModel> SaveStepSeqToRevision(List<StepSeqModel> aStepSeqModel)
         {
             using (var client = new HttpClient())
             {
@@ -162,6 +84,50 @@ namespace ArmisWebsite.DataAccess.Process
             }
         }
 
+        public async Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel)
+        {
+            using(var client = new HttpClient())
+            {
+                StringContent data = new StringContent(JsonSerializer.Serialize(aProcessModel), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(Config["APIAddress"] + "api/Processes/CopyNewProcessFromExisting", data);
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ProcessModel>(responseString);
+
+                return result;
+            }
+        }
+
+        //READ
+        public async Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses()
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetHydratedProcesses");
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<List<ProcessModel>>(responseString);
+
+                return result;
+            }
+        }
+
+        public async Task<bool> CheckIfNameIsUnique(string aName) //TODO: Is this even being used anywhere?
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<bool>(responseString);
+
+                return result;
+            }
+
+        }
+
+        //UPDATE
         public async Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList)
         {
             using (var client = new HttpClient())
@@ -182,6 +148,24 @@ namespace ArmisWebsite.DataAccess.Process
                     var result = JsonSerializer.Deserialize<ProcessRevisionModel>(responseString);
 
                     return result;
+                }
+                else
+                {
+                    throw new Exception(await response.Content.ReadAsStringAsync());
+                }
+            }
+        }
+
+        //DELETE
+        public async Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId) //This will return the response from the API in string format.
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.DeleteAsync(Config["APIAddress"] + "api/processes/DeleteProcessRevision/" + aProcessId + "/" + aProcessRevId);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return "Process deleted successfully.";
                 }
                 else
                 {

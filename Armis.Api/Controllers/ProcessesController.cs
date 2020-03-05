@@ -209,6 +209,20 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult<ProcessModel>> CopyNewProcessFromExisting(ProcessModel aProcessModel)
+        {
+            try
+            {
+                var data = await ProcessService.CopyToNewProcessFromExisting(aProcessModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{aProcessId}/{aProcessRevId}")]
         public async Task<ActionResult> DeleteProcessRevision(int aProcessId, int aProcessRevId)
         {

@@ -16,6 +16,6 @@ namespace Armis.BusinessModels.ProcessModels
         public int? DueDays { get; set; }
         public string Comments { get; set; }
 
-        public IEnumerable<StepModel> Steps { get; set; }
+        public IEnumerable<StepSeqModel> StepSeqs { get; set; }
     }
 }

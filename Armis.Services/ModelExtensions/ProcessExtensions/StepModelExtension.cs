@@ -8,7 +8,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {
-        public static StepModel ToModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        public static StepModel ToModel(this Step aStep)
         {
             var result = new StepModel()
             {
@@ -17,15 +17,13 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 StepCategoryCd = aStep.StepCategoryCd,
                 StepId = aStep.StepId,
                 Inactive = aStep.Inactive,
-                StepName = aStep.StepName,
-                Sequence = aSeq,
-                Operation = anOperation
+                StepName = aStep.StepName
             };
 
             return result;
         }
 
-        public static StepModel ToHydratedModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        public static StepModel ToHydratedModel(this Step aStep)
         {
             var result = new StepModel()
             {
@@ -33,19 +31,8 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 SignOffIsRequired = aStep.SignOffIsRequired,
                 StepCategoryCd = aStep.StepCategoryCd,
                 StepId = aStep.StepId,
-                StepName = aStep.StepName,
-                Sequence = aSeq,
-                Operation = anOperation
+                StepName = aStep.StepName
             };
-
-            var variableList = new List<StepVariableModel>();
-
-            foreach (var variableSeq in aStep.StepVarSeq)
-            {
-                variableList.Add(variableSeq.StepVariable.ToModel());
-            }
-
-            result.Variables = variableList;
 
             return result;
 
@@ -63,7 +50,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             };
         }
 
-        public static IEnumerable<Step> ToEntity(this IEnumerable<StepModel> aStepModels)
+        public static IEnumerable<Step> ToEntities(this IEnumerable<StepModel> aStepModels)
         {
             var theStepEntities = new List<Step>();
             foreach (var aStep in aStepModels)
