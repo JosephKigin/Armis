@@ -12,15 +12,37 @@
 
 <body>
     <h1>Process Revision Maintenance</h1>
-
-    <h3>
-        Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
-        Rev:  @if (Model.CurrentRevId != 0) { <b>@Model.CurrentRevId</b>  }
+    @if (Model.CurrentProcessId != 0)
+    {
         @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
-        { <span class="alert-success">Unlocked</span> }
-        else if (Model.CurrentRev.RevStatusCd == "LOCKED") 
-        { <span class="alert-danger">Locked</span> }
-    </h3>
+        {
+            <h3>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Rev:  @if (Model.CurrentRevId != 0)
+                {<b>@Model.CurrentRevId </b>}
+                <span class="alert-success"> Unlocked </span>
+            </h3>
+
+
+
+        }
+        else if (Model.CurrentRev.RevStatusCd == "LOCKED")
+        {
+            <h3>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Rev: @if (Model.CurrentRevId != 0)
+                {<b>@Model.CurrentRevId </b>}
+                <span class="alert-danger">Locked</span>
+            </h3>
+        }
+        else
+        {
+            <span>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+            </span>
+        }
+    }
+
     <input asp-for="CurrentProcessId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />
     @if (Model.CurrentRev != null)
     {<input asp-for="CurrentRevId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />}
@@ -81,9 +103,18 @@
 
             <form id="mainForm" method="post">
                 <div class="card card-body">
-                    <div class="form-group row"><h5 class="col-lg-6"><b>Customer: </b></h5><input class="form-control col-lg-6" asp-for="CurrentProcess.CustId" /></div>
+                    @*<div class="form-group row"><h5 class="col-lg-6"><b>Customer: </b></h5><input class="form-control col-lg-6" asp-for="CurrentProcess.CustId" /></div>*@
+                    <h5><b>Created By: </b></h5>
+                    @if (Model.EmpCreatedCurrentRev != null)
+                    {<p>@Model.EmpCreatedCurrentRev.LastName, @Model.EmpCreatedCurrentRev.FirstName</p>}
+                    <h5><b>Date Created: </b></h5>
+                    @if (Model.CurrentRev.DateTimeCreated.Date.ToString() != "1/1/0001 12:00:00 AM")
+                    {<p>@Model.CurrentRev.DateTimeCreated.Date.ToString("d") @Model.CurrentRev.DateTimeCreated.TimeOfDay</p>}
                     <h5><b>Comment: </b></h5>
-                    <textarea class="form-control" readonly>@Model.CurrentRev.Comments</textarea>
+                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                    {<textarea class="form-control">@Model.CurrentRev.Comments</textarea> }
+                    else
+                    {<textarea class="form-control" readonly>@Model.CurrentRev.Comments</textarea>}
                 </div>
 
                 <div class="card card-body">
@@ -224,13 +255,13 @@
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {
                                         <a class="text-info" id="operationAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@stepSeq.Step.StepName')">
-                                            [@stepSeq.Operation.Name]
+                                            [@stepSeq.Operation.Code]
                                             <i class="far fa-object-group"></i>
                                         </a>
                                     }
                                     else
                                     {
-                                        <p>[@stepSeq.Operation.Name]</p>
+                                        <p>[@stepSeq.Operation.Code]</p>
                                     }
                                     @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                 </h5>

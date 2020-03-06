@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Armis.BusinessModels.EmployeeModels;
 using Armis.BusinessModels.ProcessModels;
+using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Process.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,6 +23,7 @@ namespace ArmisWebsite
         public IProcessDataAccess ProcessDataAccess { get; set; }
         public IStepDataAccess StepDataAccess { get; set; }
         public IOperationDataAccess OperationDataAccess { get; set; }
+        public IEmployeeDataAccess EmployeeDataAccess { get; set; }
 
         //Model Properties
         public List<ProcessModel> AllProcesses { get; set; }
@@ -28,6 +31,7 @@ namespace ArmisWebsite
         public List<OperationModel> AllOperations { get; set; }
         public List<OperationModel> CurrentOperations { get; set; }
         public ProcessRevisionModel RevToAdd { get; set; }
+        public EmployeeModel EmpCreatedCurrentRev { get; set; }
 
 
         //Page Properties
@@ -50,7 +54,7 @@ namespace ArmisWebsite
         public int CurrentProcessId { get; set; }
 
         [BindProperty]
-        public int SelectedProcessId { get; set; }
+        public int SelectedProcessId { get; set; } //TODO: Is this even used anywhere?
 
         [BindProperty(SupportsGet = true)]
         public int CurrentRevId { get; set; }
@@ -72,11 +76,13 @@ namespace ArmisWebsite
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
                                           IStepDataAccess aStepDataAccess,
                                           IOperationDataAccess anOperationDataAccess,
+                                          IEmployeeDataAccess anEmployeeDataAccess,
                                           IConfiguration aConfig)//Config is injected only to grab the APIAddress for the javascript calls on the web page.
         {
             ProcessDataAccess = aProcessDataAccess;
             StepDataAccess = aStepDataAccess;
             OperationDataAccess = anOperationDataAccess;
+            EmployeeDataAccess = anEmployeeDataAccess;
             _apiAddress = aConfig["APIAddress"];
         }
 
@@ -86,8 +92,8 @@ namespace ArmisWebsite
             try
             {
                 var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
-                if (SelectedProcessId != 0) { CurrentProcessId = SelectedProcessId; }
-                if (CurrentProcessId != 0) { aProcessId = CurrentProcessId; }
+               if (SelectedProcessId != 0) { CurrentProcessId = SelectedProcessId; }
+               if (CurrentProcessId != 0) { aProcessId = CurrentProcessId; }
                 
                 await SetUpProperties(aProcessId);
 
@@ -95,7 +101,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." });
+                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." + ex.Message });
             }
         }
 
@@ -277,7 +283,8 @@ namespace ArmisWebsite
                     ModelState.Remove("CurrentRevId"); //The input field wasn't updating when deleting an unlocked revision.  This clears the model state for just this property
                     CurrentRev = CurrentProcess.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault();
                     CurrentRevId = CurrentRev.ProcessRevId;
-
+                    Comment = CurrentRev.Comments;
+                    EmpCreatedCurrentRev = await EmployeeDataAccess.GetEmployeeById(CurrentRev.CreatedByEmp);
                     CurrentOperations = new List<OperationModel>();
                     //Finds each unique operation within the revision's steps and loads it into CurrentOperations.
                     foreach (var stepSeq in CurrentRev.StepSeqs)

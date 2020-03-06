@@ -13,13 +13,12 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateCreated = aProcessRev.DateCreated,
+                DateTimeCreated = aProcessRev.DateCreated.Add(aProcessRev.TimeCreated),
                 DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusCd = aProcessRev.RevStatusCd,
-                TimeCreated = aProcessRev.TimeCreated
+                RevStatusCd = aProcessRev.RevStatusCd
             };
         }
 
@@ -29,13 +28,12 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateCreated = aProcessRev.DateCreated,
+                DateTimeCreated = aProcessRev.DateCreated.Add(aProcessRev.TimeCreated),
                 DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
                 RevStatusCd = aProcessRev.RevStatusCd,
-                TimeCreated = aProcessRev.TimeCreated,
                 StepSeqs = aStepSeqs
             };
         }
@@ -62,12 +60,12 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 Comments = aProcessRevModel.Comments,
                 CreatedByEmp = aProcessRevModel.CreatedByEmp,
-                DateCreated = aProcessRevModel.DateCreated,
+                DateCreated = aProcessRevModel.DateTimeCreated.Date,
                 DueDays = aProcessRevModel.DueDays,
                 ProcessId = aProcessRevModel.ProcessId,
                 ProcessRevId = aProcessRevModel.ProcessRevId,
                 RevStatusCd = aProcessRevModel.RevStatusCd,
-                TimeCreated = aProcessRevModel.TimeCreated
+                TimeCreated = aProcessRevModel.DateTimeCreated.TimeOfDay
             };
         }
 
@@ -78,8 +76,8 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 ProcessId = aProcessRevisionModel.ProcessId,
                 ProcessRevId = aProcessRevisionModel.ProcessRevId,
                 CreatedByEmp = aProcessRevisionModel.CreatedByEmp,
-                DateCreated = aProcessRevisionModel.DateCreated,
-                TimeCreated = aProcessRevisionModel.TimeCreated,
+                DateCreated = aProcessRevisionModel.DateTimeCreated.Date,
+                TimeCreated = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
                 RevStatusCd = aProcessRevisionModel.RevStatusCd,
                 DueDays = aProcessRevisionModel.DueDays,
                 Comments = aProcessRevisionModel.Comments,

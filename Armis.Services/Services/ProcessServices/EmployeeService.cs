@@ -1,4 +1,6 @@
-﻿using Armis.Data.DatabaseContext;
+﻿using Armis.BusinessModels.EmployeeModels;
+using Armis.Data.DatabaseContext;
+using Armis.DataLogic.ModelExtensions.EmployeeExtensions;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,13 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             if (entity != null){ return true; }
             else { return false; }
+        }
+
+        public async Task<EmployeeModel> GetEmployeeById(short anEmpNum)
+        {
+            var entity = await context.Employee.FindAsync(anEmpNum);
+
+            return entity.ToModel();
         }
     }
 }

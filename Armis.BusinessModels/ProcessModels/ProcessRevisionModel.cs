@@ -10,8 +10,7 @@ namespace Armis.BusinessModels.ProcessModels
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public short CreatedByEmp { get; set; }
-        public DateTime DateCreated { get; set; }
-        public TimeSpan TimeCreated { get; set; }
+        public DateTime DateTimeCreated { get; set; }
         public string RevStatusCd { get; set; }
         public int? DueDays { get; set; }
         public string Comments { get; set; }

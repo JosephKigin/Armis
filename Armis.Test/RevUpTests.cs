@@ -153,7 +153,7 @@ namespace Armis.Test
             Assert.AreEqual(theReturnProcessRevision.Comments, theReturnProcessRevisionModelToValidate.Comments);
             Assert.AreEqual(theReturnProcessRevision.ProcessId, theReturnProcessRevisionModelToValidate.ProcessId);
             Assert.AreEqual(theReturnProcessRevision.RevStatusCd, theReturnProcessRevisionModelToValidate.RevStatusCd);
-            Assert.AreEqual(theReturnProcessRevision.DateCreated, theReturnProcessRevisionModelToValidate.DateCreated);
+            Assert.AreEqual(theReturnProcessRevision.DateTimeCreated, theReturnProcessRevisionModelToValidate.DateTimeCreated);
 
             //extract steps from hydrated model from query
             var theReturnStepModelList = theReturnProcessRevision.StepSeqs;
@@ -172,7 +172,7 @@ namespace Armis.Test
             Assert.AreEqual(theCurrProcessRevisionModelWithSteps.Comments, theReturnProcessRevisionModelToValidate.Comments);
             Assert.AreEqual(theCurrProcessRevisionModelWithSteps.ProcessId, theReturnProcessRevisionModelToValidate.ProcessId);
             Assert.AreEqual(theCurrProcessRevisionModelWithSteps.RevStatusCd, theReturnProcessRevisionModelToValidate.RevStatusCd);
-            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.DateCreated, theReturnProcessRevisionModelToValidate.DateCreated);
+            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.DateTimeCreated, theReturnProcessRevisionModelToValidate.DateTimeCreated);
 
             //validate the current rev is now locked, has the required steps, and first step name is still in right spot
             Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Armis.BusinessModels.EmployeeModels;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,21 @@ namespace Armis.Api.Controllers
         public EmployeeController(IEmployeeService anEmpService)
         {
             EmployeeService = anEmpService;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EmployeeModel>> GetEmployeeById(short id)
+        {
+            try
+            {
+                var data = await EmployeeService.GetEmployeeById(id);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
