@@ -14,7 +14,7 @@ using Armis.DataLogic.Services.ProcessServices.Interfaces;
 
 namespace Armis.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class StepsController : ControllerBase
     {
@@ -31,11 +31,11 @@ namespace Armis.Api.Controllers
 
         // GET: api/Steps
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Step>>> GetAllHydratedSteps()
+        public async Task<ActionResult<IEnumerable<Step>>> GetAllSteps()
         {
             try
             {
-                var data = await StepService.GetAllHydrated();
+                var data = await StepService.GetAll();
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -51,7 +51,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await StepService.GetHydratedStepById(id);
+                var data = await StepService.GetStepById(id);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -67,7 +67,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await StepService.GetHydratedByName(stepName);
+                var data = await StepService.GetStepByName(stepName);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

@@ -260,7 +260,7 @@ namespace ArmisWebsite
                 process.Revisions.OrderByDescending(i => i.ProcessRevId);
             }
 
-            var theSteps = await StepDataAccess.GetAllHydratedSteps();
+            var theSteps = await StepDataAccess.GetAllSteps();
             AllSteps = theSteps.ToList();
 
             var theOperations = await OperationDataAccess.GetAllOperations();

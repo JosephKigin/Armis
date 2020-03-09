@@ -60,13 +60,13 @@ namespace ArmisWebsite.DataAccess.Process
             }
         }
 
-        public async Task<IEnumerable<StepModel>> GetAllHydratedSteps()
+        public async Task<IEnumerable<StepModel>> GetAllSteps()
         {
             using(var client = new HttpClient())
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps");
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/GetAllSteps");
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModels = JsonSerializer.Deserialize<List<StepModel>>(responseString);

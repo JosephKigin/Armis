@@ -130,7 +130,7 @@ namespace ArmisWebsite
         {
             try
             {
-                var theSteps = await StepDataAccess.GetAllHydratedSteps();
+                var theSteps = await StepDataAccess.GetAllSteps();
                 AllSteps = theSteps.ToList();
 
                 SignOffReqSelectList = new List<SelectListItem>();

@@ -5,7 +5,7 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class ProcessLoad
     {
-        public long ProcessLoadId { get; set; }
+        public int ProcessLoadId { get; set; }
         public string LoadTypeCd { get; set; }
         public short? DepartmentId { get; set; }
         public decimal? PiecePrice { get; set; }

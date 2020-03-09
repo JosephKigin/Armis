@@ -5,7 +5,7 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class Memo
     {
-        public long MemoId { get; set; }
+        public int MemoId { get; set; }
         public int? CustId { get; set; }
         public int? OrderId { get; set; }
         public string Comment { get; set; }

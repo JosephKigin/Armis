@@ -7,7 +7,7 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Process()
         {
-            PartHist = new HashSet<PartHist>();
+            PartTran = new HashSet<PartTran>();
             ProcessRevision = new HashSet<ProcessRevision>();
         }
 
@@ -16,7 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? CustId { get; set; }
 
         public virtual Customer Cust { get; set; }
-        public virtual ICollection<PartHist> PartHist { get; set; }
+        public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
     }
 }

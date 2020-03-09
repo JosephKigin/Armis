@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class PartHist
+    public partial class PartTran
     {
-        public long TranSeqNum { get; set; }
+        public int TranSeqNum { get; set; }
         public string TranType { get; set; }
         public int? OrderId { get; set; }
         public int? QuoteNum { get; set; }

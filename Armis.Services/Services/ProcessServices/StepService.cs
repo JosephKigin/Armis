@@ -21,6 +21,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             Context = aContext;
         }
 
+        //CREATE
         public async Task<int> CreateStep(StepModel aStepModel)
         {
             if (aStepModel == null) { throw new NullReferenceException("No step model was given."); }
@@ -37,16 +38,46 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepEntity.StepId;
         }
 
-        public async Task<int> DeactivateStep(int aStepId) //TODO: Update this after step table has been updated
+        public async Task<IEnumerable<StepModel>> GetAll()
         {
-            var theStepToDelete = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
+            var theStepEntities = await Context.Step.ToListAsync();
 
-            Context.Step.Remove(theStepToDelete);
-            await Context.SaveChangesAsync();
+            if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
-            return theStepToDelete.StepId;
+            var theStepModels = new List<StepModel>();
+
+            foreach (var step in theStepEntities)
+            {
+                theStepModels.Add(step.ToHydratedModel());
+            }
+
+            return theStepModels;
         }
 
+        public async Task<StepModel> GetStepById(int aStepId)
+        {
+            var theStepEntity = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
+
+            if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
+
+            return theStepEntity.ToHydratedModel();
+        }
+
+        //This should realistically only return one step because the fron-end forces names to be unique
+        public async Task<List<StepModel>> GetStepByName(string aStepName)
+        {
+            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName).ToListAsync();
+
+            if (theStepEntities == null) { throw new NullReferenceException("There is no step with that name."); }
+
+            var result = new List<StepModel>();
+
+            foreach (var step in theStepEntities) { result.Add(step.ToHydratedModel()); }
+
+            return result;
+        }
+
+        //READ
         public async Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory)
         {
             var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd == aCategory).ToListAsync();
@@ -63,6 +94,17 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepModels;
         }
 
+        //UPDATE
+        public async Task<int> DeactivateStep(int aStepId) //TODO: Update this after step table has been updated
+        {
+            var theStepToDelete = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
+
+            Context.Step.Remove(theStepToDelete);
+            await Context.SaveChangesAsync();
+
+            return theStepToDelete.StepId;
+        }
+
         public async Task<int> UpdateStep(int aStepId, StepModel aStepModel) //TODO: Update this when step table is updated.
         {
             var theStepEntityToChange = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
@@ -77,66 +119,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepEntityToChange.StepId;
         }
 
-        //Everything below has to do with variables, which we are not using as of 2/13/2019.
-        public async Task<IEnumerable<StepModel>> GetAllHydrated()
-        {
-            var theStepEntities = await Context.Step
-                                        .Include(i => i.StepVarSeq)
-                                            .ThenInclude(j => j.StepVariable)
-                                                .ThenInclude(m => m.UomcdNavigation)
-                                        .Include(i => i.StepVarSeq)
-                                            .ThenInclude(j => j.StepVariable)
-                                                .ThenInclude(k => k.VarTempCdNavigation)
-                                                    .ThenInclude(l => l.StepVarTypeCdNavigation).ToListAsync();
-
-            if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
-
-            var theStepModels = new List<StepModel>();
-
-            foreach (var step in theStepEntities)
-            {
-                theStepModels.Add(step.ToHydratedModel());
-            }
-
-            return theStepModels;
-        }
-
-        public async Task<StepModel> GetHydratedStepById(int aStepId)
-        {
-            var theStepEntity = await Context.Step.Where(i => i.StepId == aStepId)
-                                                  .Include(i => i.StepVarSeq)
-                                                    .ThenInclude(j => j.StepVariable)
-                                                        .ThenInclude(m => m.UomcdNavigation)
-                                                  .Include(i => i.StepVarSeq)
-                                                    .ThenInclude(j => j.StepVariable)
-                                                        .ThenInclude(k => k.VarTempCdNavigation)
-                                                            .ThenInclude(l => l.StepVarTypeCdNavigation)
-                                                  .SingleOrDefaultAsync();
-
-            if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
-
-            return theStepEntity.ToHydratedModel();
-        }
-
-        public async Task<List<StepModel>> GetHydratedByName(string aStepName)
-        {
-            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName)
-                                                 .Include(i => i.StepVarSeq)
-                                                   .ThenInclude(j => j.StepVariable)
-                                                       .ThenInclude(m => m.UomcdNavigation)
-                                                 .Include(i => i.StepVarSeq)
-                                                   .ThenInclude(j => j.StepVariable)
-                                                       .ThenInclude(k => k.VarTempCdNavigation)
-                                                           .ThenInclude(l => l.StepVarTypeCdNavigation)
-                                                 .ToListAsync();
-
-            if (theStepEntities == null) { throw new NullReferenceException("There is no step with that name."); }
-
-            var result = new List<StepModel>();
-
-            foreach (var step in theStepEntities) { result.Add(step.ToHydratedModel()); }
-
-            return result;
-        }
+        //DELETE
+        //Steps are never deleted!
     }
 }

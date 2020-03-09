@@ -51,8 +51,8 @@ namespace Armis.DataLogic.Services.ProcessServices
             var theRevisionEntity = new ProcessRevision();
             theRevisionEntity.ProcessRevId = 1;
             theRevisionEntity.RevStatusCd = "UNLOCKED";
-            theRevisionEntity.DateCreated = DateTime.Now;
-            theRevisionEntity.TimeCreated = DateTime.Now.TimeOfDay;
+            theRevisionEntity.DateModified = DateTime.Now;
+            theRevisionEntity.TimeModified = DateTime.Now.TimeOfDay;
             theRevisionEntity.ProcessId = theProcessEntity.ProcessId;
             theRevisionEntity.Comments = aProcessModel.Revisions.FirstOrDefault().Comments;
             theRevisionEntity.CreatedByEmp = aProcessModel.Revisions.FirstOrDefault().CreatedByEmp;
@@ -116,8 +116,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                     newRevEntity.ProcessStepSeq.Add(newStepSeq);
                 }
             }
-            newRevEntity.DateCreated = DateTime.Now;
-            newRevEntity.TimeCreated = DateTime.Now.TimeOfDay;
+            newRevEntity.DateModified = DateTime.Now;
+            newRevEntity.TimeModified = DateTime.Now.TimeOfDay;
             context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
 

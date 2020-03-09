@@ -5,7 +5,7 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class Session
     {
-        public long SessionId { get; set; }
+        public int SessionId { get; set; }
         public string Status { get; set; }
         public short? LoginArea { get; set; }
         public short? LoginDept { get; set; }

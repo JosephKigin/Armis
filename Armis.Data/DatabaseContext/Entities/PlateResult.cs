@@ -5,7 +5,7 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class PlateResult
     {
-        public long PlateResultId { get; set; }
+        public int PlateResultId { get; set; }
         public int? OrderId { get; set; }
         public string Status { get; set; }
         public DateTime? RunDate { get; set; }

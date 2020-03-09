@@ -13,7 +13,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateTimeCreated = aProcessRev.DateCreated.Add(aProcessRev.TimeCreated),
+                DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
                 DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
@@ -28,7 +28,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateTimeCreated = aProcessRev.DateCreated.Add(aProcessRev.TimeCreated),
+                DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
                 DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
@@ -60,12 +60,12 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 Comments = aProcessRevModel.Comments,
                 CreatedByEmp = aProcessRevModel.CreatedByEmp,
-                DateCreated = aProcessRevModel.DateTimeCreated.Date,
+                DateModified = aProcessRevModel.DateTimeCreated.Date,
                 DueDays = aProcessRevModel.DueDays,
                 ProcessId = aProcessRevModel.ProcessId,
                 ProcessRevId = aProcessRevModel.ProcessRevId,
                 RevStatusCd = aProcessRevModel.RevStatusCd,
-                TimeCreated = aProcessRevModel.DateTimeCreated.TimeOfDay
+                TimeModified = aProcessRevModel.DateTimeCreated.TimeOfDay
             };
         }
 
@@ -76,8 +76,8 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 ProcessId = aProcessRevisionModel.ProcessId,
                 ProcessRevId = aProcessRevisionModel.ProcessRevId,
                 CreatedByEmp = aProcessRevisionModel.CreatedByEmp,
-                DateCreated = aProcessRevisionModel.DateTimeCreated.Date,
-                TimeCreated = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
+                DateModified = aProcessRevisionModel.DateTimeCreated.Date,
+                TimeModified = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
                 RevStatusCd = aProcessRevisionModel.RevStatusCd,
                 DueDays = aProcessRevisionModel.DueDays,
                 Comments = aProcessRevisionModel.Comments,
