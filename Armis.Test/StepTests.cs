@@ -41,16 +41,16 @@ namespace Armis.Test
         [TestMethod]
         public async Task CreateNewStepAndVerify()
         {
-            var thePreAddStepList = await StepService.GetAllHydrated();
+            var thePreAddStepList = await StepService.GetAll();
             var thePreAddStepCount = thePreAddStepList.Count();
             var theExpectedStepID = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
 
             var theGeneratedStepModel = GenerateStepModel();
             _ = await StepService.CreateStep(theGeneratedStepModel);
 
-            var thePostAddStepCount = (await StepService.GetAllHydrated()).Count();
+            var thePostAddStepCount = (await StepService.GetAll()).Count();
 
-            var theReturnStep = await StepService.GetHydratedStepById(theExpectedStepID); //find it to prove it was created
+            var theReturnStep = await StepService.GetStepById(theExpectedStepID); //find it to prove it was created
 
             Assert.AreEqual(thePreAddStepCount + 1, thePostAddStepCount);
             Assert.AreEqual(theGeneratedStepModel.StepName, theReturnStep.StepName);
