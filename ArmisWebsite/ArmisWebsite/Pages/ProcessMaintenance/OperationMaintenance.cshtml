@@ -53,14 +53,14 @@
                 <div class="form-group">
                     <label><b>Operation Group: </b><input type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#operGroupsModal" value="Find" /> </label>
                     <input id="currentOperationGroupName" type="text" class="form-control" asp-for="CurrentOperationGroupName" readonly />
-                    <input id="currentOperationGroupId" type="text" asp-for="CurrentOperationGroupId" hidden/>
+                    <input id="currentOperationGroupId" type="text" asp-for="CurrentOperationGroupId" hidden />
                 </div>
 
                 <div id="operGroupsModal" class="modal fade">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-body">
-                                <select id="operationGroupSelect" class="list-group w-100" size="12" >
+                                <select id="operationGroupSelect" class="list-group w-100" size="12">
                                     @foreach (var operGroup in Model.AllOperationGroups)
                                     {
                                         <option id="@operGroup.Id" value="@operGroup.Name" class="list-group-item" onclick="chooseOperationGroup(this)">
@@ -72,10 +72,10 @@
                         </div>
                     </div>
                 </div>
-
+                <a class="btn btn-danger my-1" asp-page="./OperationMaintenance" asp-route-anOperationId="">Clear</a>
                 <button type="submit" class="btn btn-primary">Submit</button>
-
             </form>
+            
         </div>
 
         <div class="col-lg-6">
