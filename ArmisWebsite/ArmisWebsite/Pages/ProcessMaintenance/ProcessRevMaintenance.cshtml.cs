@@ -69,9 +69,6 @@ namespace ArmisWebsite
         [BindProperty]
         public string NewProcessName { get; set; }
 
-        [BindProperty]
-        public int DueDays { get; set; }
-
 
         public ProcessRevMaintenanceModel(IProcessDataAccess aProcessDataAccess,
                                           IStepDataAccess aStepDataAccess,
@@ -231,7 +228,6 @@ namespace ArmisWebsite
                 CurrentProcess.Name = NewProcessName;
                 CurrentRev.Comments = Comment;
                 CurrentRev.CreatedByEmp = EmpNumber;
-                CurrentRev.DueDays = DueDays;
                 var tempRevList = new List<ProcessRevisionModel>(); //This only exists to add the current rev to and then to be assigned to the currentProcess.revisions becasue its an IEnumerable
                 tempRevList.Add(CurrentRev);
                 CurrentProcess.Revisions = tempRevList;
