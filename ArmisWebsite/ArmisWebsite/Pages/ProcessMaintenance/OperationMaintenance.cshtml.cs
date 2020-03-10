@@ -30,7 +30,7 @@ namespace ArmisWebsite
         public string CurrentOperationName { get; set; }
 
         [BindProperty]
-        [Required]
+        [Required, StringLength(8)]
         public string CurrentOperationCode { get; set; }
 
         [BindProperty]
@@ -109,7 +109,7 @@ namespace ArmisWebsite
                 AllOperations = theAllOperationsTemp.ToList();
 
                 var theAllOperationGroupsTemp = await OperationDataAccess.GetAllOperationGroups();
-                AllOperationGroups = theAllOperationGroupsTemp.ToList();
+                AllOperationGroups = theAllOperationGroupsTemp.OrderByDescending(i => i.Name).ToList();
 
                 if (anOperationId != 0)
                 {
@@ -122,7 +122,6 @@ namespace ArmisWebsite
                     CurrentOperationGroupId = theCurrentOperation.Group.Id;
                     CurrentOperationGroupName = theCurrentOperation.Group.Name;
                 }
-
             }
             catch (Exception)
             {

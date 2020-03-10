@@ -26,23 +26,20 @@ namespace ArmisWebsite
         public StepModel Step { get; set; }
 
         //Web properties
+        public string PopUpMessage { get; set; }
+        public string HelpMessage { get; set; }
+
         [BindProperty]
         public string StepName { get; set; }
 
         [BindProperty]
-        public bool IsSignOffRequired { get; set; }
+        public int IsSignOffRequired { get; set; } //0 is no selection, 1 is Yes, 2 is No.  No and no selection will both mean false.
 
         [BindProperty]
         public string StepCategory { get; set; }
 
         [BindProperty]
         public string StepInstructions { get; set; }
-
-        [BindProperty]
-        public List<SelectListItem> SignOffReqSelectList { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string StepSearch { get; set; }
 
         [BindProperty]
         public string Message { get; set; }
@@ -67,33 +64,15 @@ namespace ArmisWebsite
                     StepCategory = Step.StepCategoryCd;
                     StepName = Step.StepName;
                     StepInstructions = Step.Instructions;
-                    IsSignOffRequired = (Step.SignOffIsRequired == true) ? true : false;
 
-                    if (Step.SignOffIsRequired == true)
-                    { SignOffReqSelectList.FirstOrDefault(i => i.Text == "Yes").Selected = true; }
-                    else
-                    { SignOffReqSelectList.FirstOrDefault(i => i.Text == "No").Selected = true; }
-                }
-
-                if(!string.IsNullOrEmpty(StepSearch))
-                {
-                    var tempSteps = new List<StepModel>();
-                    tempSteps.AddRange(AllSteps);
-
-                    foreach (var step in tempSteps)
-                    {
-                        if(!step.StepName.ToLower().Contains(StepSearch.ToLower()))
-                        {
-                            AllSteps.Remove(step);
-                        }
-                    }
+                    HelpMessage = "This is a copy of a step.  You may edit the step details and save it back as a new step.";
                 }
 
                 return Page();
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
             }
 
         }
@@ -104,7 +83,7 @@ namespace ArmisWebsite
             {
                 if (Step == null) { Step = new StepModel(); }
                 Step.Instructions = StepInstructions;
-                Step.SignOffIsRequired = IsSignOffRequired;
+                Step.SignOffIsRequired = (IsSignOffRequired == 1)?true:false;
                 Step.StepName = StepName;
                 Step.StepCategoryCd = "NONE";
 
@@ -117,7 +96,9 @@ namespace ArmisWebsite
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);
 
-                return RedirectToPage("StepMaintenance", new { aStepId = theStepId});
+                await SetUpPage();
+                PopUpMessage = "Step saved successfully.";
+                return Page();
             }
             catch (Exception ex)
             {
@@ -132,11 +113,6 @@ namespace ArmisWebsite
             {
                 var theSteps = await StepDataAccess.GetAllSteps();
                 AllSteps = theSteps.ToList();
-
-                SignOffReqSelectList = new List<SelectListItem>();
-                SignOffReqSelectList.Add(new SelectListItem { Text = "", Value = "0" });
-                SignOffReqSelectList.Add(new SelectListItem { Text = "Yes", Value = "1" });
-                SignOffReqSelectList.Add(new SelectListItem { Text = "No", Value = "2", Selected = true });
             }
             catch (Exception ex)
             {

@@ -27,7 +27,7 @@ namespace ArmisWebsite.DataAccess.Process
                 try
                 {
                     StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data);
+                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps/PostStep/", data);
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<int>(responseString);
@@ -83,7 +83,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepId);
+                     var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/GetStepById/" + aStepId);
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModel = JsonSerializer.Deserialize<StepModel>(responseString);
@@ -100,7 +100,7 @@ namespace ArmisWebsite.DataAccess.Process
             {
                 try
                 {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepName);
+                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/GetStepByName/" + aStepName);
 
                     var responseString = await response.Content.ReadAsStringAsync();
                     var resultingModel = JsonSerializer.Deserialize<List<StepModel>>(responseString);

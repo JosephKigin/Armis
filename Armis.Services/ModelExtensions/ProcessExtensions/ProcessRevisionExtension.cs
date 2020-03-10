@@ -14,7 +14,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
                 DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
-                DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
@@ -29,7 +28,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
                 DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
-                DueDays = aProcessRev.DueDays,
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
@@ -61,7 +59,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 Comments = aProcessRevModel.Comments,
                 CreatedByEmp = aProcessRevModel.CreatedByEmp,
                 DateModified = aProcessRevModel.DateTimeCreated.Date,
-                DueDays = aProcessRevModel.DueDays,
                 ProcessId = aProcessRevModel.ProcessId,
                 ProcessRevId = aProcessRevModel.ProcessRevId,
                 RevStatusCd = aProcessRevModel.RevStatusCd,
@@ -79,7 +76,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 DateModified = aProcessRevisionModel.DateTimeCreated.Date,
                 TimeModified = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
                 RevStatusCd = aProcessRevisionModel.RevStatusCd,
-                DueDays = aProcessRevisionModel.DueDays,
                 Comments = aProcessRevisionModel.Comments,
                 ProcessStepSeq = aStepSeq
             };

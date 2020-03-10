@@ -2447,8 +2447,6 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.ProcessId).HasColumnName("ProcessID");
 
-                entity.Property(e => e.ProcessRevId).HasColumnName("ProcessRevID");
-
                 entity.Property(e => e.SpecId).HasColumnName("SpecID");
 
                 entity.Property(e => e.SpecRevId).HasColumnName("SpecRevID");
@@ -2487,12 +2485,6 @@ namespace Armis.Data.DatabaseContext
                     .WithMany(p => p.SpecProcessAssign)
                     .HasForeignKey(d => d.SeriesOption)
                     .HasConstraintName("FK_SpecProcessAssign_SeriesOption_MaterialSeries_SeriesID");
-
-                entity.HasOne(d => d.Process)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => new { d.ProcessId, d.ProcessRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SpecProcessAssign_ProcessRevID_ProcessRevision_ProcessRevID");
 
                 entity.HasOne(d => d.Spec)
                     .WithMany(p => p.SpecProcessAssign)

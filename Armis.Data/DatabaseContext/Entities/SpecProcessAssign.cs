@@ -34,7 +34,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? AlloyOption { get; set; }
         public int? Customer { get; set; }
         public int ProcessId { get; set; }
-        public int ProcessRevId { get; set; }
 
         public virtual MaterialAlloy AlloyOptionNavigation { get; set; }
         public virtual Customer CustomerNavigation { get; set; }
@@ -42,7 +41,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Step MaskOptionNavigation { get; set; }
         public virtual Step PostBakeOptionNavigation { get; set; }
         public virtual Step PreBakeOptionNavigation { get; set; }
-        public virtual ProcessRevision Process { get; set; }
         public virtual MaterialSeries SeriesOptionNavigation { get; set; }
         public virtual Specification Spec { get; set; }
         public virtual SpecChoice SpecChoice { get; set; }

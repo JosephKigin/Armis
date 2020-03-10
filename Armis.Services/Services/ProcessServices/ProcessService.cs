@@ -56,7 +56,6 @@ namespace Armis.DataLogic.Services.ProcessServices
             theRevisionEntity.ProcessId = theProcessEntity.ProcessId;
             theRevisionEntity.Comments = aProcessModel.Revisions.FirstOrDefault().Comments;
             theRevisionEntity.CreatedByEmp = aProcessModel.Revisions.FirstOrDefault().CreatedByEmp;
-            theRevisionEntity.DueDays = aProcessModel.Revisions.FirstOrDefault().DueDays;
 
             var theNewStepSeqEntities = new List<ProcessStepSeq>();
 
