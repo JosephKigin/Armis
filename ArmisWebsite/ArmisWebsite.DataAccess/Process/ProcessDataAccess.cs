@@ -113,6 +113,19 @@ namespace ArmisWebsite.DataAccess.Process
             }
         }
 
+        public async Task<ProcessModel> GetHydratedProcess(int id)
+        {
+            using(var client = new HttpClient())
+            {
+                var response = await client.GetAsync(Config["APIAddress"] + "api/Processes/GetProcess/" + id);
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ProcessModel>(responseString);
+
+                return result;
+            }
+        }
+
         public async Task<bool> CheckIfNameIsUnique(string aName) //TODO: Is this even being used anywhere?
         {
             using (var client = new HttpClient())

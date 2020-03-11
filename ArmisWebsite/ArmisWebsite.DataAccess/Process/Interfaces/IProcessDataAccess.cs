@@ -9,6 +9,7 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
     public interface IProcessDataAccess
     {
         Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
+        Task<ProcessModel> GetHydratedProcess(int id);
         Task<bool> CheckIfNameIsUnique(string aName);
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
         Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId);

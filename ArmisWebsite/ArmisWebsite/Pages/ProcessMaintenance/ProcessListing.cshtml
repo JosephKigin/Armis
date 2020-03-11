@@ -20,23 +20,27 @@
                 </span>
             </div>
             @*Process list*@
-            <select id="processList" class="list-group w-100" size="12" style="overflow:scroll;">
-                @foreach (var process in Model.Processes)
-                {
-                    <option class="list-group-item" id="process-@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name')">
-                        @process.ProcessId: @process.Name
-                        (Rev:
-                        @if (process.Revisions != null && process.Revisions.Any())
-                        {
-                            @process.Revisions.Last().ProcessRevId
-                        }
-                        else
-                        {
-                            <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
-                        })
-                    </option>
-                }
-            </select>
+            <form method="post">
+                <select id="processList" class="list-group w-100" asp-for="ProcessIdSelection" size="12" style="overflow:scroll;">
+                    @foreach (var process in Model.Processes)
+                    {
+                        <option class="list-group-item" id="process-@process.ProcessId" value="@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name')">
+                            @process.ProcessId: @process.Name
+                            (Rev:
+                            @if (process.Revisions != null && process.Revisions.Any())
+                            {
+                                @process.Revisions.Last().ProcessRevId
+                            }
+                            else
+                            {
+                                <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
+                            })
+                        </option>
+                    }
+                </select>
+                <button class="btn btn-primary my-1" asp-page-handler="Print">Print</button>
+            </form>
+            
         </div>
         @*This is where the steps will be loaded*@
         <div class="col-lg-6">
