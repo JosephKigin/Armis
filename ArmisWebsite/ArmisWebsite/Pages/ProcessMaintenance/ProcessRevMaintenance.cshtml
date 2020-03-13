@@ -49,14 +49,14 @@
 
     @*Modal for selecting a process to work on*@
     <div class="modal fade" id="modalProcessSelect">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg" style="width:1200%;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Choose a Process To Edit</h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg">
+                        <div class="col-lg-8">
                             <form method="get">
                                 <select class="list-group" size="12" asp-for="CurrentProcessId">
                                     @foreach (var process in Model.AllProcesses)
@@ -83,9 +83,9 @@
                                 <button class="btn btn-primary my-2">Ok</button>
                             </form>
                         </div>
-                        <div class="col-lg">
+                        <div class="col-lg-4">
                             <h5 id="modalStepTitle"></h5>
-                            <ul id="modalStepPlaceholder" class="list-group">
+                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
                             </ul>
                         </div>
                     </div>
@@ -237,7 +237,7 @@
                 @*Current step list.  If the revision is "UNLCOKED", the border will be green and the list will be sortable.  If the current revision is "LOCKED", the border will be grey and the list will be unsortable.  If there is no current revision, the list will not show up.*@
                 <h5>Current Steps</h5>
                 <div class="p-3" style="border:dashed @borderColor;">
-                    <ul id="sortableCurrentSteps" class="list-group" style="max-height:42em; overflow-y:scroll;">
+                    <ul id="sortableCurrentSteps" class="list-group" style="max-height:36em; overflow-y:scroll;">
                         @{Model.InitialStepSeq = 0;}
                         @foreach (var stepSeq in Model.CurrentRev.StepSeqs)
                         {

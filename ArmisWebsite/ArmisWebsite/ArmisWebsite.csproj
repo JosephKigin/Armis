@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="Pages\PdfLayouts\" />
     <Folder Include="Pages\ProcessMaintenance\Partials\" />
+    <Folder Include="TestUtility\" />
   </ItemGroup>
 
 

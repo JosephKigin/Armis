@@ -157,9 +157,9 @@ namespace Armis.DataLogic.Services.ProcessServices
             return result;
         }
 
-        public async Task<ProcessModel> GetHydratedProcess(int processId)
+        public async Task<ProcessModel> GetHydratedProcess(int aProcessId)
         {
-            var processEntity = await context.Process.Where(i => i.ProcessId == processId)
+            var processEntity = await context.Process.Where(i => i.ProcessId == aProcessId)
                                                      .Include(i => i.ProcessRevision)
                                                         .ThenInclude(i => i.ProcessStepSeq)
                                                             .ThenInclude(i => i.Operation)
@@ -168,7 +168,7 @@ namespace Armis.DataLogic.Services.ProcessServices
                                                         .ThenInclude(i => i.ProcessStepSeq)
                                                             .ThenInclude(i => i.Step).SingleOrDefaultAsync();
 
-            if (processEntity == null) { throw new NullReferenceException("No process with id " + processId + " exists."); }
+            if (processEntity == null) { throw new NullReferenceException("No process with id " + aProcessId + " exists."); }
 
             return processEntity.ToHydratedModel();
         }
@@ -181,6 +181,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                                                                     .ThenInclude(i => i.OperGroup)
                                                             .Include(i => i.ProcessStepSeq)
                                                                 .ThenInclude(i => i.Step).FirstOrDefaultAsync();
+
+            if (entity == null) { throw new NullReferenceException("No process with id " + aProcessId + " exists."); }
 
             return entity.ToHydratedModel();
         }

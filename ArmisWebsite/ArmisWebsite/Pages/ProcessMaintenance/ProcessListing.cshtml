@@ -27,13 +27,13 @@
                         <option class="list-group-item" id="process-@process.ProcessId" value="@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name')">
                             @process.ProcessId: @process.Name
                             (Rev:
-                            @if (process.Revisions != null && process.Revisions.Any())
+                            @if (process.Revisions != null && process.Revisions.Any() && process.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED") != null)
                             {
-                                @process.Revisions.Last().ProcessRevId
+                                @process.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED").ProcessRevId
                             }
                             else
                             {
-                                <p>NONE</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
+                                <p>No Locked Revs</p> @*tags aren't supposed to be in the <option> tag, so it doesn't actually render the <p> tag, but it is the only way to escape the c# code.*@
                             })
                         </option>
                     }
@@ -45,7 +45,7 @@
         @*This is where the steps will be loaded*@
         <div class="col-lg-6">
             <h5 id="stepTitle"></h5>
-            <ul id="stepsPlaceholder" class="list-group">
+            <ul id="stepsPlaceholder" class="list-group" style="max-height:36em; overflow:scroll;">
             </ul>
         </div>
 
