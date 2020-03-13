@@ -24,7 +24,6 @@
   <ItemGroup>
     <Folder Include="Pages\PdfLayouts\" />
     <Folder Include="Pages\ProcessMaintenance\Partials\" />
-    <Folder Include="TestUtility\" />
   </ItemGroup>
 
 
