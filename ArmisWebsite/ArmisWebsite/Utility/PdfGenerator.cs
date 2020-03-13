@@ -24,7 +24,8 @@ namespace ArmisWebsite.Utility
 
         public IActionResult GenerateRouterPdf(ProcessModel aProcessModel, ProcessRevisionModel aRevisionModel)
         {
-            var thePath = Config["PdfRouterFileLocaiton"] + aProcessModel.Name + DateTime.Now.ToString("hhmmss") + ".pdf"; //TODO: Replace this with a meaningful identifier.
+            //TODO: Check thePath later
+            var thePath = Config["PdfRouterFileLocaiton"] + aProcessModel.ProcessId + "-" + aRevisionModel.ProcessRevId + aProcessModel.Name + DateTime.Now.ToString("yyyyMMddhhmmssffff") + ".pdf"; //TODO: Replace this with a meaningful identifier.
             FileStream fileStream = new FileStream( thePath, FileMode.Create, FileAccess.Write);
             Document pdfDoc = new Document(PageSize.Letter, 24, 24, 112, 50);
             PdfWriter pdfWriter = PdfWriter.GetInstance(pdfDoc, fileStream);
