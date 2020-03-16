@@ -308,7 +308,7 @@ namespace Armis.Test
 
             return new StepModel()
             {
-                StepCategoryCd = "NONE",
+                StepCategory = "NONE",
                 Inactive = false,
                 StepName = TESTPREFIX + STEPPREFIX + aSeqID + "-PID:" + aProcessID.ToString() + "-RevID:" + aRevID,
                 SignOffIsRequired = true,

@@ -8,7 +8,19 @@
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 </head>
 
-<h1>Process Listing</h1>
+<h1 class="my-2">Process Listing</h1>
+@if (Model.PdfPath != null)
+{
+    <div class="my-3">
+        <span class="alert alert-success">
+            Your PDF was created at:
+            <span id="pdfPath">@Model.PdfPath</span>
+            <button id="btnOpenPdf" onclick="openPdfInNewTab()">Open</button>
+        </span>
+    </div>
+}
+
+
 <div id="stepList">
     <div class="row">
         <div class="col-lg-6">
@@ -24,7 +36,7 @@
                 <select id="processList" class="list-group w-100" asp-for="ProcessIdSelection" size="12" style="overflow:scroll;">
                     @foreach (var process in Model.Processes)
                     {
-                        <option class="list-group-item" id="process-@process.ProcessId" value="@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name')">
+                        <option class="list-group-item" id="process-@process.ProcessId" value="@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name'); togglePrintButton()">
                             @process.ProcessId: @process.Name
                             (Rev:
                             @if (process.Revisions != null && process.Revisions.Any() && process.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED") != null)
@@ -38,9 +50,9 @@
                         </option>
                     }
                 </select>
-                <button class="btn btn-primary my-1" asp-page-handler="Print">Print</button>
+                <button id="btnPrint" class="btn btn-primary my-1" asp-page-handler="Print" disabled>Print</button>
             </form>
-            
+
         </div>
         @*This is where the steps will be loaded*@
         <div class="col-lg-6">
@@ -54,7 +66,6 @@
 
 @*Pop up message*@
 <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
-
 
 <script>
     function searchProcessList() {
@@ -117,5 +128,14 @@
 
             }
         }
+    }
+
+    function togglePrintButton() {
+        document.getElementById("btnPrint").disabled = false;
+    }
+
+    function openPdfInNewTab() {
+        var pdfPath = document.getElementById("pdfPath").innerHTML;
+        window.open(pdfPath);
     }
 </script>

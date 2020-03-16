@@ -38,25 +38,21 @@ namespace Armis.DataLogic.Services.ProcessServices
             return theStepEntity.StepId;
         }
 
+        //READ
         public async Task<IEnumerable<StepModel>> GetAll()
         {
-            var theStepEntities = await Context.Step.ToListAsync();
+            var theStepEntities = await Context.Step.Include(i => i.StepCategoryCdNavigation).ToListAsync();
 
             if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
-            var theStepModels = new List<StepModel>();
-
-            foreach (var step in theStepEntities)
-            {
-                theStepModels.Add(step.ToHydratedModel());
-            }
+            var theStepModels = theStepEntities.ToHydratedModels();
 
             return theStepModels;
         }
 
         public async Task<StepModel> GetStepById(int aStepId)
         {
-            var theStepEntity = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
+            var theStepEntity = await Context.Step.Where(i => i.StepId == aStepId).Include(i => i.StepCategoryCdNavigation).FirstOrDefaultAsync();
 
             if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
 
@@ -66,7 +62,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         //This should realistically only return one step because the fron-end forces names to be unique
         public async Task<List<StepModel>> GetStepByName(string aStepName)
         {
-            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName).ToListAsync();
+            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName).Include(i => i.StepCategoryCdNavigation).ToListAsync();
 
             if (theStepEntities == null) { throw new NullReferenceException("There is no step with that name."); }
 
@@ -77,7 +73,6 @@ namespace Armis.DataLogic.Services.ProcessServices
             return result;
         }
 
-        //READ
         public async Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory)
         {
             var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd == aCategory).ToListAsync();
@@ -92,6 +87,24 @@ namespace Armis.DataLogic.Services.ProcessServices
             }
 
             return theStepModels;
+        }
+
+        public async Task<IEnumerable<StepCategoryModel>> GetAllStepCategories()
+        {
+            var theCategoryEntities = await Context.StepCategory.ToListAsync();
+
+            var resultModels = theCategoryEntities.ToModels();
+
+            return resultModels;
+        }
+
+        public async Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode)
+        {
+            var theStepCategoryEntity = await Context.StepCategory.FindAsync(aStepCategoryCode);
+
+            if (theStepCategoryEntity == null) { throw new Exception("No step category with that code exists."); }
+
+            return theStepCategoryEntity.ToModel();
         }
 
         //UPDATE

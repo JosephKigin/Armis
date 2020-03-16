@@ -31,7 +31,7 @@ namespace Armis.Api.Controllers
 
         // GET: api/Steps
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Step>>> GetAllSteps()
+        public async Task<ActionResult<IEnumerable<StepModel>>> GetAllSteps()
         {
             try
             {
@@ -41,7 +41,37 @@ namespace Armis.Api.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StepCategoryModel>>> GetAllStepCategories()
+        {
+            try
+            {
+                var data = await StepService.GetAllStepCategories();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{code}")]
+        public async Task<ActionResult<StepCategoryModel>> GetStepCategoryByCode(string code)
+        {
+            try
+            {
+                var data = await StepService.GetStepCategoryByCode(code);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

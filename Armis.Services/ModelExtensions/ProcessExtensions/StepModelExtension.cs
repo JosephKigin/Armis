@@ -14,7 +14,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategoryCd = aStep.StepCategoryCd,
+                StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
                 StepId = aStep.StepId,
                 Inactive = aStep.Inactive,
                 StepName = aStep.StepName
@@ -29,7 +29,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategoryCd = aStep.StepCategoryCd,
+                StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
                 StepId = aStep.StepId,
                 StepName = aStep.StepName
             };
@@ -38,13 +38,25 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 
         }
 
+        public static IEnumerable<StepModel> ToHydratedModels(this IEnumerable<Step> aStepEntities)
+        {
+            var result = new List<StepModel>();
+
+            foreach (var stepEntity in aStepEntities)
+            {
+                result.Add(stepEntity.ToHydratedModel());
+            }
+
+            return result;
+        }
+
         public static Step ToEntity(this StepModel aStepModel)
         {
             return new Step()
             {
                 Instructions = aStepModel.Instructions,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
-                StepCategoryCd = aStepModel.StepCategoryCd,
+                StepCategoryCd = aStepModel.StepCategory.Code,
                 StepId = aStepModel.StepId,
                 StepName = aStepModel.StepName
             };

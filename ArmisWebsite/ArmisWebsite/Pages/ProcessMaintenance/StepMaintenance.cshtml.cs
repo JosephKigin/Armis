@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.ProcessModels;
@@ -20,25 +21,28 @@ namespace ArmisWebsite
         private readonly IStepDataAccess StepDataAccess;
 
         //Business Model Properties
-
         public List<StepModel> AllSteps { get; set; }
-
         public StepModel Step { get; set; }
+        public List<StepCategoryModel> StepCategories { get; set; }
 
         //Web properties
         public string PopUpMessage { get; set; }
         public string HelpMessage { get; set; }
 
         [BindProperty]
+        [Required]
         public string StepName { get; set; }
 
         [BindProperty]
+        [Required]
         public int IsSignOffRequired { get; set; } //0 is no selection, 1 is Yes, 2 is No.  No and no selection will both mean false.
 
         [BindProperty]
-        public string StepCategory { get; set; }
+        [Required]
+        public string StepCategoryCode { get; set; }
 
         [BindProperty]
+        [Required]
         public string StepInstructions { get; set; }
 
         [BindProperty]
@@ -51,17 +55,18 @@ namespace ArmisWebsite
             StepDataAccess = aStepDataAccess;
         }
 
-        public async Task<IActionResult> OnGetAsync(int aStepId = 0 , string aMessage = "")
+        public async Task<IActionResult> OnGetAsync(int aStepId = 0, string aMessage = "")
         {
             try
             {
                 await SetUpPage();
-                if(aMessage != "") { Message = aMessage; }
+
+                if (aMessage != "") { Message = aMessage; }
                 if (aStepId > 0)
                 {
                     Step = await StepDataAccess.GetStepById(aStepId);
 
-                    StepCategory = Step.StepCategoryCd;
+                    StepCategoryCode = Step.StepCategory.Code;
                     StepName = Step.StepName;
                     StepInstructions = Step.Instructions;
 
@@ -72,26 +77,32 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
             }
 
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                await SetUpPage();
+                return Page();
+            }
+
             try
             {
                 if (Step == null) { Step = new StepModel(); }
                 Step.Instructions = StepInstructions;
-                Step.SignOffIsRequired = (IsSignOffRequired == 1)?true:false;
+                Step.SignOffIsRequired = (IsSignOffRequired == 1) ? true : false;
                 Step.StepName = StepName;
-                Step.StepCategoryCd = "NONE";
+                Step.StepCategory = await StepDataAccess.GetStepCategoryByCode(StepCategoryCode);
 
                 var currentStepsWithSameName = await StepDataAccess.GetStepByName(StepName);
                 if (currentStepsWithSameName != null && currentStepsWithSameName.Any())
                 {
                     var stepExistsMessage = "A step with that name already exists.";
-                    return RedirectToPage("StepMaintenance", new {aStepId = currentStepsWithSameName[0].StepId, aMessage = stepExistsMessage });
+                    return RedirectToPage("StepMaintenance", new { aStepId = currentStepsWithSameName[0].StepId, aMessage = stepExistsMessage });
                 }
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);
@@ -109,15 +120,11 @@ namespace ArmisWebsite
 
         private async Task SetUpPage()
         {
-            try
-            {
-                var theSteps = await StepDataAccess.GetAllSteps();
-                AllSteps = theSteps.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            var theSteps = await StepDataAccess.GetAllSteps();
+            AllSteps = theSteps.ToList();
+
+            var theStepCategories = await StepDataAccess.GetAllStepCategoryies();
+            StepCategories = theStepCategories.ToList();
         }
     }
 }

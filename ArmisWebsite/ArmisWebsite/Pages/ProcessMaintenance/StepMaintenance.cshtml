@@ -28,13 +28,13 @@
                 <div class="form-group">
                     <label><b>Step Name: </b></label>
                     <input type="text" asp-for="StepName" class="form-control" />
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="StepName" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label><b>Instructions: </b></label>
                     <textarea class="form-control" asp-for="StepInstructions"></textarea>
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="StepInstructions" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
@@ -44,13 +44,13 @@
                         {
                             @if (Model.Step.SignOffIsRequired == true)
                             {
-                                <option value="0"></option>
+                                <option></option>
                                 <option value="1" selected>Yes</option>
                                 <option value="2">No</option>
                             }
                             else if (Model.Step.SignOffIsRequired == false)
                             {
-                                <option value="0"></option>
+                                <option></option>
                                 <option value="1">Yes</option>
                                 <option value="2" selected>No</option>
                             }
@@ -58,18 +58,26 @@
                         }
                         else
                         {
-                            <option value="0"></option>
+                            <option></option>
                             <option value="1">Yes</option>
                             <option value="2">No</option>
                         }
                     </select>
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="IsSignOffRequired" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label><b>Step Category: </b></label>
-                    <input type="text" asp-for="StepCategory" class="form-control" />
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <select asp-for="StepCategoryCode" class="form-control">
+                        <option></option>
+                        @foreach (var stepCategory in Model.StepCategories)
+                        {
+                            <option value="@stepCategory.Code">
+                                @stepCategory.Name
+                            </option>
+                        }
+                    </select> 
+                    <span asp-validation-for="StepCategoryCode" class="alert-danger"></span>
                 </div>
                 <button type="submit" class="btn btn-outline-primary">Save</button>
             </form>
@@ -78,7 +86,7 @@
         <div class="col-lg-6">
             <input id="inputStepSearchFilter" type="text" class="form-control my-1" placeholder="Search..." onkeyup="searchFilter()" />
 
-            <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow:scroll;">
+            <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow-y:scroll;">
                 @foreach (var step in Model.AllSteps)
                 {
                     <li class="list-group-item" id="@step.StepId">
@@ -86,8 +94,8 @@
                         <h5>@step.StepId @step.StepName</h5>
                         @if (step.SignOffIsRequired == true)
                         {<p class="text-danger">Sign-Off Required</p>}
-                        <b>Instructions: </b>@step.Instructions
-
+                        <b>Instructions: </b>
+                        <p class="text-break">@step.Instructions</p>
                         <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy"></i></a>
                     </li>
                 }

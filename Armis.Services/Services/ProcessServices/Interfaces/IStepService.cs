@@ -9,6 +9,8 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
     public interface IStepService
     {
         Task<IEnumerable<StepModel>> GetAll();
+        Task<IEnumerable<StepCategoryModel>> GetAllStepCategories();
+        Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode);
         Task<StepModel> GetStepById(int aStepId);
         Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory);
         Task<int> CreateStep(StepModel aStepModel);

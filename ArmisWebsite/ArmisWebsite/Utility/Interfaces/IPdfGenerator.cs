@@ -9,6 +9,6 @@ namespace ArmisWebsite.Utility.Interfaces
 {
     public interface IPdfGenerator
     {
-        IActionResult GenerateRouterPdf(ProcessModel aProcessModel, ProcessRevisionModel aRevisionModel);
+        string GenerateRouterPdf(ProcessModel aProcessModel, ProcessRevisionModel aRevisionModel);
     }
 }

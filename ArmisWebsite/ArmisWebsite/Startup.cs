@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArmisWebsite.DataAccess;
 using ArmisWebsite.DataAccess.Customer;
 using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Employee;
@@ -40,6 +41,7 @@ namespace ArmisWebsite
             services.AddScoped<IOperationDataAccess, OperationDataAccess>();
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
             services.AddScoped<IPdfGenerator, PdfGenerator>();
+            services.AddScoped<IDataAccessGeneric, DataAccessGeneric>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
