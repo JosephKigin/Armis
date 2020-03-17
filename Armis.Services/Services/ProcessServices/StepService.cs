@@ -22,7 +22,7 @@ namespace Armis.DataLogic.Services.ProcessServices
         }
 
         //CREATE
-        public async Task<int> CreateStep(StepModel aStepModel)
+        public async Task<StepModel> CreateStep(StepModel aStepModel)
         {
             if (aStepModel == null) { throw new NullReferenceException("No step model was given."); }
 
@@ -35,7 +35,7 @@ namespace Armis.DataLogic.Services.ProcessServices
             Context.Step.Add(theStepEntity);
             await Context.SaveChangesAsync();
 
-            return theStepEntity.StepId;
+            return aStepModel;
         }
 
         //READ
@@ -45,7 +45,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
-            var theStepModels = theStepEntities.ToHydratedModels();
+            var theStepModels = theStepEntities.ToModels();
 
             return theStepModels;
         }
@@ -56,7 +56,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
 
-            return theStepEntity.ToHydratedModel();
+            return theStepEntity.ToModel();
         }
 
         //This should realistically only return one step because the fron-end forces names to be unique
@@ -68,7 +68,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
             var result = new List<StepModel>();
 
-            foreach (var step in theStepEntities) { result.Add(step.ToHydratedModel()); }
+            foreach (var step in theStepEntities) { result.Add(step.ToModel()); }
 
             return result;
         }

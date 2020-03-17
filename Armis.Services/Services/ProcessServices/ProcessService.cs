@@ -182,7 +182,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                                                                 .ThenInclude(i => i.Operation)
                                                                     .ThenInclude(i => i.OperGroup)
                                                             .Include(i => i.ProcessStepSeq)
-                                                                .ThenInclude(i => i.Step).FirstOrDefaultAsync();
+                                                                .ThenInclude(i => i.Step)
+                                                                    .ThenInclude(i => i.StepCategoryCdNavigation).FirstOrDefaultAsync();
 
             if (entity == null) { throw new NullReferenceException("No process with id " + aProcessId + " exists."); }
 

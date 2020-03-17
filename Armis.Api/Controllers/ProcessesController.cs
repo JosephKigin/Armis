@@ -102,7 +102,7 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest("Something went wrong.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -153,7 +153,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProcessRevisionModel>> PostNewRev(ProcessRevisionModel aProcessRevModel) 
+        public async Task<ActionResult<ProcessRevisionModel>> PostNewRev(ProcessRevisionModel aProcessRevModel)
         {
             try
             {
@@ -180,12 +180,13 @@ namespace Armis.Api.Controllers
             }
         }
 
+        //Only the step seq is needed from this Rev model parameter but the website can handle a post better when the return type is the same as the parameter type.
         [HttpPost]
-        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqModels)
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsForRev(List<StepSeqModel> aRevModel)
         {
             try
             {
-                var data = await ProcessService.UpdateStepsForRev(aStepSeqModels);
+                var data = await ProcessService.UpdateStepsForRev(aRevModel);
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)
@@ -205,7 +206,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);                
+                return BadRequest(ex.Message);
             }
         }
 

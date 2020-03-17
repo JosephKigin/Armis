@@ -15,21 +15,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
                 StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
-                StepId = aStep.StepId,
                 Inactive = aStep.Inactive,
-                StepName = aStep.StepName
-            };
-
-            return result;
-        }
-
-        public static StepModel ToHydratedModel(this Step aStep)
-        {
-            var result = new StepModel()
-            {
-                Instructions = aStep.Instructions,
-                SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
                 StepId = aStep.StepId,
                 StepName = aStep.StepName
             };
@@ -38,13 +24,13 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 
         }
 
-        public static IEnumerable<StepModel> ToHydratedModels(this IEnumerable<Step> aStepEntities)
+        public static IEnumerable<StepModel> ToModels(this IEnumerable<Step> aStepEntities)
         {
             var result = new List<StepModel>();
 
             foreach (var stepEntity in aStepEntities)
             {
-                result.Add(stepEntity.ToHydratedModel());
+                result.Add(stepEntity.ToModel());
             }
 
             return result;

@@ -138,7 +138,7 @@ namespace Armis.Test
                 var theGeneratedStepModel = GenerateStepModel((i + 1).ToString(), theNewAddedProcessID, theReturnedProcessRevisionID);
                 var theReturnStepID = await StepService.CreateStep(theGeneratedStepModel);
 
-                theArbitraryStepIDList.Add(theReturnStepID);
+                theArbitraryStepIDList.Add(theReturnStepID.StepId);
             }
 
             var theGeneratedStepSeqModel = GenerateStepSeqModel(theNewAddedProcessID, theReturnedProcessRevisionID, theArbitraryStepIDList, theArbitraryOprID);
@@ -209,7 +209,7 @@ namespace Armis.Test
                 var theGeneratedStepModel = GenerateStepModel((i + 1).ToString(), theNewProcessID, theReturnedProcessRevision1ID);
                 var theReturnStepID = await StepService.CreateStep(theGeneratedStepModel);
 
-                theArbitraryStepIDListForRev1.Add(theReturnStepID);
+                theArbitraryStepIDListForRev1.Add(theReturnStepID.StepId);
             }
 
             var theGeneratedStepSeqModel = GenerateStepSeqModel(theNewProcessID, theReturnedProcessRevision1ID, theArbitraryStepIDListForRev1, theArbitraryRev1OprID);
@@ -238,8 +238,8 @@ namespace Armis.Test
             theNewArbitraryStepIDListForRev2.RemoveAt(0);
             var theReturnStepIDA = await StepService.CreateStep(GenerateStepModel("a", theNewProcessID, theRev2ID));
             var theReturnStepIDB = await StepService.CreateStep(GenerateStepModel("b", theNewProcessID, theRev2ID));
-            theNewArbitraryStepIDListForRev2.Insert(0, theReturnStepIDA);
-            theNewArbitraryStepIDListForRev2.Insert(1, theReturnStepIDB);
+            theNewArbitraryStepIDListForRev2.Insert(0, theReturnStepIDA.StepId);
+            theNewArbitraryStepIDListForRev2.Insert(1, theReturnStepIDB.StepId);
             theNewArbitraryStepIDListForRev2.Reverse();
 
             // TODO: Fix OPERATION ID copying

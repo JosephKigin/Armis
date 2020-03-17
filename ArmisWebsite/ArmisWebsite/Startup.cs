@@ -41,7 +41,6 @@ namespace ArmisWebsite
             services.AddScoped<IOperationDataAccess, OperationDataAccess>();
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
             services.AddScoped<IPdfGenerator, PdfGenerator>();
-            services.AddScoped<IDataAccessGeneric, DataAccessGeneric>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

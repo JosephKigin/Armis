@@ -143,7 +143,7 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<int>> PostStep(StepModel aStep)
+        public async Task<ActionResult<StepModel>> PostStep(StepModel aStep)
         {
             try
             {

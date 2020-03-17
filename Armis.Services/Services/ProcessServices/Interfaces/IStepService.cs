@@ -13,7 +13,7 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode);
         Task<StepModel> GetStepById(int aStepId);
         Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory);
-        Task<int> CreateStep(StepModel aStepModel);
+        Task<StepModel> CreateStep(StepModel aStepModel);
         Task<int> UpdateStep(int aStepId, StepModel aStepModel);
         Task<int> DeactivateStep(int aStepId);
         Task<List<StepModel>> GetStepByName(string aStepName);

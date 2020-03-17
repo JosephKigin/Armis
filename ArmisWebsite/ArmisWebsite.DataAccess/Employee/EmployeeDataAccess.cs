@@ -1,4 +1,5 @@
 ﻿using Armis.BusinessModels.EmployeeModels;
+using ArmisWebsite.DataAccess;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -21,14 +22,7 @@ namespace ArmisWebsite.DataAccess.Employee
 
         public async Task<EmployeeModel> GetEmployeeById(short id)
         {
-            using (var client = new HttpClient())
-            {
-                //Add status catch and this isnt finding the correct api path
-                var response = await client.GetAsync(Config["APIAddress"] + "api/Employee/GetEmployeeById/" + id);
-
-                var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<EmployeeModel>(responseString);
-            }
+            return await DataAccessGeneric.HttpGetRequest<EmployeeModel>(Config["APIAddress"] + "api/Employee/GetEmployeeById/" + id);
         }
     }
 }

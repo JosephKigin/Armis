@@ -1,4 +1,5 @@
 ﻿using Armis.BusinessModels.Customer;
+using ArmisWebsite.DataAccess;
 using ArmisWebsite.DataAccess.Customer.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -22,18 +23,7 @@ namespace ArmisWebsite.DataAccess.Customer
 
         public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
         {
-            using (var client = new HttpClient())
-            {
-
-                var response = await client.GetAsync(Config["APIAddress"] + "api/Customers/GetCustomers");
-
-                var responseString = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<List<CustomerModel>>(responseString);
-                var sortedResult = result.OrderBy(i => i.Name);
-
-                return sortedResult;
-
-            }
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<CustomerModel>>(Config["APIAddress"] + "api/Customers/GetCustomers");
         }
     }
 }
