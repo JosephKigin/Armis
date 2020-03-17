@@ -151,7 +151,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                                                                 .ThenInclude(i => i.OperGroup)
                                                      .Include(i => i.ProcessRevision)
                                                         .ThenInclude(i => i.ProcessStepSeq)
-                                                            .ThenInclude(i => i.Step).ToListAsync();
+                                                            .ThenInclude(i => i.Step)
+                                                                .ThenInclude(i => i.StepCategoryCdNavigation).ToListAsync();
             var result = entities.ToHydratedModels();
 
             return result;
@@ -166,7 +167,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                                                                 .ThenInclude(i => i.OperGroup)
                                                      .Include(i => i.ProcessRevision)
                                                         .ThenInclude(i => i.ProcessStepSeq)
-                                                            .ThenInclude(i => i.Step).SingleOrDefaultAsync();
+                                                            .ThenInclude(i => i.Step)
+                                                                .ThenInclude(i => i.StepCategoryCdNavigation).SingleOrDefaultAsync();
 
             if (processEntity == null) { throw new NullReferenceException("No process with id " + aProcessId + " exists."); }
 
