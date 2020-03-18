@@ -42,6 +42,7 @@ namespace Armis.Test
         public async Task CreateNewStepAndVerify()
         {
             var thePreAddStepList = await StepService.GetAll();
+            thePreAddStepList.OrderBy(i => i.StepId);
             var thePreAddStepCount = thePreAddStepList.Count();
             var theExpectedStepID = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
 
