@@ -26,12 +26,10 @@ namespace Armis.DataLogic.Services.ProcessServices
         {
             if (aStepModel == null) { throw new NullReferenceException("No step model was given."); }
 
-            var theStepEntity = aStepModel.ToEntity();
-
             var theLastStepIdUsed = await Context.Step.MaxAsync(i => i.StepId);
-
-            theStepEntity.StepId = theLastStepIdUsed + 1;
-
+            aStepModel.StepId = theLastStepIdUsed + 1;
+            
+            var theStepEntity = aStepModel.ToEntity();
             Context.Step.Add(theStepEntity);
             await Context.SaveChangesAsync();
 

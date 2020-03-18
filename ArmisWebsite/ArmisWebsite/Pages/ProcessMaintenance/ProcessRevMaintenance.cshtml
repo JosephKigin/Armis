@@ -245,7 +245,7 @@
                                 <h5>
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {<i class="fa fa-arrows-alt handle"></i>}
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down"></i></a>
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down fa-rotate-180"></i></a>
                                     <br />
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {
@@ -474,7 +474,7 @@
                         {
                             <li class="list-group-item" id="allStep_@step.StepId-0">
                                 <h5 id="allStepHeader-@step.StepId">
-                                    <i class="fa fa-arrows-alt handle"></i>
+                                    <i class="fa fa-arrows-alt handle fa-rotate-90"></i>
                                     <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName <i class="fa fa-sort-down"></i></a>
                                     <br />
                                     @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
