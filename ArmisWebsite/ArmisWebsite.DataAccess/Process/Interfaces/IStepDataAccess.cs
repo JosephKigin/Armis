@@ -9,10 +9,11 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
 {
     public interface IStepDataAccess
     {
-        Task<int> PostNewStep(StepModel aStepModel);
-        Task<IEnumerable<StepModel>> GetAllHydratedSteps();
+        Task<StepModel> PostNewStep(StepModel aStepModel);
+        Task<IEnumerable<StepModel>> GetAllSteps();
+        Task<IEnumerable<StepCategoryModel>> GetAllStepCategoryies();
+        Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode);
         Task<StepModel> GetStepById(int aStepId);
-        Task<int> AddVariablesToStep(StepModel aStepModel);
         Task<List<StepModel>> GetStepByName(string aStepName);
     }
 }

@@ -27,7 +27,7 @@ namespace ArmisWebsite
 
         public async Task OnGet()
         {
-            var theSteps = await StepDataAccess.GetAllHydratedSteps();
+            var theSteps = await StepDataAccess.GetAllSteps();
             Steps = theSteps.ToList();
         }
     }

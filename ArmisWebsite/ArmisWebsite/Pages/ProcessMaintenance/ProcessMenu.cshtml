@@ -4,22 +4,25 @@
     ViewData["Title"] = "Process Menu";
 }
 
-<h1>ProcessMenu</h1>
+<h1>Process Menu</h1>
 
 <div class="row">
     <div class="col-lg card mx-3 ">
         <h5>Process</h5>
-        <a class="btn btn-primary p-3 m-3" asp-page="">Process</a>
-        <a class="btn btn-secondary p-3 m-3" asp-page="">Revisions</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="ProcessMaintenance">Create Process</a>
+        <a class="btn btn-success p-3 m-3" asp-page="ProcessRevMaintenance">Process Revision Maintenance</a>
+        <a class="btn btn-info p-3 m-3" asp-page="ProcessListing">Process List</a>
     </div>
     <div class="col-lg card">
         <h5>Step</h5>
-        <a class="btn btn-dark p-3 m-3" asp-page="">Add</a>
-        <a class="btn btn-info p-3 m-3" asp-page="">Edit</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="StepMaintenance">Add Step</a>
+        <a class="btn btn-success p-3 m-3" asp-page="StepMaintenance">Edit Step</a>
+        <a class="btn btn-info p-3 m-3" asp-page="StepListing">Step List</a>
     </div>
     <div class="col-lg card mx-3">
-        <h5>Highly Classified</h5>
-        <a class="btn btn-danger p-3 m-3" asp-page="">Area 51</a>
-        <a class="btn btn-warning p-3 m-3" asp-page="">Conspiracies</a>
+        <h5>Operation</h5>
+        <a class="btn btn-primary p-3 m-3" asp-page="OperationMaintenance">Operation Maintenance</a>
+        <a class="btn btn-warning p-3 m-3" asp-page="PdfLayouts/RouterPdf" asp-route-aProcessId="1">TEST Router</a>
+        <a class="btn btn-secondary p-3 m-3" asp-page="">Future Button</a>
     </div>
 </div>

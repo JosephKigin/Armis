@@ -11,6 +11,7 @@ namespace Armis.Data.DatabaseContext.Entities
         }
 
         public int SpecId { get; set; }
+        public short SpecRevId { get; set; }
         public byte SubLevelSeqId { get; set; }
         public string Name { get; set; }
         public bool IsRequired { get; set; }

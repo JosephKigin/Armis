@@ -14,18 +14,20 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<ProcessModel> GetHydratedProcess(int processId);
         Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs();
         Task<ProcessRevisionModel> GetCurrentProcessRevWithSteps(int aProcessId);
+        Task<bool> CheckIfNameIsUnique(string aName);
 
         //CREATE
-        Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevision newRev);
-        Task<ProcessModel> CreateNewProcess(Process process);  //Returns ProcessId
-        Task TestCreateProcess();
+        Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev);
+        Task<ProcessModel> CreateNewProcess(ProcessModel process); 
+        Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel);
 
         //UPDATE
         Task<ProcessModel> UpdateProcess(Process process);
-        Task<ProcessRevisionModel> UpdateProcessRev(ProcessRevision processRev);
+        Task<ProcessRevisionModel> UpdateStepsForRev(IEnumerable<StepSeqModel> aStepSeqs);
+        Task<ProcessRevisionModel> UpdateUnlockToLockRev(int aProcessId, int aRevId);
 
         //DELETE
         Task DeleteProcess(int processId); //Must delete all revs linked to this process
-        Task DeleteProcessRev(int processId, int processRevId);
+        Task DeleteProcessRev(int aProcessId, int aProcessRevId);
     }
 }

@@ -8,13 +8,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public PriceCode()
         {
             OrderDetail = new HashSet<OrderDetail>();
-            PartHist = new HashSet<PartHist>();
+            PartTran = new HashSet<PartTran>();
         }
 
         public string PriceCd { get; set; }
         public string PriceCdDesc { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
-        public virtual ICollection<PartHist> PartHist { get; set; }
+        public virtual ICollection<PartTran> PartTran { get; set; }
     }
 }

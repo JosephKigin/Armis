@@ -20,6 +20,7 @@ namespace Armis.Data.DatabaseContext.Entities
             SamplePlanHead = new HashSet<SamplePlanHead>();
             ShipAccountNavigation = new HashSet<ShipAccount>();
             ShipToNavigation = new HashSet<ShipTo>();
+            SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
 
         public int CustId { get; set; }
@@ -84,5 +85,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual ICollection<ShipAccount> ShipAccountNavigation { get; set; }
         public virtual ICollection<ShipTo> ShipToNavigation { get; set; }
+        public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }
 }

@@ -1,0 +1,652 @@
+﻿@page "{handler?}"
+@model ArmisWebsite.ProcessRevMaintenanceModel
+@{
+    ViewData["Title"] = "Process Maintenance";
+}
+
+<head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script> @*Sortable JS*@
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" /> @*FontAwesome*@
+</head>
+
+<body>
+    <h1>Process Revision Maintenance</h1>
+    @if (Model.CurrentProcessId != 0)
+    {
+        @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+        {
+            <h3>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Rev:  @if (Model.CurrentRevId != 0)
+                {<b>@Model.CurrentRevId </b>}
+                <span class="alert-success"> Unlocked </span>
+            </h3>
+
+
+
+        }
+        else if (Model.CurrentRev.RevStatusCd == "LOCKED")
+        {
+            <h3>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Rev: @if (Model.CurrentRevId != 0)
+                {<b>@Model.CurrentRevId </b>}
+                <span class="alert-danger">Locked</span>
+            </h3>
+        }
+        else
+        {
+            <h3>
+                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+            </h3>
+        }
+    }
+
+    <input asp-for="CurrentProcessId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />
+    @if (Model.CurrentRev != null)
+    {<input asp-for="CurrentRevId" class="form-control col-lg-6" type="number" form="mainForm" hidden readonly />}
+
+    @*Modal for selecting a process to work on*@
+    <div class="modal fade" id="modalProcessSelect">
+        <div class="modal-dialog modal-lg" style="width:1200%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Choose a Process To Edit</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <form method="get">
+                                <select class="list-group" size="12" asp-for="CurrentProcessId">
+                                    @foreach (var process in Model.AllProcesses)
+                                    {
+                                        <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
+                                            @process.ProcessId: @process.Name -
+                                            Rev:
+                                            @if (process.Revisions != null && process.Revisions.Any())
+                                            {
+                                                @process.Revisions.Last().ProcessRevId
+                                                if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
+                                                {
+                                                    @process.Revisions.Last().RevStatusCd
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
+                                            }
+                                        </option>
+                                    }
+                                </select>
+                                <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                <button class="btn btn-primary my-2">Ok</button>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <h5 id="modalStepTitle"></h5>
+                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Main section that displays information about the current Process and the current Revision.*@
+    <div class="row">
+        <div class="col-lg-4">
+            @*Buttons on the top of the screen*@
+            <a class="btn btn-danger my-1" href="ProcessRevMaintenance">Clear</a>
+            <button class="btn btn-primary my-1" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
+
+            <form id="mainForm" method="post">
+                <div class="card card-body">
+                    @*<div class="form-group row"><h5 class="col-lg-6"><b>Customer: </b></h5><input class="form-control col-lg-6" asp-for="CurrentProcess.CustId" /></div>*@
+                    <h5><b>Created By: </b></h5>
+                    @if (Model.EmpCreatedCurrentRev != null)
+                    {<p>@Model.EmpCreatedCurrentRev.LastName, @Model.EmpCreatedCurrentRev.FirstName</p>}
+                    <h5><b>Date Created: </b></h5>
+                    @if (Model.CurrentRev.DateTimeCreated.Date.ToString() != "1/1/0001 12:00:00 AM")
+                    {<p>@Model.CurrentRev.DateTimeCreated.Date.ToString("d") @Model.CurrentRev.DateTimeCreated.TimeOfDay</p>}
+                    <h5><b>Comment: </b></h5>
+                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                    {<textarea class="form-control">@Model.CurrentRev.Comments</textarea> }
+                    else
+                    {<textarea class="form-control" readonly>@Model.CurrentRev.Comments</textarea>}
+                </div>
+
+                <div class="card card-body">
+                    @*
+                        There are 4 different buttons total: Rev Up, Lock, Save, and Delete.  If there is no process loaded on the page, they are all disabled.  If there is a process loaded where
+                        the current revision is locked or there is no revision, then Rev Up is enabled and everything else is disabled.  If the current revision is unlocked, Rev Up is disabled and
+                        everything else is enabled.
+                        TODO: This could be cleaned up by having one of each button (instead of 3 sets of buttons) and then executing a javascript function in the if conditions that would handle changing the buttons based on what is needed.
+                    *@
+                    <span id="btnMessage" class="text-danger"></span>
+                    @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
+                    {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-success col-lg-5 my-1 mx-2" data-toggle="modal" data-target="#modalCopyProcessDetails" value="Copy" />
+                        </div>
+                        <input type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#modalRevUpComment" value="Rev Up" />
+                        <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Delete</button>
+                    }
+                    else if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                    {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
+                        </div>
+                        <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
+                        <button id="btnLock" type="submit" class="btn btn-primary m-1" asp-page-handler="Lock">Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-primary m-1" asp-page-handler="Save">Save</button>
+                        <button type="submit" class="btn btn-danger m-1" asp-page-handler="Delete">Delete</button>
+                    }
+                    else
+                    {
+                        <div class="row justify-content-center">
+                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
+                        </div>
+                        <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
+                        <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
+                        <button id="btnSave" type="submit" class="btn btn-outline-secondary m-1" disabled>Save</button>
+                        <button type="submit" class="btn btn-outline-secondary m-1" disabled>Delete</button>
+                    }
+                </div>
+            </form>
+
+            @*Modal for Rev Up for the user to add in a comment and their employee number.*@
+            <div class="modal fade" id="modalRevUpComment">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Additional Details</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                <input asp-for="CurrentProcessId" hidden />
+                                <div class="form-group">
+                                    <label><b>Comment:</b></label>
+                                    <input id="txtRevUpComment" class="form-control" asp-for="Comment" autocomplete="off" onkeyup="validateRevUpCommentEmp()" />
+                                </div>
+                                <div class="form-group">
+                                    @*TODO: delete this once Azure AD Login is implemented.*@
+                                    <label><b>Employee Number:</b></label>
+                                    <input id="numRevUpEmp" class="form-control" type="number" asp-for="EmpNumber" onkeyup="validateRevUpCommentEmp()" />
+                                    <span id="spanEmpNumeberWarning" class="alert-danger" hidden>Not a valid Employee Number</span>
+                                </div>
+                                <button id="btnRevUpCommentEmp" type="submit" class="btn btn-primary m-1" asp-page-handler="RevUp" disabled>Rev Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Modal for Copy Process for the user to add a comment and employee number to a revision and edit any details about the process.*@
+        <div class="modal fade" id="modalCopyProcessDetails">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Additional Details</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            <input asp-for="CurrentProcessId" hidden />
+
+                            <div class="form-group">
+                                <label><b>Process Name:</b></label>
+                                <input id="txtCopyProcessName" class="form-control" asp-for="NewProcessName" autocomplete="off" onkeyup="validateCopyProcessModal()" />
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Comment:</b></label>
+                                <input id="txtCopyProcessComment" class="form-control" asp-for="Comment" autocomplete="off" onkeyup="validateCopyProcessModal()" />
+                            </div>
+
+                            <div class="form-group">
+                                @*TODO: delete this once Azure AD Login is implemented.*@
+                                <label><b>Employee Number:</b></label>
+                                <input id="numCopyProcessEmp" class="form-control" type="number" asp-for="EmpNumber" onkeyup="validateCopyProcessModal()" />
+                                <span id="spanCopyProcessEmpNumeberWarning" class="alert-danger" hidden>Not a valid Employee Number</span>
+                            </div>
+
+                            <button id="btnCopyProcess" type="submit" class="btn btn-primary m-1" asp-page-handler="Copy" disabled>Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Loads a display with the current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable is the current Rev is unlocked.*@
+        <div class="col-lg-4">
+            @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
+            {
+                var borderColor = "grey";
+                if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                {
+                    borderColor = "green";
+                }
+
+                @*Current step list.  If the revision is "UNLCOKED", the border will be green and the list will be sortable.  If the current revision is "LOCKED", the border will be grey and the list will be unsortable.  If there is no current revision, the list will not show up.*@
+                <h5>Current Steps</h5>
+                <div class="p-3" style="border:dashed @borderColor;">
+                    <ul id="sortableCurrentSteps" class="list-group" style="max-height:36em; overflow-y:scroll;">
+                        @{Model.InitialStepSeq = 0;}
+                        @foreach (var stepSeq in Model.CurrentRev.StepSeqs)
+                        {
+                            <li class="list-group-item" id="currentStep_@stepSeq.Step.StepId-@Model.InitialStepSeq">
+                                <h5>
+                                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                                    {<i class="fa fa-arrows-alt handle"></i>}
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down"></i></a>
+                                    <br />
+                                    @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                                    {
+                                        <a class="text-info" id="operationAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@stepSeq.Step.StepName')">
+                                            [@stepSeq.Operation.Code]
+                                            <i class="far fa-object-group"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <p>[@stepSeq.Operation.Code]</p>
+                                    }
+                                    @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
+                                </h5>
+                                <input id="currentStepId_@stepSeq.Step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq]" value="@stepSeq.Step.StepId" hidden />
+                                @if (stepSeq.Operation != null)
+                                {<input id="currentOperationId_@stepSeq.Step.StepId-@Model.InitialStepSeq" value="@stepSeq.Operation.Id" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                else
+                                { <input id="currentOperationId_@stepSeq.Step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentOperationIds[Model.InitialStepSeq]" hidden />}
+                                <input id="currentStepSeq_@stepSeq.Step.StepId-@Model.InitialStepSeq" value="@Model.InitialStepSeq" hidden />
+
+                                <div id="currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq" class="collapse">
+                                    <div class="card card-body">
+                                        @if (stepSeq.Step.SignOffIsRequired == true)
+                                        {<p class="text-danger">Sign-Off Required</p>}
+                                        <p><b>Instructions: </b>@stepSeq.Step.Instructions</p>
+                                    </div>
+                                </div>
+                            </li>
+                            Model.InitialStepSeq++;
+                        }
+                    </ul>
+                </div>
+
+                @*Operation selection modal*@
+                <div class="modal fade" id="modalOperationSelect">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Select Operation for</h5><h5 id="operationModalStepTitle"></h5>
+                            </div>
+                            <div class="modal-body">
+                                <input id="opModalStepIdPlaceholder" hidden />
+                                <input id="opModalStepSeqPlaceholder" hidden />
+                                <select id="selectAllOperations" class="list-group w-100" size="16">
+                                    @foreach (var operation in Model.AllOperations)
+                                    {
+                                        <option id="@operation.Id" value="@operation.Id" class="list-group-item">
+                                            @operation.Name
+                                        </option>
+                                    }
+                                </select>
+                                <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                <button class="btn btn-primary my-2" data-dismiss="modal" onclick="addToCurrentOperations()">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function openOperationModal(aStepDetails, aStepName) {
+                        $("#modalOperationSelect").modal("show");
+                        var theStepId = aStepDetails.id.substring((aStepDetails.id.indexOf("_") + 1), (aStepDetails.id.indexOf("-")));
+                        var theStepSeq = aStepDetails.id.substring(aStepDetails.id.indexOf("-") + 1);
+
+                        document.getElementById("operationModalStepTitle").innerHTML = aStepName;
+                        document.getElementById("opModalStepIdPlaceholder").value = theStepId;
+                        document.getElementById("opModalStepSeqPlaceholder").value = theStepSeq;
+                    }
+
+                    function addToCurrentOperations() {
+                        var theStepId = document.getElementById("opModalStepIdPlaceholder").value;
+                        var theStepSeq = document.getElementById("opModalStepSeqPlaceholder").value;
+                        var theOperationSelect = document.getElementById("selectAllOperations");
+                        var theSelectedOperation = theOperationSelect.options[theOperationSelect.selectedIndex];
+
+                        document.getElementById("currentOperationId_" + theStepId + "-" + theStepSeq).value = theSelectedOperation.id;
+                        document.getElementById("operationAnchor_" + theStepId + "-" + theStepSeq).innerHTML = "[" + theSelectedOperation.innerHTML + "]" + "<i class='far fa-object-group'></i>";
+
+                        assignStepSeqNumbers();
+                    }
+                </script>
+
+                @*Creates a sortable trash that deletes anything dropped into it.  There is also a chunk of script for making the current steps and all steps lists sortable.  The reason it is here is because these are all the sortable events that happen when an "UNLOCKED" revision is selected.*@
+                @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                {
+                    <div id="sortableTrash" class="mt-3" style="width:inherit; height:80px; border:dashed red; text-align:center;">
+                        <i class="fas fa-trash" style="color:red;"></i>
+                    </div>
+                    <script>
+                        new Sortable(sortableTrash,
+                            {
+                                group: {
+                                    name: 'steps'
+                                },
+                                onAdd: function (evt) {
+                                    var el = evt.item;
+                                    el.parentNode.removeChild(evt.item);
+                                }
+                            });
+
+                        new Sortable(sortableCurrentSteps,
+                            {
+                                group: {
+                                    name: 'steps'
+                                },
+                                handle: '.handle',
+                                animation: 150,
+                                ghostClass: 'bg-warning',
+                                onSort: function (evt) {
+                                    assignStepSeqNumbers();
+                                },
+                                onAdd: function (evt) {
+                                    //This entire section up to the assignStepSeqNumbers() call is just to make sure the collapsables stay assigned to the correct collapse sections when a step is moved from allSteps to currentSteps.
+                                    evt.item.id = evt.item.id.replace("all", "current");
+                                    var allStepListItemChildren = evt.item.childNodes;
+                                    for (var i = 0; i < allStepListItemChildren.length; i++) {
+                                        //if the child element has an id, if not then it doesn't need to be changed at all.
+                                        if (allStepListItemChildren[i].id != undefined) {
+                                            //if the step comes from the AllStepList, the <a> tag will have an id of "allStepDetails-(stepId)"
+                                            if (allStepListItemChildren[i].id.startsWith("allStepHeader")) {
+                                                var theAnchors = allStepListItemChildren[i].getElementsByTagName("a");
+                                                theAnchors[0].dataset.target = theAnchors[0].dataset.target.replace("all", "current");//The collapse trigger anchor
+                                                theAnchors[1].id = theAnchors[1].id.replace("all", ""); //The operation anchor
+                                                theAnchors[1].innerHTML += "<i class='far fa-object-group'></i>";
+                                            }
+                                            //if the step comes from the AllStepList, the collapsable section will have an id of allStepDetails-(stepId)
+                                            if (allStepListItemChildren[i].id.startsWith("allStepDetails")) {
+                                                allStepListItemChildren[i].id = allStepListItemChildren[i].id.replace("all", "current");
+                                            }
+                                        }
+                                    }
+
+                                    //Renaming the input placeholders
+                                    var inputs = evt.item.getElementsByTagName("input");
+                                    for (var i = 0; i < inputs.length; i++) {
+                                        inputs[i].id = inputs[i].id.replace("all", "current");
+                                    }
+
+                                    assignStepSeqNumbers();
+                                }
+                            });
+                        //Assigns a seq number to all the steps.  This is called when a step is moved, deleted, or added.  This method checks what order the steps are in and then assigns the "name"(asp-for) attribute to CurrentStepIds, which is a list.  The list is submitted when "lock" or "save" are clicked.
+                        function assignStepSeqNumbers() {
+                            var currentStepListItems = document.getElementById("sortableCurrentSteps").getElementsByTagName("li");
+                            var doAllStepsHaveOper = true;
+
+                            for (var i = 0; i < currentStepListItems.length; i++) {
+                                currentStepListItems[i].id = currentStepListItems[i].id.substring(0, (currentStepListItems[i].id.indexOf("-") + 1)) + i;
+
+                                var currentStepIdInput = currentStepListItems[i].getElementsByTagName("input")[0];
+                                currentStepIdInput.id = currentStepIdInput.id.substring(0, currentStepIdInput.id.indexOf("-") + 1) + i;
+                                currentStepIdInput.name = "CurrentStepIds[" + i + "]";
+
+                                var currentStepOperInput = currentStepListItems[i].getElementsByTagName("input")[1];
+                                currentStepOperInput.id = currentStepOperInput.id.substring(0, currentStepOperInput.id.indexOf("-") + 1) + i;
+                                currentStepOperInput.name = "CurrentOperationIds[" + i + "]";
+                                if (currentStepOperInput.value == "") { doAllStepsHaveOper = false; }
+                                console.log("Value " + i + ": " + currentStepOperInput.value);
+                                console.log(doAllStepsHaveOper);
+
+                                var currentStepSeqInput = currentStepListItems[i].getElementsByTagName("input")[2];
+                                currentStepSeqInput.id = currentStepSeqInput.id.substring(0, currentStepSeqInput.id.indexOf("-") + 1) + i;
+                                currentStepSeqInput.value = i;
+
+                                //Collapse Anchor, Operation Anchor, collapsable div
+                                var theAnchors = currentStepListItems[i].getElementsByTagName("a");
+
+                                //This just finds the "|" and replaces the number after it, which is the the seq number
+                                theAnchors[0].dataset.target = theAnchors[0].dataset.target.substring(0, (theAnchors[0].dataset.target.indexOf("-") + 1)) + i;
+                                theAnchors[1].id = theAnchors[1].id.substring(0, (theAnchors[1].id.indexOf("-") + 1)) + i;
+                                //Finds the collapsable details div on the step and replaces to seq number
+                                for (var j = 0; j < currentStepListItems[i].childNodes.length; j++) {
+                                    if (currentStepListItems[i].childNodes[j].id != undefined) {
+                                        if (currentStepListItems[i].childNodes[j].id.startsWith("currentStepDetails_")) {
+                                            var detailsDivId = currentStepListItems[i].childNodes[j].id;
+                                            currentStepListItems[i].childNodes[j].id = detailsDivId.substring(0, (detailsDivId.indexOf("-") + 1)) + i;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (!doAllStepsHaveOper) {
+                                var btnSave = document.getElementById("btnSave");
+                                btnSave.disabled = true;
+                                btnSave.classList.remove('btn-primary');
+                                btnSave.classList.add('btn-outline-primary');
+
+                                var btnLock = document.getElementById("btnLock");
+                                btnLock.disabled = true;
+                                btnLock.classList.remove('btn-primary');
+                                btnLock.classList.add('btn-outline-primary');
+
+                                document.getElementById("btnMessage").innerHTML = "Every step needs to have an operation in order to lock or save."
+                            }
+                            else {
+                                var btnSave = document.getElementById("btnSave");
+                                btnSave.disabled = false;
+                                btnSave.classList.remove('btn-ouline-primary');
+                                btnSave.classList.add('btn-primary');
+
+                                var btnLock = document.getElementById("btnLock");
+                                btnLock.disabled = false;
+                                btnLock.classList.remove('btn-outline-primary');
+                                btnLock.classList.add('btn-primary');
+
+                                document.getElementById("btnMessage").innerHTML = "";
+                            }
+
+                        }
+                    </script>
+                }
+            }
+        </div>
+
+        @*All the steps that can be dragged into the current steps.  This will only load if the current Rev is unlocked.*@
+        <div class="col-lg-4">
+            @if (Model.CurrentRev != null)
+            {
+                @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
+                {
+                    var allStepCount = 0; //This is just to get a unique Id for the all steps list.
+                    <h5>All Steps</h5>
+                    <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
+                        @foreach (var step in Model.AllSteps)
+                        {
+                            <li class="list-group-item" id="allStep_@step.StepId-0">
+                                <h5 id="allStepHeader-@step.StepId">
+                                    <i class="fa fa-arrows-alt handle"></i>
+                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName <i class="fa fa-sort-down"></i></a>
+                                    <br />
+                                    @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
+                                    <a class="text-info" id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
+                                </h5>
+                                <input id="allStepId_@step.StepId-0" form="mainForm" value="@step.StepId" hidden />
+                                <input id="allOperationId_@step.StepId-0" form="mainForm" hidden />
+                                <input id="allStepSeq_@step.StepId-0" value="" hidden />
+
+                                <div id="allStepDetails_@step.StepId-0" class="collapse">
+                                    <div class="card card-body">
+                                        @if (step.SignOffIsRequired == true)
+                                        {<p class="text-danger">Sign-Off Required</p>}
+                                        <b>Instructions: </b>@step.Instructions
+                                    </div>
+                                </div>
+                            </li>
+                            allStepCount++;
+                        }
+                    </ul>
+
+                    <script>
+                        new Sortable(sortableAllSteps,
+                            {
+                                group: {
+                                    name: 'steps',
+                                    pull: 'clone'
+                                },
+                                handle: '.handle',
+                                animation: 150,
+                                ghostClass: 'bg-warning',
+                                sort: false,
+                                onAdd: function (evt) {
+                                    var el = evt.item;
+                                    el.parentNode.removeChild(evt.item);
+                                }
+                            });
+                    </script>
+                }
+            }
+
+        </div>
+    </div>
+
+    @*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
+    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
+
+</body>
+
+<script>
+ //TODO:This is the same code that is in Process Listing. See if this can be put into its own file and pulled into each of these htmls.
+    //This will get all the steps for a process and load them into the process select modal dynamically.  When a process is clicked, the steps are loaded.
+    function LoadStepModal(aProcessId, aProcessName) {
+        if (aProcessId > 0) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true)
+            xhr.send();
+
+            xhr.onload = function () {
+                var rev = JSON.parse(xhr.responseText);
+                console.log(rev);
+                var stepItemsHtml = '';
+                if (xhr.status == 200) {
+                    for (var i = 0; i < rev.StepSeqs.length; i++) {
+                        var signOffReqHtml = '';
+                        if (rev.StepSeqs[i].Step.SignOffIsRequired == true) {
+                            signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
+                        }
+                        stepItemsHtml +=
+
+                            `<li class="list-group-item">
+                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + rev.StepSeqs[i].Step.StepName + `</a>
+                                                <div id="stepItem` + i + `" class="collapse">
+                                                    <div class="card card-body">`+
+                            signOffReqHtml +
+                            `<p>` + rev.StepSeqs[i].Step.Instructions + `</p>
+                                                    </div>
+                                                </div>
+                                            </li>`
+                    };
+                }
+                else {
+                    stepItemsHtml = 'There are no steps for this process.';
+                }
+
+                document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
+                document.getElementById("modalStepTitle").innerHTML = 'Steps for ' + aProcessName.toString();
+            };
+        }
+    };
+
+    //Validation for the Rev Up Modal
+    function validateRevUpCommentEmp() {
+        var txtComment = document.getElementById("txtRevUpComment");
+        var numEmp = document.getElementById("numRevUpEmp"); //TODO: delete this once Azure AD Login is implemented.
+        var empNumWarning = document.getElementById("spanEmpNumeberWarning");
+        var btnRevUp = document.getElementById("btnRevUpCommentEmp");
+
+        if (txtComment.value.length >= 1 && numEmp.value > 0) {
+            //TODO: delete this once Azure AD Login is implemented.
+            //Sets up the connection to the employee controller in the API and fires off the request.
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '@Model._apiAddress' + 'api/employee/CheckIfEmployeeNumberExists/' + numEmp.value, true)
+            xhr.send();
+
+            //When the request loads, checks if the employee number exists.  If it does, the span displaying the validation message disappears and the rev up button is enabled.  If the employee number does not exist, the validation span is displayed and the rev up button is disabled.
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var empNumExists = JSON.parse(xhr.responseText);
+                    console.log(empNumExists);
+                    if (empNumExists == true) {
+                        btnRevUp.disabled = false;
+                        empNumWarning.hidden = true;
+                    }
+                    else {
+                        empNumWarning.hidden = false;
+                    }
+                }
+            };
+
+        }
+        else {
+            btnRevUp.disabled = true;
+            empNumWarning.hidden = true;
+        }
+    };
+
+    function validateCopyProcessModal() {
+        var txtName = document.getElementById("txtCopyProcessName");
+        var txtComment = document.getElementById("txtCopyProcessComment");
+        var numEmp = document.getElementById("numCopyProcessEmp"); //TODO: delete this once Azure AD Login is implemented.
+        var empNumWarning = document.getElementById("spanCopyProcessEmpNumeberWarning");
+        var btnCopyProcess = document.getElementById("btnCopyProcess");
+
+        if (txtComment.value.length >= 1 && numEmp.value > 0 && txtName.value.length >= 1) {
+            //TODO: delete this once Azure AD Login is implemented.
+            //Sets up the connection to the employee controller in the API and fires off the request.
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '@Model._apiAddress' + 'api/employee/CheckIfEmployeeNumberExists/' + numEmp.value, true)
+            xhr.send();
+
+            //When the request loads, checks if the employee number exists.  If it does, the span displaying the validation message disappears and the rev up button is enabled.  If the employee number does not exist, the validation span is displayed and the rev up button is disabled.
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    var empNumExists = JSON.parse(xhr.responseText);
+                    console.log(empNumExists);
+                    if (empNumExists == true) {
+                        btnCopyProcess.disabled = false;
+                        empNumWarning.hidden = true;
+                    }
+                    else {
+                        empNumWarning.hidden = false;
+                    }
+                }
+            };
+
+        }
+        else {
+            btnCopyProcess.disabled = true;
+            empNumWarning.hidden = true;
+        }
+    };
+
+    String.prototype.replaceAt=function(index, replacement) {
+        return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+    }
+</script>
+
+@*
+        If this doesnt work, look into making "CurrentOperations" a type of select list and then bind the select to the property?
+    <li class="list-group-item">
+        @Model.CurrentOperations[i].Name
+        <input id="operID-@i" type="number" form="mainForm" asp-for="CurrentOperationIds[i]" value="@Model.CurrentOperations[i].Id" />
+    </li>
+*@

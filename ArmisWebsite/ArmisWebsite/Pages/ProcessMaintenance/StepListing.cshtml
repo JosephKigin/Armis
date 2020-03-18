@@ -20,20 +20,6 @@
                 @if (step.SignOffIsRequired == true)
                 {<p class="text-danger">Sign-Off Required</p>}
                 <b>Instructions: </b>@step.Instructions
-                <div class="row">
-                    @foreach (var variable in step.Variables)
-                    {
-                        <div class="card col-lg-4">
-                            <p>@variable.Template.Name</p>
-                            @if (variable.UnitOfMeasure != null)
-                            {<p>@variable.UnitOfMeasure.Description</p>}
-                            @if (variable.Min != null && variable.Max != null)
-                            {<p>@variable.Min - @variable.Max</p>}
-                        </div>
-
-
-                    }
-                </div>
 
                 <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
             </li>

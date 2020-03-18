@@ -18,44 +18,41 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             };
         }
 
-        //This method creates a dummy list of processes with only one process in it, and the runs it through ToHydratedModels().  It then takes the first and only entry in the list given back and returns it.  This just prevents a lot of code duplication.
         public static ProcessModel ToHydratedModel(this Process aProcess)
         {
-            var dummyProcessList = new List<Process>();
-            dummyProcessList.Add(aProcess);
+            var theProcessModel = aProcess.ToModel();
+            var theRevModels = new List<ProcessRevisionModel>();
 
-            return dummyProcessList.ToHydratedModels()[0];
+            foreach (var rev in aProcess.ProcessRevision)
+            {
+                var theRevModel = rev.ToModel();
+                var theStepSeqModels = new List<StepSeqModel>();
+
+                foreach (var stepSeq in rev.ProcessStepSeq)
+                {
+                    var theStepSeqModel = stepSeq.ToModel(stepSeq.Step.ToModel(), stepSeq.Operation.ToModel());
+                    theStepSeqModels.Add(theStepSeqModel);
+                }
+
+                theRevModel.StepSeqs = theStepSeqModels;
+                theRevModels.Add(theRevModel);
+            }
+
+            theProcessModel.Revisions = theRevModels;
+
+            return theProcessModel;
         }
 
         public static List<ProcessModel> ToHydratedModels(this List<Process> aProcesses)
         {
-            var result = new List<ProcessModel>();
+            var resultProcessModel = new List<ProcessModel>();
 
-            foreach (var aProcess in aProcesses)
-            {
-                var theProcessModel = aProcess.ToModel();
-                var theRevs = new List<ProcessRevisionModel>();
-
-                foreach (var aRev in aProcess.ProcessRevision)
-                {
-                    var theRev = aRev.ToModel();
-                    var theSteps = new List<StepModel>();
-
-                    foreach (var aStep in aRev.ProcessStepSeq)
-                    {
-                        var theStep = aStep.Step.ToModel(aStep.StepSeq, aStep.Operation.ToModel());
-                        theSteps.Add(theStep);
-                    }
-
-                    theRev.Steps = theSteps;
-                    theRevs.Add(theRev);
-                }
-
-                theProcessModel.Revisions = theRevs;
-                result.Add(theProcessModel);
+            foreach (var process in aProcesses)
+            { 
+                resultProcessModel.Add(process.ToHydratedModel());
             }
 
-            return result;
+            return resultProcessModel;
         }
 
         public static ProcessModel ToModel(this Process aProcess)
@@ -65,6 +62,16 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 CustId = aProcess.CustId,
                 Name = aProcess.Name,
                 ProcessId = aProcess.ProcessId
+            };
+        }
+
+        //To entity
+        public static Process ToEntity(this ProcessModel aProcessModel)
+        {
+            return new Process()
+            {
+                CustId = aProcessModel.CustId,
+                Name = aProcessModel.Name
             };
         }
     }

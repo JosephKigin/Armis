@@ -7,14 +7,15 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Hardness()
         {
-            OrderHead = new HashSet<OrderHead>();
+            SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
 
-        public string HardnessCd { get; set; }
+        public int HardnessId { get; set; }
+        public string ShortName { get; set; }
         public string Description { get; set; }
         public decimal? HardnessMin { get; set; }
         public decimal? HardnessMax { get; set; }
 
-        public virtual ICollection<OrderHead> OrderHead { get; set; }
+        public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }
 }

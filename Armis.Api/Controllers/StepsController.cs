@@ -14,7 +14,7 @@ using Armis.DataLogic.Services.ProcessServices.Interfaces;
 
 namespace Armis.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class StepsController : ControllerBase
     {
@@ -31,17 +31,47 @@ namespace Armis.Api.Controllers
 
         // GET: api/Steps
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Step>>> GetAllHydratedSteps()
+        public async Task<ActionResult<IEnumerable<StepModel>>> GetAllSteps()
         {
             try
             {
-                var data = await StepService.GetAllHydrated();
+                var data = await StepService.GetAll();
 
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StepCategoryModel>>> GetAllStepCategories()
+        {
+            try
+            {
+                var data = await StepService.GetAllStepCategories();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{code}")]
+        public async Task<ActionResult<StepCategoryModel>> GetStepCategoryByCode(string code)
+        {
+            try
+            {
+                var data = await StepService.GetStepCategoryByCode(code);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
@@ -51,7 +81,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await StepService.GetHydratedStepById(id);
+                var data = await StepService.GetStepById(id);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -67,7 +97,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await StepService.GetHydratedByName(stepName);
+                var data = await StepService.GetStepByName(stepName);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -113,7 +143,7 @@ namespace Armis.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<int>> PostStep(StepModel aStep)
+        public async Task<ActionResult<StepModel>> PostStep(StepModel aStep)
         {
             try
             {
@@ -123,22 +153,6 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("{aStepModel}")]
-        public async Task<ActionResult<int>> PostVariablesToStep(StepModel aStepModel) 
-        {
-            try
-            {
-                var data = await StepService.AddVariablesToStep(aStepModel);
-
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-
                 return BadRequest(ex.Message);
             }
         }

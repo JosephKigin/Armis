@@ -11,6 +11,7 @@ using System.Text.Json;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.BusinessModels.ProcessModels;
+using Armis.BusinessModels.ProcessModels.PassBackModels;
 
 namespace Armis.Api.Controllers
 {
@@ -86,7 +87,22 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
 
-                return NotFound(ex.Message);
+                return NotFound(JsonSerializer.Serialize("ERROR: " + ex.Message));
+            }
+        }
+
+        [HttpGet("{name}")]
+        public async Task<ActionResult<bool>> CheckIfNameIsUnique(string name)
+        {
+            try
+            {
+                var data = await ProcessService.CheckIfNameIsUnique(name);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
             }
         }
 
@@ -122,52 +138,106 @@ namespace Armis.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Processes
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        //[HttpPost]
-        //public async Task<ActionResult<Process>> PostProcess(Process process)
-        //{
-        //    _context.Process.Add(process);
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (ProcessExists(process.ProcessId))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return CreatedAtAction("GetProcess", new { id = process.ProcessId }, process);
-        //}
-
         [HttpPost]
-        public async Task TestPostProcess()
+        public async Task<ActionResult<ProcessModel>> PostProcess(ProcessModel aProcessModel)
         {
-            await ProcessService.TestCreateProcess();
+            try
+            {
+                var data = await ProcessService.CreateNewProcess(aProcessModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Could not process request. " + ex.Message);
+            }
         }
 
-        // DELETE: api/Processes/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Process>> DeleteProcess(int id)
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> PostNewRev(ProcessRevisionModel aProcessRevModel)
         {
-            var process = await _context.Process.FindAsync(id);
-            if (process == null)
+            try
             {
-                return NotFound();
+                var data = await ProcessService.CreateNewRevForExistingProcess(aProcessRevModel);
+                return Ok(JsonSerializer.Serialize(data));
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-            _context.Process.Remove(process);
-            await _context.SaveChangesAsync();
+        [HttpPost("{aProcessId}/{aRevId}")]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevToLocked(int aProcessId, int aRevId)
+        {
+            try
+            {
+                var data = await ProcessService.UpdateUnlockToLockRev(aProcessId, aRevId);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-            return process;
+        //Only the step seq is needed from this Rev model parameter but the website can handle a post better when the return type is the same as the parameter type.
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateStepsForRev(List<StepSeqModel> aRevModel)
+        {
+            try
+            {
+                var data = await ProcessService.UpdateStepsForRev(aRevModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProcessRevisionModel>> UpdateRevSaveAndLock(PassBackProcessRevStepSeqModel aRevStepSeqModel)
+        {
+            try
+            {
+                await ProcessService.UpdateStepsForRev(aRevStepSeqModel.StepSeqList);
+                var data = await ProcessService.UpdateUnlockToLockRev(aRevStepSeqModel.ProcessId, aRevStepSeqModel.ProcessRevisionId);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProcessModel>> CopyNewProcessFromExisting(ProcessModel aProcessModel)
+        {
+            try
+            {
+                var data = await ProcessService.CopyToNewProcessFromExisting(aProcessModel);
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{aProcessId}/{aProcessRevId}")]
+        public async Task<ActionResult> DeleteProcessRevision(int aProcessId, int aProcessRevId)
+        {
+            try
+            {
+                await ProcessService.DeleteProcessRev(aProcessId, aProcessRevId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         private bool ProcessExists(int id)

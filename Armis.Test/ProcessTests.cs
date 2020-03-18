@@ -1,11 +1,12 @@
+using Armis.BusinessModels.ProcessModels;
 using Armis.Data.DatabaseContext;
-using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.ProcessServices;
 using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.CustomerServices;
+using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Armis.Test
     public class ProcessTests
     {
         private ARMISContext _context;
+        private const string TESTPREFIX = "TEST-PROC";
 
         public ARMISContext Context
         {
@@ -28,6 +30,7 @@ namespace Armis.Test
 
 
         private IProcessService _processService;
+        private ICustomerService _customerService;
 
         public IProcessService ProcessService
         {
@@ -39,90 +42,140 @@ namespace Armis.Test
             set { _processService = value; }
         }
 
-        [TestMethod]
-        public void TESTForeach()
+        public ICustomerService CustomerService
         {
-            var testList = new List<string>();
-
-            for (int i = 0; i < 1000000; i++)
+            get
             {
-                testList.Add("Hello! ~ " + i);
+                if (_customerService == null) { _customerService = new CustomerService(Context); }
+                return _customerService;
             }
-
-            //testList.ForEach(i => Console.WriteLine(i));
-
-            foreach (var test in testList) { Console.WriteLine(test); }
+            set { _customerService = value; }
         }
 
-        //[TestMethod]
-        //public async Task PostAProcess()
-        //{
-        //    //var aProcessRev = new ProcessRevision()
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    ProcessRevId = 1,
-        //    //    CreatedByEmp = 1,
-        //    //    DateCreated = DateTime.Now.Date,
-        //    //    TimeCreated = DateTime.Now.TimeOfDay,
-        //    //    RevStatusCd = "INACTIVE",
-        //    //    DueDays = 3,
-        //    //    Notes = "This is test data.  Do not run this process."
-        //    //};
+        [TestMethod]
+        public async Task CheckProcessNameUniqueness()
+        {
+            var theGeneratedProcessModel = GenerateProcessModel();
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
 
-        //    //var a2ProcessRev = new ProcessRevision()
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    ProcessRevId = 2,
-        //    //    CreatedByEmp = 1,
-        //    //    DateCreated = DateTime.Now.Date,
-        //    //    TimeCreated = DateTime.Now.TimeOfDay,
-        //    //    RevStatusCd = "LOCKED",
-        //    //    DueDays = 3,
-        //    //    Notes = "This is test data again.  Do not run this process."
-        //    //};
+            var theNewExistingProcessName = thePostAddProcess.Name;
 
-        //    //var aProcess = new Process
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    Name = "TEST-1"
-        //    //};
+            bool theNameIsUnique = await ProcessService.CheckIfNameIsUnique(theNewExistingProcessName);
+            Assert.IsFalse(theNameIsUnique, "'" + theNewExistingProcessName + "' was expected to be NOT unique but this is the first instance of this name.");
 
-        //    //var aProcessSubOpSeq = new ProcessSubOprSeq()
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    ProcessRevId = 2,
-        //    //    SubOpSeq = 1,
-        //    //    SubOpId = 5,
-        //    //    SubOpRevId = 2,
-        //    //    OperationSeq = 0,
-        //    //    OperationId = 22
-        //    //};
+            theNameIsUnique = await ProcessService.CheckIfNameIsUnique(theNewExistingProcessName + "x");
+            Assert.IsTrue(theNameIsUnique, "'" + theNewExistingProcessName + "x' was expected to be unique but there is already a process name.");
+        }
 
-        //    //var a2ProcessSubOpSeq = new ProcessSubOprSeq()
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    ProcessRevId = 2,
-        //    //    SubOpSeq = 2,
-        //    //    SubOpId = 2,
-        //    //    SubOpRevId = 1,
-        //    //    OperationSeq = 0,
-        //    //    OperationId = 58
-        //    //};
+        [TestMethod]
+        public async Task CreateNewProcessNoCust()
+        {
+            var thePreAddProcessList = await ProcessService.GetAllProcesses();
 
-        //    //var a3ProcessSubOpSeq = new ProcessSubOprSeq()
-        //    //{
-        //    //    ProcessId = 10000,
-        //    //    ProcessRevId = 2,
-        //    //    SubOpSeq = 3,RT
-        //    //    SubOpId = 2,
-        //    //    SubOpRevId = 1,
-        //    //    OperationSeq = 0,
-        //    //    OperationId = 22
-        //    //};
+            var theGeneratedProcessModel = GenerateProcessModel();
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+            var thePostAddProcessList = await ProcessService.GetAllProcesses();
 
-        //    var processEntities = await ProcessService.GetCompleteProcess(10000, 2);
+            Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
+            Assert.AreEqual(theGeneratedProcessModel.Name, thePostAddProcess.Name);
+        }
 
-        //    Assert.IsNotNull(processEntities);
-        //}
+        [TestMethod]
+        [ExpectedException(typeof(DbUpdateException))]
+        public async Task CreateNewProcessWithBADCustID()
+        {
+            var thePreAddProcessList = await ProcessService.GetAllProcesses();
+
+            var theCustomerList = await CustomerService.GetAllCustomers();
+
+            //should throw exception (FK violation) since Customer ID doesn't exist
+            var theNonExistCustID = theCustomerList.Count() + 1; //generate invalid CustID
+            var theGeneratedProcessModel = GenerateProcessModel(theNonExistCustID);
+
+            _ = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+
+            var thePostAddProcessList = await ProcessService.GetAllProcesses();
+            Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count()); //should be equal since process failed to add non-existant customer
+        }
+
+        [TestMethod]
+        public async Task CreateNewProcessWithValidCustomer()
+        {
+            var thePreAddProcessList = await ProcessService.GetAllProcesses();
+
+            //_customerModel = await GenerateCustomerList();
+            var theCustomerList = await CustomerService.GetAllCustomers();
+
+            var theArbitraryCustID = 2389;
+            var theCustIDExists = false;
+
+            foreach(var theCustModel in theCustomerList)
+            { 
+                if(theCustModel.Id == theArbitraryCustID)
+                { 
+                    theCustIDExists = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(theCustIDExists, "Cust ID: " + theArbitraryCustID.ToString() + " doesn't exist.");
+            
+            var theGeneratedProcessModelWithCust = GenerateProcessModel(theArbitraryCustID);
+
+            var theReturnProcessModel = await ProcessService.CreateNewProcess(theGeneratedProcessModelWithCust);
+
+            var thePostAddProcessList = await ProcessService.GetAllProcesses();
+
+            Assert.AreEqual(theGeneratedProcessModelWithCust.Name, theReturnProcessModel.Name);
+            Assert.AreEqual(theArbitraryCustID, theReturnProcessModel.CustId);
+            Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
+        }
+
+        [TestMethod]
+        public async Task CreateNewRevOnNewProcessAndThenDeleteRev()
+        {
+            short theArbitraryEmpID = 941;
+
+            var theGeneratedProcessModel = GenerateProcessModel();
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+            var theNewAddedProcessID = thePostAddProcess.ProcessId;
+
+            var theGeneratedProcessRevisionModel = GenerateProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
+
+            _ = await ProcessService.CreateNewRevForExistingProcess(theGeneratedProcessRevisionModel);
+
+            var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
+            var theReturnedProcessRevisionModel = theReturnHydratedProcessModel.Revisions.ElementAt(0);
+
+            Assert.AreEqual("UNLOCKED", theReturnedProcessRevisionModel.RevStatusCd);
+            Assert.AreEqual(1, theReturnedProcessRevisionModel.ProcessRevId);
+            Assert.AreEqual(theArbitraryEmpID, theReturnedProcessRevisionModel.CreatedByEmp);
+            Assert.AreEqual(0, theReturnedProcessRevisionModel.StepSeqs.Count());
+
+            await ProcessService.DeleteProcessRev(theNewAddedProcessID, 1); //delete process rev
+
+            theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
+            Assert.AreEqual(0, theReturnHydratedProcessModel.Revisions.Count());
+        }
+
+        private ProcessModel GenerateProcessModel()
+        {
+            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
+        }
+        private ProcessModel GenerateProcessModel(int aCustID)
+        {
+            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            return new ProcessModel() { Name = TESTPREFIX + "-Process-Cust-" + theTimeStamp, CustId = aCustID };
+        }
+        private ProcessRevisionModel GenerateProcessRevisionModel(int aProcessID, short aEmpID)
+        {
+            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            return new ProcessRevisionModel()
+            {
+                ProcessId = aProcessID,
+                CreatedByEmp = aEmpID,
+                Comments = TESTPREFIX + "-comment-" + theTimeStamp
+            };
+        }
     }
 }

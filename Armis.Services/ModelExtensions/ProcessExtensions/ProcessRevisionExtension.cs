@@ -13,47 +13,57 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateCreated = aProcessRev.DateCreated,
-                DueDays = aProcessRev.DueDays,
+                DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusCd = aProcessRev.RevStatusCd,
-                TimeCreated = aProcessRev.TimeCreated
+                RevStatusCd = aProcessRev.RevStatusCd
             };
         }
 
         //TODO: Refactor everything that uses this to use the methods below
-        public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aProcessRev, IEnumerable<StepModel> aSteps)
+        public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aProcessRev, IEnumerable<StepSeqModel> aStepSeqs)
         {
             return new ProcessRevisionModel()
             {
                 CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateCreated = aProcessRev.DateCreated,
-                DueDays = aProcessRev.DueDays,
+                DateTimeCreated = aProcessRev.DateModified.Add(aProcessRev.TimeModified),
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
                 RevStatusCd = aProcessRev.RevStatusCd,
-                TimeCreated = aProcessRev.TimeCreated,
-                Steps = aSteps
+                StepSeqs = aStepSeqs
             };
         }
 
         public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aRev)
         {
-            var theRev = aRev.ToModel();
-            var theSteps = new List<StepModel>();
+            var theRevModel = aRev.ToModel();
+            var theStepSeqModels = new List<StepSeqModel>();
 
-            foreach (var aStep in aRev.ProcessStepSeq)
+            foreach (var stepSeq in aRev.ProcessStepSeq)
             {
-                var theStep = aStep.Step.ToModel(aStep.StepSeq, aStep.Operation.ToModel());
-                theSteps.Add(theStep);
+                var theStepSeq = stepSeq.ToModel(stepSeq.Step.ToModel(), stepSeq.Operation.ToModel());
+                theStepSeqModels.Add(theStepSeq);
             }
 
-            theRev.Steps = theSteps;
+            theRevModel.StepSeqs = theStepSeqModels;
 
-            return theRev;
+            return theRevModel;
+        }
+
+        public static ProcessRevision ToEntity(this ProcessRevisionModel aProcessRevModel)
+        {
+            return new ProcessRevision()
+            {
+                Comments = aProcessRevModel.Comments,
+                CreatedByEmp = aProcessRevModel.CreatedByEmp,
+                DateModified = aProcessRevModel.DateTimeCreated.Date,
+                ProcessId = aProcessRevModel.ProcessId,
+                ProcessRevId = aProcessRevModel.ProcessRevId,
+                RevStatusCd = aProcessRevModel.RevStatusCd,
+                TimeModified = aProcessRevModel.DateTimeCreated.TimeOfDay
+            };
         }
 
         public static ProcessRevision ToHydratedEntity(this ProcessRevisionModel aProcessRevisionModel, List<ProcessStepSeq> aStepSeq)
@@ -63,10 +73,9 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
                 ProcessId = aProcessRevisionModel.ProcessId,
                 ProcessRevId = aProcessRevisionModel.ProcessRevId,
                 CreatedByEmp = aProcessRevisionModel.CreatedByEmp,
-                DateCreated = aProcessRevisionModel.DateCreated,
-                TimeCreated = aProcessRevisionModel.TimeCreated,
+                DateModified = aProcessRevisionModel.DateTimeCreated.Date,
+                TimeModified = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
                 RevStatusCd = aProcessRevisionModel.RevStatusCd,
-                DueDays = aProcessRevisionModel.DueDays,
                 Comments = aProcessRevisionModel.Comments,
                 ProcessStepSeq = aStepSeq
             };

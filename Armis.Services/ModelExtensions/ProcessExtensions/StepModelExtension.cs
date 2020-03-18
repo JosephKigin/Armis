@@ -8,62 +8,55 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {
-        public static StepModel ToModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        public static StepModel ToModel(this Step aStep)
         {
             var result = new StepModel()
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategoryCd = aStep.StepCategoryCd,
+                StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
+                Inactive = aStep.Inactive,
                 StepId = aStep.StepId,
-                StepName = aStep.StepName,
-                Sequence = aSeq,
-                Operation = anOperation
+                StepName = aStep.StepName
             };
 
             return result;
+
         }
 
-        public static StepModel ToHydratedModel(this Step aStep, int aSeq = 0, OperationModel anOperation = null)
+        public static IEnumerable<StepModel> ToModels(this IEnumerable<Step> aStepEntities)
         {
-            var result = new StepModel()
-            {
-                Instructions = aStep.Instructions,
-                SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategoryCd = aStep.StepCategoryCd,
-                StepId = aStep.StepId,
-                StepName = aStep.StepName,
-                Sequence = aSeq,
-                Operation = anOperation
-            };
+            var result = new List<StepModel>();
 
-            var variableList = new List<StepVariableModel>();
-
-            foreach (var variableSeq in aStep.StepVarSeq)
+            foreach (var stepEntity in aStepEntities)
             {
-                variableList.Add(variableSeq.StepVariable.ToModel());
+                result.Add(stepEntity.ToModel());
             }
 
-            result.Variables = variableList;
-
             return result;
-
         }
 
         public static Step ToEntity(this StepModel aStepModel)
         {
-            var theStep = new Step()
+            return new Step()
             {
                 Instructions = aStepModel.Instructions,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
-                StepCategoryCd = aStepModel.StepCategoryCd,
+                StepCategoryCd = aStepModel.StepCategory.Code,
                 StepId = aStepModel.StepId,
                 StepName = aStepModel.StepName
             };
+        }
 
-            if (aStepModel.StepId != 0) { theStep.StepId = aStepModel.StepId; }
+        public static IEnumerable<Step> ToEntities(this IEnumerable<StepModel> aStepModels)
+        {
+            var theStepEntities = new List<Step>();
+            foreach (var aStep in aStepModels)
+            {
+                theStepEntities.Add(aStep.ToEntity());
+            }
 
-            return theStep;
+            return theStepEntities;
         }
     }
 }

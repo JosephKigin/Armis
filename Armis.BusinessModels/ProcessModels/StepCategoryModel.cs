@@ -8,6 +8,6 @@ namespace Armis.BusinessModels.ProcessModels
     {
         public string Code { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; } //TODO: Check up on this late, may or may not be needed.
+        public string Type { get; set; } //TODO: Check up on this later, may or may not be needed.
     }
 }

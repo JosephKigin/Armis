@@ -7,9 +7,17 @@
 <head>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 </head>
-<h1>Step Maintenance</h1>
+<div class="row">
+    <h1>Step Maintenance </h1>
+    @if (Model.HelpMessage != null)
+    {<partial name="/Pages/shared/partials/popuphelppartial.cshtml" class="text-right" model="Model.HelpMessage" />}
+</div>
 
 <body>
+
+    @*Pop up partial*@
+    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
+    
     <div class="row">
 
         <div class="col-lg-6">
@@ -20,38 +28,65 @@
                 <div class="form-group">
                     <label><b>Step Name: </b></label>
                     <input type="text" asp-for="StepName" class="form-control" />
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="StepName" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label><b>Instructions: </b></label>
                     <textarea class="form-control" asp-for="StepInstructions"></textarea>
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="StepInstructions" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label><b>Is sign-off required? </b></label>
-                    <select class="form-control" asp-items="Model.SignOffReqSelectList" asp-for="IsSignOffRequired">
+                    <select class="form-control" asp-for="IsSignOffRequired">
+                        @if (Model.Step != null)
+                        {
+                            @if (Model.Step.SignOffIsRequired == true)
+                            {
+                                <option></option>
+                                <option value="1" selected>Yes</option>
+                                <option value="2">No</option>
+                            }
+                            else if (Model.Step.SignOffIsRequired == false)
+                            {
+                                <option></option>
+                                <option value="1">Yes</option>
+                                <option value="2" selected>No</option>
+                            }
+
+                        }
+                        else
+                        {
+                            <option></option>
+                            <option value="1">Yes</option>
+                            <option value="2">No</option>
+                        }
                     </select>
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <span asp-validation-for="IsSignOffRequired" class="alert-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label><b>Step Category: </b></label>
-                    <input type="text" asp-for="StepCategory" class="form-control" />
-                    @*<span asp-validation-for="" class="alert-danger"></span>*@
+                    <select asp-for="StepCategoryCode" class="form-control">
+                        <option></option>
+                        @foreach (var stepCategory in Model.StepCategories)
+                        {
+                            <option value="@stepCategory.Code">
+                                @stepCategory.Name
+                            </option>
+                        }
+                    </select> 
+                    <span asp-validation-for="StepCategoryCode" class="alert-danger"></span>
                 </div>
                 <button type="submit" class="btn btn-outline-primary">Save</button>
             </form>
         </div>
 
         <div class="col-lg-6">
-            <form method="get" class="form-group">
-                <label><b>Search: </b></label><input type="text" asp-for="StepSearch" class="form-control" />
-                <button type="submit" class="btn btn-outline-secondary">Search</button>
-            </form>
+            <input id="inputStepSearchFilter" type="text" class="form-control my-1" placeholder="Search..." onkeyup="searchFilter()" />
 
-            <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+            <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow-y:scroll;">
                 @foreach (var step in Model.AllSteps)
                 {
                     <li class="list-group-item" id="@step.StepId">
@@ -59,23 +94,9 @@
                         <h5>@step.StepId @step.StepName</h5>
                         @if (step.SignOffIsRequired == true)
                         {<p class="text-danger">Sign-Off Required</p>}
-                        <b>Instructions: </b>@step.Instructions
-                        <div class="row">
-                            @foreach (var variable in step.Variables)
-                            {
-                                <div class="card col-lg-4">
-                                    <p>@variable.Template.Name</p>
-                                    @if (variable.UnitOfMeasure != null)
-                                    {<p>@variable.UnitOfMeasure.Description</p>}
-                                    @if (variable.Min != null && variable.Max != null)
-                                    {<p>@variable.Min - @variable.Max</p>}
-                                </div>
-
-
-                            }
-                        </div>
-
-                        <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-edit"></i></a>
+                        <b>Instructions: </b>
+                        <p class="text-break">@step.Instructions</p>
+                        <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy"></i></a>
                     </li>
                 }
             </ul>
@@ -83,17 +104,22 @@
     </div>
 </body>
 
-@*<script>
-        var varTempModal = document.getElementById("variableTemplateModal");
-        var btnOpenVarTempModal = document.getElementById("btnOpenVariableTemplateModal");
-        var btnCloseVarTempModal = document.getElementById("btnCloseVariableTemplateModal");
-        var slctVarTemp = document.getElementById("slctVariableTemplate");
+<script>
+    function searchFilter() {
+        var filter = document.getElementById("inputStepSearchFilter").value.toLowerCase();
+        var listItemsToFilter = document.getElementById("listAllSteps").childNodes;
 
-        btnOpenVarTempModal.onclick = function () {
-            varTempModal.style.display = "block";
+        for (var i = 0; i < listItemsToFilter.length; i++) {
+            if (listItemsToFilter[i].id != undefined) {
+                var h5 = listItemsToFilter[i].getElementsByTagName("h5")[0].innerHTML.toLowerCase();
+                if (h5.includes(filter)) {
+                    
+                    listItemsToFilter[i].style.display = "block";
+                }
+                else {
+                    listItemsToFilter[i].style.display = "none";
+                }
+            }
         }
-
-        btnCloseVarTempModal.onclick = function () {
-            varTempModal.style.display = "none";
-        }
-    </script>*@
+    }
+</script>

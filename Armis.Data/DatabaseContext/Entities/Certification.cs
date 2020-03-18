@@ -16,6 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal? ChargeAmt { get; set; }
         public string Stamp { get; set; }
         public int SpecId { get; set; }
+        public short SpecRevId { get; set; }
         public string QualStdCd { get; set; }
         public string Description { get; set; }
 

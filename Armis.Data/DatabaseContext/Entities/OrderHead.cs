@@ -11,7 +11,7 @@ namespace Armis.Data.DatabaseContext.Entities
             Memo = new HashSet<Memo>();
             OrderDetail = new HashSet<OrderDetail>();
             OrderExpediteReworkOrderNavigation = new HashSet<OrderExpedite>();
-            PartHist = new HashSet<PartHist>();
+            PartTran = new HashSet<PartTran>();
             PlateResult = new HashSet<PlateResult>();
         }
 
@@ -40,13 +40,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public string QualStdCd { get; set; }
         public DateTime? LastCompleteRemSentDt { get; set; }
         public bool? IsMaskingNotify { get; set; }
-        public string HardnessCd { get; set; }
         public string PackagingCd { get; set; }
-        public int? SpecId { get; set; }
+        public int? SpecProcessAssignId { get; set; }
         public string ShipViaCd { get; set; }
-        public int? MaterialAlloyId { get; set; }
-        public int? ProcessId { get; set; }
-        public int? ProcessRevId { get; set; }
         public bool? IsPriceApproval { get; set; }
         public bool? IsReturnAsIs { get; set; }
         public string Raicomments { get; set; }
@@ -78,23 +74,20 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Customer Cust { get; set; }
         public virtual Status ExpediteStatusNavigation { get; set; }
         public virtual HandlingCharge HandlingChargeCdNavigation { get; set; }
-        public virtual Hardness HardnessCdNavigation { get; set; }
         public virtual Employee JobHoldByEmpNavigation { get; set; }
         public virtual Employee JobHoldToEmpNavigation { get; set; }
-        public virtual MaterialAlloy MaterialAlloy { get; set; }
         public virtual MiscCharge MiscChargeCdNavigation { get; set; }
         public virtual PackageCode PackagingCdNavigation { get; set; }
-        public virtual ProcessRevision Process { get; set; }
         public virtual QualityStandard QualStdCdNavigation { get; set; }
         public virtual ShipCharge ShipChargeCdNavigation { get; set; }
         public virtual ShipVia ShipViaCdNavigation { get; set; }
-        public virtual Specification Spec { get; set; }
+        public virtual SpecProcessAssign SpecProcessAssign { get; set; }
         public virtual OrderExpedite OrderExpediteOrder { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
         public virtual ICollection<OrderExpedite> OrderExpediteReworkOrderNavigation { get; set; }
-        public virtual ICollection<PartHist> PartHist { get; set; }
+        public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
     }
 }

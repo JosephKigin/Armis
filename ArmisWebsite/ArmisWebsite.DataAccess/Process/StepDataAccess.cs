@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.ProcessModels;
 using ArmisWebsite.DataAccess.Process.Interfaces;
+using ArmisWebsite.DataAccess;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -20,95 +21,34 @@ namespace ArmisWebsite.DataAccess.Process
             Config = aConfig;
         }
 
-        public async Task<int> PostNewStep(StepModel aStepModel)
+        public async Task<StepModel> PostNewStep(StepModel aStepModel)
         {
-            using(var client = new HttpClient())
-            {
-                try
-                {
-                    StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps", data);
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<int>(responseString);
-
-                    return result;
-                }
-                catch(Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
-            }
+            return await DataAccessGeneric.HttpPostRequest<StepModel>(Config["APIAddress"] + "api/Steps/PostStep/", aStepModel);
         }
 
-        public async Task<int> AddVariablesToStep(StepModel aStepModel)
+        public async Task<IEnumerable<StepModel>> GetAllSteps()
         {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    StringContent data = new StringContent(JsonSerializer.Serialize(aStepModel), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(Config["APIAddress"] + "api/Steps/PostVariablesToStep", data);
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<int>(responseString);
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-
-                    throw new Exception("Could not add variables to step. " + ex.Message); //TODO: Error handle gooder...
-                }
-            }
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<StepModel>>(Config["APIAddress"] + "api/Steps/GetAllSteps");
         }
 
-        public async Task<IEnumerable<StepModel>> GetAllHydratedSteps()
+        public async Task<IEnumerable<StepCategoryModel>> GetAllStepCategoryies()
         {
-            using(var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps");
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<StepCategoryModel>>(Config["APIAddress"] + "api/Steps/GetAllStepCategories");
+        }
 
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var resultingModels = JsonSerializer.Deserialize<List<StepModel>>(responseString);
-                    var result = resultingModels.OrderBy(i => i.StepId).ToList();
-                    return result;
-                }
-                catch (Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
-            }
+        public async Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode)
+        {
+            return await DataAccessGeneric.HttpGetRequest<StepCategoryModel>(Config["APIAddress"] + "api/Steps/GetStepCategoryByCode/" + aStepCategoryCode);
         }
 
         public async Task<StepModel> GetStepById(int aStepId)
         {
-            using(var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepId);
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var resultingModel = JsonSerializer.Deserialize<StepModel>(responseString);
-
-                    return resultingModel;
-                }
-                catch(Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
-            }
+            return await DataAccessGeneric.HttpGetRequest<StepModel>(Config["APIAddress"] + "api/Steps/GetStepById/" + aStepId);
         }
 
         public async Task<List<StepModel>> GetStepByName(string aStepName)
         {
-            using (var client = new HttpClient())
-            {
-                try
-                {
-                    var response = await client.GetAsync(Config["APIAddress"] + "api/Steps/" + aStepName);
-
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var resultingModel = JsonSerializer.Deserialize<List<StepModel>>(responseString);
-
-                    return resultingModel;
-                }
-                catch (Exception ex) { throw new Exception(ex.Message); } //TOODO: Error handle better
-            }
+            return await DataAccessGeneric.HttpGetRequest<List<StepModel>>(Config["APIAddress"] + "api/Steps/GetStepByName/" + aStepName);
         }
     }
 }
