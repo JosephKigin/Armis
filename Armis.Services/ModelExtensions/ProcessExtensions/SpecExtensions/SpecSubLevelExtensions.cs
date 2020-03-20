@@ -16,7 +16,8 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
                 InternalRev = aSpecSubLevel.SpecRevId,
                 Name = aSpecSubLevel.Name,
                 IsRequired = aSpecSubLevel.IsRequired,
-                LevelSeq = aSpecSubLevel.SubLevelSeqId
+                LevelSeq = aSpecSubLevel.SubLevelSeqId,
+                DefaultChoice = aSpecSubLevel.DefaultChoice
             };
         }
 

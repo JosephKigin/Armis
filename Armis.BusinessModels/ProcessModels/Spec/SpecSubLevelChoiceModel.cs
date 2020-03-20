@@ -8,6 +8,5 @@ namespace Armis.BusinessModels.ProcessModels.Spec
     {
         public string Name { get; set; }
         public int ChoiceSeq { get; set; }
-        public bool IsDefault { get; set; }
     }
 }

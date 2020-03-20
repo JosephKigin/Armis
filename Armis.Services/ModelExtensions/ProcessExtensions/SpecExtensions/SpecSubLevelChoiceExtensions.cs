@@ -13,8 +13,7 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
             return new SpecSubLevelChoiceModel()
             {
                 Name = aSpecSubLevelChoice.Description,
-                ChoiceSeq = aSpecSubLevelChoice.ChoiceSeqId,
-                IsDefault = aSpecSubLevelChoice.IsDefault
+                ChoiceSeq = aSpecSubLevelChoice.ChoiceSeqId
             };
         }
     }
