@@ -8,17 +8,16 @@ namespace Armis.Data.DatabaseContext.Entities
         public Part()
         {
             OrderDetail = new HashSet<OrderDetail>();
-            PartProcessAssign = new HashSet<PartProcessAssign>();
-            PartRevNavigation = new HashSet<PartRev>();
+            PartSpecProcessAssign = new HashSet<PartSpecProcessAssign>();
         }
 
         public int PartId { get; set; }
-        public string CustPartNum { get; set; }
+        public short PartRevId { get; set; }
+        public string PartName { get; set; }
         public string Description { get; set; }
-        public int CustId { get; set; }
-        public bool? Inactive { get; set; }
+        public bool Inactive { get; set; }
         public int? SamplePlanId { get; set; }
-        public int? CurrentRev { get; set; }
+        public string ExternalRev { get; set; }
         public string Dimensions { get; set; }
         public string SurfaceArea { get; set; }
         public string SauoM { get; set; }
@@ -29,16 +28,12 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? Alloy { get; set; }
         public int? SeriesId { get; set; }
         public decimal? Weight { get; set; }
-        public string ProcessComments { get; set; }
 
         public virtual MaterialAlloy AlloyNavigation { get; set; }
-        public virtual Customer Cust { get; set; }
-        public virtual PartRev PartRev { get; set; }
         public virtual SamplePlanHead SamplePlan { get; set; }
         public virtual MaterialSeries Series { get; set; }
         public virtual Department StandardDeptNavigation { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
-        public virtual ICollection<PartProcessAssign> PartProcessAssign { get; set; }
-        public virtual ICollection<PartRev> PartRevNavigation { get; set; }
+        public virtual ICollection<PartSpecProcessAssign> PartSpecProcessAssign { get; set; }
     }
 }

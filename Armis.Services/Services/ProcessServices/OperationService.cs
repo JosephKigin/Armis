@@ -13,7 +13,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 {
     public class OperationService : IOperationService
     {
-        private readonly ARMISContext context;
+        private ARMISContext context;
 
         public OperationService(ARMISContext aContext)
         {

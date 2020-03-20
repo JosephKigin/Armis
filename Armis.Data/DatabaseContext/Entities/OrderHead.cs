@@ -41,7 +41,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public DateTime? LastCompleteRemSentDt { get; set; }
         public bool? IsMaskingNotify { get; set; }
         public string PackagingCd { get; set; }
-        public int? SpecProcessAssignId { get; set; }
+        public int? SpecId { get; set; }
+        public short? SpecRevId { get; set; }
+        public short? SpecAssignId { get; set; }
         public string ShipViaCd { get; set; }
         public bool? IsPriceApproval { get; set; }
         public bool? IsReturnAsIs { get; set; }
@@ -81,7 +83,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual QualityStandard QualStdCdNavigation { get; set; }
         public virtual ShipCharge ShipChargeCdNavigation { get; set; }
         public virtual ShipVia ShipViaCdNavigation { get; set; }
-        public virtual SpecProcessAssign SpecProcessAssign { get; set; }
+        public virtual SpecProcessAssign Spec { get; set; }
         public virtual OrderExpedite OrderExpediteOrder { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }

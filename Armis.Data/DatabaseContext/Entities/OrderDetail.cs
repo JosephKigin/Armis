@@ -14,6 +14,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte OrderLine { get; set; }
         public int? Quantity { get; set; }
         public int PartId { get; set; }
+        public short? PartRevId { get; set; }
         public decimal? Poprice { get; set; }
         public decimal? TotalPrice { get; set; }
         public decimal? AssignedPrice { get; set; }

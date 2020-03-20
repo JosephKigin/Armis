@@ -13,6 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
             SpecProcessAssignSpecChoice3 = new HashSet<SpecProcessAssign>();
             SpecProcessAssignSpecChoice4 = new HashSet<SpecProcessAssign>();
             SpecProcessAssignSpecChoiceNavigation = new HashSet<SpecProcessAssign>();
+            SpecSubLevel = new HashSet<SpecSubLevel>();
         }
 
         public int SpecId { get; set; }
@@ -20,7 +21,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte SubLevelSeqId { get; set; }
         public byte ChoiceSeqId { get; set; }
         public string Description { get; set; }
-        public bool IsDefault { get; set; }
 
         public virtual SpecSubLevel S { get; set; }
         public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice { get; set; }
@@ -29,5 +29,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice3 { get; set; }
         public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice4 { get; set; }
         public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoiceNavigation { get; set; }
+        public virtual ICollection<SpecSubLevel> SpecSubLevel { get; set; }
     }
 }

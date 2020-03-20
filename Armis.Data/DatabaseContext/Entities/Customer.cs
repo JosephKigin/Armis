@@ -15,7 +15,6 @@ namespace Armis.Data.DatabaseContext.Entities
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
             OprThickPrice = new HashSet<OprThickPrice>();
             OrderHead = new HashSet<OrderHead>();
-            Part = new HashSet<Part>();
             Process = new HashSet<Process>();
             SamplePlanHead = new HashSet<SamplePlanHead>();
             ShipAccountNavigation = new HashSet<ShipAccount>();
@@ -80,7 +79,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
-        public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<Process> Process { get; set; }
         public virtual ICollection<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual ICollection<ShipAccount> ShipAccountNavigation { get; set; }
