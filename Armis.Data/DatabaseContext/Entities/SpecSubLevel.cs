@@ -15,8 +15,10 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte SubLevelSeqId { get; set; }
         public string Name { get; set; }
         public bool IsRequired { get; set; }
+        public byte? DefaultChoice { get; set; }
 
         public virtual Specification Spec { get; set; }
+        public virtual SpecChoice SpecChoiceNavigation { get; set; }
         public virtual ICollection<SpecChoice> SpecChoice { get; set; }
     }
 }

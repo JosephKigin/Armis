@@ -35,11 +35,13 @@ namespace ArmisWebsite
 
 
             services.AddRazorPages();
+            services.AddScoped<IIndexDataAccess, IndexDataAccess>();
             services.AddScoped<IStepDataAccess, StepDataAccess>();
             services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
             services.AddScoped<IOperationDataAccess, OperationDataAccess>();
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
+            services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<IPdfGenerator, PdfGenerator>();
         }
 

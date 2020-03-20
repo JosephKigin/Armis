@@ -1,0 +1,89 @@
+﻿@page
+@model ArmisWebsite.Pages.ProcessMaintenance.SpecificationCreationModel
+@{
+    ViewData["Title"] = "SpecificationCreation";
+}
+
+<h1>Specification Creation</h1>
+
+<div class="form-group">
+    <label>Spec Name: </label>
+    <input type="text" />
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <label>Sublevel Name:</label>
+            <div class="input-group my-1">
+                <input type="text" class="form-control" />
+            </div>
+
+            <label>Choice Name:</label><i id="1" class="fa fa-plus-circle" style="color:green" onclick="AddChoiceInput(this.id)" ></i>
+            <div id="choiceInputPlaceholder1" class="card">
+
+            </div>
+            <input id="choiceCount1" type="hidden" value="0"/>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+
+        </div>
+    </div>
+</div>
+
+<form id="mainForm" method="post">
+    <button class="btn btn-lg btn-success">Submit</button>
+</form>
+
+<script>
+    function AddChoiceInput(cardNumber) {
+        var count = document.getElementById("choiceCount" + cardNumber).value++;
+
+        if (count > 0) {
+            console.log(document.getElementById("TEST" + (count - 1)).value);
+        }
+
+        //var newChoiceInput = '<input id="TEST' + count +'" type="text" class="form-control my-1" name="ChoiceNames' + cardNumber + '[' + (count) + ']" form="mainForm" />';
+
+        
+
+        var newChoiceInput = document.createElement("input");
+        newChoiceInput.id = "TEST" + count;
+        newChoiceInput.type = 'text';
+        newChoiceInput.name = 'ChoiceNames' + cardNumber + '[' + (count) + ']';
+        newChoiceInput.className = 'form-control my-1';
+        newChoiceInput.form = 'mainForm';
+
+        document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newChoiceInput);
+        //document.getElementById("choiceInputPlaceholder" + cardNumber).innerHTML += newChoiceInput;
+    }
+</script>
