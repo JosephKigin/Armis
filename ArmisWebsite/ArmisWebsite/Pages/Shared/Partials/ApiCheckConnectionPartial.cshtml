@@ -1,0 +1,9 @@
+﻿@model ArmisWebsite.Pages.Shared.Partials.ApiCheckConnectionPartialModel
+
+<p>
+    API Connection Status:
+    @if (Model.CanConnectToApi)
+    {<i class="fa fa-circle" style="color:green"></i>}
+    else
+    {<i class="fa fa-circle" style="color:red"></i>}
+</p>

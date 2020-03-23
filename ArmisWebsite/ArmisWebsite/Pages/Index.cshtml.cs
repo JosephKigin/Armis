@@ -11,18 +11,8 @@ namespace ArmisWebsite.Pages
 {
     public class IndexModel : PageModel
     {
-        public IIndexDataAccess IndexDataAccess { get; set; }
-        public bool CanConnectToApi { get; set; }
-
-        public IndexModel(ILogger<IndexModel> logger, IIndexDataAccess anIndexDataAccess)
-        {
-            IndexDataAccess = anIndexDataAccess;
-        }
-
         public async Task<IActionResult> OnGet()
         {
-            CanConnectToApi = await IndexDataAccess.CheckApiConntection();
-
             return Page();
         }
     }

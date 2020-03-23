@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
     public interface ISpecDataAccess
     {
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecs();
+        Task<int> CreateNewSpec(SpecModel aSpecModel);
     }
 }

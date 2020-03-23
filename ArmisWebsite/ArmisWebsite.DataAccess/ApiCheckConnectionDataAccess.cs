@@ -9,11 +9,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.DataAccess.Process
 {
-    public class IndexDataAccess : IIndexDataAccess
+    public class ApiCheckConnectionDataAccess : IApiCheckConnectionDataAccess
     {
         private readonly IConfiguration Config;
 
-        public IndexDataAccess(IConfiguration aConfig)
+        public ApiCheckConnectionDataAccess(IConfiguration aConfig)
         {
             Config = aConfig;
         }

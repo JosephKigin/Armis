@@ -45,5 +45,20 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
 
             return resultModelList;
         }
+
+        public static Specification ToEntity(this SpecModel aSpecModel, int aSpecId, short aSpecRevId)
+        {
+            return new Specification()
+            {
+                SpecId = aSpecId,
+                SpecRevId = aSpecRevId,
+                SpecCode = aSpecModel.Code,
+                Description = aSpecModel.Description,
+                ExternalRev = aSpecModel.ExternalRev,
+                SamplePlan = null, //TODO: Figure out w/ sample plan
+                IsPartSpecificPlan = false, //TODO: See above
+                NadCapSamplePlan = null //TODO: See Above
+            };
+        }
     }
 }

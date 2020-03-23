@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ArmisWebsite.DataAccess.Process.Interfaces
 {
-    public interface IIndexDataAccess
+    public interface IApiCheckConnectionDataAccess
     {
         Task<bool> CheckApiConntection();
     }

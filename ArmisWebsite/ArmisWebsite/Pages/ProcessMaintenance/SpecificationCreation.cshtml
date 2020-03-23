@@ -7,83 +7,112 @@
 <h1>Specification Creation</h1>
 
 <div class="form-group">
-    <label>Spec Name: </label>
-    <input type="text" />
-</div>
-
-<div class="row">
-    <div class="col-lg-4">
-        <div class="card">
-            <label>Sublevel Name:</label>
-            <div class="input-group my-1">
-                <input type="text" class="form-control" />
-            </div>
-
-            <label>Choice Name:</label><i id="1" class="fa fa-plus-circle" style="color:green" onclick="AddChoiceInput(this.id)" ></i>
-            <div id="choiceInputPlaceholder1" class="card">
-
-            </div>
-            <input id="choiceCount1" type="hidden" value="0"/>
-        </div>
+    <div class="form-group row">
+        <label class="col-lg-2">Spec Code:</label>
+        <input type="text" class="form-control col-lg-6" form="mainForm" asp-for="SpecCode" />
+        <label class="col-lg-2">External Revision: </label>
+        <input type="text" class="form-control col-lg-2" form="mainForm" asp-for="ExternalRev" />
     </div>
-
-    <div class="col-lg-4">
-        <div class="card">
-
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card">
-
-        </div>
+    <div class="form-group row">
+        <label class="col-lg-2">Spec Description: </label>
+        <textarea type="text" class="form-control col-lg-10" form="mainForm" asp-for="SpecDescription"></textarea>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-lg-4">
-        <div class="card">
-
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card">
-
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card">
-
-        </div>
-    </div>
-</div>
-
 <form id="mainForm" method="post">
-    <button class="btn btn-lg btn-success">Submit</button>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card p-3">
+                <label><b>Sublevel Name</b></label>
+                <input type="text" class="form-control" asp-for="SubLevelName1" onkeydown="return event.key != 'Enter';" />
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq1" /></p>
+                <label><b>Choice Name(s)</b></label>
+
+                <div id="choiceInputPlaceholder1" class="card p-1">
+
+                </div>
+                <button type="button" id="1" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                <input id="choiceCount1" type="hidden" value="0" />
+                <input id="defaultChoice1" type="text" asp-for="DefaultChoice1" />
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+
+            </div>
+        </div>
+    </div>
+
+
+    <button class="btn btn-lg btn-success my-2">Submit</button>
 </form>
 
 <script>
     function AddChoiceInput(cardNumber) {
-        var count = document.getElementById("choiceCount" + cardNumber).value++;
+        var count = document.getElementById("choiceCount" + cardNumber).value;
+        var lastInputAdded = document.getElementById('inputChoice' + cardNumber + '-' + count);
 
-        if (count > 0) {
-            console.log(document.getElementById("TEST" + (count - 1)).value);
+        //lastInputAdded.value won't get checked if the lastInpuitAdded is undefined.
+        if (lastInputAdded == undefined || lastInputAdded.value != "") {
+            count = document.getElementById("choiceCount" + cardNumber).value++;
+            var newDiv = document.createElement("div");
+            newDiv.className = "form-inline";
+
+            var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + (count + 1) + '" type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeydown="return event.key != `Enter`;"/>';
+            newDiv.innerHTML += newChoiceInput;
+
+            var newCheckBox = '<input type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + count + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')"/>';
+            newDiv.innerHTML += newCheckBox;
+
+            document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newDiv);
+            document.getElementById('inputChoice' + cardNumber + '-' + (count + 1)).focus();
+        }
+        else {
+            document.getElementById('inputChoice' + cardNumber + '-' + (count)).focus();
         }
 
-        //var newChoiceInput = '<input id="TEST' + count +'" type="text" class="form-control my-1" name="ChoiceNames' + cardNumber + '[' + (count) + ']" form="mainForm" />';
+    }
 
-        
+    function ToggleCheckBoxes(chkBox, cardNumber) {
+        var checkBoxes = document.getElementsByName(chkBox.name);
+        for (var i = 0; i < checkBoxes.length; i++) {
+            if (checkBoxes[i] != chkBox) {
+                checkBoxes[i].checked = false;
+            }
+        }
+        if (chkBox.checked) {
+            document.getElementById("defaultChoice" + cardNumber).value = chkBox.value;
+        }
+        else {
+            document.getElementById("defaultChoice" + cardNumber).value = '';
+        }
+        //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
 
-        var newChoiceInput = document.createElement("input");
-        newChoiceInput.id = "TEST" + count;
-        newChoiceInput.type = 'text';
-        newChoiceInput.name = 'ChoiceNames' + cardNumber + '[' + (count) + ']';
-        newChoiceInput.className = 'form-control my-1';
-        newChoiceInput.form = 'mainForm';
-
-        document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newChoiceInput);
-        //document.getElementById("choiceInputPlaceholder" + cardNumber).innerHTML += newChoiceInput;
     }
 </script>

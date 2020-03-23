@@ -50,5 +50,20 @@ namespace Armis.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateNewSpec(SpecModel aSpecModel)
+        {
+            try
+            {
+                var data = await SpecService.CreateNewSpec(aSpecModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
