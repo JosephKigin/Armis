@@ -12,7 +12,8 @@
                 @foreach (var spec in Model.AllSpecs)
                 {
                     <li class="list-group-item">
-                        <a data-toggle="collapse" href="#specDetails-@spec.Id-@spec.InternalRev" >@spec.Description [@spec.SubLevels.Count()]</a>
+                        <a data-toggle="collapse" href="#specDetails-@spec.Id-@spec.InternalRev">@spec.Description [@spec.SubLevels.Count()]</a>
+                        <a class"btn" style="float:right" asp-page="./SpecificationCreation" asp-route-aSpecId="@spec.Id"><i class="fa fa-edit"></i></a>
                     </li>
                 }
             </ul>

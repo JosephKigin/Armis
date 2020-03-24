@@ -5,3 +5,5 @@ In method variables start with "the". (theProcess)
 Entity objects have the word "entity" in the name. (processEntity)
 
 Model objects have the word "model" in the name. (processModel)
+
+Coop Blue: #008DC2

@@ -11,5 +11,6 @@ namespace Armis.DataLogic.Services.ProcessServices.Interfaces
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecs();
         Task<IEnumerable<SpecSubLevelModel>> GetSpecSubLevels(int aSpecId, short aSpecRevId);
         Task<int> CreateNewSpec(SpecModel aSpecModel);
+        Task<SpecModel> GetCurrentRevForSpec(int aSpecId);
     }
 }

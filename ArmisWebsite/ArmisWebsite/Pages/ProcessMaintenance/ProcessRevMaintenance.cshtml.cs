@@ -88,7 +88,7 @@ namespace ArmisWebsite
         {
             try
             {
-                var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
+               var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
                if (SelectedProcessId != 0) { CurrentProcessId = SelectedProcessId; }
                if (CurrentProcessId != 0) { aProcessId = CurrentProcessId; }
                 

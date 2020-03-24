@@ -38,10 +38,10 @@
         <div class="container">
             &copy; @DateTime.Now.ToString("yyyy") - ArmisWebsite - <a asp-area="" asp-page="/Privacy">Privacy</a>
             <b class="float-right">@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") </b>
-            @await Html.PartialAsync("~/pages/Shared/partials/ApiCheckConnectionPartial.cshtml",
-             new ApiCheckConnectionPartialModel())
+            @*@await Html.PartialAsync("~/pages/Shared/partials/ApiCheckConnectionPartial.cshtml",
+         new ApiCheckConnectionPartialModel())
 
-            @*<partial name="/Pages/shared/partials/ApiCheckConnectionPartial.cshtml" />*@
+        <partial name="/Pages/shared/partials/ApiCheckConnectionPartial.cshtml" />*@
         </div>
     </footer>
 

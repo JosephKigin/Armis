@@ -44,6 +44,17 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entities.ToHydratedModels();
         }
 
+        public async Task<SpecModel> GetCurrentRevForSpec(int aSpecId)
+        {
+            var entity = await context.Specification.Where(i => i.SpecId == aSpecId).OrderByDescending(i => i.SpecRevId)
+                                                        .Include(i => i.SpecSubLevel)
+                                                            .ThenInclude(i => i.SpecChoice)
+                                                            .FirstOrDefaultAsync();
+            if(entity == null) { return null; }
+
+            return entity.ToHydratedModel();
+        }                       
+
         public async Task<int> CreateNewSpec(SpecModel aSpecModel)
         {
             var theNewSpecId = await context.Specification.MaxAsync(i => i.SpecId) + 1;
