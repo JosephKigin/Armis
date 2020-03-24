@@ -68,7 +68,7 @@ namespace Armis.Test
         }
 
         [TestMethod]
-        public async Task CreateNewProcessNoCust()
+        public async Task CreateNewProcess()
         {
             var thePreAddProcessList = await ProcessService.GetAllProcesses();
 
@@ -78,56 +78,6 @@ namespace Armis.Test
 
             Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
             Assert.AreEqual(theGeneratedProcessModel.Name, thePostAddProcess.Name);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(DbUpdateException))]
-        public async Task CreateNewProcessWithBADCustID()
-        {
-            var thePreAddProcessList = await ProcessService.GetAllProcesses();
-
-            var theCustomerList = await CustomerService.GetAllCustomers();
-
-            //should throw exception (FK violation) since Customer ID doesn't exist
-            var theNonExistCustID = theCustomerList.Count() + 1; //generate invalid CustID
-            var theGeneratedProcessModel = GenerateProcessModel(theNonExistCustID);
-
-            _ = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
-
-            var thePostAddProcessList = await ProcessService.GetAllProcesses();
-            Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count()); //should be equal since process failed to add non-existant customer
-        }
-
-        [TestMethod]
-        public async Task CreateNewProcessWithValidCustomer()
-        {
-            var thePreAddProcessList = await ProcessService.GetAllProcesses();
-
-            //_customerModel = await GenerateCustomerList();
-            var theCustomerList = await CustomerService.GetAllCustomers();
-
-            var theArbitraryCustID = 2389;
-            var theCustIDExists = false;
-
-            foreach(var theCustModel in theCustomerList)
-            { 
-                if(theCustModel.Id == theArbitraryCustID)
-                { 
-                    theCustIDExists = true;
-                    break;
-                }
-            }
-            Assert.IsTrue(theCustIDExists, "Cust ID: " + theArbitraryCustID.ToString() + " doesn't exist.");
-            
-            var theGeneratedProcessModelWithCust = GenerateProcessModel(theArbitraryCustID);
-
-            var theReturnProcessModel = await ProcessService.CreateNewProcess(theGeneratedProcessModelWithCust);
-
-            var thePostAddProcessList = await ProcessService.GetAllProcesses();
-
-            Assert.AreEqual(theGeneratedProcessModelWithCust.Name, theReturnProcessModel.Name);
-            Assert.AreEqual(theArbitraryCustID, theReturnProcessModel.CustId);
-            Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
         }
 
         [TestMethod]

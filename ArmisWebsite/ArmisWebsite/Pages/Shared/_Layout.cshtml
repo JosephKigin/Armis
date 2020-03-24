@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] - ArmisWebsite</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    @using ArmisWebsite.Pages.Shared.Partials
 </head>
 <body>
     <header>
@@ -35,8 +36,12 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - ArmisWebsite - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; @DateTime.Now.ToString("yyyy") - ArmisWebsite - <a asp-area="" asp-page="/Privacy">Privacy</a>
             <b class="float-right">@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") </b>
+            @await Html.PartialAsync("~/pages/Shared/partials/ApiCheckConnectionPartial.cshtml",
+             new ApiCheckConnectionPartialModel())
+
+            @*<partial name="/Pages/shared/partials/ApiCheckConnectionPartial.cshtml" />*@
         </div>
     </footer>
 

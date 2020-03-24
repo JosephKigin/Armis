@@ -7,6 +7,6 @@ namespace Armis.BusinessModels.ProcessModels.Spec
     public class SpecSubLevelChoiceModel
     {
         public string Name { get; set; }
-        public int ChoiceSeq { get; set; }
+        public byte ChoiceSeq { get; set; }
     }
 }

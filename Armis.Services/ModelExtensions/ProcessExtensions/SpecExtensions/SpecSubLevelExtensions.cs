@@ -12,8 +12,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
         {
             return new SpecSubLevelModel()
             {
-                SpecId = aSpecSubLevel.SpecId,
-                InternalRev = aSpecSubLevel.SpecRevId,
                 Name = aSpecSubLevel.Name,
                 IsRequired = aSpecSubLevel.IsRequired,
                 LevelSeq = aSpecSubLevel.SubLevelSeqId,
@@ -46,6 +44,31 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
             }
 
             return resultModels;
+        }
+
+        public static SpecSubLevel ToEntity(this SpecSubLevelModel aSpecSubLevelModel, int aSpecId, short aSpecRevId)
+        {
+            return new SpecSubLevel()
+            {
+                SpecId = aSpecId,
+                SpecRevId = aSpecRevId,
+                SubLevelSeqId = aSpecSubLevelModel.LevelSeq,
+                Name = aSpecSubLevelModel.Name,
+                IsRequired = aSpecSubLevelModel.IsRequired,
+                DefaultChoice = null
+            };
+        }
+
+        public static IEnumerable<SpecSubLevel> ToEntities(this IEnumerable<SpecSubLevelModel> aSpecSubLevelModels, int aSpecId, short aSpecRevId)
+        {
+            var resultEntities = new List<SpecSubLevel>();
+
+            foreach (var specSubLevelModel in aSpecSubLevelModels)
+            {
+                resultEntities.Add(specSubLevelModel.ToEntity(aSpecId, aSpecRevId));
+            }
+
+            return resultEntities;
         }
     }
 }

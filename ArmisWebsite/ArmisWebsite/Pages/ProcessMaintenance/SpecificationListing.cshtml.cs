@@ -33,6 +33,8 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         {
             await SetUpProperties();
 
+            var TEST = AppSettings.Current.AppConnection;
+
             return Page();
         }
 
