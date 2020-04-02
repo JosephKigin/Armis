@@ -22,9 +22,6 @@
                 {<b>@Model.CurrentRevId </b>}
                 <span class="alert-success"> Unlocked </span>
             </h3>
-
-
-
         }
         else if (Model.CurrentRev.RevStatusCd == "LOCKED")
         {
@@ -61,16 +58,16 @@
                                 <select class="list-group" size="12" asp-for="CurrentProcessId">
                                     @foreach (var process in Model.AllProcesses)
                                     {
-                                        <option value="@process.ProcessId" class="list-group-item" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
+                                        <option value="@process.ProcessId" class="list-group-item fa" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
                                             @process.ProcessId: @process.Name -
                                             Rev:
                                             @if (process.Revisions != null && process.Revisions.Any())
                                             {
                                                 @process.Revisions.Last().ProcessRevId
                                                 if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
-                                                {
-                                                    @process.Revisions.Last().RevStatusCd
-                                                }
+                                                { <p>&#xf09c;</p> }
+                                                else
+                                                { <p>&#xf023;</p>}
                                             }
                                             else
                                             {

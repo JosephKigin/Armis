@@ -36,7 +36,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? IsJobHold { get; set; }
         public short? JobHoldToEmp { get; set; }
         public short? JobHoldByEmp { get; set; }
-        public string JobHoldComments { get; set; }
         public string QualStdCd { get; set; }
         public DateTime? LastCompleteRemSentDt { get; set; }
         public bool? IsMaskingNotify { get; set; }
@@ -47,28 +46,15 @@ namespace Armis.Data.DatabaseContext.Entities
         public string ShipViaCd { get; set; }
         public bool? IsPriceApproval { get; set; }
         public bool? IsReturnAsIs { get; set; }
-        public string Raicomments { get; set; }
         public bool? IsPrePrice { get; set; }
-        public string CredAuthComments { get; set; }
         public short? CreditAuthByEmp { get; set; }
-        public string VoidComments { get; set; }
         public bool? IsInspected { get; set; }
         public decimal? LotCharge { get; set; }
-        public string OrderComments { get; set; }
         public decimal? SubTotal { get; set; }
         public byte? CertId { get; set; }
         public string ShipChargeCd { get; set; }
         public string HandlingChargeCd { get; set; }
         public string MiscChargeCd { get; set; }
-        public string Stname { get; set; }
-        public string Staddress1 { get; set; }
-        public string Staddress2 { get; set; }
-        public string Staddress3 { get; set; }
-        public string Stcity { get; set; }
-        public string Ststate { get; set; }
-        public string Stzip { get; set; }
-        public string Stphone { get; set; }
-        public string Stattn { get; set; }
         public string ExpediteStatus { get; set; }
 
         public virtual Certification Cert { get; set; }

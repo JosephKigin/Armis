@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmisWebsite", "ArmisWebsite\ArmisWebsite.csproj", "{5670D353-5116-4543-8205-C2328FDB32EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmisWebsite", "ArmisWebsite\ArmisWebsite.csproj", "{5670D353-5116-4543-8205-C2328FDB32EA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armis.BusinessModels", "..\Armis.BusinessModels\Armis.BusinessModels.csproj", "{50C1EA7C-3BD3-42DF-A0D8-FF77EE15D4EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmisWebsite.DataAccess", "ArmisWebsite.DataAccess\ArmisWebsite.DataAccess.csproj", "{C756F9E7-B397-40D2-A910-98EB435DBC5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmisWebsite.DataAccess", "ArmisWebsite.DataAccess\ArmisWebsite.DataAccess.csproj", "{C756F9E7-B397-40D2-A910-98EB435DBC5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

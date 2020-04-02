@@ -8,7 +8,6 @@ namespace Armis.BusinessModels.ProcessModels
     {
         public int ProcessId { get; set; }
         public string Name { get; set; }
-        public int? CustId { get; set; }
 
         public IEnumerable<ProcessRevisionModel> Revisions { get; set; }
     }

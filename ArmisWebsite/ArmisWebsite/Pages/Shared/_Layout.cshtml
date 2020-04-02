@@ -36,12 +36,9 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.ToString("yyyy") - ArmisWebsite - <a asp-area="" asp-page="/Privacy">Privacy</a>
-            <b class="float-right">@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") </b>
-            @*@await Html.PartialAsync("~/pages/Shared/partials/ApiCheckConnectionPartial.cshtml",
-         new ApiCheckConnectionPartialModel())
+            &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" asp-page="/Privacy">Privacy</a>
 
-        <partial name="/Pages/shared/partials/ApiCheckConnectionPartial.cshtml" />*@
+            <b class="float-right">@await Component.InvokeAsync("ApiConnectionCheck") [@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")] </b>
         </div>
     </footer>
 

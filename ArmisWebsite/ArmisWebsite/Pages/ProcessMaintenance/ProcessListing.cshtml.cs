@@ -49,10 +49,18 @@ namespace ArmisWebsite
         }
 
         public async Task<IActionResult> OnGet()
-        { 
-            await SetUpProperties();
+        {
+            try
+            {
+                await SetUpProperties();
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
+
         }
 
         public async Task<IActionResult> OnPostPrint()
@@ -60,7 +68,7 @@ namespace ArmisWebsite
             var theProcess = await ProcessDataAccess.GetHydratedProcess(ProcessIdSelection);
             var theCurrentRev = theProcess.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED");
 
-            if(theCurrentRev == null)
+            if (theCurrentRev == null)
             {
                 PopUpMessage = "Cannot create router for a process that does not have a LOCKED revision.";
                 await SetUpProperties();
@@ -73,27 +81,17 @@ namespace ArmisWebsite
             FileStreamResult fsResult = new FileStreamResult(fileStream, MediaTypeNames.Application.Pdf);
 
             return fsResult;
-
-            await SetUpProperties();
-            return Page();
         }
 
         public async Task SetUpProperties()
         {
-            try
-            {
-                var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
+            var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
 
-                Processes = theProcesses.ToList();
+            Processes = theProcesses.ToList();
 
-                foreach (var process in Processes)
-                {
-                    process.Revisions.OrderBy(i => i.ProcessRevId);
-                }
-            }
-            catch (Exception ex)
+            foreach (var process in Processes)
             {
-                PopUpMessage += "Error: " + ex.Message;
+                process.Revisions.OrderBy(i => i.ProcessRevId);
             }
         }
 

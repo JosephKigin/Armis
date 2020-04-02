@@ -56,7 +56,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
                 Description = aSpecModel.Description,
                 ExternalRev = aSpecModel.ExternalRev,
                 SamplePlan = null, //TODO: Figure out w/ sample plan
-                IsPartSpecificPlan = false, //TODO: See above
                 NadCapSamplePlan = null //TODO: See Above
             };
         }

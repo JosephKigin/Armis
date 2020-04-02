@@ -25,15 +25,18 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SpecCode { get; set; }
         [BindProperty]
-        [MaxLength(50)] //TODO: Update this if the database allows more than 50 for this field.
         public string SpecDescription { get; set; }
         [BindProperty]
         public string ExternalRev { get; set; }
+        [BindProperty]
+        public bool WasRevUpSelected { get; set; }
+
 
         //Sublevel 1
         [BindProperty]
         public string SubLevelName1 { get; set; }
         [BindProperty]
+        [Required]
         public List<string> ChoiceNames1 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq1 { get; set; }
@@ -95,24 +98,39 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             SpecDataAccess = aSpecDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(int? aSpecId)
+        public async Task<IActionResult> OnGet(int? aSpecId, string aPopUpMessage = null)
         {
-            if(aSpecId != 0 && aSpecId != null)
+            try
             {
-                //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. 
-                CurrentSpecId = aSpecId ?? 0;
+                PopUpMessage = aPopUpMessage;
+
+                if (aSpecId != 0 && aSpecId != null)
+                {
+                    //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. 
+                    CurrentSpecId = aSpecId ?? 0;
+                }
+
+                if (CurrentSpecId != 0)
+                {
+                    await SetUpProperties(CurrentSpecId);
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
             }
 
-            if(CurrentSpecId != 0)
-            {
-                await SetUpProperties(CurrentSpecId);
-            }
-
-            return Page();
         }
 
         public async Task<ActionResult> OnPost()
         {
+            if (!ModelState.IsValid)
+            {
+                PopUpMessage = ModelState.ToString();
+                return Page();
+            }
             try
             {
                 var theSpec = new SpecModel()
@@ -123,89 +141,91 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 };
 
                 var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
-                //TODO: abstract these 6 into a method that takes 4 parameters being the 4 properties from each sublevel # above.
+
+                byte subLevelSeq = 0;
+
                 //Sublevel 1
                 if (SubLevelName1 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(1, SubLevelName1, ChoiceNames1, IsSubLevelReq1, DefaultChoice1));
-                }
-                else
-                {
-                    return Page(); //TODO can they enter a spec without any sublevels?
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName1, ChoiceNames1, IsSubLevelReq1, DefaultChoice1));
                 }
 
                 //Sublevel 2
                 if (SubLevelName2 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(2, SubLevelName2, ChoiceNames2, IsSubLevelReq2, DefaultChoice2));
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName2, ChoiceNames2, IsSubLevelReq2, DefaultChoice2));
                 }
 
                 //Sublevel 3
                 if (SubLevelName3 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(3, SubLevelName3, ChoiceNames3, IsSubLevelReq3, DefaultChoice3));
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName3, ChoiceNames3, IsSubLevelReq3, DefaultChoice3));
                 }
 
                 //Sublevel 4
                 if (SubLevelName4 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(4, SubLevelName4, ChoiceNames4, IsSubLevelReq4, DefaultChoice4));
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName4, ChoiceNames4, IsSubLevelReq4, DefaultChoice4));
                 }
 
                 //Sublevel 5
                 if (SubLevelName5 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(5, SubLevelName5, ChoiceNames5, IsSubLevelReq5, DefaultChoice5));
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName5, ChoiceNames5, IsSubLevelReq5, DefaultChoice5));
                 }
 
                 //Sublevel 6
                 if (SubLevelName6 != null)
                 {
-                    theSubLevelList.Add(BuildSubLevelFromPage(6, SubLevelName6, ChoiceNames6, IsSubLevelReq6, DefaultChoice6));
+                    subLevelSeq++;
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName6, ChoiceNames6, IsSubLevelReq6, DefaultChoice6));
                 }
 
 
                 theSpec.SubLevels = theSubLevelList;
-
+                var theReturnedSpecId = 0;  //This is the SpecId that will be returned from the DataAccess after creating a new Spec or Reving up a Spec.
                 if (CurrentSpecId == 0) //New Spec
                 {
-                    await SpecDataAccess.CreateNewSpec(theSpec);
+                    theReturnedSpecId = await SpecDataAccess.CreateNewHydratedSpec(theSpec);
+                    await SetUpProperties(theReturnedSpecId);
+                    PopUpMessage = "Spec created successfully.";
                 }
-                else //Spec is being reved-up
+                else if(WasRevUpSelected) //Spec is being updated. Only stuff under the spec level can be updated.  If anything on the Spec level is updated, then it should just be a new Revision.
                 {
-
+                    //TODO: This section is for rev-up
+                    theSpec.Id = CurrentSpecId;
+                    theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpec);
+                    await SetUpProperties(theReturnedSpecId);
+                    PopUpMessage = "Spec reved-up successfully";
                 }
 
-                PopUpMessage = "Spec saved successfully!";
-                return Page();
+                return RedirectToPage("/ProcessMaintenance/SpecificationCreation", new { aSpecId = theReturnedSpecId, aPopUpMessage = PopUpMessage });
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message}); //TODO:: Insert logging here.
+                return RedirectToPage("/Error", new { ExMessage = ex.Message }); //TODO:: Insert logging here.
             }
         }
 
         //As of now, this will only get hit if a spec id is passed into the page.
         public async Task SetUpProperties(int aSpecId)
         {
-            try
+            var theCurrentSpec = await SpecDataAccess.GetHydratedCurrentRevOfSpec(aSpecId);
+
+            SpecCode = theCurrentSpec.Code;
+            SpecDescription = theCurrentSpec.Description;
+            ExternalRev = theCurrentSpec.ExternalRev;
+
+            theCurrentSpec.SubLevels.OrderBy(i => i.LevelSeq);
+
+            foreach (var sublevel in theCurrentSpec.SubLevels)
             {
-                var theCurrentSpec = await SpecDataAccess.GetHydratedCurrentRevOfSpec(aSpecId);
-
-                SpecCode = theCurrentSpec.Code;
-                SpecDescription = theCurrentSpec.Description;
-                ExternalRev = theCurrentSpec.ExternalRev;
-
-                theCurrentSpec.SubLevels.OrderBy(i => i.LevelSeq);
-
-                foreach (var sublevel in theCurrentSpec.SubLevels)
-                {
-                    BuildPageFromModels(sublevel);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                BuildPageFromModels(sublevel);
             }
         }
 

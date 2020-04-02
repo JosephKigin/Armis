@@ -30,6 +30,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<CreditStatus> CreditStatus { get; set; }
         public virtual DbSet<CustBillTo> CustBillTo { get; set; }
         public virtual DbSet<CustComment> CustComment { get; set; }
+        public virtual DbSet<CustContNotify> CustContNotify { get; set; }
         public virtual DbSet<CustForm> CustForm { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<CustomerPart> CustomerPart { get; set; }
@@ -43,23 +44,23 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<HandlingCharge> HandlingCharge { get; set; }
         public virtual DbSet<Hardness> Hardness { get; set; }
         public virtual DbSet<LoadType> LoadType { get; set; }
-        public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<LocationTypeCode> LocationTypeCode { get; set; }
         public virtual DbSet<MaterialAlloy> MaterialAlloy { get; set; }
         public virtual DbSet<MaterialSeries> MaterialSeries { get; set; }
         public virtual DbSet<Memo> Memo { get; set; }
         public virtual DbSet<MiscCharge> MiscCharge { get; set; }
-        public virtual DbSet<NotifyContact> NotifyContact { get; set; }
         public virtual DbSet<NotifyEvent> NotifyEvent { get; set; }
         public virtual DbSet<Operation> Operation { get; set; }
         public virtual DbSet<OperationGroup> OperationGroup { get; set; }
         public virtual DbSet<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual DbSet<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual DbSet<OprThickPrice> OprThickPrice { get; set; }
+        public virtual DbSet<OrderComments> OrderComments { get; set; }
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
         public virtual DbSet<OrderExpedite> OrderExpedite { get; set; }
         public virtual DbSet<OrderHead> OrderHead { get; set; }
         public virtual DbSet<OrderLocation> OrderLocation { get; set; }
+        public virtual DbSet<OrderShipTo> OrderShipTo { get; set; }
         public virtual DbSet<Oven> Oven { get; set; }
         public virtual DbSet<PackageCode> PackageCode { get; set; }
         public virtual DbSet<Part> Part { get; set; }
@@ -85,6 +86,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<ShipTo> ShipTo { get; set; }
         public virtual DbSet<ShipVia> ShipVia { get; set; }
         public virtual DbSet<ShipViaTypeCode> ShipViaTypeCode { get; set; }
+        public virtual DbSet<ShopLocation> ShopLocation { get; set; }
         public virtual DbSet<SpecChoice> SpecChoice { get; set; }
         public virtual DbSet<SpecProcessAssign> SpecProcessAssign { get; set; }
         public virtual DbSet<SpecSubLevel> SpecSubLevel { get; set; }
@@ -106,8 +108,8 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
-                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ARMISTEST; User Id=armisadmin; Password=8#6C1xLopq@z;");
+                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
+                //optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ARMISTEST; User Id=armisadmin; Password=8#6C1xLopq@z;");
                 //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True");
             }
         }
@@ -133,10 +135,6 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.Property(e => e.AreaId).ValueGeneratedNever();
 
-                entity.Property(e => e.DefaultLocation)
-                    .HasMaxLength(8)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -149,7 +147,7 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.DefaultLocationNavigation)
                     .WithMany(p => p.Area)
                     .HasForeignKey(d => d.DefaultLocation)
-                    .HasConstraintName("FK_Area_DefaultLocation_Location_LocationCd");
+                    .HasConstraintName("FK_Area_DefaultLocation_ShopLocation_LocationId");
 
                 entity.HasOne(d => d.TypeNavigation)
                     .WithMany(p => p.Area)
@@ -489,6 +487,30 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey<CustComment>(d => d.CustId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CustComment_CustId_Customer_CustId");
+            });
+
+            modelBuilder.Entity<CustContNotify>(entity =>
+            {
+                entity.HasKey(e => new { e.CustId, e.ContactId, e.NotifyEventId })
+                    .HasName("PK_CustContNotify_CustId_ContactId_NotifyEventId");
+
+                entity.HasOne(d => d.Contact)
+                    .WithMany(p => p.CustContNotify)
+                    .HasForeignKey(d => d.ContactId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustContNotify_ContactId_Contact_ContactId");
+
+                entity.HasOne(d => d.Cust)
+                    .WithMany(p => p.CustContNotify)
+                    .HasForeignKey(d => d.CustId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustContNotify_CustId_Customer_CustId");
+
+                entity.HasOne(d => d.NotifyEvent)
+                    .WithMany(p => p.CustContNotify)
+                    .HasForeignKey(d => d.NotifyEventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustContNotify_NotifyEventId_NotifyEvent_NotifyEventId");
             });
 
             modelBuilder.Entity<CustForm>(entity =>
@@ -874,36 +896,6 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Location>(entity =>
-            {
-                entity.HasKey(e => e.LocationCd)
-                    .HasName("PK_Location_LocationCd");
-
-                entity.Property(e => e.LocationCd)
-                    .HasMaxLength(8)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LocTypeCd)
-                    .IsRequired()
-                    .HasMaxLength(6)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.AreaNavigation)
-                    .WithMany(p => p.Location)
-                    .HasForeignKey(d => d.AreaId)
-                    .HasConstraintName("FK_Location_AreaId_Area_AreaId");
-
-                entity.HasOne(d => d.LocTypeCdNavigation)
-                    .WithMany(p => p.Location)
-                    .HasForeignKey(d => d.LocTypeCd)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Location_LocTypeCd_LocationTypeCode_LocTypeCd");
-            });
-
             modelBuilder.Entity<LocationTypeCode>(entity =>
             {
                 entity.HasKey(e => e.LocTypeCd)
@@ -1018,30 +1010,6 @@ namespace Armis.Data.DatabaseContext
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<NotifyContact>(entity =>
-            {
-                entity.HasKey(e => new { e.CustId, e.ContactId, e.NotifyEventId })
-                    .HasName("PK_NotifyContact_CustId_ContactId_NotifyEventId");
-
-                entity.HasOne(d => d.Contact)
-                    .WithMany(p => p.NotifyContact)
-                    .HasForeignKey(d => d.ContactId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NotifyContact_ContactId_Contact_ContactId");
-
-                entity.HasOne(d => d.Cust)
-                    .WithMany(p => p.NotifyContact)
-                    .HasForeignKey(d => d.CustId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NotifyContact_CustId_Customer_CustId");
-
-                entity.HasOne(d => d.NotifyEvent)
-                    .WithMany(p => p.NotifyContact)
-                    .HasForeignKey(d => d.NotifyEventId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NotifyContact_NotifyEventId_NotifyEvent_NotifyEventId");
             });
 
             modelBuilder.Entity<NotifyEvent>(entity =>
@@ -1186,6 +1154,37 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_OprThickPrice_OperationId_Operation_OperationId");
             });
 
+            modelBuilder.Entity<OrderComments>(entity =>
+            {
+                entity.HasKey(e => e.OrderId)
+                    .HasName("PK_OrderComments_OrderId");
+
+                entity.Property(e => e.OrderId).ValueGeneratedNever();
+
+                entity.Property(e => e.CredAuthComments)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.JobHoldComments)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OrderComments1)
+                    .IsRequired()
+                    .HasColumnName("OrderComments")
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Raicomments)
+                    .HasColumnName("RAIComments")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.VoidComments)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.OrderLine })
@@ -1266,10 +1265,6 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
-                entity.Property(e => e.CredAuthComments)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.DoneDate).HasColumnType("date");
 
                 entity.Property(e => e.DoneTime).HasColumnType("time(0)");
@@ -1284,20 +1279,12 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(4)
                     .IsUnicode(false);
 
-                entity.Property(e => e.JobHoldComments)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.LastCompleteRemSentDt).HasColumnType("date");
 
                 entity.Property(e => e.LotCharge).HasColumnType("decimal(19, 4)");
 
                 entity.Property(e => e.MiscChargeCd)
                     .HasMaxLength(4)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.OrderComments)
-                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.OrderDate).HasColumnType("date");
@@ -1323,11 +1310,6 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Raicomments)
-                    .HasColumnName("RAIComments")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.RecvDate).HasColumnType("date");
 
                 entity.Property(e => e.RecvTime).HasColumnType("time(0)");
@@ -1346,58 +1328,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Staddress1)
-                    .HasColumnName("STAddress1")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Staddress2)
-                    .HasColumnName("STAddress2")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Staddress3)
-                    .HasColumnName("STAddress3")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Stattn)
-                    .HasColumnName("STAttn")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Stcity)
-                    .HasColumnName("STCity")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Stname)
-                    .HasColumnName("STName")
-                    .HasMaxLength(40)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Stphone)
-                    .HasColumnName("STPhone")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Ststate)
-                    .HasColumnName("STState")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Stzip)
-                    .HasColumnName("STZip")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.SubTotal).HasColumnType("decimal(19, 4)");
 
                 entity.Property(e => e.TargetDate).HasColumnType("date");
-
-                entity.Property(e => e.VoidComments)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Cert)
                     .WithMany(p => p.OrderHead)
@@ -1467,12 +1400,8 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<OrderLocation>(entity =>
             {
-                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationCd })
-                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationCd");
-
-                entity.Property(e => e.LocationCd)
-                    .HasMaxLength(8)
-                    .IsUnicode(false);
+                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationId })
+                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationId");
 
                 entity.Property(e => e.ContainerCd)
                     .HasMaxLength(2)
@@ -1483,17 +1412,77 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.ContainerCd)
                     .HasConstraintName("FK_OrderLocation_ContainerCd_Container_ContainerCd");
 
-                entity.HasOne(d => d.LocationCdNavigation)
+                entity.HasOne(d => d.Location)
                     .WithMany(p => p.OrderLocation)
-                    .HasForeignKey(d => d.LocationCd)
+                    .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderLocation_LocationCd_Location_LocationCd");
+                    .HasConstraintName("FK_OrderLocation_LocationId_ShopLocation_LocationId");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderLocation)
                     .HasForeignKey(d => new { d.OrderId, d.OrderLine })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLocation_OrderLine_OrderDetail_OrderLine");
+            });
+
+            modelBuilder.Entity<OrderShipTo>(entity =>
+            {
+                entity.HasKey(e => e.OrderId)
+                    .HasName("PK_OrderShipTo_OrderId");
+
+                entity.Property(e => e.OrderId).ValueGeneratedNever();
+
+                entity.Property(e => e.Staddress1)
+                    .IsRequired()
+                    .HasColumnName("STAddress1")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Staddress2)
+                    .IsRequired()
+                    .HasColumnName("STAddress2")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Staddress3)
+                    .IsRequired()
+                    .HasColumnName("STAddress3")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stattn)
+                    .HasColumnName("STAttn")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stcity)
+                    .IsRequired()
+                    .HasColumnName("STCity")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stname)
+                    .IsRequired()
+                    .HasColumnName("STName")
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stphone)
+                    .HasColumnName("STPhone")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Ststate)
+                    .IsRequired()
+                    .HasColumnName("STState")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Stzip)
+                    .IsRequired()
+                    .HasColumnName("STZip")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Oven>(entity =>
@@ -1544,6 +1533,7 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.Property(e => e.ExternalRev)
+                    .IsRequired()
                     .HasMaxLength(5)
                     .IsUnicode(false);
 
@@ -1731,11 +1721,6 @@ namespace Armis.Data.DatabaseContext
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.HasOne(d => d.Cust)
-                    .WithMany(p => p.Process)
-                    .HasForeignKey(d => d.CustId)
-                    .HasConstraintName("FK_Process_CustId_Customer_CustId");
             });
 
             modelBuilder.Entity<ProcessLoad>(entity =>
@@ -2172,6 +2157,38 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<ShopLocation>(entity =>
+            {
+                entity.HasKey(e => e.LocationId)
+                    .HasName("PK_ShopLocation_LocationId");
+
+                entity.Property(e => e.LocationId).ValueGeneratedNever();
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LocCode)
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LocTypeCd)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AreaNavigation)
+                    .WithMany(p => p.ShopLocation)
+                    .HasForeignKey(d => d.AreaId)
+                    .HasConstraintName("FK_ShopLocation_AreaId_Area_AreaId");
+
+                entity.HasOne(d => d.LocTypeCdNavigation)
+                    .WithMany(p => p.ShopLocation)
+                    .HasForeignKey(d => d.LocTypeCd)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ShopLocation_LocTypeCd_LocationTypeCode_LocTypeCd");
+            });
+
             modelBuilder.Entity<SpecChoice>(entity =>
             {
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SubLevelSeqId, e.ChoiceSeqId })
@@ -2328,7 +2345,6 @@ namespace Armis.Data.DatabaseContext
                     .HasName("PK_Specification_SpecId_SpecRevId");
 
                 entity.Property(e => e.Description)
-                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 

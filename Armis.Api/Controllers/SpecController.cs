@@ -80,5 +80,20 @@ namespace Armis.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> RevUpSpec(SpecModel aSpecModel)
+        {
+            try
+            {
+                var data = await SpecService.RevUpSpec(aSpecModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

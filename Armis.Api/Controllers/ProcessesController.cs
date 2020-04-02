@@ -19,14 +19,10 @@ namespace Armis.Api.Controllers
     [ApiController]
     public class ProcessesController : ControllerBase
     {
-        private readonly ARMISContext _context;
-
         public IProcessService ProcessService { get; set; }
 
-        public ProcessesController(ARMISContext context,
-                                   IProcessService aProcessService)
+        public ProcessesController(IProcessService aProcessService)
         {
-            _context = context;
             ProcessService = aProcessService;
         }
 
@@ -37,7 +33,6 @@ namespace Armis.Api.Controllers
             try
             {
                 var data = await ProcessService.GetAllProcesses();
-
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception)
@@ -104,39 +99,7 @@ namespace Armis.Api.Controllers
 
                 return BadRequest(ex.Message);
             }
-        }
-
-        // PUT: api/Processes/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProcess(int id, Process process)
-        {
-            if (id != process.ProcessId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(process).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProcessExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
+        }        
 
         [HttpPost]
         public async Task<ActionResult<ProcessModel>> PostProcess(ProcessModel aProcessModel)
@@ -238,11 +201,6 @@ namespace Armis.Api.Controllers
 
                 return BadRequest(ex.Message);
             }
-        }
-
-        private bool ProcessExists(int id)
-        {
-            return _context.Process.Any(e => e.ProcessId == id);
         }
     }
 }

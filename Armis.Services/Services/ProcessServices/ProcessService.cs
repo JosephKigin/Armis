@@ -204,7 +204,6 @@ namespace Armis.DataLogic.Services.ProcessServices
             var theProcessToUpdate = await context.Process.SingleOrDefaultAsync(i => i.ProcessId == process.ProcessId);
 
             theProcessToUpdate.Name = process.Name;
-            theProcessToUpdate.CustId = process.CustId;
 
             await context.SaveChangesAsync();
 

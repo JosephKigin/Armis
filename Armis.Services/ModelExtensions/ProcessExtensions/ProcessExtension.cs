@@ -11,7 +11,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         {
             return new ProcessModel()
             {
-                CustId = aProcess.CustId,
                 Name = aProcess.Name,
                 ProcessId = aProcess.ProcessId,
                 Revisions = aProcessRevs
@@ -59,7 +58,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         {
             return new ProcessModel()
             {
-                CustId = aProcess.CustId,
                 Name = aProcess.Name,
                 ProcessId = aProcess.ProcessId
             };
@@ -70,7 +68,6 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions
         {
             return new Process()
             {
-                CustId = aProcessModel.CustId,
                 Name = aProcessModel.Name
             };
         }

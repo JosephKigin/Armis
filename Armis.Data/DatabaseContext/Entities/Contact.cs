@@ -7,9 +7,9 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Contact()
         {
+            CustContNotify = new HashSet<CustContNotify>();
             Customer = new HashSet<Customer>();
             Memo = new HashSet<Memo>();
-            NotifyContact = new HashSet<NotifyContact>();
         }
 
         public int ContactId { get; set; }
@@ -33,8 +33,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Customer Cust { get; set; }
         public virtual ShipTo ShipTo { get; set; }
         public virtual ContactTitle Title { get; set; }
+        public virtual ICollection<CustContNotify> CustContNotify { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
-        public virtual ICollection<NotifyContact> NotifyContact { get; set; }
     }
 }

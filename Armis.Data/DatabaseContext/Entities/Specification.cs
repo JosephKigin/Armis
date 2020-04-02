@@ -19,7 +19,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Description { get; set; }
         public string ExternalRev { get; set; }
         public int? SamplePlan { get; set; }
-        public bool IsPartSpecificPlan { get; set; }
         public int? NadCapSamplePlan { get; set; }
 
         public virtual SamplePlanHead NadCapSamplePlanNavigation { get; set; }
