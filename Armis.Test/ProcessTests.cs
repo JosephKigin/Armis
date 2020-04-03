@@ -115,7 +115,7 @@ namespace Armis.Test
         private ProcessModel GenerateProcessModel(int aCustID)
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
-            return new ProcessModel() { Name = TESTPREFIX + "-Process-Cust-" + theTimeStamp, CustId = aCustID };
+            return new ProcessModel() { Name = TESTPREFIX + "-Process-Cust-" + theTimeStamp };
         }
         private ProcessRevisionModel GenerateProcessRevisionModel(int aProcessID, short aEmpID)
         {

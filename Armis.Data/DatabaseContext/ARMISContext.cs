@@ -60,10 +60,11 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<OrderExpedite> OrderExpedite { get; set; }
         public virtual DbSet<OrderHead> OrderHead { get; set; }
         public virtual DbSet<OrderLocation> OrderLocation { get; set; }
-        public virtual DbSet<OrderShipTo> OrderShipTo { get; set; }
+        public virtual DbSet<OrderShipToOverride> OrderShipToOverride { get; set; }
         public virtual DbSet<Oven> Oven { get; set; }
         public virtual DbSet<PackageCode> PackageCode { get; set; }
         public virtual DbSet<Part> Part { get; set; }
+        public virtual DbSet<PartComment> PartComment { get; set; }
         public virtual DbSet<PartSpecProcessAssign> PartSpecProcessAssign { get; set; }
         public virtual DbSet<PartTran> PartTran { get; set; }
         public virtual DbSet<PlateResult> PlateResult { get; set; }
@@ -107,7 +108,7 @@ namespace Armis.Data.DatabaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
                 //optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ARMISTEST; User Id=armisadmin; Password=8#6C1xLopq@z;");
                 //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True");
@@ -676,6 +677,12 @@ namespace Armis.Data.DatabaseContext
                     .HasName("PK_CustomerPart_CustId_PartId_PartRevId");
 
                 entity.Property(e => e.LastUsedDate).HasColumnType("date");
+
+                entity.HasOne(d => d.Part)
+                    .WithMany(p => p.CustomerPart)
+                    .HasForeignKey(d => new { d.PartId, d.PartRevId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CustomerPart_PartId_Part_PartId");
             });
 
             modelBuilder.Entity<Department>(entity =>
@@ -1200,7 +1207,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(2)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TotalPrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.ProcessComments)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetail)
@@ -1425,10 +1434,10 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_OrderLocation_OrderLine_OrderDetail_OrderLine");
             });
 
-            modelBuilder.Entity<OrderShipTo>(entity =>
+            modelBuilder.Entity<OrderShipToOverride>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK_OrderShipTo_OrderId");
+                    .HasName("PK_OrderShipToOverride_OrderId");
 
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
@@ -1524,6 +1533,8 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.BasePrice).HasColumnType("decimal(19, 4)");
+
                 entity.Property(e => e.Description)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -1537,25 +1548,21 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(5)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IntendedPpl).HasColumnName("IntendedPPL");
+                entity.Property(e => e.MinLotCharge).HasColumnType("decimal(9, 4)");
 
                 entity.Property(e => e.PartName)
                     .IsRequired()
                     .HasMaxLength(30)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PieceWeight).HasColumnType("decimal(9, 4)");
+                entity.Property(e => e.PieceWeight).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.SauoM)
                     .HasColumnName("SAUoM")
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SurfaceArea)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Weight).HasColumnType("decimal(9, 4)");
+                entity.Property(e => e.SurfaceArea).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.AlloyNavigation)
                     .WithMany(p => p.Part)
@@ -1576,6 +1583,33 @@ namespace Armis.Data.DatabaseContext
                     .WithMany(p => p.Part)
                     .HasForeignKey(d => d.StandardDept)
                     .HasConstraintName("FK_Part_StandardDept_Department_DepartmentId");
+            });
+
+            modelBuilder.Entity<PartComment>(entity =>
+            {
+                entity.HasKey(e => new { e.PartId, e.PartRevId })
+                    .HasName("PK_PartComment_PartId_PartRevId");
+
+                entity.Property(e => e.MaskingInstructions)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PartComments)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PriceComments)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PrintWithOrder)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProcessComments)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<PartSpecProcessAssign>(entity =>
@@ -1600,10 +1634,8 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<PartTran>(entity =>
             {
-                entity.HasKey(e => e.TranSeqNum)
-                    .HasName("PK_PartTran_TranSeqNum");
-
-                entity.Property(e => e.TranSeqNum).ValueGeneratedNever();
+                entity.HasKey(e => new { e.PartId, e.PartRevId, e.TranSeqNum })
+                    .HasName("PK_PartTran_PartId_PartRevId_TranSeqNum");
 
                 entity.Property(e => e.Date).HasColumnType("date");
 
@@ -1640,6 +1672,12 @@ namespace Armis.Data.DatabaseContext
                     .WithMany(p => p.PartTran)
                     .HasForeignKey(d => d.ProcessId)
                     .HasConstraintName("FK_PartTran_ProcessId_Process_ProcessId");
+
+                entity.HasOne(d => d.Part)
+                    .WithMany(p => p.PartTran)
+                    .HasForeignKey(d => new { d.PartId, d.PartRevId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PartTran_PartId_Part_PartId");
             });
 
             modelBuilder.Entity<PlateResult>(entity =>
@@ -2245,6 +2283,12 @@ namespace Armis.Data.DatabaseContext
                     .WithMany(p => p.SpecProcessAssign)
                     .HasForeignKey(d => d.SeriesOption)
                     .HasConstraintName("FK_SpecProcessAssign_SeriesOption_MaterialSeries_SeriesId");
+
+                entity.HasOne(d => d.Process)
+                    .WithMany(p => p.SpecProcessAssign)
+                    .HasForeignKey(d => new { d.ProcessId, d.ProcessRevId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssign_ProcessRevId_ProcessRevision_ProcessRevId");
 
                 entity.HasOne(d => d.Spec)
                     .WithMany(p => p.SpecProcessAssign)
