@@ -14,7 +14,6 @@ namespace ArmisWebsite
     public class StepListingModel : PageModel
     {
         private readonly IConfiguration Config;
-        private IStepDataAccess _stepDataAccess;
 
         public IStepDataAccess StepDataAccess { get; set; }
         public List<StepModel> Steps { get; set; }
@@ -25,10 +24,19 @@ namespace ArmisWebsite
             StepDataAccess = aStepDataAccess;
         }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            var theSteps = await StepDataAccess.GetAllSteps();
-            Steps = theSteps.ToList();
+            try
+            {
+                var theSteps = await StepDataAccess.GetAllSteps();
+                Steps = theSteps.ToList();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
+
         }
     }
 }

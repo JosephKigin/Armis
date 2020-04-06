@@ -55,9 +55,17 @@ namespace ArmisWebsite
 
         public async Task<ActionResult> OnGet(int anOperationId = 0)
         {
-            await SetUpPageProperties(anOperationId);
+            try
+            {
+                await SetUpPageProperties(anOperationId);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
+
         }
 
         public async Task<ActionResult> OnPost()

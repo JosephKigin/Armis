@@ -8,14 +8,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public Customer()
         {
             Contact = new HashSet<Contact>();
+            CustContNotify = new HashSet<CustContNotify>();
             Driver = new HashSet<Driver>();
             Memo = new HashSet<Memo>();
-            NotifyContact = new HashSet<NotifyContact>();
             OprLoadPrice = new HashSet<OprLoadPrice>();
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
             OprThickPrice = new HashSet<OprThickPrice>();
             OrderHead = new HashSet<OrderHead>();
-            Process = new HashSet<Process>();
             SamplePlanHead = new HashSet<SamplePlanHead>();
             ShipAccountNavigation = new HashSet<ShipAccount>();
             ShipToNavigation = new HashSet<ShipTo>();
@@ -72,14 +71,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual CustComment CustComment { get; set; }
         public virtual CustForm CustForm { get; set; }
         public virtual ICollection<Contact> Contact { get; set; }
+        public virtual ICollection<CustContNotify> CustContNotify { get; set; }
         public virtual ICollection<Driver> Driver { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
-        public virtual ICollection<NotifyContact> NotifyContact { get; set; }
         public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
-        public virtual ICollection<Process> Process { get; set; }
         public virtual ICollection<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual ICollection<ShipAccount> ShipAccountNavigation { get; set; }
         public virtual ICollection<ShipTo> ShipToNavigation { get; set; }

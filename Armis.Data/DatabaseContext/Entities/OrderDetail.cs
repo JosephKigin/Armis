@@ -16,9 +16,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public int PartId { get; set; }
         public short? PartRevId { get; set; }
         public decimal? Poprice { get; set; }
-        public decimal? TotalPrice { get; set; }
         public decimal? AssignedPrice { get; set; }
         public string PriceCd { get; set; }
+        public string ProcessComments { get; set; }
 
         public virtual OrderHead Order { get; set; }
         public virtual Part Part { get; set; }

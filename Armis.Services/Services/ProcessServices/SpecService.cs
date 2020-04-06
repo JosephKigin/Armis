@@ -44,34 +44,89 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entities.ToHydratedModels();
         }
 
+        public async Task<SpecModel> GetCurrentRevForSpec(int aSpecId)
+        {
+            var entity = await context.Specification.Where(i => i.SpecId == aSpecId).OrderByDescending(i => i.SpecRevId)
+                                                        .Include(i => i.SpecSubLevel)
+                                                            .ThenInclude(i => i.SpecChoice)
+                                                            .FirstOrDefaultAsync();
+            if (entity == null) { return null; }
+
+            return entity.ToHydratedModel();
+        }
+
         public async Task<int> CreateNewSpec(SpecModel aSpecModel)
         {
-            var theNewSpecId = await context.Specification.MaxAsync(i => i.SpecId) + 1;
-            short theNewRevId = 10; //All new specs start with a revId of 10
-
-            var theSubLevelEntities = aSpecModel.SubLevels.ToEntities(theNewSpecId, theNewRevId);
-
-            await context.Specification.AddAsync(aSpecModel.ToEntity(theNewSpecId, theNewRevId));
-            await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
-
-            foreach (var subLevel in aSpecModel.SubLevels)
+            using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId, subLevel.LevelSeq));
+                var theNewSpecId = await context.Specification.MaxAsync(i => i.SpecId) + 1;
+                short theNewRevId = 10; //All new specs start with a revId of 10
+
+                var theSubLevelEntities = aSpecModel.SubLevels.ToEntities(theNewSpecId, theNewRevId);
+
+                await context.Specification.AddAsync(aSpecModel.ToEntity(theNewSpecId, theNewRevId));
+                await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
+
+                foreach (var subLevel in aSpecModel.SubLevels)
+                {
+                    await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId, subLevel.LevelSeq));
+                }
+
+                await context.SaveChangesAsync();
+
+                //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
+                foreach (var subLevel in theSubLevelEntities)
+                {
+                    subLevel.DefaultChoice = aSpecModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                }
+
+                context.UpdateRange(theSubLevelEntities);
+
+                await context.SaveChangesAsync();
+
+                
+
+                return theNewSpecId;
             }
-
-            await context.SaveChangesAsync();
-
-            //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
-            foreach (var subLevel in theSubLevelEntities)
-            {
-                subLevel.DefaultChoice = aSpecModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
-            }
-
-            context.UpdateRange(theSubLevelEntities);
-
-            await context.SaveChangesAsync();
-
-            return theNewSpecId;
         }
+
+        public async Task<int> RevUpSpec(SpecModel aSpecModel)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                var newSpecRevId = await context.Specification.Where(i => i.SpecId == aSpecModel.Id).MaxAsync(i => i.SpecRevId);
+                if (newSpecRevId == 0) { throw new Exception("Could not find previous spec to rev-up."); }
+                newSpecRevId += 1;
+
+                var theSpecEntity = aSpecModel.ToEntity(aSpecModel.Id, newSpecRevId);
+                var theSubLevelEntities = aSpecModel.SubLevels.ToEntities(aSpecModel.Id, newSpecRevId);
+
+                await context.Specification.AddAsync(theSpecEntity);
+                await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
+
+                foreach (var subLevel in aSpecModel.SubLevels)
+                {
+                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecModel.Id, newSpecRevId, subLevel.LevelSeq));
+                }
+
+                await context.SaveChangesAsync();
+
+                //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
+                foreach (var subLevel in theSubLevelEntities)
+                {
+                    subLevel.DefaultChoice = aSpecModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                }
+
+                context.UpdateRange(theSubLevelEntities);
+
+                await context.SaveChangesAsync();
+
+                transaction.Commit();
+
+                return aSpecModel.Id;
+            }
+        }
+
+
     }
 }

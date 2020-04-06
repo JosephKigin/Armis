@@ -31,17 +31,23 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<IActionResult> OnGet()
         {
-            await SetUpProperties();
+            try
+            {
+                await SetUpProperties();
 
-            var TEST = AppSettings.Current.AppConnection;
-
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
+            ;
         }
 
         public async Task SetUpProperties()
         {
             var theAllSpecs = await SpecDataAccess.GetAllHydratedSpecs();
-            AllSpecs = theAllSpecs.ToList();
+            AllSpecs = theAllSpecs.OrderBy(i => i.Description).ToList();
         }
     }
 }

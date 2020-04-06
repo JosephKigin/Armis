@@ -51,12 +51,42 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet("{aSpecId}")]
+        public async Task<ActionResult<SpecModel>> GetHydratedCurrentRevOfSpec(int aSpecId)
+        {
+            try
+            {
+                var data = await SpecService.GetCurrentRevForSpec(aSpecId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<int>> CreateNewSpec(SpecModel aSpecModel)
         {
             try
             {
                 var data = await SpecService.CreateNewSpec(aSpecModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> RevUpSpec(SpecModel aSpecModel)
+        {
+            try
+            {
+                var data = await SpecService.RevUpSpec(aSpecModel);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

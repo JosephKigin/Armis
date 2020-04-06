@@ -9,5 +9,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int PartId { get; set; }
         public short PartRevId { get; set; }
         public DateTime LastUsedDate { get; set; }
+
+        public virtual Part Part { get; set; }
     }
 }

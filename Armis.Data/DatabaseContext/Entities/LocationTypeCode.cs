@@ -7,12 +7,12 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public LocationTypeCode()
         {
-            Location = new HashSet<Location>();
+            ShopLocation = new HashSet<ShopLocation>();
         }
 
         public string LocTypeCd { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<Location> Location { get; set; }
+        public virtual ICollection<ShopLocation> ShopLocation { get; set; }
     }
 }

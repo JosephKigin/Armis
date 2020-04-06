@@ -13,9 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public int ProcessId { get; set; }
         public string Name { get; set; }
-        public int? CustId { get; set; }
 
-        public virtual Customer Cust { get; set; }
         public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
     }

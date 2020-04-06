@@ -8,6 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public ProcessRevision()
         {
             ProcessStepSeq = new HashSet<ProcessStepSeq>();
+            SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
 
         public int ProcessId { get; set; }
@@ -22,5 +23,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Process Process { get; set; }
         public virtual RevisionStatus RevStatusCdNavigation { get; set; }
         public virtual ICollection<ProcessStepSeq> ProcessStepSeq { get; set; }
+        public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }
 }

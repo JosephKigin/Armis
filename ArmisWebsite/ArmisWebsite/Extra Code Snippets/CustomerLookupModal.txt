@@ -1,0 +1,106 @@
+﻿ @*Customer name input.  The Id and Full Name fields are read only and are populated by the modal.  The modal is a listing of customers that can be selected to populate the form.*@
+    <div class="row">
+        <div class="col-lg-2 mr-1">
+            <div class="btn btn-primary" data-toggle="modal" data-target="#custListModal">Customer</div>
+            <small class="form-text text-muted">A customer is not required.</small>
+        </div>
+        <div class="col-lg-9">
+            <input id="custNameInput" class="form-control w-25" asp-for="ProcessCustomerSearchName" onkeyup="manuallyLoadCustomer()" />
+            <b>Id: </b><input id="custIdInput" type="text" class="form-control w-25" asp-for="ProcessCustomerId" readonly />
+            <b>Full Name: </b><input id="custFullNameInput" type="text" class="form-control w-50" asp-for="ProcessCustomerFullName" readonly />
+        </div>
+    </div>
+
+
+
+@*This will clear the id and full name fields if a character is typed into the name field.*@
+<script>
+    function manuallyLoadCustomer() {
+
+        document.getElementById("custIdInput").value = "";
+        document.getElementById("custFullNameInput").value = "";
+    }
+</script>
+
+@*This is the customer modal.  A customer can be searched by their search name or their full name.  When a customer is selected and the Ok button is pressed, the customer data will be filled into the form above in the name, id, and full name input fields.*@
+<div id="custListModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <label>Search by...</label>
+                <div class="form-group">
+                    <b>Customer Code: </b><input id="inputCustCode" type="text" class="form-control" onkeyup="codeFilterFunction()" />
+                </div>
+                <div class="form-group">
+                    <b>Customer Name: </b><input id="inputCustName" type="text" class="form-control" onkeyup="nameFilterFunction()" />
+                </div>
+
+                <select id="selectCust" class="list-group w-100" size="12">
+                    @foreach (var customer in Model.CustomerList)
+                    {
+                        <option id="@customer.Id" class="list-group-item" value="@customer.SearchName">
+                            @customer.Name (@customer.SearchName)
+                        </option>
+                    }
+                </select>
+
+                <button id="btnCustSelect" class="btn btn-primary my-1" onclick="chooseCustomer()">Ok</button>
+                @*1st function is for the search name filter.  2nd is for the full name filter.  3rd is to load the data into the page.*@
+                <script>
+                    function codeFilterFunction() {
+                        var input = document.getElementById("inputCustCode");
+                        var filter = input.value.toUpperCase();
+                        var selectList = document.getElementById("selectCust");
+                        var options = selectList.getElementsByTagName("option");
+
+                        for (var i = 0; i < options.length; i++) {
+                            if (!options[i].value.includes(filter)) {
+                                options[i].style.display = "none";
+                            }
+                            else {
+                                options[i].style.display = "block";
+                            }
+                        }
+                    }
+
+                    function nameFilterFunction() {
+                        var input = document.getElementById("inputCustName");
+                        var filter = input.value.toUpperCase();
+                        var selectList = document.getElementById("selectCust");
+                        var options = selectList.getElementsByTagName("option");
+
+
+
+
+                        for (var i = 0; i < options.length; i++) {
+                            //String manipulation to get the correct value from the innerHtml
+                            var cleanInnerHtml = options[i].innerHTML.trim();
+                            var endIndex = cleanInnerHtml.indexOf("(");
+                            var name = cleanInnerHtml.slice(0, endIndex);
+                            //End of string manipulation
+
+                            if (!name.includes(filter)) {
+                                options[i].style.display = "none";
+                            }
+                            else {
+                                options[i].style.display = "block";
+                            }
+                        }
+                    }
+
+                    //Gets selected customer within the modal and loads the information into the main customer inputs.
+                    function chooseCustomer() {
+                        var selectCustomer = document.getElementById("selectCust");
+                        var chosenOption = selectCustomer.options[selectCustomer.selectedIndex];
+
+                        document.getElementById("custNameInput").value = chosenOption.value;
+                        document.getElementById("custIdInput").value = chosenOption.id;
+                        document.getElementById("custFullNameInput").value = chosenOption.textContent.trim(); //innerHttp returns & as &amp; .textContent is a much beter alternative. 
+                        $("#custListModal").modal("hide");
+                    }
+
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

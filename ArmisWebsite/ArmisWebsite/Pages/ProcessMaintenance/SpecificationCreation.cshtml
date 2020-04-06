@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{aSpecId:int?}/{aPopUpMessage?}"
 @model ArmisWebsite.Pages.ProcessMaintenance.SpecificationCreationModel
 @{
     ViewData["Title"] = "SpecificationCreation";
@@ -6,113 +6,536 @@
 
 <h1>Specification Creation</h1>
 
-<div class="form-group">
-    <div class="form-group row">
-        <label class="col-lg-2">Spec Code:</label>
-        <input type="text" class="form-control col-lg-6" form="mainForm" asp-for="SpecCode" />
-        <label class="col-lg-2">External Revision: </label>
-        <input type="text" class="form-control col-lg-2" form="mainForm" asp-for="ExternalRev" />
+@*Placeholder for a spec id only if one is passed in*@
+<input type="number" form="mainForm" asp-for="CurrentSpecId" hidden />
+
+<input id="chkRevUpSelected" type="checkbox" form="mainForm" asp-for="WasRevUpSelected" hidden />
+@*If the CurrentSpecId == 0, then a spec was passed in and the user isnt allowed to change the spec code at all.  The External rev and description cannot be edited unless the user chooses to Rev-Up.*@
+<div class="form-group form-inline">
+    <label class="col-lg-2">Spec Code:</label>
+
+    <div class="input-group col-lg-5">
+        <input id="inputSpecCode" type="text" class="form-control" form="mainForm" asp-for="SpecCode" onkeydown="return event.key != 'Enter';" maxlength="20" />
+        <span id="iconInvalidSpecCode" class="input-group-append bg-white border-left-0" hidden>
+            <span class="input-group-text border-danger bg-transparent"><i class="fa fa-times-circle" style="color:red"></i></span>
+        </span>
     </div>
-    <div class="form-group row">
-        <label class="col-lg-2">Spec Description: </label>
-        <textarea type="text" class="form-control col-lg-10" form="mainForm" asp-for="SpecDescription"></textarea>
+
+    <label class="col-lg-2">External Revision: </label>
+    <div class="input-group col-lg-2">
+        <input id="inputNewExternalRev" type="text" class="form-control" form="mainForm" asp-for="ExternalRev" onkeydown="return event.key != 'Enter';" maxlength="5" />
+        <span id="iconInvalidSpecRev" class="input-group-append bg-white border-left-0" hidden>
+            <span class="input-group-text border-danger bg-transparent"><i class="fa fa-times-circle" style="color:red"></i></span>
+        </span>
+    </div>
+    @if (Model.CurrentSpecId != 0)
+    {<input id="inputBtnRevUp" type="button" class="btn btn-primary float-lg-right" value="Rev-Up" onclick="ApplyRevUpStatus()" />}
+</div>
+<div class="form-group form-inline">
+    <label class="col-lg-2">Spec Description: </label>
+    <div class="input-group col-lg-10">
+        <input id="textAreaSpecDescription" type="text" class="form-control" form="mainForm" asp-for="SpecDescription" onkeydown="return event.key != 'Enter';" maxlength="50" />
+        <span id="iconInvalidSpecDesc" class="input-group-append bg-white border-left-0" hidden>
+            <span class="input-group-text border-danger bg-transparent"><i class="fa fa-times-circle" style="color:red"></i></span>
+        </span>
     </div>
 </div>
-<form id="mainForm" method="post">
+@*TODO: This entire section could be boiled down to one partial that is used 6 times, but this design will most likey change anyway.*@
+<form id="mainForm" method="post" onsubmit="return validateForm()">
     <div class="row">
+        @*Sublevel 1*@
         <div class="col-lg-4">
-            <div class="card p-3">
-                <label><b>Sublevel Name</b></label>
-                <input type="text" class="form-control" asp-for="SubLevelName1" onkeydown="return event.key != 'Enter';" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq1" /></p>
-                <label><b>Choice Name(s)</b></label>
+            <div id="cardChoice1" class="card p-3" diabled>
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice1" class="fa fa-times-circle" style="color:red" hidden></i><span class="float-right text-muted circle">1</span></label>
 
+                <input type="text" class="form-control" asp-for="SubLevelName1" onkeydown="return event.key != 'Enter';" maxlength="20" />
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq1" onkeydown="return event.key != 'Enter';" /></p>
+
+                <label><b>Choice Name </b><span id="spanDefaultText1" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder1" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames1 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames1.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup1-@i" class="form-inline">
+                                @if (Model.DefaultChoice1 == i)
+                                {<input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@i" onload="ToggleCheckBoxDisabled(this, 1)" onclick="ToggleCheckBoxes(this, 1)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 1)" />}
 
+                                <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50"/>
+
+                                <a id="iconChoiceDelete1-@i" data-card-number="1" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
                 </div>
                 <button type="button" id="1" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
-                <input id="choiceCount1" type="hidden" value="0" />
-                <input id="defaultChoice1" type="text" asp-for="DefaultChoice1" />
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames1 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount1" type="hidden" value="@Model.ChoiceNames1.Count" /> }
+                else
+                { <input id="choiceCount1" type="hidden" value="0" />}
+                <input id="defaultChoice1" type="text" asp-for="DefaultChoice1" hidden />
             </div>
         </div>
 
+        @*Sublevel 2*@
         <div class="col-lg-4">
-            <div class="card">
+            <div id="cardChoice2" class="card p-3">
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice2" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">2</span></label>
+                <input type="text" class="form-control" asp-for="SubLevelName2" onkeydown="return event.key != 'Enter';" maxlength="20"/>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq2" onkeydown="return event.key != 'Enter';" /></p>
+                <label><b>Choice Name </b><span id="spanDefaultText2" class="text-muted"> (No default selected)</span></label>
+                <div id="choiceInputPlaceholder2" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames2 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames2.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup2-@i" class="form-inline">
+                                @if (Model.DefaultChoice2 == i)
+                                {<input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 2)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 2)" />}
 
+                                <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50"/>
+
+                                <a id="iconChoiceDelete2-@i" data-card-number="2" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="2" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames2 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount2" type="hidden" value="@Model.ChoiceNames2.Count" /> }
+                else
+                { <input id="choiceCount2" type="hidden" value="0" />}
+                <input id="defaultChoice2" type="text" asp-for="DefaultChoice2" hidden />
             </div>
         </div>
 
+        @*Sublevel 3*@
         <div class="col-lg-4">
-            <div class="card">
+            <div id="cardChoice3" class="card p-3">
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice3" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">3</span></label>
+                <input type="text" class="form-control" asp-for="SubLevelName3" onkeydown="return event.key != 'Enter';" maxlength="20"/>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq3" onkeydown="return event.key != 'Enter';"/></p>
+                <label><b>Choice Name </b><span id="spanDefaultText3" class="text-muted"> (No default selected)</span></label>
+                <div id="choiceInputPlaceholder3" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames3 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames3.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup3-@i" class="form-inline">
+                                @if (Model.DefaultChoice3 == i)
+                                {<input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 3)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 3)" />}
 
+                                <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50"/>
+
+                                <a id="iconChoiceDelete3-@i" data-card-number="3" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="3" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames3 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount3" type="hidden" value="@Model.ChoiceNames3.Count" /> }
+                else
+                { <input id="choiceCount3" type="hidden" value="0" />}
+                <input id="defaultChoice3" type="text" asp-for="DefaultChoice3" hidden />
             </div>
         </div>
     </div>
-
+    <br />
     <div class="row">
+        @*Sublevel 4*@
         <div class="col-lg-4">
-            <div class="card">
+            <div id="cardChoice4" class="card p-3">
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice4" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">4</span></label>
+                <input type="text" class="form-control" asp-for="SubLevelName4" onkeydown="return event.key != 'Enter';" maxlength="20"/>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq4" onkeydown="return event.key != 'Enter';" /></p>
+                <label><b>Choice Name </b><span id="spanDefaultText4" class="text-muted"> (No default selected)</span></label>
+                <div id="choiceInputPlaceholder4" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames4 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames4.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup4-@i" class="form-inline">
+                                @if (Model.DefaultChoice4 == i)
+                                {<input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 4)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 4)" />}
 
+                                <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;"  maxlength="50"/>
+
+                                <a id="iconChoiceDelete4-@i" data-card-number="4" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="4" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames4 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount4" type="hidden" value="@Model.ChoiceNames4.Count" /> }
+                else
+                { <input id="choiceCount4" type="hidden" value="0" />}
+                <input id="defaultChoice4" type="text" asp-for="DefaultChoice4" hidden />
             </div>
         </div>
 
+        @*Sublevel 5*@
         <div class="col-lg-4">
-            <div class="card">
+            <div id="cardChoice5" class="card p-3">
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice5" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">5</span></label>
+                <input type="text" class="form-control" asp-for="SubLevelName5" onkeydown="return event.key != 'Enter';" maxlength="20"/>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq5" onkeydown="return event.key != 'Enter';" /></p>
+                <label><b>Choice Name </b><span id="spanDefaultText5" class="text-muted"> (No default selected)</span></label>
+                <div id="choiceInputPlaceholder5" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames5 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames5.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup5-@i" class="form-inline">
+                                @if (Model.DefaultChoice5 == i)
+                                {<input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 5)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 5)" />}
 
+                                <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;"  maxlength="50"/>
+
+                                <a id="iconChoiceDelete5-@i" data-card-number="5" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="5" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames5 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount5" type="hidden" value="@Model.ChoiceNames5.Count" /> }
+                else
+                { <input id="choiceCount5" type="hidden" value="0" />}
+                <input id="defaultChoice5" type="text" asp-for="DefaultChoice5" hidden />
             </div>
         </div>
 
+        @*Sublevel 6*@
         <div class="col-lg-4">
-            <div class="card">
+            <div id="cardChoice6" class="card p-3">
+                <label><b>Sublevel Name</b> <i id="iconInvalidChoice6" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">6</span></label>
+                <input type="text" class="form-control" asp-for="SubLevelName6" onkeydown="return event.key != 'Enter';" maxlength="20"/>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq6" onkeydown="return event.key != 'Enter';" /></p>
+                <label><b>Choice Name </b><span id="spanDefaultText6" class="text-muted"> (No default selected)</span></label>
+                <div id="choiceInputPlaceholder6" class="card p-1">
+                    @if (Model.CurrentSpecId != 0 && Model.ChoiceNames6 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                    {
+                        @for (int i = 0; i < Model.ChoiceNames6.Count; i++)
+                        {
+                            <div id="divChoiceNameGroup6-@i" class="form-inline">
+                                @if (Model.DefaultChoice6 == i)
+                                {<input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 6)" checked /> }
+                                else
+                                { <input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 6)" />}
 
+                                <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50"/>
+
+                                <a id="iconChoiceDelete6-@i" data-card-number="6" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
+                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                </a>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="6" class="btn btn-outline-secondary" onclick="AddChoiceInput(this.id)"><i class="fa fa-plus-circle" style="color:#28a745;"></i></button>
+                @if (Model.CurrentSpecId != 0 && Model.ChoiceNames6 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
+                { <input id="choiceCount6" type="hidden" value="@Model.ChoiceNames6.Count" /> }
+                else
+                { <input id="choiceCount6" type="hidden" value="0" />}
+                <input id="defaultChoice6" type="text" asp-for="DefaultChoice6" hidden />
             </div>
         </div>
     </div>
-
 
     <button class="btn btn-lg btn-success my-2">Submit</button>
+    <a class="btn btn-lg btn-danger text-light" href="~/ProcessMaintenance/SpecificationCreation">Clear</a>
 </form>
+
+@*Preloaded message.*@
+<partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
 
 <script>
     function AddChoiceInput(cardNumber) {
         var count = document.getElementById("choiceCount" + cardNumber).value;
-        var lastInputAdded = document.getElementById('inputChoice' + cardNumber + '-' + count);
+        var areAllPreviousInputsFilled = true;
+        var theBlankInputToFocus = null;
+        for (var i = 0; i < count; i++) {
+            var inputToCheckForBlank = document.getElementById('inputChoice' + cardNumber + '-' + (i));
+            if (inputToCheckForBlank.value == "") {
+                areAllPreviousInputsFilled = false;
+                theBlankInputToFocus = inputToCheckForBlank;
+            }
+        }
+
 
         //lastInputAdded.value won't get checked if the lastInpuitAdded is undefined.
-        if (lastInputAdded == undefined || lastInputAdded.value != "") {
-            count = document.getElementById("choiceCount" + cardNumber).value++;
+        if (areAllPreviousInputsFilled) {
             var newDiv = document.createElement("div");
             newDiv.className = "form-inline";
+            newDiv.id = "divChoiceNameGroup" + cardNumber + "-" + count;
 
-            var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + (count + 1) + '" type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeydown="return event.key != `Enter`;"/>';
-            newDiv.innerHTML += newChoiceInput;
-
-            var newCheckBox = '<input type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + count + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')"/>';
+            var newCheckBox = '<input id="chkDefaultChoice' + cardNumber + '-' + count + '" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + count + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')" disabled/>';
             newDiv.innerHTML += newCheckBox;
 
+            var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this,' + cardNumber + ')" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';
+            newDiv.innerHTML += newChoiceInput;
+
+            var newDeleteAnchor = '<a id="iconChoiceDelete' + cardNumber + '-' + count + '" data-card-number="' + cardNumber + '" data-choice="' + count + '" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)"> <i class="fa fa-minus-circle ml-1" style="color: red; "></i> </a>';
+            newDiv.innerHTML += newDeleteAnchor;
+
             document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newDiv);
-            document.getElementById('inputChoice' + cardNumber + '-' + (count + 1)).focus();
+            document.getElementById('inputChoice' + cardNumber + '-' + (count)).focus();
+
+            document.getElementById("choiceCount" + cardNumber).value++;
         }
         else {
-            document.getElementById('inputChoice' + cardNumber + '-' + (count)).focus();
+            theBlankInputToFocus.focus();
         }
 
     }
 
     function ToggleCheckBoxes(chkBox, cardNumber) {
         var checkBoxes = document.getElementsByName(chkBox.name);
+
         for (var i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i] != chkBox) {
                 checkBoxes[i].checked = false;
             }
         }
+
+        //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
         if (chkBox.checked) {
             document.getElementById("defaultChoice" + cardNumber).value = chkBox.value;
+            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + chkBox.value).value + " is default)";
         }
         else {
             document.getElementById("defaultChoice" + cardNumber).value = '';
+            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(No default selected)";
         }
-        //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
-
     }
+
+    function ToggleCheckBoxDisabled(anInput, aCardNumber) {
+        var theCheckBox = document.getElementById("chkDefaultChoice" + aCardNumber + "-" + anInput.dataset.choiceNumber);
+        if (anInput.value.trim() == "") {
+            if (theCheckBox.checked) {
+                document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(No default selected)";
+            }
+            theCheckBox.checked = false;
+            theCheckBox.disabled = true;
+
+        }
+        else {
+            theCheckBox.disabled = false;
+        }
+
+        if (theCheckBox.checked) {
+            document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(" + anInput.value + " is default)";
+        }
+    }
+
+    function ApplyRevUpStatus() { //This sets the rev-up status to true and activates all input fields and buttons and unhides all anchors.
+        document.getElementById("chkRevUpSelected").checked = true;
+
+        var allInputElements = document.getElementsByTagName("input");
+        for (var i = 0; i < allInputElements.length; i++) {
+            if (allInputElements[i].id != "inputBtnRevUp") //This makes sure the Rev-Up button (which is actually an input of type button) does not get disabled.
+            { allInputElements[i].disabled = false; }
+            else { allInputElements[i].disabled = true; }
+        }
+
+        var allAnchorElements = document.getElementsByTagName("a");
+        for (var i = 0; i < allAnchorElements.length; i++) {
+            allAnchorElements[i].hidden = false;
+        }
+
+        var allButtonElements = document.getElementsByTagName("button");
+        for (var i = 0; i < allButtonElements.length; i++) {
+            allButtonElements[i].disabled = false;
+        }
+    }
+
+    function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
+        var divChoiceGroupToRemove = document.getElementById("divChoiceNameGroup" + aCardNumber + "-" + aGroupChoiceNum);
+
+        if (document.getElementById("chkDefaultChoice" + aCardNumber + "-" + aGroupChoiceNum).checked == true) {
+            document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(No default selected)";
+        }
+
+        divChoiceGroupToRemove.parentNode.removeChild(divChoiceGroupToRemove);
+        document.getElementById("choiceCount" + aCardNumber).value--;
+
+        var remainingChoiceDivGroups = document.getElementById("choiceInputPlaceholder" + aCardNumber).children;
+        for (var i = 0; i < remainingChoiceDivGroups.length; i++) {
+            remainingChoiceDivGroups[i].id = "divChoiceNameGroup" + aCardNumber + "-" + i;
+
+            var divChoiceItems = remainingChoiceDivGroups[i].children;
+            for (var j = 0; j < divChoiceItems.length; j++) {
+                if (divChoiceItems[j].nodeName == "INPUT") {
+                    if (divChoiceItems[j].type == "text") {
+                        divChoiceItems[j].id = "inputChoice" + aCardNumber + "-" + i;
+                        divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]"
+                        divChoiceItems[j].dataset.choiceNumber = i;
+                    }
+                    else {
+                        divChoiceItems[j].id = "chkDefaultChoice" + aCardNumber + "-" + i;
+                        divChoiceItems[j].value = i;
+                    }
+                }
+                else {
+                    divChoiceItems[j].id = "iconChoiceDelete" + aCardNumber + "-" + i;
+                    divChoiceItems[j].dataset.choice = i;
+                }
+            }
+
+        }
+    }
+
+    function validateForm() {
+        var isValid = true;
+        var theSpecCodeInput = document.getElementById("inputSpecCode");
+        var theSpecRev = document.getElementById("inputNewExternalRev");
+        var theSpecDescription = document.getElementById("textAreaSpecDescription");
+
+        if (theSpecCodeInput.value == "") {
+            theSpecCodeInput.classList = "form-control border-danger border-right-0";
+            document.getElementById("iconInvalidSpecCode").hidden = false;
+            isValid = false;
+        }
+        else {
+            theSpecCodeInput.classList = "form-control";
+            document.getElementById("iconInvalidSpecCode").hidden = true;
+        }
+
+        if (theSpecRev.value == "") {
+            theSpecRev.classList = "form-control border-danger border-right-0";
+            document.getElementById("iconInvalidSpecRev").hidden = false;
+            isValid = false;
+        }
+        else {
+            theSpecRev.classList = "form-control";
+            document.getElementById("iconInvalidSpecRev").hidden = true;
+        }
+
+        if (theSpecDescription.value == "") {
+            theSpecDescription.classList = "form-control border-danger border-right-0";
+            document.getElementById("iconInvalidSpecDesc").hidden = false;
+            isValid = false;
+        }
+        else {
+            theSpecDescription.classList = "form-control";
+            document.getElementById("iconInvalidSpecDesc").hidden = true;
+        }
+
+        if (!validatChoiceCard(document.getElementById("cardChoice1"))) { isValid = false; }
+        if (!validatChoiceCard(document.getElementById("cardChoice2"))) { isValid = false; }
+        if (!validatChoiceCard(document.getElementById("cardChoice3"))) { isValid = false; }
+        if (!validatChoiceCard(document.getElementById("cardChoice4"))) { isValid = false; }
+        if (!validatChoiceCard(document.getElementById("cardChoice5"))) { isValid = false; }
+        if (!validatChoiceCard(document.getElementById("cardChoice6"))) { isValid = false; }
+        return isValid;
+    }
+
+    function validatChoiceCard(aChoiceCard) {
+        var cardInputs = aChoiceCard.getElementsByTagName("input"); //All the inputs from card
+        var isSubLevelNameFilled = false; //If sublevel name is filled in, this will be true.
+        var isChoiceFilled = false; //If at lease 1 choice name is filled in, this will be true
+        //Iterating through the inputs
+        for (var i = 0; i < cardInputs.length; i++) {
+            //Finds the sublevel name input
+            if (cardInputs[i].id.startsWith("SubLevelName")) {
+                if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isSubLevelNameFilled = true; }
+                else { isSubLevelNameFilled = false; }
+            }
+            //Finds the choice name inputs only if a choice name that has been filled has not been found yet.
+            if (!isChoiceFilled) {
+                if (cardInputs[i].id.startsWith("inputChoice")) {
+                    if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isChoiceFilled = true; }
+                    else { isChoiceFilled = false; }
+                }
+            }
+        }
+
+        if (isSubLevelNameFilled != isChoiceFilled) {
+            aChoiceCard.classList = "card p-3 border-danger";
+            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
+            return false;
+        }
+        else {
+            aChoiceCard.classList = "card p-3";
+            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = true;
+            return true;
+        }
+    }
+
+    //if (isSubLevelNameFilled == areAnyChoicesFilled) {
+
+    //    return true;
+    //}
+    //else {
+    //    aChoiceCardInputs.classList += " border-danger";
+    //    aChoiceCardInputs.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
+    //    return false;
+    //}
 </script>
+
+@if (Model.CurrentSpecId != 0)
+{
+    <script>
+        function UpdateDefaultChoiceSpanOnPageLoad() {
+            for (var i = 0; i < 6; i++) { //Go through each of the 6 cards
+                var divChoiceSectionItems = document.getElementById("choiceInputPlaceholder" + (i + 1)).children;
+
+                for (var s = 0; s < divChoiceSectionItems.length; s++) { //Go through each row of choice name divs that contains the choice name input, isDault checkbox, and the icon to delete
+                    var divChoiceRowItems = divChoiceSectionItems[s].children;
+
+                    for (var r = 0; r < divChoiceRowItems.length; r++) {
+                        if (divChoiceRowItems[r].type == "text") {
+                            ToggleCheckBoxDisabled(divChoiceRowItems[r], (i + 1));
+                        }
+                    }
+                }
+
+            }
+        }
+
+        window.onload = UpdateDefaultChoiceSpanOnPageLoad();
+
+        function DisablePage() {
+            var allInputElements = document.body.getElementsByTagName("input");
+            for (var i = 0; i < allInputElements.length; i++) {
+                if (allInputElements[i].id != "inputBtnRevUp") //This makes sure the Rev-Up button (which is actually an input of type button) does not get disabled.
+                { allInputElements[i].disabled = true; }
+            }
+
+            var allAnchorElements = document.body.getElementsByTagName("a");
+            for (var i = 0; i < allAnchorElements.length; i++) {
+                if (allAnchorElements[i].classList.contains("nav-link text-dark")) //Ignore all anchors that have nav in the class names. <nav> classes are only from the layout and are on the top of the page.
+                { allAnchorElements[i].hidden = true; }
+            }
+
+            var allButtonElements = document.body.getElementsByTagName("button");
+            for (var i = 0; i < allButtonElements.length; i++) {
+                allButtonElements[i].disabled = true;
+            }
+        }
+
+        window.onload = DisablePage();
+    </script>
+}
