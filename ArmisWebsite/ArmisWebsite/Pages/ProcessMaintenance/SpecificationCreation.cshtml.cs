@@ -16,11 +16,12 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         //Data Access
         public ISpecDataAccess SpecDataAccess { get; set; }
         //Data Models 
+        public List<SpecModel> AllSpecModels { get; set; }
 
         //Front-End Models
         public string PopUpMessage { get; set; }
         //Current
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public int CurrentSpecId { get; set; }//This will only get a value if the current spec is being reved-up
         [BindProperty]
         public string SpecCode { get; set; }
@@ -103,17 +104,18 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             try
             {
                 PopUpMessage = aPopUpMessage;
-
+                //TODO: aSpecId shouldn't actually be used anymore, this needs to be removed and cleaned up.
                 if (aSpecId != 0 && aSpecId != null)
                 {
-                    //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. 
-                    CurrentSpecId = aSpecId ?? 0;
+                    if (CurrentSpecId == 0)
+                    {
+                        //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. 
+                        CurrentSpecId = aSpecId ?? 0;
+                    }
+
                 }
 
-                if (CurrentSpecId != 0)
-                {
-                    await SetUpProperties(CurrentSpecId);
-                }
+                await SetUpProperties(CurrentSpecId);
 
                 return Page();
             }
@@ -195,7 +197,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     await SetUpProperties(theReturnedSpecId);
                     PopUpMessage = "Spec created successfully.";
                 }
-                else if(WasRevUpSelected) //Spec is being updated. Only stuff under the spec level can be updated.  If anything on the Spec level is updated, then it should just be a new Revision.
+                else if (WasRevUpSelected) //Spec is being updated. Only stuff under the spec level can be updated.  If anything on the Spec level is updated, then it should just be a new Revision.
                 {
                     //TODO: This section is for rev-up
                     theSpec.Id = CurrentSpecId;
@@ -204,7 +206,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     PopUpMessage = "Spec reved-up successfully";
                 }
 
-                return RedirectToPage("/ProcessMaintenance/SpecificationCreation", new { aSpecId = theReturnedSpecId, aPopUpMessage = PopUpMessage });
+                return Page();
             }
             catch (Exception ex)
             {
@@ -213,20 +215,28 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         }
 
         //As of now, this will only get hit if a spec id is passed into the page.
-        public async Task SetUpProperties(int aSpecId)
+        public async Task SetUpProperties(int? aSpecId)
         {
-            var theCurrentSpec = await SpecDataAccess.GetHydratedCurrentRevOfSpec(aSpecId);
-
-            SpecCode = theCurrentSpec.Code;
-            SpecDescription = theCurrentSpec.Description;
-            ExternalRev = theCurrentSpec.ExternalRev;
-
-            theCurrentSpec.SubLevels.OrderBy(i => i.LevelSeq);
-
-            foreach (var sublevel in theCurrentSpec.SubLevels)
+            if (aSpecId != null && aSpecId != 0)
             {
-                BuildPageFromModels(sublevel);
+                int theSpecId = aSpecId ?? default(int); //The spec id passed into SpecDataAccess.GetHydratedCurrentRevOfSpec needs to be of type int, not int?
+                var theCurrentSpec = await SpecDataAccess.GetHydratedCurrentRevOfSpec(theSpecId);
+
+                SpecCode = theCurrentSpec.Code;
+                SpecDescription = theCurrentSpec.Description;
+                ExternalRev = theCurrentSpec.ExternalRev;
+
+                theCurrentSpec.SubLevels.OrderBy(i => i.LevelSeq);
+
+                foreach (var sublevel in theCurrentSpec.SubLevels)
+                {
+                    BuildPageFromModels(sublevel);
+                }
             }
+
+            var tempAllSpecModels = await SpecDataAccess.GetAllHydratedSpecsWithOnlyCurrentRev();
+            AllSpecModels = tempAllSpecModels.ToList();
+
         }
 
         //This method loads up some models to be added into a spec.  This is used in the default OnPost so far.
@@ -243,13 +253,15 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             if (aChoiceNamesList != null && aChoiceNamesList.Any())
             {
                 var theChoices = new List<SpecSubLevelChoiceModel>();
+                byte choiceCount = 0; //Keeps track of seq for choices.
                 for (byte i = 0; i < aChoiceNamesList.Count; i++)
                 {
                     if (aChoiceNamesList[i] != null)
                     {
+                        choiceCount++;
                         theChoices.Add(new SpecSubLevelChoiceModel()
                         {
-                            ChoiceSeq = i,
+                            ChoiceSeq = choiceCount,
                             Name = aChoiceNamesList[i]
                         });
                     }

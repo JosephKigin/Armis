@@ -36,6 +36,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithOnlyCurrentRev()
+        {
+            try
+            {
+                var data = await SpecService.GetAllHydratedSpecsWithOnlyCurrentRev();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{aSpecId}/{aSpecRevId}")]
         public async Task<ActionResult<IEnumerable<SpecSubLevelModel>>> GetHydratedSubLevelsForSpec(int aSpecId, short aSpecRevId)
         {

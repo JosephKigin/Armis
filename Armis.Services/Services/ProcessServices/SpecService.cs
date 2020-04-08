@@ -33,6 +33,20 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entities.ToHydratedModels();
         }
 
+        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev()
+        {
+            var allSpecEntities = await context.Specification.Include(i => i.SpecSubLevel).ThenInclude(i => i.SpecChoice).ToListAsync();
+            var uniqueSpecIds = allSpecEntities.Select(i => i.SpecId).Distinct();
+            var specModels = new List<SpecModel>();
+
+            foreach (var specId in uniqueSpecIds)
+            {
+                specModels.Add(allSpecEntities.Where(i => i.SpecId == specId).OrderByDescending(s => s.SpecRevId).FirstOrDefault().ToHydratedModel());
+            }
+
+            return specModels;
+        }
+
         public async Task<IEnumerable<SpecSubLevelModel>> GetSpecSubLevels(int aSpecId, short aSpecRevId)
         {
             var entities = await context.SpecSubLevel.Where(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId)
@@ -84,7 +98,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
                 await context.SaveChangesAsync();
 
-                
+                await transaction.CommitAsync();
 
                 return theNewSpecId;
             }
@@ -121,7 +135,7 @@ namespace Armis.DataLogic.Services.ProcessServices
 
                 await context.SaveChangesAsync();
 
-                transaction.Commit();
+                await transaction.CommitAsync();
 
                 return aSpecModel.Id;
             }

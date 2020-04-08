@@ -17,19 +17,19 @@
                 <ul id="specificationList" class="list-group" style="height:45em; overflow-y:scroll">
                     @foreach (var spec in Model.AllSpecs)
                     {
-                        <li id="@spec.Code" class="list-group-item">
-                            <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@spec.InternalRev">
-                                <b>@spec.Code</b>
-                                Rev: @if (spec.ExternalRev.Trim() != "")
-                                {<b>@spec.ExternalRev</b> }
-                            else
-                            {<b>NONE</b>}
-                                Sublevels: <b>[@spec.SubLevels.Count()]</b>
-                            </a>
-                            <a class"btn" style="float:right" asp-page="./SpecificationCreation" asp-route-aSpecId="@spec.Id"><i class="fa fa-edit"></i></a>
-                            @if (spec.Description.Trim() != "")
-                            {<p> Description: <b>@spec.Description</b> </p>}
-                        </li>
+                    <li id="@spec.Code" class="list-group-item">
+                        <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@spec.InternalRev">
+                            <b>@spec.Code</b>
+                            Rev: @if (spec.ExternalRev.Trim() != "")
+                            {<b>@spec.ExternalRev</b> }
+                        else
+                        {<b>NONE</b>}
+                            Sublevels: <b>[@spec.SubLevels.Count()]</b>
+                        </a>
+                        <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
+                        @if (spec.Description.Trim() != "")
+                        {<p> Description: <b>@spec.Description</b> </p>}
+                    </li>
                     }
                 </ul>
         </div>

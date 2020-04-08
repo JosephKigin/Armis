@@ -114,11 +114,12 @@ namespace ArmisWebsite
             try
             {
                 var theAllOperationsTemp = await OperationDataAccess.GetAllOperations();
-                AllOperations = theAllOperationsTemp.ToList();
+                AllOperations = theAllOperationsTemp.OrderBy(i => i.Name).ToList();
 
                 var theAllOperationGroupsTemp = await OperationDataAccess.GetAllOperationGroups();
-                AllOperationGroups = theAllOperationGroupsTemp.OrderByDescending(i => i.Name).ToList();
+                AllOperationGroups = theAllOperationGroupsTemp.OrderBy(i => i.Name).ToList();
 
+                //Writing all the values for the current operation to the bound properties.
                 if (anOperationId != 0)
                 {
                     var theCurrentOperation = AllOperations.FirstOrDefault(i => i.Id == anOperationId);

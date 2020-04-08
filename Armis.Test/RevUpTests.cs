@@ -166,7 +166,7 @@ namespace Armis.Test
 
             //lock the rev and get a new Procees rev model to validate
             theReturnProcessRevisionModelToValidate = await ProcessService.UpdateUnlockToLockRev(theReturnProcessRevision.ProcessId, theReturnProcessRevision.ProcessRevId);
-            var theCurrProcessRevisionModelWithSteps = await ProcessService.GetCurrentProcessRevWithSteps(theNewAddedProcessID);
+            var theCurrProcessRevisionModelWithSteps = await ProcessService.GetHydratedCurrentProcessRev(theNewAddedProcessID);
 
             //assert ProcessService.UpdateUnlockToLockRev returned model correctly (not testing steps!)
             Assert.AreEqual(theCurrProcessRevisionModelWithSteps.Comments, theReturnProcessRevisionModelToValidate.Comments);
@@ -220,7 +220,7 @@ namespace Armis.Test
 
             //lock the rev and get a new Procees rev model to validate
             _ = await ProcessService.UpdateUnlockToLockRev(theReturnProcessRevision1.ProcessId, theReturnProcessRevision1.ProcessRevId);
-            _ = await ProcessService.GetCurrentProcessRevWithSteps(theNewProcessID);
+            _ = await ProcessService.GetHydratedCurrentProcessRev(theNewProcessID);
 
             /******************************** make Revision 2 ********************************/
             var theGeneratedProcessRevision2Model = GenerateProcessRevisionModel(theNewProcessID, theArbitraryRev2EmpID);
@@ -264,7 +264,7 @@ namespace Armis.Test
             //LOCK and Validate
             var theReturnedLockedRevision2Model = await ProcessService.UpdateUnlockToLockRev(theReturnedNewRevision2Model.ProcessId, theReturnedNewRevision2Model.ProcessRevId);
             Assert.AreEqual("LOCKED", theReturnedLockedRevision2Model.RevStatusCd);
-            ProcessRevisionModel theCurrProcessRevisionModelWithSteps = await ProcessService.GetCurrentProcessRevWithSteps(theNewProcessID);
+            ProcessRevisionModel theCurrProcessRevisionModelWithSteps = await ProcessService.GetHydratedCurrentProcessRev(theNewProcessID);
             Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);
 
             var theReturnProcessRevisionModelListPostLock = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions;
