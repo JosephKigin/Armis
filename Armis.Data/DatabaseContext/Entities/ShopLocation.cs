@@ -9,6 +9,8 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             Area = new HashSet<Area>();
             OrderLocation = new HashSet<OrderLocation>();
+            PartTranFromLocationNavigation = new HashSet<PartTran>();
+            PartTranToLocationNavigation = new HashSet<PartTran>();
         }
 
         public int LocationId { get; set; }
@@ -21,5 +23,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual LocationTypeCode LocTypeCdNavigation { get; set; }
         public virtual ICollection<Area> Area { get; set; }
         public virtual ICollection<OrderLocation> OrderLocation { get; set; }
+        public virtual ICollection<PartTran> PartTranFromLocationNavigation { get; set; }
+        public virtual ICollection<PartTran> PartTranToLocationNavigation { get; set; }
     }
 }

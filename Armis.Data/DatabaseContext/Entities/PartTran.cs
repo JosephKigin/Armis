@@ -8,21 +8,27 @@ namespace Armis.Data.DatabaseContext.Entities
         public int PartId { get; set; }
         public short PartRevId { get; set; }
         public int TranSeqNum { get; set; }
-        public string TranType { get; set; }
-        public int? OrderId { get; set; }
+        public short TranTypeId { get; set; }
+        public int OrderId { get; set; }
         public int? QuoteNum { get; set; }
         public DateTime? Date { get; set; }
         public int? TranQty { get; set; }
-        public int? ProcessId { get; set; }
+        public int ProcessId { get; set; }
+        public int ProcessRevId { get; set; }
         public decimal? PiecePrice { get; set; }
-        public string PriceCd { get; set; }
+        public short? PriceCodeId { get; set; }
         public string LegacyProcess { get; set; }
+        public int? FromLocation { get; set; }
+        public int? ToLocation { get; set; }
         public DateTime SysDate { get; set; }
         public TimeSpan SysTime { get; set; }
 
+        public virtual ShopLocation FromLocationNavigation { get; set; }
         public virtual OrderHead Order { get; set; }
-        public virtual Part Part { get; set; }
-        public virtual PriceCode PriceCdNavigation { get; set; }
-        public virtual Process Process { get; set; }
+        public virtual PartRevision Part { get; set; }
+        public virtual PriceCode PriceCode { get; set; }
+        public virtual ProcessRevision Process { get; set; }
+        public virtual ShopLocation ToLocationNavigation { get; set; }
+        public virtual TranType TranType { get; set; }
     }
 }

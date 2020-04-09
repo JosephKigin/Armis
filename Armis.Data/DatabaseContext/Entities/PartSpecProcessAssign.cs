@@ -12,7 +12,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public short SpecAssignId { get; set; }
         public DateTime LastUsedDate { get; set; }
 
-        public virtual Part Part { get; set; }
+        public virtual PartRevision Part { get; set; }
         public virtual SpecProcessAssign Spec { get; set; }
     }
 }

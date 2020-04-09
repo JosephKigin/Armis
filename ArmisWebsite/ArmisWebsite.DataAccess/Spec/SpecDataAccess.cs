@@ -17,9 +17,16 @@ namespace ArmisWebsite.DataAccess.Process
             Config = aConfig;
         }
 
+        //public async Task<IEnumerable<SpecModel>> GetAll
+
         public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecs()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecs");
+        }
+
+        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecsWithOnlyCurrentRev");
         }
 
         public async Task<int> CreateNewHydratedSpec(SpecModel aSpecModel)

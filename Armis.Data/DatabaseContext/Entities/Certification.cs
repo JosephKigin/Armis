@@ -21,7 +21,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Description { get; set; }
 
         public virtual QualityStandard QualStdCdNavigation { get; set; }
-        public virtual Specification Spec { get; set; }
+        public virtual SpecificationRevision Spec { get; set; }
         public virtual ICollection<CustForm> CustForm { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }

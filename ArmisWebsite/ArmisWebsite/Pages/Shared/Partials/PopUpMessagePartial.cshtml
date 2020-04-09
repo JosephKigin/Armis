@@ -3,14 +3,12 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<script>
-    function popUpMessage(aMessage) {
-        alert(aMessage);
-    };
-</script>
-
 @if (Model != "" && Model != null)
 {
-    <script>popUpMessage('@Model')</script>
+    <span id="responseMessage" class="alert alert-success"><i class="fas fa-check"></i> @Model</span>
+
+    <script>
+        $("#responseMessage").delay(3000).fadeOut(1000);
+    </script>
 }
 

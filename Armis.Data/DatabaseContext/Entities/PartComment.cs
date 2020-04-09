@@ -12,5 +12,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string ProcessComments { get; set; }
         public string MaskingInstructions { get; set; }
         public string PrintWithOrder { get; set; }
+
+        public virtual PartRevision Part { get; set; }
     }
 }

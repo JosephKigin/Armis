@@ -22,11 +22,41 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllSpecsWithCurrentRev() //TODO: This is a very long call to make.  Maybe there is a better way to do this?
+        {
+            try
+            {
+                var data = await SpecService.GetAllSpecsWithCurrentRev();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecs()
         {
             try
             {
                 var data = await SpecService.GetAllHydratedSpecs();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithOnlyCurrentRev() //TODO: This is a very long call to make.  Maybe there is a better way to do this?
+        {
+            try
+            {
+                var data = await SpecService.GetAllHydratedSpecsWithOnlyCurrentRev();
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -56,7 +86,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await SpecService.GetCurrentRevForSpec(aSpecId);
+                var data = await SpecService.GetHydratedCurrentRevForSpec(aSpecId);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -82,7 +112,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> RevUpSpec(SpecModel aSpecModel)
+        public async Task<ActionResult<int>> RevUpSpec(SpecRevModel aSpecModel)
         {
             try
             {
