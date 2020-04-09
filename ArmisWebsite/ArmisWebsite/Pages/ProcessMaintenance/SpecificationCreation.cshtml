@@ -7,7 +7,8 @@
 <h1>Specification Entry</h1>
 
 @*Placeholder for a spec id only if one is passed in*@
-<input type="number" form="mainForm" asp-for="CurrentSpecId" hidden />
+<input id="hdnCurrentSpecId" form="mainForm" asp-for="CurrentSpecId" value="@Model.CurrentSpecId" hidden/> 
+    @*TODO: If you create a spec and then immediately rev-up, this input won't update unless the value="@Model.CurrentSpecId" is there.  This is redundent.  Not wrong, but not right.*@
 <input id="btnFindSpec" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSpecSelect" value="Find Spec" />
 <input id="chkRevUpSelected" type="checkbox" form="mainForm" asp-for="WasRevUpSelected" hidden />
 
@@ -293,7 +294,7 @@
             </div>
         </div>
     </div>
-
+    
     <button class="btn btn-lg btn-success my-2">Submit</button>
     <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/ProcessMaintenance/SpecificationCreation">Clear</a>
     @*Preloaded message.*@
@@ -566,7 +567,7 @@
             for (var i = 0; i < allInputElements.length; i++) {
                 //Ignore the Rev-Up button (which is actually an input of type button) getting disabled.
                 //Also ignore Find Spec button.
-                if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "btnFindSpec") { allInputElements[i].disabled = true; }
+                if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "btnFindSpec" && allInputElements[i].id != "hdnCurrentSpecId") { allInputElements[i].disabled = true; }
             }
 
             var allAnchorElements = document.body.getElementsByTagName("a");
@@ -584,5 +585,6 @@
         }
 
         window.onload = DisablePage();
+
     </script>
 }
