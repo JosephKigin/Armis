@@ -112,11 +112,11 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> RevUpSpec(SpecRevModel aSpecModel)
+        public async Task<ActionResult<int>> RevUpSpec(SpecRevModel aSpecRevModel)
         {
             try
             {
-                var data = await SpecService.RevUpSpec(aSpecModel);
+                var data = await SpecService.RevUpSpec(aSpecRevModel);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

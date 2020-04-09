@@ -142,10 +142,12 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
                 var theSpecRev = new SpecRevModel()
                 {
+                    SpecId = CurrentSpecId,
                     Description = SpecDescription,
                     ExternalRev = ExternalRev,
-                    DateModified = DateTime.Now.Date,
-                    TimeModified = DateTime.Now.TimeOfDay
+                    DateModified = DateTime.Now,
+                    TimeModified = DateTime.Now.TimeOfDay,
+                    EmployeeNumber = 941
                 };
 
                 var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
@@ -210,7 +212,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 {
                     //TODO: This section is for rev-up
                     theSpec.Id = CurrentSpecId;
-                    theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpec);
+                    theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpecRev);
                     PopUpMessage = "Spec reved-up successfully";
                 }
                 await SetUpProperties(theReturnedSpecId);
