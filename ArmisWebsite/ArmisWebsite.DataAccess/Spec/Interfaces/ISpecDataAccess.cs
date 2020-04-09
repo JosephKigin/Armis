@@ -12,6 +12,6 @@ namespace ArmisWebsite.DataAccess.Process.Interfaces
         Task<int> CreateNewHydratedSpec(SpecModel aSpecModel);
         Task<SpecModel> GetHydratedCurrentRevOfSpec(int aSpecId);
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev();
-        Task<int> RevUpSpec(SpecModel aSpecModel);
+        Task<int> RevUpSpec(SpecRevModel aSpecModel);
     }
 }

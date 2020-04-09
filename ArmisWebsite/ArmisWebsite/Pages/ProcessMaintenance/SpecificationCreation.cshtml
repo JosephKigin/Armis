@@ -386,9 +386,9 @@
 
         var allInputElements = document.getElementsByTagName("input");
         for (var i = 0; i < allInputElements.length; i++) {
-            if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "inputSpecCode") //Rev-up button and Spec Code get/stay disabled when rev-up is clicked.
-            { console.log(allInputElements[i].id); allInputElements[i].disabled = false; }
-            else { allInputElements[i].disabled = true; }
+            allInputElements[i].disabled = false;
+            if (allInputElements[i].id == "inputBtnRevUp" || allInputElements[i].id == "inputSpecCode") //Rev-up button and Spec Code get/stay disabled when rev-up is clicked.
+            { allInputElements[i].readOnly = true; }
         }
 
         var allAnchorElements = document.getElementsByTagName("a");
