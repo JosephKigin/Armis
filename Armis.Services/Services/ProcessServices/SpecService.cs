@@ -128,7 +128,8 @@ namespace Armis.DataLogic.Services.ProcessServices
                 //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
                 foreach (var subLevel in theSubLevelEntities)
                 {
-                    subLevel.DefaultChoice = theSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                    var theDefualtChoice = theSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                    subLevel.DefaultChoice = (theDefualtChoice != 0)? theDefualtChoice : null; //If there isn't a default choice, it will get sent in as 0.  On the database side, it needs to be null.
                 }
 
                 context.UpdateRange(theSubLevelEntities);

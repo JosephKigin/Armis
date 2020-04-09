@@ -137,6 +137,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             {
                 var theSpec = new SpecModel()
                 {
+                    Id = CurrentSpecId,
                     Code = SpecCode
                 };
 
