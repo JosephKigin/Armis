@@ -44,7 +44,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Step PreBakeOptionNavigation { get; set; }
         public virtual ProcessRevision Process { get; set; }
         public virtual MaterialSeries SeriesOptionNavigation { get; set; }
-        public virtual Specification Spec { get; set; }
+        public virtual SpecificationRevision Spec { get; set; }
         public virtual SpecChoice SpecChoice { get; set; }
         public virtual SpecChoice SpecChoice1 { get; set; }
         public virtual SpecChoice SpecChoice2 { get; set; }

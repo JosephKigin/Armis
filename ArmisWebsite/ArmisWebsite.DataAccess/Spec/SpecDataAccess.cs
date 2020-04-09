@@ -17,6 +17,8 @@ namespace ArmisWebsite.DataAccess.Process
             Config = aConfig;
         }
 
+        //public async Task<IEnumerable<SpecModel>> GetAll
+
         public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecs()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecs");

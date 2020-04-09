@@ -10,53 +10,52 @@ namespace Armis.DataLogic.ModelExtensions.ProcessExtensions.SpecExtensions
     {
         public static SpecModel ToModel(this Specification aSpec)
         {
-            return new SpecModel()
+            return new SpecModel
             {
                 Id = aSpec.SpecId,
-                InternalRev = aSpec.SpecRevId,
-                Description = aSpec.Description,
-                Code = aSpec.SpecCode,
-                ExternalRev = aSpec.ExternalRev
+                Code = aSpec.SpecCode
             };
+        }
+
+        public static IEnumerable<SpecModel> ToModels(this IEnumerable<Specification> aSpecs)
+        {
+            var resultSpecModels = new List<SpecModel>();
+            
+            foreach (var spec in aSpecs)
+            {
+                resultSpecModels.Add(spec.ToModel());
+            }
+
+            return resultSpecModels;
         }
 
         public static SpecModel ToHydratedModel(this Specification aSpec)
         {
-            var resultModel = aSpec.ToModel();
-
-            var subLevelList = new List<SpecSubLevelModel>();
-            foreach (var subLevel in aSpec.SpecSubLevel)
+            return new SpecModel
             {
-                subLevelList.Add(subLevel.ToHydratedModel());
-            }
-            resultModel.SubLevels = subLevelList;
-
-            return resultModel;
+                Id = aSpec.SpecId,
+                Code = aSpec.SpecCode,
+                SpecRevModels = aSpec.SpecificationRevision.ToHydratedModels()
+            };
         }
 
-        public static IEnumerable<SpecModel> ToHydratedModels(this IEnumerable<Specification> aSpecList)
+        public static IEnumerable<SpecModel> ToHydratedModels(this IEnumerable<Specification> aSpecs)
         {
-            var resultModelList = new List<SpecModel>();
+            var resultSpecModels = new List<SpecModel>();
 
-            foreach (var spec in aSpecList)
+            foreach (var spec in aSpecs)
             {
-                resultModelList.Add(spec.ToHydratedModel());
+                resultSpecModels.Add(spec.ToHydratedModel());
             }
-
-            return resultModelList;
+            return resultSpecModels;
         }
 
-        public static Specification ToEntity(this SpecModel aSpecModel, int aSpecId, short aSpecRevId)
+        public static Specification ToEntity(this SpecModel aSpecModel, int aSpecId) //A spec Id needs to be passed in because it won't be known until the service level of the API.
         {
-            return new Specification()
+            return new Specification
             {
                 SpecId = aSpecId,
-                SpecRevId = aSpecRevId,
-                SpecCode = aSpecModel.Code,
-                Description = aSpecModel.Description,
-                ExternalRev = aSpecModel.ExternalRev,
-                SamplePlan = null, //TODO: Figure out w/ sample plan
-                NadCapSamplePlan = null //TODO: See Above
+                SpecCode = aSpecModel.Code
             };
         }
     }

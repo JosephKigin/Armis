@@ -21,30 +21,63 @@ namespace Armis.DataLogic.Services.ProcessServices
             context = aContext;
         }
 
+
+
         public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecs()
         {
             var entities = await context.Specification
-                                            .Include(i => i.SpecSubLevel)
-                                                .ThenInclude(i => i.SpecChoice)
-                                                    .ToListAsync();
+                                            .Include(i => i.SpecificationRevision)
+                                                .ThenInclude(i => i.SpecSubLevel)
+                                                    .ThenInclude(i => i.SpecChoice)
+                                                        .ToListAsync();
 
             if (entities == null || !entities.Any()) { throw new Exception("No Specs were returned."); }
 
             return entities.ToHydratedModels();
         }
 
-        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev()
+        public async Task<IEnumerable<SpecModel>> GetAllSpecsWithCurrentRev()
         {
-            var allSpecEntities = await context.Specification.Include(i => i.SpecSubLevel).ThenInclude(i => i.SpecChoice).ToListAsync();
-            var uniqueSpecIds = allSpecEntities.Select(i => i.SpecId).Distinct();
-            var specModels = new List<SpecModel>();
+            var theSpecEntities = await context.Specification.Include(i => i.SpecificationRevision).ToListAsync();
 
-            foreach (var specId in uniqueSpecIds)
+            if (theSpecEntities == null || !theSpecEntities.Any()) { throw new Exception("No specifications were returned."); }
+
+            foreach (var specEntity in theSpecEntities)
             {
-                specModels.Add(allSpecEntities.Where(i => i.SpecId == specId).OrderByDescending(s => s.SpecRevId).FirstOrDefault().ToHydratedModel());
+                foreach (var revEntity in specEntity.SpecificationRevision)
+                {
+                    if (revEntity != specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault())
+                    {
+                        specEntity.SpecificationRevision.Remove(revEntity);
+                    }
+                }
+
             }
 
-            return specModels;
+            return theSpecEntities.ToHydratedModels();
+        }
+        
+        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev()
+        {
+            var theSpecEntities = await context.Specification.Include(i => i.SpecificationRevision)
+                                                                .ThenInclude(i => i.SpecSubLevel)
+                                                                    .ThenInclude(i => i.SpecChoice).ToListAsync();
+
+            if (theSpecEntities == null || !theSpecEntities.Any()) { throw new Exception("No specifications were returned."); }
+
+            foreach (var specEntity in theSpecEntities)
+            {
+                foreach (var revEntity in specEntity.SpecificationRevision)
+                {
+                    if(revEntity != specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault())
+                    {
+                        specEntity.SpecificationRevision.Remove(revEntity);
+                    }
+                }
+                
+            }
+
+            return theSpecEntities.ToHydratedModels();
         }
 
         public async Task<IEnumerable<SpecSubLevelModel>> GetSpecSubLevels(int aSpecId, short aSpecRevId)
@@ -58,15 +91,17 @@ namespace Armis.DataLogic.Services.ProcessServices
             return entities.ToHydratedModels();
         }
 
-        public async Task<SpecModel> GetCurrentRevForSpec(int aSpecId)
+        public async Task<SpecModel> GetHydratedCurrentRevForSpec(int aSpecId)
         {
-            var entity = await context.Specification.Where(i => i.SpecId == aSpecId).OrderByDescending(i => i.SpecRevId)
-                                                        .Include(i => i.SpecSubLevel)
-                                                            .ThenInclude(i => i.SpecChoice)
-                                                            .FirstOrDefaultAsync();
-            if (entity == null) { return null; }
+            var specEntity = await context.Specification.FirstOrDefaultAsync(i => i.SpecId == aSpecId);
+            specEntity.SpecificationRevision.Add(await context.SpecificationRevision.Where(i => i.SpecId == aSpecId)
+                                                                                        .Include(i => i.SpecSubLevel)
+                                                                                            .ThenInclude(i => i.SpecChoice)
+                                                                                                .OrderByDescending(i => i.SpecRevId).FirstOrDefaultAsync());
 
-            return entity.ToHydratedModel();
+            if (specEntity == null) { return null; }
+
+            return specEntity.ToHydratedModel();
         }
 
         public async Task<int> CreateNewSpec(SpecModel aSpecModel)
@@ -75,13 +110,15 @@ namespace Armis.DataLogic.Services.ProcessServices
             {
                 var theNewSpecId = await context.Specification.MaxAsync(i => i.SpecId) + 1;
                 short theNewRevId = 10; //All new specs start with a revId of 10
+                if(aSpecModel.SpecRevModels.Count() > 1) { throw new Exception("Cannot save a new Specification with multiple revisions; only one revision is allowed."); }
+                var theSpecRevModel = aSpecModel.SpecRevModels.FirstOrDefault(); //Only ONE revision can be passed in.
+                var theSubLevelEntities = theSpecRevModel.SubLevels.ToEntities(theNewSpecId, theNewRevId);
 
-                var theSubLevelEntities = aSpecModel.SubLevels.ToEntities(theNewSpecId, theNewRevId);
-
-                await context.Specification.AddAsync(aSpecModel.ToEntity(theNewSpecId, theNewRevId));
+                await context.Specification.AddAsync(aSpecModel.ToEntity(theNewSpecId));
+                await context.SpecificationRevision.AddAsync(theSpecRevModel.ToEntity(theNewSpecId, theNewRevId));
                 await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
 
-                foreach (var subLevel in aSpecModel.SubLevels)
+                foreach (var subLevel in theSpecRevModel.SubLevels)
                 {
                     await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId, subLevel.LevelSeq));
                 }
@@ -91,7 +128,7 @@ namespace Armis.DataLogic.Services.ProcessServices
                 //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
                 foreach (var subLevel in theSubLevelEntities)
                 {
-                    subLevel.DefaultChoice = aSpecModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                    subLevel.DefaultChoice = theSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
                 }
 
                 context.UpdateRange(theSubLevelEntities);
@@ -104,23 +141,23 @@ namespace Armis.DataLogic.Services.ProcessServices
             }
         }
 
-        public async Task<int> RevUpSpec(SpecModel aSpecModel)
+        public async Task<int> RevUpSpec(SpecRevModel aSpecRevModel)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                var newSpecRevId = await context.Specification.Where(i => i.SpecId == aSpecModel.Id).MaxAsync(i => i.SpecRevId);
-                if (newSpecRevId == 0) { throw new Exception("Could not find previous spec to rev-up."); }
+                var newSpecRevId = await context.SpecificationRevision.Where(i => i.SpecId == aSpecRevModel.SpecId).MaxAsync(i => i.SpecRevId);
+                if (newSpecRevId == 0) { throw new Exception("Could not find previous revision to rev-up from."); }
                 newSpecRevId += 1;
 
-                var theSpecEntity = aSpecModel.ToEntity(aSpecModel.Id, newSpecRevId);
-                var theSubLevelEntities = aSpecModel.SubLevels.ToEntities(aSpecModel.Id, newSpecRevId);
+                var theSpecRevEntity = aSpecRevModel.ToEntity(aSpecRevModel.SpecId, newSpecRevId);
+                var theSubLevelEntities = aSpecRevModel.SubLevels.ToEntities(aSpecRevModel.SpecId, newSpecRevId);
 
-                await context.Specification.AddAsync(theSpecEntity);
+                await context.SpecificationRevision.AddAsync(theSpecRevEntity);
                 await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
 
-                foreach (var subLevel in aSpecModel.SubLevels)
+                foreach (var subLevel in aSpecRevModel.SubLevels)
                 {
-                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecModel.Id, newSpecRevId, subLevel.LevelSeq));
+                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecRevModel.SpecId, newSpecRevId, subLevel.LevelSeq));
                 }
 
                 await context.SaveChangesAsync();
@@ -128,7 +165,7 @@ namespace Armis.DataLogic.Services.ProcessServices
                 //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
                 foreach (var subLevel in theSubLevelEntities)
                 {
-                    subLevel.DefaultChoice = aSpecModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
+                    subLevel.DefaultChoice = aSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
                 }
 
                 context.UpdateRange(theSubLevelEntities);
@@ -137,10 +174,8 @@ namespace Armis.DataLogic.Services.ProcessServices
 
                 await transaction.CommitAsync();
 
-                return aSpecModel.Id;
+                return aSpecRevModel.SpecId;
             }
         }
-
-
     }
 }

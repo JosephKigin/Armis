@@ -7,10 +7,10 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public SamplePlanHead()
         {
-            Part = new HashSet<Part>();
+            PartRevision = new HashSet<PartRevision>();
             SamplePlanLevel = new HashSet<SamplePlanLevel>();
-            SpecificationNadCapSamplePlanNavigation = new HashSet<Specification>();
-            SpecificationSamplePlanNavigation = new HashSet<Specification>();
+            SpecificationRevisionNadCapSamplePlanNavigation = new HashSet<SpecificationRevision>();
+            SpecificationRevisionSamplePlanNavigation = new HashSet<SpecificationRevision>();
         }
 
         public int SamplePlanId { get; set; }
@@ -21,9 +21,9 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual Customer Cust { get; set; }
         public virtual TestType TestCdNavigation { get; set; }
-        public virtual ICollection<Part> Part { get; set; }
+        public virtual ICollection<PartRevision> PartRevision { get; set; }
         public virtual ICollection<SamplePlanLevel> SamplePlanLevel { get; set; }
-        public virtual ICollection<Specification> SpecificationNadCapSamplePlanNavigation { get; set; }
-        public virtual ICollection<Specification> SpecificationSamplePlanNavigation { get; set; }
+        public virtual ICollection<SpecificationRevision> SpecificationRevisionNadCapSamplePlanNavigation { get; set; }
+        public virtual ICollection<SpecificationRevision> SpecificationRevisionSamplePlanNavigation { get; set; }
     }
 }

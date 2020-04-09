@@ -11,6 +11,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public short ListPrioritySeq { get; set; }
 
         public virtual Department Department { get; set; }
-        public virtual Specification Spec { get; set; }
+        public virtual SpecificationRevision Spec { get; set; }
     }
 }

@@ -12,18 +12,24 @@
 <input id="chkRevUpSelected" type="checkbox" form="mainForm" asp-for="WasRevUpSelected" hidden />
 
 <div class="modal fade" id="modalSpecSelect">
-    <div class="modal-dialog modal-lg" style="width:1200%;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Choose a Spec</h5>
             </div>
             <div class="modal-body">
+                <div class="input-group my-1">
+                    <input type="text" class="form-control border-right-0" onkeyup="searchSpecList(this)" />
+                    <span class="input-group-append bg-white border-left-0">
+                        <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                    </span>
+                </div>
                 <form method="get">
-                    <select class="list-group" size="12" asp-for="CurrentSpecId">
+                    <select id="specList" class="list-group" size="12" asp-for="CurrentSpecId" style="width:100%">
                         @foreach (var spec in Model.AllSpecModels)
                         {
                             <option class="list-group-item" value="@spec.Id">
-                                @spec.Code - Rev: [@spec.ExternalRev]
+                                @spec.Code - Rev: [@spec.SpecRevModels.FirstOrDefault().ExternalRev]
                             </option>
                         }
                     </select>
@@ -90,7 +96,7 @@
                                 <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete1-@i" data-card-number="1" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -126,7 +132,7 @@
                                 <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete2-@i" data-card-number="2" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -162,7 +168,7 @@
                                 <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete3-@i" data-card-number="3" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -200,7 +206,7 @@
                                 <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete4-@i" data-card-number="4" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -236,7 +242,7 @@
                                 <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete5-@i" data-card-number="5" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -272,7 +278,7 @@
                                 <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete6-@i" data-card-number="6" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
-                                    <i class="fa fa-minus-circle ml-1" style="color:red;"></i>
+                                    <i class="fa fa-trash-alt ml-1"></i>
                                 </a>
                             </div>
                         }
@@ -322,7 +328,7 @@
             var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this,' + cardNumber + ')" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';
             newDiv.innerHTML += newChoiceInput;
 
-            var newDeleteAnchor = '<a id="iconChoiceDelete' + cardNumber + '-' + count + '" data-card-number="' + cardNumber + '" data-choice="' + count + '" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)"> <i class="fa fa-minus-circle ml-1" style="color: red; "></i> </a>';
+            var newDeleteAnchor = '<a id="iconChoiceDelete' + cardNumber + '-' + count + '" data-card-number="' + cardNumber + '" data-choice="' + count + '" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)"> <i class="fa fa-trash-alt ml-1"></i> </a>';
             newDiv.innerHTML += newDeleteAnchor;
 
             document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newDiv);
@@ -380,8 +386,8 @@
 
         var allInputElements = document.getElementsByTagName("input");
         for (var i = 0; i < allInputElements.length; i++) {
-            if (allInputElements[i].id != "inputBtnRevUp") //This makes sure the Rev-Up button (which is actually an input of type button) does not get disabled.
-            { allInputElements[i].disabled = false; }
+            if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "inputSpecCode") //Rev-up button and Spec Code get/stay disabled when rev-up is clicked.
+            { console.log(allInputElements[i].id); allInputElements[i].disabled = false; }
             else { allInputElements[i].disabled = true; }
         }
 
@@ -480,7 +486,9 @@
     function validatChoiceCard(aChoiceCard) {
         var cardInputs = aChoiceCard.getElementsByTagName("input"); //All the inputs from card
         var isSubLevelNameFilled = false; //If sublevel name is filled in, this will be true.
-        var isChoiceFilled = false; //If at lease 1 choice name is filled in, this will be true
+        var isChoiceFilled = false; //If at lease 1 choice name is filled in, this will be true TODO: If any choice is blank, this is should be false.
+        var areAllChoicesFilled = true;
+
         //Iterating through the inputs
         for (var i = 0; i < cardInputs.length; i++) {
             //Finds the sublevel name input
@@ -488,36 +496,47 @@
                 if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isSubLevelNameFilled = true; }
                 else { isSubLevelNameFilled = false; }
             }
+
             //Finds the choice name inputs only if a choice name that has been filled has not been found yet.
-            if (!isChoiceFilled) {
-                if (cardInputs[i].id.startsWith("inputChoice")) {
+
+            if (cardInputs[i].id.startsWith("inputChoice")) {
+                if (!isChoiceFilled) {
                     if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isChoiceFilled = true; }
                     else { isChoiceFilled = false; }
+                }
+
+                if (cardInputs[i].value == undefined || cardInputs[i].value.trim() == "") {
+                    areAllChoicesFilled = false;
                 }
             }
         }
 
-        if (isSubLevelNameFilled != isChoiceFilled) {
-            aChoiceCard.classList = "card p-3 border-danger";
-            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
-            return false;
-        }
-        else {
+        if ((isSubLevelNameFilled == isChoiceFilled) && areAllChoicesFilled) {
             aChoiceCard.classList = "card p-3";
             aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = true;
             return true;
         }
+        else {
+            aChoiceCard.classList = "card p-3 border-danger";
+            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
+            return false;
+        }
     }
 
-    //if (isSubLevelNameFilled == areAnyChoicesFilled) {
+    function searchSpecList(searchInput) {
+        var searchTerm = searchInput.value.toUpperCase();
+        var processList = document.getElementById("specList");
+        var processListItems = processList.getElementsByTagName("option");
 
-    //    return true;
-    //}
-    //else {
-    //    aChoiceCardInputs.classList += " border-danger";
-    //    aChoiceCardInputs.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
-    //    return false;
-    //}
+        for (var i = 0; i < processListItems.length; i++) {
+            if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
+                processListItems[i].style.display = "none";
+            }
+            else {
+                processListItems[i].style.display = "block";
+            }
+        }
+    }
 </script>
 
 @if (Model.CurrentSpecId != 0)
@@ -547,23 +566,20 @@
             for (var i = 0; i < allInputElements.length; i++) {
                 //Ignore the Rev-Up button (which is actually an input of type button) getting disabled.
                 //Also ignore Find Spec button.
-                if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "btnFindSpec") 
-                { allInputElements[i].disabled = true; }
+                if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "btnFindSpec") { allInputElements[i].disabled = true; }
             }
 
             var allAnchorElements = document.body.getElementsByTagName("a");
             for (var i = 0; i < allAnchorElements.length; i++) {
                 //Ignore all anchors that have either "navbar-brand" or "nav-link text-dark" as class names. These classes are only used in the layout navigation bar in the header.
                 //Also ignore the clear button on the bottom of the page.
-                if (allAnchorElements[i].classList != "navbar-brand" && allAnchorElements[i].classList != "nav-link text-dark" && allAnchorElements[i].id != "btnClearPage") 
-                { allAnchorElements[i].hidden = true; }
+                if (allAnchorElements[i].classList != "navbar-brand" && allAnchorElements[i].classList != "nav-link text-dark" && allAnchorElements[i].id != "btnClearPage") { allAnchorElements[i].hidden = true; }
             }
 
             var allButtonElements = document.body.getElementsByTagName("button");
             for (var i = 0; i < allButtonElements.length; i++) {
                 //Ignore the select button in the modal for finding a spec
-                if (allButtonElements[i].id != "btnSelectSpec")
-                { allButtonElements[i].disabled = true; } 
+                if (allButtonElements[i].id != "btnSelectSpec") { allButtonElements[i].disabled = true; }
             }
         }
 

@@ -15,6 +15,7 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHeadCreditAuthByEmpNavigation = new HashSet<OrderHead>();
             OrderHeadJobHoldByEmpNavigation = new HashSet<OrderHead>();
             OrderHeadJobHoldToEmpNavigation = new HashSet<OrderHead>();
+            PartRevision = new HashSet<PartRevision>();
             PlateResult = new HashSet<PlateResult>();
             ProcessRevision = new HashSet<ProcessRevision>();
             Session = new HashSet<Session>();
@@ -22,6 +23,7 @@ namespace Armis.Data.DatabaseContext.Entities
             SpecialHandlingNotifyEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingReviewReqByEmpNavigation = new HashSet<SpecialHandling>();
             SpecialHandlingSpecialPrintByEmpNavigation = new HashSet<SpecialHandling>();
+            SpecificationRevision = new HashSet<SpecificationRevision>();
         }
 
         public short EmpId { get; set; }
@@ -46,6 +48,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OrderHead> OrderHeadCreditAuthByEmpNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHeadJobHoldByEmpNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHeadJobHoldToEmpNavigation { get; set; }
+        public virtual ICollection<PartRevision> PartRevision { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
         public virtual ICollection<Session> Session { get; set; }
@@ -53,5 +56,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<SpecialHandling> SpecialHandlingNotifyEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingReviewReqByEmpNavigation { get; set; }
         public virtual ICollection<SpecialHandling> SpecialHandlingSpecialPrintByEmpNavigation { get; set; }
+        public virtual ICollection<SpecificationRevision> SpecificationRevision { get; set; }
     }
 }

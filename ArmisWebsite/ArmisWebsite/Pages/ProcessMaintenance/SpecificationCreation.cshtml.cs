@@ -137,9 +137,15 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             {
                 var theSpec = new SpecModel()
                 {
+                    Code = SpecCode
+                };
+
+                var theSpecRev = new SpecRevModel()
+                {
                     Description = SpecDescription,
                     ExternalRev = ExternalRev,
-                    Code = SpecCode
+                    DateModified = DateTime.Now.Date,
+                    TimeModified = DateTime.Now.TimeOfDay
                 };
 
                 var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
@@ -189,12 +195,15 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 }
 
 
-                theSpec.SubLevels = theSubLevelList;
+                theSpecRev.SubLevels = theSubLevelList;
+                var theSpecRevsTempList = new List<SpecRevModel>();
+                theSpecRevsTempList.Add(theSpecRev); //This is just a list of one to hold the rev because Specification Model takes a list of revs, not just one. 
+                theSpec.SpecRevModels = theSpecRevsTempList;
                 var theReturnedSpecId = 0;  //This is the SpecId that will be returned from the DataAccess after creating a new Spec or Reving up a Spec.
                 if (CurrentSpecId == 0) //New Spec
                 {
                     theReturnedSpecId = await SpecDataAccess.CreateNewHydratedSpec(theSpec);
-                    await SetUpProperties(theReturnedSpecId);
+                    CurrentSpecId = theReturnedSpecId;
                     PopUpMessage = "Spec created successfully.";
                 }
                 else if (WasRevUpSelected) //Spec is being updated. Only stuff under the spec level can be updated.  If anything on the Spec level is updated, then it should just be a new Revision.
@@ -202,10 +211,9 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     //TODO: This section is for rev-up
                     theSpec.Id = CurrentSpecId;
                     theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpec);
-                    await SetUpProperties(theReturnedSpecId);
                     PopUpMessage = "Spec reved-up successfully";
                 }
-
+                await SetUpProperties(theReturnedSpecId);
                 return Page();
             }
             catch (Exception ex)
@@ -221,20 +229,21 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             {
                 int theSpecId = aSpecId ?? default(int); //The spec id passed into SpecDataAccess.GetHydratedCurrentRevOfSpec needs to be of type int, not int?
                 var theCurrentSpec = await SpecDataAccess.GetHydratedCurrentRevOfSpec(theSpecId);
+                var theCurrentSpecRev = theCurrentSpec.SpecRevModels.FirstOrDefault();
 
                 SpecCode = theCurrentSpec.Code;
-                SpecDescription = theCurrentSpec.Description;
-                ExternalRev = theCurrentSpec.ExternalRev;
+                SpecDescription = theCurrentSpecRev.Description;
+                ExternalRev = theCurrentSpecRev.ExternalRev;
 
-                theCurrentSpec.SubLevels.OrderBy(i => i.LevelSeq);
+                theCurrentSpecRev.SubLevels.OrderBy(i => i.LevelSeq);
 
-                foreach (var sublevel in theCurrentSpec.SubLevels)
+                foreach (var sublevel in theCurrentSpecRev.SubLevels)
                 {
                     BuildPageFromModels(sublevel);
                 }
             }
 
-            var tempAllSpecModels = await SpecDataAccess.GetAllHydratedSpecsWithOnlyCurrentRev();
+            var tempAllSpecModels = await SpecDataAccess.GetAllHydratedSpecs();
             AllSpecModels = tempAllSpecModels.ToList();
 
         }
@@ -253,18 +262,17 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             if (aChoiceNamesList != null && aChoiceNamesList.Any())
             {
                 var theChoices = new List<SpecSubLevelChoiceModel>();
-                byte choiceCount = 0; //Keeps track of seq for choices.
+
                 for (byte i = 0; i < aChoiceNamesList.Count; i++)
                 {
-                    if (aChoiceNamesList[i] != null)
+                    //if (aChoiceNamesList[i] != null)
+                    //{
+                    theChoices.Add(new SpecSubLevelChoiceModel()
                     {
-                        choiceCount++;
-                        theChoices.Add(new SpecSubLevelChoiceModel()
-                        {
-                            ChoiceSeq = choiceCount,
-                            Name = aChoiceNamesList[i]
-                        });
-                    }
+                        ChoiceSeq = Convert.ToByte(i + 1),
+                        Name = aChoiceNamesList[i]
+                    });
+                    //}
 
                 }
 
