@@ -8,7 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public MaterialAlloy()
         {
             OprMaterialPrice = new HashSet<OprMaterialPrice>();
-            Part = new HashSet<Part>();
+            PartRevision = new HashSet<PartRevision>();
             Rack = new HashSet<Rack>();
             SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
@@ -19,7 +19,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual MaterialSeries Series { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
-        public virtual ICollection<Part> Part { get; set; }
+        public virtual ICollection<PartRevision> PartRevision { get; set; }
         public virtual ICollection<Rack> Rack { get; set; }
         public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }

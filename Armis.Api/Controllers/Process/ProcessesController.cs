@@ -76,7 +76,7 @@ namespace Armis.Api.Controllers
         {
             try
             {
-                var data = await ProcessService.GetCurrentProcessRevWithSteps(id);
+                var data = await ProcessService.GetHydratedCurrentProcessRev(id);
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)

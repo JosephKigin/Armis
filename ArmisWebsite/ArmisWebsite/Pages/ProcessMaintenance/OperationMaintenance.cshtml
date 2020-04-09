@@ -84,7 +84,7 @@
                 @foreach (var operation in Model.AllOperations)
                 {
                     <li class="list-group-item" id="@operation.Id">
-                        <h6>@operation.Id: @operation.Name [@operation.Code]</h6>
+                        <h6>@operation.Name [@operation.Code]</h6>
                         <p>Due Days: @operation.DefaultDueDays</p>
                         @if (operation.ThicknessIsRequired)
                         {<p class="text-danger">Thickness is required.</p>}

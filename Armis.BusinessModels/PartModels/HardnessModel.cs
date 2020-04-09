@@ -9,7 +9,7 @@ namespace Armis.BusinessModels.PartModels
         public int HardnessId { get; set; }
         public string ShortName { get; set; }
         public string Description { get; set; }
-        public decimal HardnessMin { get; set; }
-        public decimal HardnessMax { get; set; }
+        public decimal? HardnessMin { get; set; }
+        public decimal? HardnessMax { get; set; }
     }
 }

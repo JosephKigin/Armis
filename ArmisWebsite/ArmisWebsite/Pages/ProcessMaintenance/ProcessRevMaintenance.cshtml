@@ -53,7 +53,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-8">
+                        <div class="col-lg-7">
                             <form method="get">
                                 <select class="list-group" size="12" asp-for="CurrentProcessId">
                                     @foreach (var process in Model.AllProcesses)
@@ -65,9 +65,9 @@
                                             {
                                                 @process.Revisions.Last().ProcessRevId
                                                 if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
-                                                { <p>&#xf09c;</p> }
+                                                { <p>&#xf3c1;</p> }
                                                 else
-                                                { <p>&#xf023;</p>}
+                                                { <p>&#xf023;</p> }
                                             }
                                             else
                                             {
@@ -80,7 +80,7 @@
                                 <button class="btn btn-primary my-2">Ok</button>
                             </form>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-5">
                             <h5 id="modalStepTitle"></h5>
                             <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
                             </ul>

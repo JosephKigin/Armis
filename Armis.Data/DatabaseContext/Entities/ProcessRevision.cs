@@ -7,6 +7,7 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public ProcessRevision()
         {
+            PartTran = new HashSet<PartTran>();
             ProcessStepSeq = new HashSet<ProcessStepSeq>();
             SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
@@ -22,6 +23,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Employee CreatedByEmpNavigation { get; set; }
         public virtual Process Process { get; set; }
         public virtual RevisionStatus RevStatusCdNavigation { get; set; }
+        public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<ProcessStepSeq> ProcessStepSeq { get; set; }
         public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }

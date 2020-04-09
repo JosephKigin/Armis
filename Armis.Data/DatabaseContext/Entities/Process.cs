@@ -7,14 +7,12 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Process()
         {
-            PartTran = new HashSet<PartTran>();
             ProcessRevision = new HashSet<ProcessRevision>();
         }
 
         public int ProcessId { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
     }
 }
