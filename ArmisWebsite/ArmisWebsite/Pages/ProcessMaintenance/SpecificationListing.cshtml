@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="input-group my-1">
-                <input class="form-control border-right-0" placeholder="Code..." onkeyup="searchSpecList(this.value)" />
+                <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecList(this.value)" />
                 <span class="input-group-append bg-white border-left-0">
                     <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                 </span>
@@ -21,16 +21,17 @@
 
                     <li id="@spec.Code" class="list-group-item">
                         <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
-                            <b>@spec.Code</b>
-                            Rev: @if (theCurrentSpecRev.ExternalRev.Trim() != "")
-                            {<b>@theCurrentSpecRev.ExternalRev</b> }
+                            @spec.Code
+                            <b>Rev:</b>
+                            @if (theCurrentSpecRev.ExternalRev.Trim() != "")
+                            {<text>@theCurrentSpecRev.ExternalRev</text>}
                         else
-                        {<b>NONE</b>}
-                            Sublevels: <b>[@theCurrentSpecRev.SubLevels.Count()]</b>
+                        { <text>NONE</text> }
+                            <b>Sublevels:</b> [@theCurrentSpecRev.SubLevels.Count()]
                         </a>
-                        <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
+                        <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
                         @if (theCurrentSpecRev.Description.Trim() != "")
-                        {<p> Description: <b>@theCurrentSpecRev.Description</b> </p>}
+                        {<p><b>Description: </b>@theCurrentSpecRev.Description</p>}
                     </li>
                 }
             </ul>

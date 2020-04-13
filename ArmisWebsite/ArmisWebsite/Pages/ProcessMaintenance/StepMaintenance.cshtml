@@ -91,12 +91,12 @@
                 {
                     <li class="list-group-item" id="@step.StepId">
 
-                        <h5>@step.StepId @step.StepName</h5>
+                        <h5>@step.StepId @step.StepName<a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a></h5>
                         @if (step.SignOffIsRequired == true)
                         {<p class="text-danger">Sign-Off Required</p>}
                         <b>Instructions: </b>
                         <p class="text-break">@step.Instructions</p>
-                        <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy"></i></a>
+                        
                     </li>
                 }
             </ul>
