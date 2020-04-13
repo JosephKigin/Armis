@@ -26,7 +26,7 @@
         <div class="col-lg-6">
             @*Search bar*@
             <div class="input-group my-1">
-                <input id="searchProcesses" class="form-control border-right-0" onkeyup="searchProcessList()" />
+                <input id="searchProcesses" class="form-control border-right-0" placeholder="Search..." onkeyup="searchProcessList()" />
                 <span class="input-group-append bg-white border-left-0">
                     <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                 </span>
@@ -93,13 +93,12 @@
             xhr.onload = function () {
 
                 var rev = JSON.parse(xhr.responseText);
-                console.log(rev);
                 var stepItemsHtml = '';
                 if (xhr.status != 404) {
                     if (rev.StepSeqs.length > 0) {
                         for (var i = 0; i < rev.StepSeqs.length; i++) {
                             var signOffReqHtml = '';
-                            if (rev.StepSeqs[i].SignOffIsRequired == true) {
+                            if (rev.StepSeqs[i].Step.SignOffIsRequired == true) {
                                 signOffReqHtml = `<p class="text-danger">Sign-Off Required</p>`;
                             }
                             stepItemsHtml +=

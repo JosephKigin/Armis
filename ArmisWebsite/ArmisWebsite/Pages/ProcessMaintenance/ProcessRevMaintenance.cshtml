@@ -12,6 +12,10 @@
 
 <body>
     <h1>Process Revision Maintenance</h1>
+
+    @*Preloaded message.*@
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></p>
+
     @if (Model.CurrentProcessId != 0)
     {
         @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
@@ -242,7 +246,7 @@
                                 <h5>
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {<i class="fa fa-arrows-alt handle"></i>}
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down fa-rotate-180"></i></a>
+                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-up fa-rotate-180"></i></a>
                                     <br />
                                     @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                                     {
@@ -333,6 +337,14 @@
                         <i class="fas fa-trash" style="color:red;"></i>
                     </div>
                     <script>
+                        var currentStepListItems = document.getElementById("sortableCurrentSteps").getElementsByTagName("li");
+                        if (currentStepListItems.length == 0) { //Checks if there aren't any steps.
+                            submitButtonsValidationResponse(false, "Cannot Lock or Save without any steps");
+                        }
+                        else {
+                            submitButtonsValidationResponse(true, "");
+                        }
+
                         new Sortable(sortableTrash,
                             {
                                 group: {
@@ -390,55 +402,58 @@
                             var currentStepListItems = document.getElementById("sortableCurrentSteps").getElementsByTagName("li");
                             var doAllStepsHaveOper = true;
 
-                            for (var i = 0; i < currentStepListItems.length; i++) {
-                                currentStepListItems[i].id = currentStepListItems[i].id.substring(0, (currentStepListItems[i].id.indexOf("-") + 1)) + i;
+                            if (currentStepListItems.length == 0) { //Checks if there aren't any steps.
+                                submitButtonsValidationResponse(false, "Cannot Lock or Save without any steps");
+                            }
+                            else {
+                                submitButtonsValidationResponse(true, "");
 
-                                var currentStepIdInput = currentStepListItems[i].getElementsByTagName("input")[0];
-                                currentStepIdInput.id = currentStepIdInput.id.substring(0, currentStepIdInput.id.indexOf("-") + 1) + i;
-                                currentStepIdInput.name = "CurrentStepIds[" + i + "]";
+                                for (var i = 0; i < currentStepListItems.length; i++) { //Iterates through steps. If a step doesn't have an operation, doAllStepsHaveOper is set to false.
+                                    currentStepListItems[i].id = currentStepListItems[i].id.substring(0, (currentStepListItems[i].id.indexOf("-") + 1)) + i;
 
-                                var currentStepOperInput = currentStepListItems[i].getElementsByTagName("input")[1];
-                                currentStepOperInput.id = currentStepOperInput.id.substring(0, currentStepOperInput.id.indexOf("-") + 1) + i;
-                                currentStepOperInput.name = "CurrentOperationIds[" + i + "]";
-                                if (currentStepOperInput.value == "") { doAllStepsHaveOper = false; }
-                                console.log("Value " + i + ": " + currentStepOperInput.value);
-                                console.log(doAllStepsHaveOper);
+                                    var currentStepIdInput = currentStepListItems[i].getElementsByTagName("input")[0];
+                                    currentStepIdInput.id = currentStepIdInput.id.substring(0, currentStepIdInput.id.indexOf("-") + 1) + i;
+                                    currentStepIdInput.name = "CurrentStepIds[" + i + "]";
 
-                                var currentStepSeqInput = currentStepListItems[i].getElementsByTagName("input")[2];
-                                currentStepSeqInput.id = currentStepSeqInput.id.substring(0, currentStepSeqInput.id.indexOf("-") + 1) + i;
-                                currentStepSeqInput.value = i;
+                                    var currentStepOperInput = currentStepListItems[i].getElementsByTagName("input")[1];
+                                    currentStepOperInput.id = currentStepOperInput.id.substring(0, currentStepOperInput.id.indexOf("-") + 1) + i;
+                                    currentStepOperInput.name = "CurrentOperationIds[" + i + "]";
+                                    if (currentStepOperInput.value == "") { doAllStepsHaveOper = false; }
 
-                                //Collapse Anchor, Operation Anchor, collapsable div
-                                var theAnchors = currentStepListItems[i].getElementsByTagName("a");
+                                    var currentStepSeqInput = currentStepListItems[i].getElementsByTagName("input")[2];
+                                    currentStepSeqInput.id = currentStepSeqInput.id.substring(0, currentStepSeqInput.id.indexOf("-") + 1) + i;
+                                    currentStepSeqInput.value = i;
 
-                                //This just finds the "|" and replaces the number after it, which is the the seq number
-                                theAnchors[0].dataset.target = theAnchors[0].dataset.target.substring(0, (theAnchors[0].dataset.target.indexOf("-") + 1)) + i;
-                                theAnchors[1].id = theAnchors[1].id.substring(0, (theAnchors[1].id.indexOf("-") + 1)) + i;
-                                //Finds the collapsable details div on the step and replaces to seq number
-                                for (var j = 0; j < currentStepListItems[i].childNodes.length; j++) {
-                                    if (currentStepListItems[i].childNodes[j].id != undefined) {
-                                        if (currentStepListItems[i].childNodes[j].id.startsWith("currentStepDetails_")) {
-                                            var detailsDivId = currentStepListItems[i].childNodes[j].id;
-                                            currentStepListItems[i].childNodes[j].id = detailsDivId.substring(0, (detailsDivId.indexOf("-") + 1)) + i;
+                                    //Collapse Anchor, Operation Anchor, collapsable div
+                                    var theAnchors = currentStepListItems[i].getElementsByTagName("a");
+
+                                    //This just finds the "|" and replaces the number after it, which is the the seq number
+                                    theAnchors[0].dataset.target = theAnchors[0].dataset.target.substring(0, (theAnchors[0].dataset.target.indexOf("-") + 1)) + i;
+                                    theAnchors[1].id = theAnchors[1].id.substring(0, (theAnchors[1].id.indexOf("-") + 1)) + i;
+                                    //Finds the collapsable details div on the step and replaces to seq number
+                                    for (var j = 0; j < currentStepListItems[i].childNodes.length; j++) {
+                                        if (currentStepListItems[i].childNodes[j].id != undefined) {
+                                            if (currentStepListItems[i].childNodes[j].id.startsWith("currentStepDetails_")) {
+                                                var detailsDivId = currentStepListItems[i].childNodes[j].id;
+                                                currentStepListItems[i].childNodes[j].id = detailsDivId.substring(0, (detailsDivId.indexOf("-") + 1)) + i;
+                                            }
                                         }
                                     }
                                 }
+
+                                if (doAllStepsHaveOper) { 
+                                    submitButtonsValidationResponse(true, "");
+                                }
+                                else {
+                                    submitButtonsValidationResponse(false, "Every step needs to have an operation to lock or save.");
+                                }
                             }
 
-                            if (!doAllStepsHaveOper) {
-                                var btnSave = document.getElementById("btnSave");
-                                btnSave.disabled = true;
-                                btnSave.classList.remove('btn-primary');
-                                btnSave.classList.add('btn-outline-primary');
 
-                                var btnLock = document.getElementById("btnLock");
-                                btnLock.disabled = true;
-                                btnLock.classList.remove('btn-primary');
-                                btnLock.classList.add('btn-outline-primary');
-
-                                document.getElementById("btnMessage").innerHTML = "Every step needs to have an operation in order to lock or save."
-                            }
-                            else {
+                        }
+                        //Sets the Lock and Save buttons to enabled/disabled if the page is/isn't valid. The page is invalid if there aren't any steps in Current Steps or if not all steps have an operation.
+                        function submitButtonsValidationResponse(isValid, aMessage) {
+                            if (isValid) {
                                 var btnSave = document.getElementById("btnSave");
                                 btnSave.disabled = false;
                                 btnSave.classList.remove('btn-ouline-primary');
@@ -451,7 +466,19 @@
 
                                 document.getElementById("btnMessage").innerHTML = "";
                             }
+                            else {
+                                var btnSave = document.getElementById("btnSave");
+                                btnSave.disabled = true;
+                                btnSave.classList.remove('btn-primary');
+                                btnSave.classList.add('btn-outline-primary');
 
+                                var btnLock = document.getElementById("btnLock");
+                                btnLock.disabled = true;
+                                btnLock.classList.remove('btn-primary');
+                                btnLock.classList.add('btn-outline-primary');
+
+                                document.getElementById("btnMessage").innerHTML = aMessage;
+                            }
                         }
                     </script>
                 }
@@ -515,10 +542,6 @@
 
         </div>
     </div>
-
-    @*Preloaded message.*@
-    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
-
 </body>
 
 <script>
@@ -532,7 +555,6 @@
 
             xhr.onload = function () {
                 var rev = JSON.parse(xhr.responseText);
-                console.log(rev);
                 var stepItemsHtml = '';
                 if (xhr.status == 200) {
                     for (var i = 0; i < rev.StepSeqs.length; i++) {
@@ -581,12 +603,12 @@
             xhr.onload = function () {
                 if (xhr.status == 200) {
                     var empNumExists = JSON.parse(xhr.responseText);
-                    console.log(empNumExists);
                     if (empNumExists == true) {
                         btnRevUp.disabled = false;
                         empNumWarning.hidden = true;
                     }
                     else {
+                        btnRevUp.disabled = true;
                         empNumWarning.hidden = false;
                     }
                 }
@@ -617,12 +639,12 @@
             xhr.onload = function () {
                 if (xhr.status == 200) {
                     var empNumExists = JSON.parse(xhr.responseText);
-                    console.log(empNumExists);
                     if (empNumExists == true) {
                         btnCopyProcess.disabled = false;
                         empNumWarning.hidden = true;
                     }
                     else {
+                        btnCopyProcess.disabled = true;
                         empNumWarning.hidden = false;
                     }
                 }

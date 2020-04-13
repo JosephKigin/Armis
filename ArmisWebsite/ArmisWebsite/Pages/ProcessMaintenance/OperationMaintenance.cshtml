@@ -89,7 +89,7 @@
                         @if (operation.ThicknessIsRequired)
                         {<p class="text-danger">Thickness is required.</p>}
 
-                        <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit"></i></a>
+                        <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
                     </li>
                 }
             </ul>

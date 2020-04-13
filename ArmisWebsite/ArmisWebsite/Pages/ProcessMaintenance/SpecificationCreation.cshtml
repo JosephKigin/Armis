@@ -4,11 +4,14 @@
     ViewData["Title"] = "SpecificationCreation";
 }
 
-<h1>Specification Entry</h1>
+<h1>Specification Maintenance</h1>
+
+@*Preloaded message.*@
+<p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></p>
 
 @*Placeholder for a spec id only if one is passed in*@
-<input id="hdnCurrentSpecId" form="mainForm" asp-for="CurrentSpecId" value="@Model.CurrentSpecId" hidden/> 
-    @*TODO: If you create a spec and then immediately rev-up, this input won't update unless the value="@Model.CurrentSpecId" is there.  This is redundent.  Not wrong, but not right.*@
+<input id="hdnCurrentSpecId" form="mainForm" asp-for="CurrentSpecId" value="@Model.CurrentSpecId" hidden />
+@*TODO: If you create a spec and then immediately rev-up, this input won't update unless the value="@Model.CurrentSpecId" is there.  This is redundent.  Not wrong, but not right.*@
 <input id="btnFindSpec" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSpecSelect" value="Find Spec" />
 <input id="chkRevUpSelected" type="checkbox" form="mainForm" asp-for="WasRevUpSelected" hidden />
 
@@ -80,7 +83,7 @@
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice1" class="fa fa-times-circle" style="color:red" hidden></i><span class="float-right text-muted circle">1</span></label>
 
                 <input type="text" class="form-control" asp-for="SubLevelName1" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq1" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq1" tabindex="-1" onkeydown="return event.key != 'Enter';" /></p>
 
                 <label><b>Choice Name </b><span id="spanDefaultText1" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder1" class="card p-1">
@@ -89,10 +92,15 @@
                         @for (int i = 0; i < Model.ChoiceNames1.Count; i++)
                         {
                             <div id="divChoiceNameGroup1-@i" class="form-inline">
-                                @if (Model.DefaultChoice1 == i)
-                                {<input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@i" onload="ToggleCheckBoxDisabled(this, 1)" onclick="ToggleCheckBoxes(this, 1)" checked /> }
+                                @{int defaultChoiceValue1 = i + 1;}
+                                @if (Model.DefaultChoice1 == defaultChoiceValue1)
+                                {
+                                    <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@defaultChoiceValue1" onload="ToggleCheckBoxDisabled(this, 1)" onclick="ToggleCheckBoxes(this, 1)" checked />
+                                }
                                 else
-                                { <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 1)" />}
+                                {
+                                    <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@defaultChoiceValue1" onclick="ToggleCheckBoxes(this, 1)" />
+                                }
 
                                 <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -117,7 +125,7 @@
             <div id="cardChoice2" class="card p-3">
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice2" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">2</span></label>
                 <input type="text" class="form-control" asp-for="SubLevelName2" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq2" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq2" tabindex="-1" onkeydown="return event.key != 'Enter';" /></p>
                 <label><b>Choice Name </b><span id="spanDefaultText2" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder2" class="card p-1">
                     @if (Model.CurrentSpecId != 0 && Model.ChoiceNames2 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
@@ -125,10 +133,11 @@
                         @for (int i = 0; i < Model.ChoiceNames2.Count; i++)
                         {
                             <div id="divChoiceNameGroup2-@i" class="form-inline">
-                                @if (Model.DefaultChoice2 == i)
-                                {<input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 2)" checked /> }
+                                @{int defaultChoiceValue2 = i + 1;}
+                                @if (Model.DefaultChoice2 == defaultChoiceValue2)
+                                {<input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@defaultChoiceValue2" onclick="ToggleCheckBoxes(this, 2)" checked /> }
                                 else
-                                { <input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 2)" />}
+                                { <input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@defaultChoiceValue2" onclick="ToggleCheckBoxes(this, 2)" />}
 
                                 <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -153,7 +162,7 @@
             <div id="cardChoice3" class="card p-3">
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice3" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">3</span></label>
                 <input type="text" class="form-control" asp-for="SubLevelName3" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq3" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq3" tabindex="-1" onkeydown="return event.key != 'Enter';" /></p>
                 <label><b>Choice Name </b><span id="spanDefaultText3" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder3" class="card p-1">
                     @if (Model.CurrentSpecId != 0 && Model.ChoiceNames3 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
@@ -161,10 +170,11 @@
                         @for (int i = 0; i < Model.ChoiceNames3.Count; i++)
                         {
                             <div id="divChoiceNameGroup3-@i" class="form-inline">
-                                @if (Model.DefaultChoice3 == i)
-                                {<input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 3)" checked /> }
+                                @{int defaultChoiceValue3 = i + 1;}
+                                @if (Model.DefaultChoice3 == defaultChoiceValue3)
+                                {<input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@defaultChoiceValue3" onclick="ToggleCheckBoxes(this, 3)" checked /> }
                                 else
-                                { <input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 3)" />}
+                                { <input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@defaultChoiceValue3" onclick="ToggleCheckBoxes(this, 3)" />}
 
                                 <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -191,7 +201,7 @@
             <div id="cardChoice4" class="card p-3">
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice4" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">4</span></label>
                 <input type="text" class="form-control" asp-for="SubLevelName4" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq4" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq4" tabindex="-1" onkeydown="return event.key != 'Enter';" /></p>
                 <label><b>Choice Name </b><span id="spanDefaultText4" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder4" class="card p-1">
                     @if (Model.CurrentSpecId != 0 && Model.ChoiceNames4 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
@@ -199,10 +209,11 @@
                         @for (int i = 0; i < Model.ChoiceNames4.Count; i++)
                         {
                             <div id="divChoiceNameGroup4-@i" class="form-inline">
-                                @if (Model.DefaultChoice4 == i)
-                                {<input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 4)" checked /> }
+                                @{int defaultChoiceValue4 = i + 1;}
+                                @if (Model.DefaultChoice4 == defaultChoiceValue4)
+                                {<input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@defaultChoiceValue4" onclick="ToggleCheckBoxes(this, 4)" checked /> }
                                 else
-                                { <input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 4)" />}
+                                { <input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@defaultChoiceValue4" onclick="ToggleCheckBoxes(this, 4)" />}
 
                                 <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -227,7 +238,7 @@
             <div id="cardChoice5" class="card p-3">
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice5" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">5</span></label>
                 <input type="text" class="form-control" asp-for="SubLevelName5" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq5" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq5" tabindex="-1" onkeydown="return event.key != 'Enter';" /></p>
                 <label><b>Choice Name </b><span id="spanDefaultText5" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder5" class="card p-1">
                     @if (Model.CurrentSpecId != 0 && Model.ChoiceNames5 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
@@ -235,10 +246,11 @@
                         @for (int i = 0; i < Model.ChoiceNames5.Count; i++)
                         {
                             <div id="divChoiceNameGroup5-@i" class="form-inline">
-                                @if (Model.DefaultChoice5 == i)
-                                {<input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 5)" checked /> }
+                                @{int defaultChoiceValue5 = i + 1;}
+                                @if (Model.DefaultChoice5 == defaultChoiceValue5)
+                                {<input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@defaultChoiceValue5" onclick="ToggleCheckBoxes(this, 5)" checked /> }
                                 else
-                                { <input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 5)" />}
+                                { <input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@defaultChoiceValue5" onclick="ToggleCheckBoxes(this, 5)" />}
 
                                 <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -263,7 +275,7 @@
             <div id="cardChoice6" class="card p-3">
                 <label><b>Sublevel Name</b> <i id="iconInvalidChoice6" class="fa fa-times-circle" style="color:red" hidden></i> <span class="float-right text-muted circle">6</span></label>
                 <input type="text" class="form-control" asp-for="SubLevelName6" onkeydown="return event.key != 'Enter';" maxlength="20" />
-                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq6" onkeydown="return event.key != 'Enter';" /></p>
+                <p>Is Required? <input type="checkbox" class="form-check-inline" asp-for="IsSubLevelReq6" tabindex="-1" keydown="return event.key != 'Enter';" /></p>
                 <label><b>Choice Name </b><span id="spanDefaultText6" class="text-muted"> (No default selected)</span></label>
                 <div id="choiceInputPlaceholder6" class="card p-1">
                     @if (Model.CurrentSpecId != 0 && Model.ChoiceNames6 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
@@ -271,10 +283,11 @@
                         @for (int i = 0; i < Model.ChoiceNames6.Count; i++)
                         {
                             <div id="divChoiceNameGroup6-@i" class="form-inline">
-                                @if (Model.DefaultChoice6 == i)
-                                {<input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 6)" checked /> }
+                                @{int defaultChoiceValue6 = i + 1;}
+                                @if (Model.DefaultChoice6 == defaultChoiceValue6)
+                                {<input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@defaultChoiceValue6" onclick="ToggleCheckBoxes(this, 6)" checked /> }
                                 else
-                                { <input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@i" onclick="ToggleCheckBoxes(this, 6)" />}
+                                { <input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@defaultChoiceValue6" onclick="ToggleCheckBoxes(this, 6)" />}
 
                                 <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
@@ -294,11 +307,9 @@
             </div>
         </div>
     </div>
-    
+
     <button class="btn btn-lg btn-success my-2">Submit</button>
     <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/ProcessMaintenance/SpecificationCreation">Clear</a>
-    @*Preloaded message.*@
-    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
 </form>
 
 
@@ -323,7 +334,7 @@
             newDiv.className = "form-inline";
             newDiv.id = "divChoiceNameGroup" + cardNumber + "-" + count;
 
-            var newCheckBox = '<input id="chkDefaultChoice' + cardNumber + '-' + count + '" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + count + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')" disabled/>';
+            var newCheckBox = '<input id="chkDefaultChoice' + cardNumber + '-' + count + '" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + (count * 1 + 1) + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')" disabled/>';
             newDiv.innerHTML += newCheckBox;
 
             var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this,' + cardNumber + ')" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';

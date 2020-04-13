@@ -22,7 +22,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/ProcessMaintenance/ProcessMenu">Process Menu</a>
+                            <a class="nav-link" asp-page="/Index"><i class="fa fa-home"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -37,7 +37,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" tabindex="-1" asp-page="/Privacy">Privacy</a>
 
             <b class="float-right">@await Component.InvokeAsync("ApiConnectionCheck") [@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")] </b>
         </div>
