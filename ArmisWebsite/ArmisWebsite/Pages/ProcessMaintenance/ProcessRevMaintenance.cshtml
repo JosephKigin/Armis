@@ -1,4 +1,4 @@
-﻿@page "{handler?}"
+﻿@page "{aProcessId:int?}/{aPopUpMessage?}"
 @model ArmisWebsite.ProcessRevMaintenanceModel
 @{
     ViewData["Title"] = "Process Maintenance";
@@ -58,31 +58,29 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-7">
-                            <form method="get">
-                                <select class="list-group" size="12" asp-for="CurrentProcessId">
-                                    @foreach (var process in Model.AllProcesses)
-                                    {
-                                        <option value="@process.ProcessId" class="list-group-item fa" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
-                                            @process.ProcessId: @process.Name -
-                                            Rev:
-                                            @if (process.Revisions != null && process.Revisions.Any())
-                                            {
-                                                @process.Revisions.Last().ProcessRevId
-                                                if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
-                                                { <p>&#xf3c1;</p> }
-                                                else
-                                                { <p>&#xf023;</p> }
-                                            }
+                            <select class="list-group" size="12">
+                                @foreach (var process in Model.AllProcesses)
+                                {
+                                    <option value="@process.ProcessId" class="list-group-item fa" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
+                                        @process.ProcessId: @process.Name -
+                                        Rev:
+                                        @if (process.Revisions != null && process.Revisions.Any())
+                                        {
+                                            @process.Revisions.Last().ProcessRevId
+                                            if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
+                                            { <p>&#xf3c1;</p> }
                                             else
-                                            {
-                                                <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
-                                            }
-                                        </option>
-                                    }
-                                </select>
-                                <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                <button class="btn btn-primary my-2">Ok</button>
-                            </form>
+                                            { <p>&#xf023;</p> }
+                                        }
+                                        else
+                                        {
+                                            <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
+                                        }
+                                    </option>
+                                }
+                            </select>
+                            <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                            <a id="ancProcessSelect" class="btn btn-primary my-2" asp-page="ProcessRevMaintenance" asp-route-aProcessId="@null">Ok</a>
                         </div>
                         <div class="col-lg-5">
                             <h5 id="modalStepTitle"></h5>
@@ -99,7 +97,7 @@
     <div class="row">
         <div class="col-lg-4">
             @*Buttons on the top of the screen*@
-            <a class="btn btn-danger my-1" href="ProcessRevMaintenance">Clear</a>
+            <a class="btn btn-danger my-1" asp-page="ProcessRevMaintenance" asp-route-aProcessId="@null">Clear</a>
             <button class="btn btn-primary my-1" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
 
             <form id="mainForm" method="post">
@@ -294,7 +292,7 @@
                                 <select id="selectAllOperations" class="list-group w-100" size="16">
                                     @foreach (var operation in Model.AllOperations)
                                     {
-                                        <option id="@operation.Id" value="@operation.Id" class="list-group-item">
+                                        <option id="@operation.Id" data-oper-code="@operation.Code" class="list-group-item">
                                             @operation.Name
                                         </option>
                                     }
@@ -324,7 +322,7 @@
                         var theSelectedOperation = theOperationSelect.options[theOperationSelect.selectedIndex];
 
                         document.getElementById("currentOperationId_" + theStepId + "-" + theStepSeq).value = theSelectedOperation.id;
-                        document.getElementById("operationAnchor_" + theStepId + "-" + theStepSeq).innerHTML = "[" + theSelectedOperation.innerHTML + "]" + "<i class='far fa-object-group'></i>";
+                        document.getElementById("operationAnchor_" + theStepId + "-" + theStepSeq).innerHTML = "[" + theSelectedOperation.dataset.operCode + "]" + "<i class='far fa-object-group'></i>";
 
                         assignStepSeqNumbers();
                     }
@@ -441,7 +439,7 @@
                                     }
                                 }
 
-                                if (doAllStepsHaveOper) { 
+                                if (doAllStepsHaveOper) {
                                     submitButtonsValidationResponse(true, "");
                                 }
                                 else {
@@ -581,6 +579,7 @@
 
                 document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
                 document.getElementById("modalStepTitle").innerHTML = 'Steps for ' + aProcessName.toString();
+                document.getElementById("ancProcessSelect").href = "/ProcessMaintenance/ProcessRevMaintenance/" + aProcessId;
             };
         }
     };
