@@ -492,7 +492,7 @@
                 @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                 {
                     var allStepCount = 0; //This is just to get a unique Id for the all steps list.
-                    <h5>All Steps</h5>
+                    <div class="row"><h5 class="col-lg-7">All Steps</h5><a class="btn btn-primary my-1" asp-page="StepMaintenance">Create New Step</a></div>
                     <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
                         @foreach (var step in Model.AllSteps)
                         {
