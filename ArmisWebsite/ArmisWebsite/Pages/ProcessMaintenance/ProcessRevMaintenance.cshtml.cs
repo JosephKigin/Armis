@@ -53,9 +53,6 @@ namespace ArmisWebsite
         [BindProperty(SupportsGet = true)]
         public int CurrentProcessId { get; set; }
 
-        [BindProperty]
-        public int SelectedProcessId { get; set; } //TODO: Is this even used anywhere?
-
         [BindProperty(SupportsGet = true)]
         public int CurrentRevId { get; set; }
 
@@ -83,16 +80,15 @@ namespace ArmisWebsite
             _apiAddress = aConfig["APIAddress"];
         }
 
-        //General page start up method.  If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
-        public async Task<IActionResult> OnGetAsync() //TODO: Both the page loading empty and the page loading with a processId go through this onget.  Seperate those to different ongets.
+        //If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
+        public async Task<IActionResult> OnGetAsync(int? aProcessId, string aPopUpMessage) //TODO: Both the page loading empty and the page loading with a processId go through this onget.  Seperate those to different ongets.
         {
             try
             {
-               var aProcessId = 0; //This just exists to make the logic on the next line easier to understand and cleaner to pass into SetUpProperties.
-               if (SelectedProcessId != 0) { CurrentProcessId = SelectedProcessId; }
-               if (CurrentProcessId != 0) { aProcessId = CurrentProcessId; }
+               if (aProcessId != 0 && aProcessId != null && CurrentProcessId == 0) { CurrentProcessId = aProcessId ?? 0; }
+                if (aPopUpMessage != null && aPopUpMessage != "") { PopUpMessage = aPopUpMessage; }
                 
-                await SetUpProperties(aProcessId);
+                await SetUpProperties(CurrentProcessId);
 
                 return Page();
             }
@@ -100,11 +96,6 @@ namespace ArmisWebsite
             {
                 return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." + ex.Message });
             }
-        }
-
-        public async Task<IActionResult> OnPost() //This should never be hit.  It is here for testing purposes.
-        {
-            return Page();
         }
 
         public async Task<IActionResult> OnPostDelete()
@@ -142,16 +133,14 @@ namespace ArmisWebsite
             try
             {
                 var result = await ProcessDataAccess.RevUp(CurrentRev);
-                CurrentRev = result;
-                PopUpMessage += "A new revision has been created.";
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aPopUpMessage = "A new revision has been created."});
             }
             catch (Exception ex)
             {
                 return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message });
             }
 
-            await SetUpProperties(CurrentProcessId);
-            return Page();
+            
         }
 
         public async Task<IActionResult> OnPostSave()
@@ -174,11 +163,7 @@ namespace ArmisWebsite
 
                 var theReturnRevModel = await ProcessDataAccess.SaveStepSeqToRevision(theStepSeqList);
 
-                await SetUpProperties(theReturnRevModel.ProcessId);
-
-                PopUpMessage += "Process saved successfully.";
-
-                return Page();
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aPopUpMessage = "Process saved successfully." });
             }
             catch (Exception ex)
             {
@@ -207,11 +192,7 @@ namespace ArmisWebsite
 
                 var theReturnRevModel = await ProcessDataAccess.LockRevision(CurrentProcessId, CurrentRevId, theStepSeqList);
 
-                await SetUpProperties(theReturnRevModel.ProcessId);
-
-                PopUpMessage += "Revision was locked successfully. ";
-
-                return Page();
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aPopUpMessage = "Revision was locked successfully." });
             }
             catch (Exception ex)
             {
@@ -236,9 +217,7 @@ namespace ArmisWebsite
                 ModelState.Remove("CurrentProcessId");
 
                 await SetUpProperties(result.ProcessId);
-                CurrentProcessId = result.ProcessId;
-                PopUpMessage += "Process was successfully copied.";
-                return new PageResult();
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aPopUpMessage = "Process was successfully copied." });
             }
             catch (Exception ex)
             {
