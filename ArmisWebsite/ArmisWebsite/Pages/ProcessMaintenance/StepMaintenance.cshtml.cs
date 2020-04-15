@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Armis.BusinessModels.ProcessModels;
-using ArmisWebsite.DataAccess.Process;
-using ArmisWebsite.DataAccess.Process.Interfaces;
+using Armis.BusinessModels.QualityModels;
+using ArmisWebsite.DataAccess.Quality;
+using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -82,7 +82,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a smaller value
             }
 
         }
@@ -112,7 +112,7 @@ namespace ArmisWebsite
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);
 
-                return RedirectToPage("StepMaintenance", new {aMessage = "Step saved successfully", isMessageGood = true });
+                return RedirectToPage("StepMaintenance", new {aStepId= theStepId.StepId, aMessage = "Step saved successfully", isMessageGood = true });
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
-using Armis.BusinessModels.ProcessModels;
+using Armis.BusinessModels.QualityModels;
 using Armis.Data.DatabaseContext;
-using Armis.DataLogic.Services.ProcessServices;
-using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.QualityServices;
+using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Armis.DataLogic.Services.CustomerServices;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Microsoft.EntityFrameworkCore;

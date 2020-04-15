@@ -1,5 +1,5 @@
-﻿using Armis.BusinessModels.ProcessModels;
-using ArmisWebsite.DataAccess.Process.Interfaces;
+﻿using Armis.BusinessModels.QualityModels;
+using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using iTextSharp.text;

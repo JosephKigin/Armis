@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace ArmisWebsite
 {
     //This class is meant to allow other places in the program to access the config if dependency injection is not an option.
-    //TODO This crap doesnt work.  Config isn't getting pulled correctly.
     public class AppSettings
     {
         private static AppSettings _appSettings;
