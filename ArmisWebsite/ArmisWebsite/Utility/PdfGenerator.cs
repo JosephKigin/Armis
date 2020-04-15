@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.ProcessModels;
+﻿using Armis.BusinessModels.QualityModels;
 using ArmisWebsite.Utility.Interfaces;
 using iTextSharp;
 using iTextSharp.text;
@@ -24,7 +24,7 @@ namespace ArmisWebsite.Utility
 
         public string GenerateRouterPdf(ProcessModel aProcessModel, ProcessRevisionModel aRevisionModel)
         {
-            //TODO: Check thePath later
+            //TODO: Check thePath later.
             var thePath = Config["PdfRouterFileLocation"] + aProcessModel.ProcessId + "-" + aRevisionModel.ProcessRevId + "-" + aProcessModel.Name + ".pdf";
             if (!File.Exists(thePath))
             {

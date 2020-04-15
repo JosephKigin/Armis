@@ -63,7 +63,7 @@
         </span>
     </div>
     @if (Model.CurrentSpecId != 0)
-    {<input id="inputBtnRevUp" type="button" class="btn btn-primary float-lg-right" value="Rev-Up" onclick="ApplyRevUpStatus()" />}
+    {<input id="inputBtnRevUp" type="button" class="btn btn-primary float-lg-right" tabindex="-1" value="Rev-Up" onclick="ApplyRevUpStatus()" />}
 </div>
 <div class="form-group form-inline">
     <label class="col-lg-2">Spec Description: </label>
@@ -366,7 +366,7 @@
         //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
         if (chkBox.checked) {
             document.getElementById("defaultChoice" + cardNumber).value = chkBox.value;
-            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + chkBox.value).value + " is default)";
+            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + (chkBox.value-1)).value + " is default)";
         }
         else {
             document.getElementById("defaultChoice" + cardNumber).value = '';

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Armis.BusinessModels.ProcessModels;
-using ArmisWebsite.DataAccess.Process;
-using ArmisWebsite.DataAccess.Process.Interfaces;
+using Armis.BusinessModels.QualityModels;
+using ArmisWebsite.DataAccess.Quality;
+using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;

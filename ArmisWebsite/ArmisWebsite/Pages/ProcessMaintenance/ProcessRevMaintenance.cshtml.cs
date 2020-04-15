@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Armis.BusinessModels.EmployeeModels;
-using Armis.BusinessModels.ProcessModels;
+using Armis.BusinessModels.QualityModels;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
-using ArmisWebsite.DataAccess.Process.Interfaces;
+using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
@@ -81,7 +81,7 @@ namespace ArmisWebsite
         }
 
         //If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
-        public async Task<IActionResult> OnGetAsync(int? aProcessId, string aPopUpMessage) //TODO: Both the page loading empty and the page loading with a processId go through this onget.  Seperate those to different ongets.
+        public async Task<IActionResult> OnGetAsync(int? aProcessId, string aPopUpMessage) 
         {
             try
             {

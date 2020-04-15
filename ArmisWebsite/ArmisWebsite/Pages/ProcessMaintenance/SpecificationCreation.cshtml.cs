@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Armis.BusinessModels.ProcessModels.Spec;
-using ArmisWebsite.DataAccess.Process.Interfaces;
+using Armis.BusinessModels.QualityModels.Spec;
+using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
@@ -104,7 +104,6 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             try
             {
                 PopUpMessage = aPopUpMessage;
-                //TODO: aSpecId shouldn't actually be used anymore, this needs to be removed and cleaned up.
                 if (aSpecId != 0 && aSpecId != null)
                 {
                     if (CurrentSpecId == 0)
@@ -209,7 +208,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     CurrentSpecId = theReturnedSpecId;
                     PopUpMessage = "Spec created successfully.";
                 }
-                else if (WasRevUpSelected) //Spec is being updated. Only stuff under the spec level can be updated.  If anything on the Spec level is updated, then it should just be a new Revision.
+                else if (WasRevUpSelected) //Spec is being Reved-Up.
                 {
                     //TODO: This section is for rev-up
                     theSpec.Id = CurrentSpecId;
@@ -221,7 +220,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message }); //TODO:: Insert logging here.
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
             }
         }
 

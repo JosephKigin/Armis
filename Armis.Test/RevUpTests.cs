@@ -1,7 +1,7 @@
-﻿using Armis.BusinessModels.ProcessModels;
+﻿using Armis.BusinessModels.QualityModels;
 using Armis.Data.DatabaseContext;
-using Armis.DataLogic.Services.ProcessServices;
-using Armis.DataLogic.Services.ProcessServices.Interfaces;
+using Armis.DataLogic.Services.QualityServices;
+using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
