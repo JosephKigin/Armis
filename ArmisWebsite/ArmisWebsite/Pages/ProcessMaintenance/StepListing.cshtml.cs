@@ -29,7 +29,7 @@ namespace ArmisWebsite
             try
             {
                 var theSteps = await StepDataAccess.GetAllSteps();
-                Steps = theSteps.ToList();
+                Steps = theSteps.OrderBy(i => i.StepName).ToList();
                 return Page();
             }
             catch (Exception ex)

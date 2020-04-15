@@ -1,4 +1,4 @@
-﻿@page "{aStepId:int?}/{aMessage?}"
+﻿@page "{aStepId:int?}/{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.StepMaintenanceModel
 @{
     ViewData["Title"] = "Step Maintenance";
@@ -14,17 +14,17 @@
 </div>
 
 <body>
-
-    @*Pop up partial*@
-    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
-    
     <div class="row">
-
         <div class="col-lg-6">
-            <form method="post" asp-page-handler="NewStep">
+            <form method="post">
                 <h3>Create A New Step</h3>
                 @if (Model.Message != "" && Model.Message != null)
-                {<label class="alert alert-danger">@Model.Message</label>}
+                {
+                    if (Model.IsMessageGood)
+                    {<label class="alert alert-success">@Model.Message</label>}
+                else
+                { <label class="alert alert-danger">@Model.Message</label>}
+        }
                 <div class="form-group">
                     <label><b>Step Name: </b></label>
                     <input type="text" asp-for="StepName" class="form-control" />
@@ -76,7 +76,7 @@
                                 @stepCategory.Name
                             </option>
                         }
-                    </select> 
+                    </select>
                     <span asp-validation-for="StepCategoryCode" class="alert-danger"></span>
                 </div>
                 <button type="submit" class="btn btn-outline-primary">Save</button>
@@ -84,19 +84,24 @@
         </div>
 
         <div class="col-lg-6">
-            <input id="inputStepSearchFilter" type="text" class="form-control my-1" placeholder="Search..." onkeyup="searchFilter()" />
+            <div class="input-group my-1">
+                <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchFilter()" />
+                <span class="input-group-append bg-white border-left-0">
+                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                </span>
+            </div>
 
             <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow-y:scroll;">
                 @foreach (var step in Model.AllSteps)
                 {
                     <li class="list-group-item" id="@step.StepId">
 
-                        <h5>@step.StepId @step.StepName<a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a></h5>
+                        <h5>@step.StepName<a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a></h5>
                         @if (step.SignOffIsRequired == true)
                         {<p class="text-danger">Sign-Off Required</p>}
                         <b>Instructions: </b>
                         <p class="text-break">@step.Instructions</p>
-                        
+
                     </li>
                 }
             </ul>
@@ -113,7 +118,7 @@
             if (listItemsToFilter[i].id != undefined) {
                 var h5 = listItemsToFilter[i].getElementsByTagName("h5")[0].innerHTML.toLowerCase();
                 if (h5.includes(filter)) {
-                    
+
                     listItemsToFilter[i].style.display = "block";
                 }
                 else {

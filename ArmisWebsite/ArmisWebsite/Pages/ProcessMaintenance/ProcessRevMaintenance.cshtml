@@ -21,7 +21,7 @@
         @if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
         {
             <h3>
-                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Process: <b> @Model.CurrentProcess.Name</b>
                 Rev:  @if (Model.CurrentRevId != 0)
                 {<b>@Model.CurrentRevId </b>}
                 <span class="alert-success"> Unlocked </span>
@@ -30,7 +30,7 @@
         else if (Model.CurrentRev.RevStatusCd == "LOCKED")
         {
             <h3>
-                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Process: <b> @Model.CurrentProcess.Name</b>
                 Rev: @if (Model.CurrentRevId != 0)
                 {<b>@Model.CurrentRevId </b>}
                 <span class="alert-danger">Locked</span>
@@ -39,7 +39,7 @@
         else
         {
             <h3>
-                Process: <b> @Model.CurrentProcessId-@Model.CurrentProcess.Name</b>
+                Process: <b> @Model.CurrentProcess.Name</b>
             </h3>
         }
     }
@@ -491,13 +491,19 @@
                 {
                     var allStepCount = 0; //This is just to get a unique Id for the all steps list.
                     <div class="row"><h5 class="col-lg-7">All Steps</h5><a class="btn btn-primary my-1" asp-page="StepMaintenance">Create New Step</a></div>
-                    <ul id="sortableAllSteps" class="list-group" style="max-height:42em; overflow:scroll;">
+                    <div class="input-group my-1">
+                        <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchStepList(this.value)" />
+                        <span class="input-group-append bg-white border-left-0">
+                            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                        </span>
+                    </div>
+                    <ul id="sortableAllSteps" class="list-group" style="max-height:38em; overflow:scroll;">
                         @foreach (var step in Model.AllSteps)
                         {
-                            <li class="list-group-item" id="allStep_@step.StepId-0">
+                            <li class="list-group-item" data-step-name="@step.StepName" id="allStep_@step.StepId-0">
                                 <h5 id="allStepHeader-@step.StepId">
                                     <i class="fa fa-arrows-alt handle"></i>
-                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName <i class="fa fa-sort-down"></i></a>
+                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepName [@step.StepId]<i class="fa fa-sort-down"></i></a>
                                     <br />
                                     @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
                                     <a class="text-info" id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
@@ -519,6 +525,22 @@
                     </ul>
 
                     <script>
+                        function searchStepList(searchTerm) {
+                            var steps = document.getElementById("sortableAllSteps").getElementsByTagName("li");
+
+                            for (var i = 0; i < steps.length; i++) {
+                                if (steps[i] != undefined) {
+                                    if (!steps[i].dataset.stepName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                        steps[i].hidden = true;
+                                    }
+                                    else {
+                                        steps[i].hidden = false;
+                                    }
+                                }
+
+                            }
+                        }
+
                         new Sortable(sortableAllSteps,
                             {
                                 group: {

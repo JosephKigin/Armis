@@ -1,4 +1,4 @@
-﻿@page "{anOperationId:int?}"
+﻿@page "{anOperationId:int?}/{aPopUpMessage?}"
 @model ArmisWebsite.OperationMaintenanceModel
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,11 +15,13 @@
 
 <body>
     <h1>Operation Maintenance</h1>
-
+    @*Pop up partial*@
+    <div class="my-2"><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></div>
     <div class="row">
         <div class="col-lg-6">
             <form method="post">
                 <h3>Create A New Operation</h3>
+
                 @if (Model.CurrentOperationId != 0)
                 {
                     <div class="form-group">
@@ -53,6 +55,7 @@
                 <div class="form-group">
                     <label><b>Operation Group: </b><input type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#operGroupsModal" value="Find" /> </label>
                     <input id="currentOperationGroupName" type="text" class="form-control" asp-for="CurrentOperationGroupName" readonly />
+                    <span class="text-danger" asp-validation-for="CurrentOperationGroupName"></span>
                     <input id="currentOperationGroupId" type="text" asp-for="CurrentOperationGroupId" hidden />
                 </div>
 
@@ -75,7 +78,7 @@
                 <a class="btn btn-danger my-1" asp-page="./OperationMaintenance" asp-route-anOperationId="">Clear</a>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            
+
         </div>
 
         <div class="col-lg-6">
@@ -96,8 +99,7 @@
         </div>
     </div>
 
-    @*Pop up partial*@
-    <partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" />
+
 
 </body>
 
