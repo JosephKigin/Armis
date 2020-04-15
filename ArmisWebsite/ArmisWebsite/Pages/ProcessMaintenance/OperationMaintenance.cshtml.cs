@@ -26,21 +26,22 @@ namespace ArmisWebsite
         public int CurrentOperationId { get; set; }
 
         [BindProperty]
-        [Required]
+        [Required, Display(Name = "Operation Name")]
         public string CurrentOperationName { get; set; }
 
         [BindProperty]
-        [Required, StringLength(8)]
+        [Required, StringLength(8), Display(Name = "Operation Code")]
         public string CurrentOperationCode { get; set; }
 
         [BindProperty]
-        [Required, Range(0, 32000)]
+        [Required, Range(0, 32000), Display(Name = "Default Due Days")]
         public short? CurrentOperationDefaultDueDays { get; set; }
 
         [BindProperty]
         public bool CurrentOperationThicknessReq { get; set; }
 
         [BindProperty]
+        [Required, Display(Name = "Operation Group")]
         public string CurrentOperationGroupName { get; set; }
 
         [BindProperty]
@@ -53,10 +54,11 @@ namespace ArmisWebsite
             OperationDataAccess = anOperationDataAccess;
         }
 
-        public async Task<ActionResult> OnGet(int anOperationId = 0)
+        public async Task<ActionResult> OnGet(int anOperationId = 0, string aPopUpMessage = "")
         {
             try
             {
+                PopUpMessage = aPopUpMessage;
                 await SetUpPageProperties(anOperationId);
 
                 return Page();
@@ -81,30 +83,32 @@ namespace ArmisWebsite
                     Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
                 };
 
+                var theReturnMessage = "";
+                OperationModel result;
+
                 if (CurrentOperationId == 0) //If the operation ID is 0, then a new operation is to be created
                 {
-                    var result = await OperationDataAccess.CreateOperation(theCurrentOperation);
+                    result = await OperationDataAccess.CreateOperation(theCurrentOperation);
 
                     await SetUpPageProperties(result.Id);
 
-                    PopUpMessage += "New operation was created successfully.";
+                    theReturnMessage = "New operation was created successfully.";
                 }
                 else //If the operation Id is not 0, then the operation with the ID selected is to be updated
                 {
                     theCurrentOperation.Id = CurrentOperationId;
 
-                    var result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
+                    result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
 
                     await SetUpPageProperties(result.Id);
 
-                    PopUpMessage += "The operation was updated successfully.";
+                    theReturnMessage = "The operation was updated successfully.";
                 }
 
-                return Page();
+                return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aPopUpMessage = theReturnMessage});
             }
 
             await SetUpPageProperties();
-            PopUpMessage += "The information entered was not valid.";
             return Page();
 
         }

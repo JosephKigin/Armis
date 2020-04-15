@@ -11,12 +11,18 @@
 <h1>Step Listing</h1>
 
 <body>
-    <ul class="list-group" style="max-height: 42em; overflow:scroll;">
+    <div class="input-group my-1">
+        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchStepList(this.value)" />
+        <span class="input-group-append bg-white border-left-0">
+            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+        </span>
+    </div>
+    <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow:scroll;">
         @foreach (var step in Model.Steps)
         {
-            <li class="list-group-item" id="@step.StepId">
+            <li id="@step.StepId" class="list-group-item" data-step-name="@step.StepName">
 
-                <h5>@step.StepId @step.StepName</h5>
+                <h5>@step.StepName [@step.StepId]</h5>
                 @if (step.SignOffIsRequired == true)
                 {<p class="text-danger">Sign-Off Required</p>}
                 <b>Instructions: </b>@step.Instructions
@@ -26,3 +32,21 @@
         }
     </ul>
 </body>
+
+<script>
+    function searchStepList(searchTerm) {
+        var steps = document.getElementById("listAllSteps").getElementsByTagName("li");
+
+        for (var i = 0; i < steps.length; i++) {
+            if (steps[i] != undefined) {
+                if (steps[i].dataset.stepName.toLowerCase().includes(searchTerm.toLowerCase())) {
+
+                    steps[i].hidden = false;
+                }
+                else {
+                    steps[i].hideen = true;
+                }
+            }
+        }
+    }
+</script>

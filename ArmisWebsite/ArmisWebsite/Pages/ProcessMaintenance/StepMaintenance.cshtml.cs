@@ -26,7 +26,6 @@ namespace ArmisWebsite
         public List<StepCategoryModel> StepCategories { get; set; }
 
         //Web properties
-        public string PopUpMessage { get; set; }
         public string HelpMessage { get; set; }
 
         [BindProperty]
@@ -48,6 +47,8 @@ namespace ArmisWebsite
         [BindProperty]
         public string Message { get; set; }
 
+        public bool IsMessageGood { get; set; }
+
         public StepMaintenanceModel(IConfiguration aConfig,
                                     IStepDataAccess aStepDataAccess)
         {
@@ -55,13 +56,17 @@ namespace ArmisWebsite
             StepDataAccess = aStepDataAccess;
         }
 
-        public async Task<IActionResult> OnGetAsync(int aStepId = 0, string aMessage = "")
+        public async Task<IActionResult> OnGetAsync(int aStepId = 0, string aMessage = "", bool isMessageGood = false)
         {
             try
             {
                 await SetUpPage();
 
-                if (aMessage != "") { Message = aMessage; }
+                if (aMessage != "") 
+                { 
+                    Message = aMessage;
+                    IsMessageGood = isMessageGood;
+                }
                 if (aStepId > 0)
                 {
                     Step = await StepDataAccess.GetStepById(aStepId);
@@ -107,9 +112,7 @@ namespace ArmisWebsite
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);
 
-                await SetUpPage();
-                PopUpMessage = "Step saved successfully.";
-                return Page();
+                return RedirectToPage("StepMaintenance", new {aMessage = "Step saved successfully", isMessageGood = true });
             }
             catch (Exception ex)
             {
@@ -121,7 +124,7 @@ namespace ArmisWebsite
         private async Task SetUpPage()
         {
             var theSteps = await StepDataAccess.GetAllSteps();
-            AllSteps = theSteps.ToList();
+            AllSteps = theSteps.OrderBy(i => i.StepName).ToList();
 
             var theStepCategories = await StepDataAccess.GetAllStepCategoryies();
             StepCategories = theStepCategories.ToList();

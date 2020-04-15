@@ -236,7 +236,7 @@ namespace ArmisWebsite
             }
 
             var theSteps = await StepDataAccess.GetAllSteps();
-            AllSteps = theSteps.ToList();
+            AllSteps = theSteps.OrderBy(i =>i.StepName).ToList();
 
             var theOperations = await OperationDataAccess.GetAllOperations();
             AllOperations = theOperations.OrderBy(i => i.Name).ToList();
