@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.QualityServices;
-using Armis.BusinessModels.QualityModels;
+using Armis.BusinessModels.QualityModels.Process;
 using System.Text.Json;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 

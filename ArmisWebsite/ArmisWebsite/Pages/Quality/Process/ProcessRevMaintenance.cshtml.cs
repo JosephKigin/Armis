@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Armis.BusinessModels.EmployeeModels;
-using Armis.BusinessModels.QualityModels;
+using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;

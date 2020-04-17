@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.Services.CustomerServices;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
+using Armis.DataLogic.Services.PartService;
+using Armis.DataLogic.Services.PartService.Interfaces;
 using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +57,7 @@ namespace Armis.Api
             services.AddScoped<IOperationService, OperationService>();
             services.AddScoped<ISpecService, SpecService>();
             services.AddScoped<ISpecProcessAssignService, SpecProcessAssignService>();
+            services.AddScoped<IHardnessService, HardnessService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

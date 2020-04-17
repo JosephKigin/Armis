@@ -16,7 +16,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public int PartId { get; set; }
         public short PartRevId { get; set; }
         public string Description { get; set; }
-        public int? SamplePlanId { get; set; }
         public string ExternalRev { get; set; }
         public string Dimensions { get; set; }
         public int? RackId { get; set; }
@@ -39,7 +38,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual MaterialAlloy AlloyNavigation { get; set; }
         public virtual Employee CreatedByEmpNavigation { get; set; }
         public virtual Part Part { get; set; }
-        public virtual SamplePlanHead SamplePlan { get; set; }
         public virtual MaterialSeries Series { get; set; }
         public virtual Department StandardDeptNavigation { get; set; }
         public virtual PartComment PartComment { get; set; }

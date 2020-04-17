@@ -11,5 +11,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string CredAuthComments { get; set; }
         public string VoidComments { get; set; }
         public string JobHoldComments { get; set; }
+
+        public virtual OrderHead Order { get; set; }
     }
 }

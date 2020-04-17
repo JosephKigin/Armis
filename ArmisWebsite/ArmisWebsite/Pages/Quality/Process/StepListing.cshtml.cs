@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Armis.BusinessModels.QualityModels;
+using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Quality;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;

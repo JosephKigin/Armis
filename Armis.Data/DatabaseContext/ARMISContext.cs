@@ -43,6 +43,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<HandlingCharge> HandlingCharge { get; set; }
         public virtual DbSet<Hardness> Hardness { get; set; }
+        public virtual DbSet<InspectTestType> InspectTestType { get; set; }
         public virtual DbSet<LoadType> LoadType { get; set; }
         public virtual DbSet<LocationTypeCode> LocationTypeCode { get; set; }
         public virtual DbSet<MaterialAlloy> MaterialAlloy { get; set; }
@@ -82,6 +83,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<ReworkCode> ReworkCode { get; set; }
         public virtual DbSet<SamplePlanHead> SamplePlanHead { get; set; }
         public virtual DbSet<SamplePlanLevel> SamplePlanLevel { get; set; }
+        public virtual DbSet<SamplePlanReject> SamplePlanReject { get; set; }
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<ShipAccount> ShipAccount { get; set; }
         public virtual DbSet<ShipCharge> ShipCharge { get; set; }
@@ -104,17 +106,14 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<TaxJurisAuthority> TaxJurisAuthority { get; set; }
         public virtual DbSet<TaxJurisdiction> TaxJurisdiction { get; set; }
         public virtual DbSet<Terms> Terms { get; set; }
-        public virtual DbSet<TestType> TestType { get; set; }
         public virtual DbSet<TranType> TranType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
-                //optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ARMISTEST; User Id=armisadmin; Password=8#6C1xLopq@z;");
-                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True");
             }
         }
 
@@ -891,6 +890,24 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<InspectTestType>(entity =>
+            {
+                entity.HasKey(e => e.InspectTestId)
+                    .HasName("PK_InspectTestType_InspectTestId");
+
+                entity.Property(e => e.InspectTestId).ValueGeneratedNever();
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TestCode)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<LoadType>(entity =>
             {
                 entity.HasKey(e => e.LoadTypeCd)
@@ -1193,6 +1210,12 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.VoidComments)
                     .HasMaxLength(200)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Order)
+                    .WithOne(p => p.OrderComments)
+                    .HasForeignKey<OrderComments>(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderComments_OrderId_OrderHead_OrderId");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -1491,6 +1514,12 @@ namespace Armis.Data.DatabaseContext
                     .HasColumnName("STZip")
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Order)
+                    .WithOne(p => p.OrderShipToOverride)
+                    .HasForeignKey<OrderShipToOverride>(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderShipToOverride_OrderId_OrderHead_OrderId");
             });
 
             modelBuilder.Entity<Oven>(entity =>
@@ -1621,11 +1650,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.PartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PartRevision_PartId_Part_PartId");
-
-                entity.HasOne(d => d.SamplePlan)
-                    .WithMany(p => p.PartRevision)
-                    .HasForeignKey(d => d.SamplePlanId)
-                    .HasConstraintName("FK_PartRevision_SamplePlanId_SamplePlanHead_SamplePlanId");
 
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.PartRevision)
@@ -2004,20 +2028,6 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.PlanName)
                     .HasMaxLength(10)
                     .IsUnicode(false);
-
-                entity.Property(e => e.TestCd)
-                    .HasMaxLength(6)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.Cust)
-                    .WithMany(p => p.SamplePlanHead)
-                    .HasForeignKey(d => d.CustId)
-                    .HasConstraintName("FK_SamplePlanHead_CustId_Customer_CustId");
-
-                entity.HasOne(d => d.TestCdNavigation)
-                    .WithMany(p => p.SamplePlanHead)
-                    .HasForeignKey(d => d.TestCd)
-                    .HasConstraintName("FK_SamplePlanHead_TestCd_TestType_TestCd");
             });
 
             modelBuilder.Entity<SamplePlanLevel>(entity =>
@@ -2030,6 +2040,24 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.SamplePlanId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SamplePlanLevel_SamplePlanId_SamplePlanHead_SamplePlanId");
+            });
+
+            modelBuilder.Entity<SamplePlanReject>(entity =>
+            {
+                entity.HasKey(e => new { e.SamplePlanId, e.SamplePlanLevelId, e.InspectTestId })
+                    .HasName("PK_SamplePlanReject_SamplePlanId_SamplePlanLevelId_InspectTestId");
+
+                entity.HasOne(d => d.InspectTest)
+                    .WithMany(p => p.SamplePlanReject)
+                    .HasForeignKey(d => d.InspectTestId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SamplePlanReject_InspectTestId_InspectTestType_InspectTestId");
+
+                entity.HasOne(d => d.SamplePlan)
+                    .WithMany(p => p.SamplePlanReject)
+                    .HasForeignKey(d => new { d.SamplePlanId, d.SamplePlanLevelId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SamplePlanReject_SamplePlanLevelId_SamplePlanLevel_SamplePlanLevelId");
             });
 
             modelBuilder.Entity<Session>(entity =>
@@ -2455,13 +2483,8 @@ namespace Armis.Data.DatabaseContext
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecificationRevision_CreatedByEmp_Employee_EmpId");
 
-                entity.HasOne(d => d.NadCapSamplePlanNavigation)
-                    .WithMany(p => p.SpecificationRevisionNadCapSamplePlanNavigation)
-                    .HasForeignKey(d => d.NadCapSamplePlan)
-                    .HasConstraintName("FK_SpecificationRevision_NadCapSamplePlan_SamplePlanHead_SamplePlanId");
-
                 entity.HasOne(d => d.SamplePlanNavigation)
-                    .WithMany(p => p.SpecificationRevisionSamplePlanNavigation)
+                    .WithMany(p => p.SpecificationRevision)
                     .HasForeignKey(d => d.SamplePlan)
                     .HasConstraintName("FK_SpecificationRevision_SamplePlan_SamplePlanHead_SamplePlanId");
 
@@ -2624,22 +2647,6 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Terms>(entity =>
             {
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<TestType>(entity =>
-            {
-                entity.HasKey(e => e.TestCd)
-                    .HasName("PK_TestType_TestCD");
-
-                entity.Property(e => e.TestCd)
-                    .HasColumnName("TestCD")
-                    .HasMaxLength(6)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50)

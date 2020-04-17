@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using Armis.Data.DatabaseContext.Entities;
 using System;
 using System.Collections.Generic;

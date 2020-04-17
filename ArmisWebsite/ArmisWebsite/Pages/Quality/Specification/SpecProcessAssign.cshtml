@@ -1,0 +1,134 @@
+﻿@page
+@model ArmisWebsite.Pages.ProcessMaintenance.SpecProcessAssignModel
+@{
+    ViewData["Title"] = "SpecProcessAssign";
+}
+
+<h1>Spec Process Assignment</h1>
+
+<form method="post">
+    @*Javascript will write to these field depending on what the user selects. Maybe... All of these probably wont be needed.*@
+    <input id="_SpecRev" type="hidden" asp-for="SpecRev"/>
+    <input id="inputSpecId" type="hidden" />
+    <input id="inputSpecChoice1" type="hidden" />
+    <input id="inputSpecChoice2" type="hidden" />
+    <input id="inputSpecChoice3" type="hidden" />
+    <input id="inputSpecChoice4" type="hidden" />
+    <input id="inputSpecChoice5" type="hidden" />
+    <input id="inputSpecChoice6" type="hidden" />
+    <input id="inputPreBakeId" type="hidden" />
+    <input id="intputPostBakeId" type="hidden" />
+    <input id="inputMaskId" type="hidden" />
+    <input id="inputHardness" type="hidden" />
+    <input id="inputSeries" type="hidden" />
+    <input id="inputAlloy" type="hidden" />
+    <input id="inputCustomerId" type="hidden" />
+    <input id="inputProcessId" type="hidden" />
+    <input id="inputProcessRevId" type="hidden" />
+</form>
+
+<div class="row">
+    <div class="col-lg-3">
+        <button class="btn btn-primary">Find Specification</button>
+        <br />
+        <label>Spec Code</label>
+        <input class="form-control mb-2" value="ABC-123" readonly/>
+        <label>Spec Rev</label>
+        <input class="form-control mb-2" value="A1" readonly/>
+        <div class="card p-2">
+            <h5>Class</h5>
+            <div><input type="radio" name="class" />1</div>
+            <div><input type="radio" name="class" />2</div>
+            <div><input type="radio" name="class" />3</div>
+
+            <h5>Type</h5>
+            <div><input type="radio" name="type" />II</div>
+            <div><input type="radio" name="type" />IV</div>
+
+            <h5>Color</h5>
+            <div><input type="radio" name="color"/>Red</div>
+            <div><input type="radio" name="color"/>Green</div>
+            <div><input type="radio" name="color" />Blue</div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <input class="form-control" placeholder="Search..."/>
+        <select class="list-group w-100" size="12">
+            <option class="list-group-item">
+                Zinc - Clear
+            </option>
+            <option class="list-group-item">
+                Zinc - Yellow
+            </option>
+            <option class="list-group-item">
+                Zinc - Red
+            </option>
+            <option class="list-group-item">
+                Nickel Seal
+            </option>
+            <option class="list-group-item">
+                Chrome Seal
+            </option>
+            <option class="list-group-item">
+                Anodize - Clear
+            </option>
+            <option class="list-group-item">
+                Anodize - Red
+            </option>
+            <option class="list-group-item">
+                Anodize - Blue
+            </option>
+            <option class="list-group-item">
+                Silver
+            </option>
+            <option class="list-group-item">
+                Gold
+            </option>
+            <option class="list-group-item">
+                Cadmium
+            </option>
+            <option class="list-group-item">
+                Hardcoat - Gold
+            </option>
+        </select>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="mb-1">
+            <label>Pre-Bake</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="400 2hr-3hr" readonly />
+        </div>
+
+        <div class="mb-2">
+            <label>Post-Bake</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="350 10hr-12hr" readonly />
+        </div>
+
+        <div class="mb-2">
+            <label>Mask</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="Plug Holes" readonly />
+        </div>
+
+        <div class="mb-2">
+            <label>Hardness</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="A Hardness" readonly />
+        </div>
+
+        <div class="mb-2">
+            <label>Series</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="Stainless" readonly />
+        </div>
+
+        <div class="mb-2">
+            <label>Alloy</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="Steel" readonly />
+        </div>
+
+        <div>
+            <label>Customer</label><button class="btn btn-sm btn-primary float-right">Find</button>
+            <input class="form-control" value="Graco" readonly />
+        </div>
+    </div>
+</div>
+<button class="col-lg-12 btn btn-lg btn-primary align-self-center mt-3 p-3"><h1>Submit</h1></button>

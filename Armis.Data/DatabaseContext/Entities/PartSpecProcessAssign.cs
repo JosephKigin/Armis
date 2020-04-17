@@ -9,7 +9,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public short PartRevId { get; set; }
         public int SpecId { get; set; }
         public short SpecRevId { get; set; }
-        public short SpecAssignId { get; set; }
+        public int SpecAssignId { get; set; }
         public DateTime LastUsedDate { get; set; }
 
         public virtual PartRevision Part { get; set; }

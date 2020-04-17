@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.Utility.Interfaces;
 using iTextSharp;
 using iTextSharp.text;

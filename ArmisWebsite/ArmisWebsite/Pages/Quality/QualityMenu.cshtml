@@ -1,0 +1,28 @@
+﻿@page
+@model ArmisWebsite.ProcessMenuModel
+@{
+    ViewData["Title"] = "Quality Menu";
+}
+
+<h1>Quality Menu</h1>
+
+<div class="row">
+    <div class="col-lg card mx-3 ">
+        <h5>Process</h5>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessMaintenance">Create Process</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessRevMaintenance">Process Revision Maintenance</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessListing">Process List</a>
+    </div>
+    <div class="col-lg card">
+        <h5>Step</h5>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/StepMaintenance">Step Maintenance</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/StepListing">Step List</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Process/OperationMaintenance">Operation Maintenance</a>
+    </div>
+    <div class="col-lg card mx-3">
+        <h5>Specification</h5>
+        <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecificationCreation">Spec Maintanence</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecificationListing">Spec Listing</a>
+        <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecProcessAssign" >Spec Process Assign</a>
+    </div>
+</div>

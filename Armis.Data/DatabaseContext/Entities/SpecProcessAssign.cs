@@ -13,7 +13,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public int SpecId { get; set; }
         public short SpecRevId { get; set; }
-        public short SpecAssignId { get; set; }
+        public int SpecAssignId { get; set; }
         public byte? SubLevelOption1 { get; set; }
         public byte? ChoiceOption1 { get; set; }
         public byte? SubLevelOption2 { get; set; }

@@ -15,5 +15,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Ststate { get; set; }
         public string Stzip { get; set; }
         public string Stphone { get; set; }
+
+        public virtual OrderHead Order { get; set; }
     }
 }
