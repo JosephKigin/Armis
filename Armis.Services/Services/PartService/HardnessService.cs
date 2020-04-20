@@ -2,14 +2,15 @@
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.ModelExtensions.PartExtensions;
 using Armis.DataLogic.Services.PartService.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.PartService
 {
-    class HardnessService : IHardnessService
+    public class HardnessService : IHardnessService
     {
         private ARMISContext Context;
 
@@ -17,6 +18,16 @@ namespace Armis.DataLogic.Services.PartService
         {
             Context = aContext;
         }
+
+        public async Task<IEnumerable<HardnessModel>> GetAllHarnesses()
+        {
+            var theHardnessEntities = await Context.Hardness.ToListAsync();
+
+            if(theHardnessEntities == null || !theHardnessEntities.Any()) { return null; /*throw new Exception("No Hardnesses were returned");*/ }
+
+            return theHardnessEntities.ToModels();
+        }
+
         public async Task<HardnessModel> GetHardness(int aHardnessId)
         {
             var theHardnessEntity = await Context.Hardness.FindAsync(aHardnessId);

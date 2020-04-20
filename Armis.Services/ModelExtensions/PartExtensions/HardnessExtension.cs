@@ -19,5 +19,16 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
                 HardnessMax = aHardnessEntity.HardnessMax
             };
         }
+
+        public static IEnumerable<HardnessModel> ToModels(this IEnumerable<Hardness> aHardnesses)
+        {
+            var theResultModels = new List<HardnessModel>();
+            foreach (var hardness in aHardnesses)
+            {
+                theResultModels.Add(hardness.ToModel());
+            }
+
+            return theResultModels;
+        }
     }
 }

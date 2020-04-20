@@ -57,7 +57,6 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Description = aSpecRevModel.Description,
                 ExternalRev = aSpecRevModel.ExternalRev,
                 SamplePlan = null, //TODO: Figure out w/ sample plan
-                NadCapSamplePlan = null, //TODO: See Above
                 CreatedByEmp = aSpecRevModel.EmployeeNumber,
                 DateModified = aSpecRevModel.DateModified.Date,
                 TimeModified = aSpecRevModel.DateModified.TimeOfDay

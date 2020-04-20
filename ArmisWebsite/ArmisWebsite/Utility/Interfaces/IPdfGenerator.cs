@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

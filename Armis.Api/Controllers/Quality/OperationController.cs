@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Armis.BusinessModels.QualityModels;
+using Armis.BusinessModels.QualityModels.Process;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

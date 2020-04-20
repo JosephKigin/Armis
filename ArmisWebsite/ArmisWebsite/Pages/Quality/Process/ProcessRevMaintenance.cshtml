@@ -68,13 +68,13 @@
                                         {
                                             @process.Revisions.Last().ProcessRevId
                                             if (process.Revisions.Last().RevStatusCd == "UNLOCKED")
-                                            { <p>&#xf3c1;</p> }
+                                            { <text>&#xf3c1;</text> }
                                             else
-                                            { <p>&#xf023;</p> }
+                                            { <text>&#xf023;</text> }
                                         }
                                         else
                                         {
-                                            <p>NONE</p> @*Tags aren't supposed to be in the <option> tag so it doesn't render the <p> tag, but it is the only way to escape the c# code.*@
+                                            <text>NONE</text>
                                         }
                                     </option>
                                 }
@@ -255,7 +255,7 @@
                                     }
                                     else
                                     {
-                                        <p>[@stepSeq.Operation.Code]</p>
+                                        <text>[@stepSeq.Operation.Code]</text>
                                     }
                                     @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                 </h5>
@@ -600,7 +600,7 @@
 
                 document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
                 document.getElementById("modalStepTitle").innerHTML = 'Steps for ' + aProcessName.toString();
-                document.getElementById("ancProcessSelect").href = "/ProcessMaintenance/ProcessRevMaintenance/" + aProcessId;
+                document.getElementById("ancProcessSelect").href = "/Quality/Process/ProcessRevMaintenance/" + aProcessId;
             };
         }
     };

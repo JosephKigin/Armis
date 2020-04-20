@@ -10,7 +10,7 @@ using Armis.Data.DatabaseContext.Entities;
 using System.Text.Json;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Armis.DataLogic.Services.QualityServices;
-using Armis.BusinessModels.QualityModels;
+using Armis.BusinessModels.QualityModels.Process;
 using Armis.BusinessModels.QualityModels.PassBackModels;
 
 namespace Armis.Api.Controllers

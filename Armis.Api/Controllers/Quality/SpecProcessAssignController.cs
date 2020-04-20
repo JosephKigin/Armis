@@ -36,6 +36,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetAllHydratedSpecProcessAssign()
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.GetAllHydratedSpecProcessAssign();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<SpecProcessAssignModel>> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssignModel)
         {

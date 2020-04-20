@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess;
 using Microsoft.Extensions.Configuration;

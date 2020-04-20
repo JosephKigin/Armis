@@ -1,10 +1,10 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using Armis.Data.DatabaseContext.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Armis.DataLogic.ModelExtensions.QualityExtensions
+namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
 {
     public static class StepModelExtension
     {

@@ -42,7 +42,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string PackagingCd { get; set; }
         public int? SpecId { get; set; }
         public short? SpecRevId { get; set; }
-        public short? SpecAssignId { get; set; }
+        public int? SpecAssignId { get; set; }
         public string ShipViaCd { get; set; }
         public bool? IsPriceApproval { get; set; }
         public bool? IsReturnAsIs { get; set; }
@@ -70,7 +70,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ShipCharge ShipChargeCdNavigation { get; set; }
         public virtual ShipVia ShipViaCdNavigation { get; set; }
         public virtual SpecProcessAssign Spec { get; set; }
+        public virtual OrderComments OrderComments { get; set; }
         public virtual OrderExpedite OrderExpediteOrder { get; set; }
+        public virtual OrderShipToOverride OrderShipToOverride { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }

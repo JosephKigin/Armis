@@ -21,6 +21,21 @@ namespace Armis.Api.Controllers.Part
             HardnessService = aHardnessService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HardnessModel>>> GetAllHardnesses()
+        {
+            try
+            {
+                var data = await HardnessService.GetAllHarnesses();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{aHardnessId}")]
         public async Task<ActionResult<HardnessModel>> GetHardness(int aHardnessId)
         {

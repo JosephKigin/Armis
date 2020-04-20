@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.QualityModels.Spec;
 using Armis.Data.DatabaseContext;
+using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -65,16 +66,15 @@ namespace Armis.DataLogic.Services.QualityServices
 
             if (theSpecEntities == null || !theSpecEntities.Any()) { throw new Exception("No specifications were returned."); }
 
+            var theSpecEntitiesToReturn = new List<Specification>();
+
             foreach (var specEntity in theSpecEntities)
             {
-                foreach (var revEntity in specEntity.SpecificationRevision)
-                {
-                    if(revEntity != specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault())
-                    {
-                        specEntity.SpecificationRevision.Remove(revEntity);
-                    }
-                }
-                
+                //Descending sort the spec's revs by id and grab the biggest number.  Convert it to a list, because lists are the only enumerable that can use removeAll.  Remove all revs that don't have a revId == the Id from the first sentence.  Save new list to original collection.
+                var tempMostRecentSpecRevId = specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault().SpecRevId;
+                var tempSpecRev = specEntity.SpecificationRevision.ToList();
+                tempSpecRev.RemoveAll(i => i.SpecRevId != tempMostRecentSpecRevId);
+                specEntity.SpecificationRevision = tempSpecRev;                
             }
 
             return theSpecEntities.ToHydratedModels();

@@ -18,13 +18,11 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Description { get; set; }
         public string ExternalRev { get; set; }
         public int? SamplePlan { get; set; }
-        public int? NadCapSamplePlan { get; set; }
         public short CreatedByEmp { get; set; }
         public DateTime DateModified { get; set; }
         public TimeSpan TimeModified { get; set; }
 
         public virtual Employee CreatedByEmpNavigation { get; set; }
-        public virtual SamplePlanHead NadCapSamplePlanNavigation { get; set; }
         public virtual SamplePlanHead SamplePlanNavigation { get; set; }
         public virtual Specification Spec { get; set; }
         public virtual ICollection<Certification> Certification { get; set; }

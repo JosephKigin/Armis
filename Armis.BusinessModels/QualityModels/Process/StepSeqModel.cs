@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Armis.BusinessModels.QualityModels
+namespace Armis.BusinessModels.QualityModels.Process
 {
     public class StepSeqModel
     {

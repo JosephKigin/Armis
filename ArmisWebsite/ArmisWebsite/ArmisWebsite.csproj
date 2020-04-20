@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\ProcessMaintenance\Partials\" />
+    <Folder Include="Pages\Quality\Partials\" />
   </ItemGroup>
 
 

@@ -1,8 +1,8 @@
-﻿using Armis.BusinessModels.QualityModels;
+﻿using Armis.BusinessModels.QualityModels.Process;
 using Armis.Data.DatabaseContext.Entities;
 using System.Collections.Generic;
 
-namespace Armis.DataLogic.ModelExtensions.QualityExtensions
+namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
 {
     public static class ProcessExtension
     {
