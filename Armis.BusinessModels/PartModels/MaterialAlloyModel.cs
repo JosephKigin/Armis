@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Armis.BusinessModels.PartModels
 {
-    public class AlloyModel
+    public class MaterialAlloyModel
     {
         public int AlloyId { get; set; }
         public string Description { get; set; }

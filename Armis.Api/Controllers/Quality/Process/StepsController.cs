@@ -91,7 +91,7 @@ namespace Armis.Api.Controllers
             }
         }
 
-        //GET: api/Steps/zincplate
+        //GET: api/Steps/GetStepByName/zincplate
         [HttpGet("{stepName}")]
         public async Task<ActionResult<StepModel>> GetStepByName(string stepName)
         {
@@ -103,7 +103,22 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpGet("{stepCategoryName}")]
+        public async Task<ActionResult<IEnumerable<StepModel>>> GetAllStepsByCategory(string stepCategoryName)
+        {
+            try
+            {
+                var data = await StepService.GetAllByCategory(stepCategoryName);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

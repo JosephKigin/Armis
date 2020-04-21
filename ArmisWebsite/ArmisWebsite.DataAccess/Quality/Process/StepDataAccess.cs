@@ -31,6 +31,11 @@ namespace ArmisWebsite.DataAccess.Quality
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<StepModel>>(Config["APIAddress"] + "api/Steps/GetAllSteps");
         }
 
+        public async Task<IEnumerable<StepModel>> GetAllStepsByCategory(string aCategoryCode)
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<StepModel>>(Config["APIAddress"] + "api/Steps/GetAllStepsByCategory/" + aCategoryCode);
+        }
+
         public async Task<IEnumerable<StepCategoryModel>> GetAllStepCategoryies()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<StepCategoryModel>>(Config["APIAddress"] + "api/Steps/GetAllStepCategories");

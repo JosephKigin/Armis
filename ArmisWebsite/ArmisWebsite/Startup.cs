@@ -9,6 +9,8 @@ using ArmisWebsite.DataAccess.Employee;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Quality;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
+using ArmisWebsite.DataAccess.Quality.Specification;
+using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -42,6 +44,7 @@ namespace ArmisWebsite
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<IPdfGenerator, PdfGenerator>();
+            services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
