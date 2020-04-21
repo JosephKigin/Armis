@@ -11,6 +11,7 @@ namespace ArmisWebsite.DataAccess.Quality.Interfaces
     {
         Task<StepModel> PostNewStep(StepModel aStepModel);
         Task<IEnumerable<StepModel>> GetAllSteps();
+        Task<IEnumerable<StepModel>> GetAllStepsByCategory(string aCategoryCode);
         Task<IEnumerable<StepCategoryModel>> GetAllStepCategoryies();
         Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode);
         Task<StepModel> GetStepById(int aStepId);

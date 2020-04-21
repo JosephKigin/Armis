@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Armis.BusinessModels.PartModels
+﻿namespace Armis.BusinessModels.PartModels
 {
-    public class SeriesModel
+    public class MaterialSeriesModel
     {
         public int SeriesId { get; set; }
         public string ShortName { get; set; }

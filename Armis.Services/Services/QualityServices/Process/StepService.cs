@@ -73,7 +73,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory)
         {
-            var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd == aCategory).ToListAsync();
+            var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd.ToLower() == aCategory.ToLower()).Include(i => i.StepCategoryCdNavigation).ToListAsync();
 
             if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps returned that belong to " + aCategory + "."); }
 

@@ -39,8 +39,8 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public StepModel? PostBakeOption { get; set; }
         public StepModel? MaskOption { get; set; }
         public HardnessModel? HardnessOption { get; set; }
-        public SeriesModel? SeriesOption { get; set; }
-        public AlloyModel? AlloyOption { get; set; }
+        public MaterialSeriesModel? SeriesOption { get; set; }
+        public MaterialAlloyModel? AlloyOption { get; set; }
         public CustomerModel? Customer { get; set; }
         public ProcessRevisionModel? ProcessRevision { get; set; }
         public SpecSubLevelChoiceModel? Choice1 { get; set; }

@@ -1,4 +1,4 @@
-﻿using Armis.BusinessModels.QualityModels.Process;
+﻿using Armis.BusinessModels.PartModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ArmisWebsite.DataAccess.Quality.Interfaces
 {
-    public interface IStepCategoryDataAccess
+    public interface IMaterialSeriesDataAccess
     {
-        Task<List<StepCategoryModel>> GetAllStepCategories();
+        Task<IEnumerable<MaterialSeriesModel>> GetAllMaterialSeries();
     }
 }
