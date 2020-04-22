@@ -1,4 +1,4 @@
-﻿@page "{ExMessage}"
+﻿@page "{ExMessage?}"
 @model ErrorModel
 @{
     ViewData["Title"] = "Error";
@@ -28,6 +28,10 @@
     
 </environment>
 
-<label class="alert alert-danger">@Model.ExMessage</label>
+@if (Model.ExMessage != "" && Model.ExMessage != null)
+{
+    <label class="alert alert-danger">@Model.ExMessage</label>
+}
+
 
 @*<div class="text-center"><img src="~/Images/cryinggif.gif"/></div>*@
