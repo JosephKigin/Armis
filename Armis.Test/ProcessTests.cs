@@ -2,9 +2,6 @@ using Armis.BusinessModels.QualityModels.Process;
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
-using Armis.DataLogic.Services.CustomerServices;
-using Armis.DataLogic.Services.CustomerServices.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -30,7 +27,6 @@ namespace Armis.Test
 
 
         private IProcessService _processService;
-        private ICustomerService _customerService;
 
         public IProcessService ProcessService
         {
@@ -40,16 +36,6 @@ namespace Armis.Test
                 return _processService; 
             }
             set { _processService = value; }
-        }
-
-        public ICustomerService CustomerService
-        {
-            get
-            {
-                if (_customerService == null) { _customerService = new CustomerService(Context); }
-                return _customerService;
-            }
-            set { _customerService = value; }
         }
 
         [TestMethod]
@@ -112,11 +98,7 @@ namespace Armis.Test
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
             return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
         }
-        private ProcessModel GenerateProcessModel(int aCustID)
-        {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
-            return new ProcessModel() { Name = TESTPREFIX + "-Process-Cust-" + theTimeStamp };
-        }
+
         private ProcessRevisionModel GenerateProcessRevisionModel(int aProcessID, short aEmpID)
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
