@@ -1,0 +1,1 @@
+﻿When specifications get pulled, make sure to check if the specification has at lease one revision.  If it does not, flag that specification as not being valid and do not allow the user to interact with it.
