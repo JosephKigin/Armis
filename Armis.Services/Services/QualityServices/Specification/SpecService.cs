@@ -110,6 +110,7 @@ namespace Armis.DataLogic.Services.QualityServices
             {
                 var theNewSpecId = await context.Specification.MaxAsync(i => i.SpecId) + 1;
                 short theNewRevId = 10; //All new specs start with a revId of 10
+                if(aSpecModel.SpecRevModels == null) { throw new Exception("Cannot create a new Specification without a Revision."); }
                 if(aSpecModel.SpecRevModels.Count() > 1) { throw new Exception("Cannot save a new Specification with multiple revisions; only one revision is allowed."); }
                 var theSpecRevModel = aSpecModel.SpecRevModels.FirstOrDefault(); //Only ONE revision can be passed in.
                 var theSubLevelEntities = theSpecRevModel.SubLevels.ToEntities(theNewSpecId, theNewRevId);

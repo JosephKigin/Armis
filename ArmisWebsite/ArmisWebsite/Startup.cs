@@ -7,6 +7,8 @@ using ArmisWebsite.DataAccess.Customer;
 using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Employee;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
+using ArmisWebsite.DataAccess.Part;
+using ArmisWebsite.DataAccess.Part.Interfaces;
 using ArmisWebsite.DataAccess.Quality;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Specification;
@@ -45,6 +47,9 @@ namespace ArmisWebsite
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<IPdfGenerator, PdfGenerator>();
             services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
+            services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
+            services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
+            services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

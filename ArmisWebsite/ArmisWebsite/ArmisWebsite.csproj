@@ -25,6 +25,10 @@
     <Folder Include="Pages\Quality\Partials\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\js\Quality\Specification\SpecProcessAssign.js" />
+  </ItemGroup>
+
 
 
 </Project>

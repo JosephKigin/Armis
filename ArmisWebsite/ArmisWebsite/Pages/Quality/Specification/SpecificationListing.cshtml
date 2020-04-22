@@ -17,22 +17,32 @@
             <ul id="specificationList" class="list-group" style="height:45em; overflow-y:scroll">
                 @foreach (var spec in Model.AllSpecs)
                 {
-                    var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision.
+                    if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+                    {
+                        var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision.
 
-                    <li id="@spec.Code" class="list-group-item">
-                        <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
-                            @spec.Code
-                            <b>Rev:</b>
-                            @if (theCurrentSpecRev.ExternalRev.Trim() != "")
-                            {<text>@theCurrentSpecRev.ExternalRev</text>}
-                        else
-                        { <text>NONE</text> }
-                            <b>Sublevels:</b> [@theCurrentSpecRev.SubLevels.Count()]
-                        </a>
-                        <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
-                        @if (theCurrentSpecRev.Description.Trim() != "")
-                        {<p><b>Description: </b>@theCurrentSpecRev.Description</p>}
-                    </li>
+                        <li id="@spec.Code" class="list-group-item">
+                            <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
+                                @spec.Code
+                                <b>Rev:</b>
+                                @if (theCurrentSpecRev.ExternalRev.Trim() != "")
+                                {<text>@theCurrentSpecRev.ExternalRev</text>}
+                            else
+                            { <text>NONE</text>}
+                                <b>Sublevels:</b> [@theCurrentSpecRev.SubLevels.Count()]
+                            </a>
+                            <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
+                            @if (theCurrentSpecRev.Description.Trim() != "")
+                            {<p><b>Description: </b>@theCurrentSpecRev.Description</p>}
+                        </li>
+                    }
+                    else
+                    {
+                        <li id="@spec.Code" class="list-group-item">
+                            @spec.Code [ERROR: No Rev]
+                        </li>
+                    }
+
                 }
             </ul>
         </div>
@@ -41,29 +51,33 @@
             <ul class="list-group">
                 @foreach (var spec in Model.AllSpecs)
                 {
-                    var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision
+                    if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+                    {
+                        var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision
 
-                    <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="list-group-item collapse" data-parent="#collapseGroup">
-                        <p><b>Code: </b>@theCurrentSpecRev.Description </p>
-                        <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
-                        <b>Sublevels</b>
-                        <ul class="nested">
-                            @foreach (var subLevel in theCurrentSpecRev.SubLevels)
-                            {
-                                <li>
-                                    @subLevel.Name
-                                    <ul class="nested">
-                                        @foreach (var choice in subLevel.Choices)
-                                        {
-                                            <li class="">
-                                                @choice.Name
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                        </ul>
-                    </li>
+                        <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="list-group-item collapse" data-parent="#collapseGroup">
+                            <p><b>Code: </b>@theCurrentSpecRev.Description </p>
+                            <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
+                            <b>Sublevels</b>
+                            <ul class="nested">
+                                @foreach (var subLevel in theCurrentSpecRev.SubLevels)
+                                {
+                                    <li>
+                                        @subLevel.Name
+                                        <ul class="nested">
+                                            @foreach (var choice in subLevel.Choices)
+                                            {
+                                                <li class="">
+                                                    @choice.Name
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
                 }
             </ul>
         </div>

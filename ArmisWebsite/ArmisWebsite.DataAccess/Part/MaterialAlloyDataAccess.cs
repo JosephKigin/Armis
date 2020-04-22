@@ -19,7 +19,7 @@ namespace ArmisWebsite.DataAccess.Part
 
         public async Task<IEnumerable<MaterialAlloyModel>> GetAllMaterialAlloys()
         {
-            return await DataAccessGeneric.HttpGetRequest<IEnumerable<MaterialAlloyModel>>(Config["APIAddress"] + "api/MaterialAlloys/GetAllMaterialAlloys");
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<MaterialAlloyModel>>(Config["APIAddress"] + "api/MaterialAlloy/GetAllMaterialAlloys");
         }
     }
 }

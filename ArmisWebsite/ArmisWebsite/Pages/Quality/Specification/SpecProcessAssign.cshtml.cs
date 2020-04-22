@@ -23,7 +23,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public IMaterialAlloyDataAccess MaterialAlloyDataAccess { get; set; }
 
         //Models
-        public List<StepModel> AllBakeSteps { get; set; }
+        public List<StepModel> AllBakeSteps { get; set; } //This will be for both Pre-Bake and Post-Bake
         public List<StepModel> AllMaskSteps { get; set; }
         public List<HardnessModel> AllHardnesses { get; set; }
         public List<MaterialSeriesModel> AllMaterialSeries { get; set; }
@@ -34,10 +34,10 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public int SpecRev { get; set; }
 
-        public SpecProcessAssignModel(IStepDataAccess aStepDataAccess, 
-                                      ICustomerDataAccess aCustomerDataAccess, 
-                                      IHardnessDataAccess aHardnessDataAccess, 
-                                      IMaterialSeriesDataAccess aMaterialSeriesDataAccess,                                    
+        public SpecProcessAssignModel(IStepDataAccess aStepDataAccess,
+                                      ICustomerDataAccess aCustomerDataAccess,
+                                      IHardnessDataAccess aHardnessDataAccess,
+                                      IMaterialSeriesDataAccess aMaterialSeriesDataAccess,
                                       IMaterialAlloyDataAccess aMaterialAlloyDataAccess)
         {
             StepDataAccess = aStepDataAccess;
@@ -47,37 +47,36 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             MaterialAlloyDataAccess = aMaterialAlloyDataAccess;
         }
 
-        public void OnGet()
+        public async Task<ActionResult> OnGet()
         {
+            try
+            {
+                await SetUpProperties();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
 
         }
 
         public async Task SetUpProperties()
         {
-            try
-            {
-                var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
-                AllBakeSteps = tempAllBakes.ToList();
+            var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
+            AllBakeSteps = tempAllBakes.ToList();
 
-                var tempAllMasks = await StepDataAccess.GetAllStepsByCategory("mask");
-                AllMaskSteps = tempAllMasks.ToList();
+            var tempAllMasks = await StepDataAccess.GetAllStepsByCategory("mask");
+            AllMaskSteps = tempAllMasks.ToList();
 
-                var tempAllHardnesses = await HardnessDataAccess.GetAllHardnesses();
-                AllHardnesses = tempAllHardnesses.ToList();
+            var tempAllHardnesses = await HardnessDataAccess.GetAllHardnesses();
+            AllHardnesses = (tempAllHardnesses != null)? tempAllHardnesses.ToList(): null;
 
-                var tempAllSeries = await MaterialSeriesDataAccess.GetAllMaterialSeries();
-                AllMaterialSeries = tempAllSeries.ToList();
+            var tempAllSeries = await MaterialSeriesDataAccess.GetAllMaterialSeries();
+            AllMaterialSeries = tempAllSeries.ToList();
 
-                var tempAllAlloys = await MaterialAlloyDataAccess.GetAllMaterialAlloys();
-                AllMaterialAlloys = tempAllAlloys.ToList();
-
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            var tempAllAlloys = await MaterialAlloyDataAccess.GetAllMaterialAlloys();
+            AllMaterialAlloys = tempAllAlloys.ToList();
         }
     }
 }

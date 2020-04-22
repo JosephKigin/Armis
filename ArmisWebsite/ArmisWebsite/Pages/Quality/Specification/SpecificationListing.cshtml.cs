@@ -31,6 +31,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<IActionResult> OnGet()
         {
+            var errorOut = int.Parse("Hello");
             try
             {
                 await SetUpProperties();

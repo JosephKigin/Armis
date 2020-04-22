@@ -32,9 +32,19 @@
                     <select id="specList" class="list-group" size="12" asp-for="CurrentSpecId" style="width:100%">
                         @foreach (var spec in Model.AllSpecModels)
                         {
-                            <option class="list-group-item" value="@spec.Id">
-                                @spec.Code - Rev: [@spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault().ExternalRev]
-                            </option>
+                            @if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+                            {
+                                <option class="list-group-item" value="@spec.Id">
+                                    @spec.Code - Rev: [@spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault().ExternalRev]
+                                </option>
+                            }
+                            else
+                            {
+                                <option class="list-group-item" value="@spec.Id" style="color:red;" disabled>
+                                    @spec.Code - Rev: [ERROR : NO REV HAS BEEN ADDED]
+                                </option>
+                            }
+
                         }
                     </select>
                     <button id="btnSelectSpec" class="btn btn-primary my-1">Select</button>
@@ -366,7 +376,7 @@
         //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
         if (chkBox.checked) {
             document.getElementById("defaultChoice" + cardNumber).value = chkBox.value;
-            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + (chkBox.value-1)).value + " is default)";
+            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + (chkBox.value - 1)).value + " is default)";
         }
         else {
             document.getElementById("defaultChoice" + cardNumber).value = '';

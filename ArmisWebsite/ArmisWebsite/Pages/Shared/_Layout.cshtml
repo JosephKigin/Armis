@@ -38,7 +38,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" tabindex="-1" asp-page="/Privacy">Privacy</a>
-
+            <div class="ml-5 d-inline-block"><b>DESIGN IS NOT FINAL</b></div>
             <b class="float-right">@await Component.InvokeAsync("ApiConnectionCheck") [@Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")] </b>
         </div>
     </footer>
