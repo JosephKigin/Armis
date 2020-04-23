@@ -17,5 +17,27 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Description = aTestTypeEntity.Description
             };
         }
+
+        public static IEnumerable<InspectTestTypeModel> ToModels(this IEnumerable<InspectTestType> aTestTypeEntities)
+        {
+            var resultModels = new List<InspectTestTypeModel>();
+
+            foreach (var entity in aTestTypeEntities)
+            {
+                resultModels.Add(entity.ToModel());
+            }
+
+            return resultModels;
+        }
+
+        public static InspectTestType ToEntity(this InspectTestTypeModel aTestTypeModel)
+        {
+            return new InspectTestType()
+            {
+                InspectTestId = aTestTypeModel.InspectTestId,
+                Description = aTestTypeModel.Description,
+                TestCode = aTestTypeModel.TestCode
+            };
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
 
         public static SpecRevModel ToHydratedModel(this SpecificationRevision aSpecRevEntity)
         {
-            return new SpecRevModel()
+            var resultModel = new SpecRevModel()
             {
                 SpecId = aSpecRevEntity.SpecId,
                 InternalRev = aSpecRevEntity.SpecRevId,
@@ -36,9 +36,12 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 DateModified = aSpecRevEntity.DateModified,
                 TimeModified = aSpecRevEntity.TimeModified,
 
-                SubLevels = aSpecRevEntity.SpecSubLevel.ToHydratedModels(),
-                SamplePlan = aSpecRevEntity.SamplePlanNavigation.ToHydratedModel()
+                SubLevels = aSpecRevEntity.SpecSubLevel.ToHydratedModels()
             };
+
+            resultModel.SamplePlan = (aSpecRevEntity.SamplePlanNavigation != null)? aSpecRevEntity.SamplePlanNavigation.ToHydratedModel() : null;
+
+            return resultModel;
         }
 
         public static IEnumerable<SpecRevModel> ToHydratedModels(this IEnumerable<SpecificationRevision> aSpecRevEntities)
