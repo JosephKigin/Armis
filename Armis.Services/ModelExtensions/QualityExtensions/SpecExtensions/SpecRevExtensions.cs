@@ -16,33 +16,38 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 InternalRev = aSpecRev.SpecRevId,
                 Description = aSpecRev.Description,
                 ExternalRev = aSpecRev.ExternalRev,
+                SamplePlanId = aSpecRev.SamplePlan,
                 EmployeeNumber = aSpecRev.CreatedByEmp,
                 DateModified = aSpecRev.DateModified,
                 TimeModified = aSpecRev.TimeModified
             };
         }
 
-        public static SpecRevModel ToHydratedModel(this SpecificationRevision aSpecRev)
+        public static SpecRevModel ToHydratedModel(this SpecificationRevision aSpecRevEntity)
         {
-            var resultModel = aSpecRev.ToModel();
-
-            var subLevelList = new List<SpecSubLevelModel>();
-            foreach (var subLevel in aSpecRev.SpecSubLevel)
+            return new SpecRevModel()
             {
-                subLevelList.Add(subLevel.ToHydratedModel());
-            }
-            resultModel.SubLevels = subLevelList;
+                SpecId = aSpecRevEntity.SpecId,
+                InternalRev = aSpecRevEntity.SpecRevId,
+                Description = aSpecRevEntity.Description,
+                ExternalRev = aSpecRevEntity.ExternalRev,
+                SamplePlanId = aSpecRevEntity.SamplePlan,
+                EmployeeNumber = aSpecRevEntity.CreatedByEmp,
+                DateModified = aSpecRevEntity.DateModified,
+                TimeModified = aSpecRevEntity.TimeModified,
 
-            return resultModel;
+                SubLevels = aSpecRevEntity.SpecSubLevel.ToHydratedModels(),
+                SamplePlan = aSpecRevEntity.SamplePlanNavigation.ToHydratedModel()
+            };
         }
 
-        public static IEnumerable<SpecRevModel> ToHydratedModels(this IEnumerable<SpecificationRevision> aSpecRevList)
+        public static IEnumerable<SpecRevModel> ToHydratedModels(this IEnumerable<SpecificationRevision> aSpecRevEntities)
         {
             var resultModelList = new List<SpecRevModel>();
 
-            foreach (var specRev in aSpecRevList)
+            foreach (var entity in aSpecRevEntities)
             {
-                resultModelList.Add(specRev.ToHydratedModel());
+                resultModelList.Add(entity.ToHydratedModel());
             }
 
             return resultModelList;
@@ -56,7 +61,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SpecRevId = aSpecRevId,
                 Description = aSpecRevModel.Description,
                 ExternalRev = aSpecRevModel.ExternalRev,
-                SamplePlan = null, //TODO: Figure out w/ sample plan
+                SamplePlan = aSpecRevModel.SamplePlanId,
                 CreatedByEmp = aSpecRevModel.EmployeeNumber,
                 DateModified = aSpecRevModel.DateModified.Date,
                 TimeModified = aSpecRevModel.DateModified.TimeOfDay

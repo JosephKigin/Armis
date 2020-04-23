@@ -4,6 +4,7 @@ using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Armis.Test
     public class ProcessTests
     {
         private ARMISContext _context;
-        private const string TESTPREFIX = "TEST-PROC";
+        private const string TEST_CODE = "[TEST]Process";
 
         public ARMISContext Context
         {
@@ -41,8 +42,8 @@ namespace Armis.Test
         [TestMethod]
         public async Task CheckProcessNameUniqueness()
         {
-            var theGeneratedProcessModel = GenerateProcessModel();
-            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+            var theBaselineProcessModel = CreateBaselineProcessModel();
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
 
             var theNewExistingProcessName = thePostAddProcess.Name;
 
@@ -57,13 +58,18 @@ namespace Armis.Test
         public async Task CreateNewProcess()
         {
             var thePreAddProcessList = await ProcessService.GetAllProcesses();
+            var calcNewMaxProcessId = thePreAddProcessList.Max(i => i.ProcessId) + 1;
 
-            var theGeneratedProcessModel = GenerateProcessModel();
-            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+            var theBaselineProcessModel = CreateBaselineProcessModel();
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
+
+            theBaselineProcessModel.ProcessId = calcNewMaxProcessId;
+
             var thePostAddProcessList = await ProcessService.GetAllProcesses();
 
             Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
-            Assert.AreEqual(theGeneratedProcessModel.Name, thePostAddProcess.Name);
+
+            Validate.ValidateModelCompleteness(theBaselineProcessModel, thePostAddProcess);
         }
 
         [TestMethod]
@@ -71,20 +77,25 @@ namespace Armis.Test
         {
             short theArbitraryEmpID = 941;
 
-            var theGeneratedProcessModel = GenerateProcessModel();
-            var thePostAddProcess = await ProcessService.CreateNewProcess(theGeneratedProcessModel);
+            var theBaselineProcessModel = CreateBaselineProcessModel();
+
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
             var theNewAddedProcessID = thePostAddProcess.ProcessId;
 
-            var theGeneratedProcessRevisionModel = GenerateProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
+            var theBaselineProcessRevisionModel = CreateBaselineProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
 
-            _ = await ProcessService.CreateNewRevForExistingProcess(theGeneratedProcessRevisionModel);
+            _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevisionModel);
+
+            theBaselineProcessRevisionModel.ProcessRevId = 1; //for test
+            theBaselineProcessRevisionModel.RevStatusCd = "UNLOCKED"; //for test
 
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
             var theReturnedProcessRevisionModel = theReturnHydratedProcessModel.Revisions.ElementAt(0);
 
-            Assert.AreEqual("UNLOCKED", theReturnedProcessRevisionModel.RevStatusCd);
-            Assert.AreEqual(1, theReturnedProcessRevisionModel.ProcessRevId);
-            Assert.AreEqual(theArbitraryEmpID, theReturnedProcessRevisionModel.CreatedByEmp);
+
+            Validate.ValidateModelCompleteness(theBaselineProcessRevisionModel, theReturnedProcessRevisionModel,
+                new List<Object>() { "DateTimeCreated", "StepSeqs" }); //TODO: Remove exclusions and Test!
+
             Assert.AreEqual(0, theReturnedProcessRevisionModel.StepSeqs.Count());
 
             await ProcessService.DeleteProcessRev(theNewAddedProcessID, 1); //delete process rev
@@ -93,20 +104,20 @@ namespace Armis.Test
             Assert.AreEqual(0, theReturnHydratedProcessModel.Revisions.Count());
         }
 
-        private ProcessModel GenerateProcessModel()
+        private ProcessModel CreateBaselineProcessModel()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
-            return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            return new ProcessModel() { Name = TEST_CODE + theTimeStamp };
         }
 
-        private ProcessRevisionModel GenerateProcessRevisionModel(int aProcessID, short aEmpID)
+        private ProcessRevisionModel CreateBaselineProcessRevisionModel(int aProcessID, short aEmpID)
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new ProcessRevisionModel()
             {
                 ProcessId = aProcessID,
                 CreatedByEmp = aEmpID,
-                Comments = TESTPREFIX + "-comment-" + theTimeStamp
+                Comments = TEST_CODE + theTimeStamp
             };
         }
     }

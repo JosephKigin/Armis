@@ -4,6 +4,7 @@ using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Armis.Test
     public class StepTests
     {
         private ARMISContext _context;
-        private const string TESTPREFIX = "TEST-STEP";
+        private const string TEST_CODE = "[TEST]Step";
 
         public ARMISContext Context
         {
@@ -46,27 +47,30 @@ namespace Armis.Test
             var thePreAddStepCount = thePreAddStepList.Count();
             var theExpectedStepID = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
 
-            var theGeneratedStepModel = GenerateStepModel();
-            _ = await StepService.CreateStep(theGeneratedStepModel);
+            var theBaselineStepModel = CreateBaselineStepModel();
+            _ = await StepService.CreateStep(theBaselineStepModel);
 
             var thePostAddStepCount = (await StepService.GetAll()).Count();
 
             var theReturnStep = await StepService.GetStepById(theExpectedStepID); //find it to prove it was created
 
+
             Assert.AreEqual(thePreAddStepCount + 1, thePostAddStepCount);
-            Assert.AreEqual(theGeneratedStepModel.StepName, theReturnStep.StepName);
+
+            Validate.ValidateModelCompleteness(theBaselineStepModel, theReturnStep,
+                new List<Object>() { "StepCategory" });//test, test, test
         }
 
-        private StepModel GenerateStepModel()
+        private StepModel CreateBaselineStepModel()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new StepModel()
             {
                 StepCategory = new StepCategoryModel { Name = "None", Code = "NONE", Type = "Other" },
                 Inactive = false,
-                StepName = TESTPREFIX + "-Step-" + theTimeStamp,
+                StepName = TEST_CODE + theTimeStamp,
                 SignOffIsRequired = true,
-                Instructions = "Test data - ignore - (" + theTimeStamp + ")"
+                Instructions = "Test data - (" + theTimeStamp + ")"
             };
         }
     }
