@@ -9,4 +9,7 @@ Model objects have the word "model" in the name. (processModel)
 Coop Blue: #008DC2
 
 Armis.Test (automated testing):
-* methods with 'CreateBaseline' prefix are models created by the test method prior to the service call. These will be compared against the API generated/returned model
+
+methods with 'CreateBaseline' prefix are models created by the [TestMethod] prior to the service call. These will be compared against the API generated/returned model
+(this will nuke all test data - need to refine this...)
+-- delete from ProcessStepSeq where processid >= 8; delete from ProcessRevision where processid >= 8; delete from process where processid >= 8; delete from step where stepid >= 48; update specsublevel set DefaultChoice = null where DefaultChoice is not NULL; delete from SpecChoice where specid >= 207;  delete from SpecSubLevel where specid >= 207; delete from SpecificationRevision where specid >= 207; delete from Specification where specid >= 207;

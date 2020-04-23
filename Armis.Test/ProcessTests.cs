@@ -13,7 +13,7 @@ namespace Armis.Test
     public class ProcessTests
     {
         private ARMISContext _context;
-        private const string TESTPREFIX = "TEST-PROC";
+        private const string TEST_CODE = "[TEST]Process";
 
         public ARMISContext Context
         {
@@ -95,18 +95,18 @@ namespace Armis.Test
 
         private ProcessModel CreateBaselineProcessModel()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
-            return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            return new ProcessModel() { Name = TEST_CODE + theTimeStamp };
         }
 
         private ProcessRevisionModel CreateBaselineProcessRevisionModel(int aProcessID, short aEmpID)
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new ProcessRevisionModel()
             {
                 ProcessId = aProcessID,
                 CreatedByEmp = aEmpID,
-                Comments = TESTPREFIX + "-comment-" + theTimeStamp
+                Comments = TEST_CODE + theTimeStamp
             };
         }
     }

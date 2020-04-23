@@ -13,11 +13,10 @@ using System.Collections.Generic;
 namespace Armis.Test
 {
     [TestClass]
-    public class RevUpTests
+    public class ProcessRevUpTests
     {
         private ARMISContext _context;
-        private const string TESTPREFIX = "TEST-REVUP";
-        private const string STEPPREFIX = "-Step-";
+        private const string TEST_CODE = "[TEST]RevUp";
 
         public ARMISContext Context
         {
@@ -161,7 +160,7 @@ namespace Armis.Test
             //does the return revision have the correct number of steps that we tested with?
             Assert.AreEqual(theArbitraryNumSteps, theReturnStepModelList.Count());
             //check if Step Name is representative of where it was initialized
-            string theStrToCheckStepName = TESTPREFIX + STEPPREFIX + "1";
+            string theStrToCheckStepName = TEST_CODE + "1";
             Assert.AreEqual(theStrToCheckStepName, theReturnStepModelList.ElementAt(0).Step.StepName.Substring(0, theStrToCheckStepName.Length));
 
             //lock the rev and get a new Procees rev model to validate
@@ -289,30 +288,30 @@ namespace Armis.Test
         }
         private ProcessModel CreateBaselineProcessModel()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
-            return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            return new ProcessModel() { Name = TEST_CODE + theTimeStamp };
         }
         private ProcessRevisionModel CreateBaselineProcessRevisionModel(int aProcessID, short aEmpID)
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmssffff");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
             return new ProcessRevisionModel()
             {
                 ProcessId = aProcessID,
                 CreatedByEmp = aEmpID,
-                Comments = TESTPREFIX + "-comment-" + theTimeStamp + "-PID: " + aProcessID.ToString()
+                Comments = TEST_CODE + "(comment)" + theTimeStamp + "-PID: " + aProcessID.ToString()
             };
         }
         private StepModel CreateBaselineStepModel(string aSeqID, int aProcessID, int aRevID)
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmssffff");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
 
             return new StepModel()
             {
                 StepCategory = new StepCategoryModel { Name = "None", Code="NONE", Type="Other"},
                 Inactive = false,
-                StepName = TESTPREFIX + STEPPREFIX + aSeqID + "-PID:" + aProcessID.ToString() + "-RevID:" + aRevID,
+                StepName = TEST_CODE + aSeqID + "-PID:" + aProcessID.ToString() + "-RevID:" + aRevID,
                 SignOffIsRequired = true,
-                Instructions = "Test data - ignore - (" + theTimeStamp + ")"
+                Instructions = "Test data - (" + theTimeStamp + ")"
             };
         }
 

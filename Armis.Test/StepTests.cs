@@ -13,7 +13,7 @@ namespace Armis.Test
     public class StepTests
     {
         private ARMISContext _context;
-        private const string TESTPREFIX = "TEST-STEP";
+        private const string TEST_CODE = "[TEST]Step";
 
         public ARMISContext Context
         {
@@ -59,14 +59,14 @@ namespace Armis.Test
 
         private StepModel CreateBaselineStepModel()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new StepModel()
             {
                 StepCategory = new StepCategoryModel { Name = "None", Code = "NONE", Type = "Other" },
                 Inactive = false,
-                StepName = TESTPREFIX + "-Step-" + theTimeStamp,
+                StepName = TEST_CODE + theTimeStamp,
                 SignOffIsRequired = true,
-                Instructions = "Test data - ignore - (" + theTimeStamp + ")"
+                Instructions = "Test data - (" + theTimeStamp + ")"
             };
         }
     }
