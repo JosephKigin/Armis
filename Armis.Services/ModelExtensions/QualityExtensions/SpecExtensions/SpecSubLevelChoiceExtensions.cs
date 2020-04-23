@@ -17,6 +17,18 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             };
         }
 
+        public static IEnumerable<SpecSubLevelChoiceModel> ToModels(this IEnumerable<SpecChoice> aSpecChoiceEntities)
+        {
+            var resultModels = new List<SpecSubLevelChoiceModel>();
+
+            foreach (var entity in aSpecChoiceEntities)
+            {
+                resultModels.Add(entity.ToModel());
+            }
+
+            return resultModels;
+        }
+
         //There are a whole bunch of extra things this needs to know in order to get the entity built correctly.  TODO:Maybe this is something entity framework can take care of?
         public static SpecChoice ToEntity(this SpecSubLevelChoiceModel aChoiceModel, int aSpecId, short anInternalRevId, byte aSubLevelSeqId)
         {

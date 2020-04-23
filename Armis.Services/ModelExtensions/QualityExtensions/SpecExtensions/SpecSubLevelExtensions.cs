@@ -21,17 +21,15 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
 
         public static SpecSubLevelModel ToHydratedModel(this SpecSubLevel aSpecSubLevel)
         {
-            var resultModel = aSpecSubLevel.ToModel();
-
-            var choicesList = new List<SpecSubLevelChoiceModel>();
-            foreach (var choice in aSpecSubLevel.SpecChoice)
+            return new SpecSubLevelModel()
             {
-                choicesList.Add(choice.ToModel());
-            }
+                Name = aSpecSubLevel.Name,
+                IsRequired = aSpecSubLevel.IsRequired,
+                LevelSeq = aSpecSubLevel.SubLevelSeqId,
+                DefaultChoice = aSpecSubLevel.DefaultChoice,
 
-            resultModel.Choices = choicesList;
-
-            return resultModel;
+                Choices = aSpecSubLevel.SpecChoice.ToModels()
+            };
         }
 
         public static IEnumerable<SpecSubLevelModel> ToHydratedModels(this IEnumerable<SpecSubLevel> aSpecSubLevelEntities)

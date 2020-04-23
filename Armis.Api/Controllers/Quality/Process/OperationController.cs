@@ -58,7 +58,7 @@ namespace Armis.Api.Controllers
             {
                 var data = await OperationService.AddOperation(anOperationModel);
 
-                return Ok(JsonSerializer.Serialize(data));
+                return Ok (JsonSerializer.Serialize(data));
             }
             catch (Exception ex)
             {
