@@ -36,7 +36,7 @@ namespace Armis.Test
             }
             set { _specService = value; }
         }
-        private SpecModel GenerateSpecificationModel(string aExtRev, short aEmpId, int numSubLevels, int numChoicesPerSub)
+        private SpecModel CreateBaselineSpecModel(string aExtRev, short aEmpId, int numSubLevels, int numChoicesPerSub)
         {
             //Spec needs a revision even though the DB will allow a spec without a rev
             //SpecRev needs a sublevel even though the DB will allow a specrev without a sublevel
@@ -47,10 +47,13 @@ namespace Armis.Test
 
             for (int i = 0; i < numSubLevels; i++)
             {
+                bool isReqTestFlag = false;
+                if(((i + 1) % 2) == 0) { isReqTestFlag = true; } //make 'even' sublevels tested for required
+
                 theSpecSubLevelList.Add(new SpecSubLevelModel()
                 {
                     Name = "level " + ( i + 1).ToString(),
-                    IsRequired = false,
+                    IsRequired = isReqTestFlag,
                     LevelSeq = Convert.ToByte(i + 1)
                 });
 
@@ -74,11 +77,11 @@ namespace Armis.Test
                 {
                     new SpecRevModel()
                     {
-                        Description = "This is a test. Rev: " + aExtRev,
+                        Description = DateTime.Now.ToString("hh:mm:ss") + " - This is a test. Rev: " + aExtRev,
                         ExternalRev = aExtRev,
                         EmployeeNumber = aEmpId,
                         DateModified = DateTime.Now,
-                        SubLevels = theSpecSubLevelList // new List<SpecSubLevelModel>(){ }
+                        SubLevels = theSpecSubLevelList
                     }
                 }
             };
@@ -92,8 +95,8 @@ namespace Armis.Test
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theGeneratedSpecModel = GenerateSpecificationModel(theExtRevId, theEmpID, 0, 0);
-            _ = await SpecService.CreateNewSpec(theGeneratedSpecModel);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, 0, 0);
+            _ = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var thePostAddSpecList = await SpecService.GetAllHydratedSpecs();
 
             //total spec count increased by 1
@@ -106,16 +109,33 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "AA";
+            int numSublevels = 6;
+            int numSubChoices = 6;
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theGeneratedSpecModel = GenerateSpecificationModel(theExtRevId, theEmpID, 4, 6);
-            _ = await SpecService.CreateNewSpec(theGeneratedSpecModel);
-            var thePostAddSpecList = await SpecService.GetAllHydratedSpecs();
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, numSublevels, numSubChoices);
+            int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
+            var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
-            //total spec count increased by 1
-            //Assert.AreEqual(thePostAddSpecList.Count(), thePreAddSpecList.Count() + 1);
-            //Assert.AreEqual(1, thePostAddSpecList.ElementAt(0).SpecRevModels.Count());
+            //only 1 rev created
+            var theCreatedSpecSubLevelModels = theCreatedSpecModel.SpecRevModels.ElementAt(0).SubLevels;
+            var theBaselineSpecSubLevelModels = theBaselineSpecModel.SpecRevModels.ElementAt(0).SubLevels;
+
+            for (int i = 0; i < numSublevels; i++)
+            {
+                Assert.AreEqual(theBaselineSpecSubLevelModels.ElementAt(i).IsRequired, theCreatedSpecSubLevelModels.ElementAt(i).IsRequired);
+                Assert.AreEqual(theBaselineSpecSubLevelModels.ElementAt(i).Name, theCreatedSpecSubLevelModels.ElementAt(i).Name);
+
+                var theCreatedSpecChoiceList = theCreatedSpecSubLevelModels.ElementAt(i).Choices;
+                var theBaselineSpecChoiceList = theBaselineSpecSubLevelModels.ElementAt(i).Choices;
+
+                for (int j = 0; j < numSubChoices; j++)
+                {
+                    Assert.AreEqual(theBaselineSpecChoiceList.ElementAt(j).ChoiceSeq, theCreatedSpecChoiceList.ElementAt(j).ChoiceSeq);
+                    Assert.AreEqual(theBaselineSpecChoiceList.ElementAt(j).Name, theCreatedSpecChoiceList.ElementAt(j).Name);
+                }
+            }
         }
     }
 }

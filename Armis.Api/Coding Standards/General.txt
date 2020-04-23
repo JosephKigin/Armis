@@ -7,3 +7,6 @@ Entity objects have the word "entity" in the name. (processEntity)
 Model objects have the word "model" in the name. (processModel)
 
 Coop Blue: #008DC2
+
+Armis.Test (automated testing):
+* methods with 'CreateBaseline' prefix are models created by the test method prior to the service call. These will be compared against the API generated/returned model

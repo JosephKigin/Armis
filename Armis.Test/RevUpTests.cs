@@ -122,12 +122,12 @@ namespace Armis.Test
 
             var theArbitraryStepIDList = new List<int>();
 
-            var theGeneratedProcessModel = GenerateProcessModel();
-            var theNewAddedProcessID = (await ProcessService.CreateNewProcess(theGeneratedProcessModel)).ProcessId;
+            var theBaselineProcessModel = CreateBaselineProcessModel();
+            var theNewAddedProcessID = (await ProcessService.CreateNewProcess(theBaselineProcessModel)).ProcessId;
 
-            var theGeneratedProcessRevisionModel = GenerateProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
+            var theBaselineProcessRevisionModel = CreateBaselineProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
 
-            _ = await ProcessService.CreateNewRevForExistingProcess(theGeneratedProcessRevisionModel); //TODO: test that return model validates
+            _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevisionModel); //TODO: test that return model validates
 
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
             var theReturnedProcessRevisionID = theReturnHydratedProcessModel.Revisions.ElementAt(0).ProcessRevId;
@@ -135,16 +135,16 @@ namespace Armis.Test
 
             for (int i = 0; i < theArbitraryNumSteps; i++)
             {
-                var theGeneratedStepModel = GenerateStepModel((i + 1).ToString(), theNewAddedProcessID, theReturnedProcessRevisionID);
-                var theReturnStepID = await StepService.CreateStep(theGeneratedStepModel);
+                var theBaselineStepModel = CreateBaselineStepModel((i + 1).ToString(), theNewAddedProcessID, theReturnedProcessRevisionID);
+                var theReturnStepID = await StepService.CreateStep(theBaselineStepModel);
 
                 theArbitraryStepIDList.Add(theReturnStepID.StepId);
             }
 
-            var theGeneratedStepSeqModel = GenerateStepSeqModel(theNewAddedProcessID, theReturnedProcessRevisionID, theArbitraryStepIDList, theArbitraryOprID);
+            var theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewAddedProcessID, theReturnedProcessRevisionID, theArbitraryStepIDList, theArbitraryOprID);
 
             //update steps but get return process rev model for validation purposes later
-            var theReturnProcessRevisionModelToValidate = await ProcessService.UpdateStepsForRev(theGeneratedStepSeqModel);
+            var theReturnProcessRevisionModelToValidate = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModel);
             //requery db with processID and return all revisions (but expecting 1)
             var theReturnProcessRevisionModelList = (await ProcessService.GetHydratedProcess(theNewAddedProcessID)).Revisions;
             var theReturnProcessRevision = theReturnProcessRevisionModelList.ElementAt(0);
@@ -193,28 +193,28 @@ namespace Armis.Test
 
             var theArbitraryStepIDListForRev1 = new List<int>();
 
-            var theGeneratedProcessModel = GenerateProcessModel();
-            var theNewProcessID = (await ProcessService.CreateNewProcess(theGeneratedProcessModel)).ProcessId;
+            var theBaselineProcessModel = CreateBaselineProcessModel();
+            var theNewProcessID = (await ProcessService.CreateNewProcess(theBaselineProcessModel)).ProcessId;
 
             /******************************** make Revision 1 ********************************/
-            var theGeneratedProcessRevision1Model = GenerateProcessRevisionModel(theNewProcessID, theArbitraryRev1EmpID);
+            var theBaselineProcessRevision1Model = CreateBaselineProcessRevisionModel(theNewProcessID, theArbitraryRev1EmpID);
 
-            _ = await ProcessService.CreateNewRevForExistingProcess(theGeneratedProcessRevision1Model); //TODO: test that return model validates
+            _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevision1Model); //TODO: test that return model validates
 
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewProcessID);
             var theReturnedProcessRevision1ID = theReturnHydratedProcessModel.Revisions.ElementAt(0).ProcessRevId; //change this index 0
 
             for (int i = 0; i < theArbitraryNumStepsForRev1; i++)
             {
-                var theGeneratedStepModel = GenerateStepModel((i + 1).ToString(), theNewProcessID, theReturnedProcessRevision1ID);
-                var theReturnStepID = await StepService.CreateStep(theGeneratedStepModel);
+                var theBaselineStepModel = CreateBaselineStepModel((i + 1).ToString(), theNewProcessID, theReturnedProcessRevision1ID);
+                var theReturnStepID = await StepService.CreateStep(theBaselineStepModel);
 
                 theArbitraryStepIDListForRev1.Add(theReturnStepID.StepId);
             }
 
-            var theGeneratedStepSeqModel = GenerateStepSeqModel(theNewProcessID, theReturnedProcessRevision1ID, theArbitraryStepIDListForRev1, theArbitraryRev1OprID);
+            var theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theReturnedProcessRevision1ID, theArbitraryStepIDListForRev1, theArbitraryRev1OprID);
 
-            _ = await ProcessService.UpdateStepsForRev(theGeneratedStepSeqModel);
+            _ = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModel);
             //requery db with processID and return all revisions (but expecting 1)
             var theReturnProcessRevision1 = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions.ElementAt(0);
 
@@ -223,9 +223,9 @@ namespace Armis.Test
             _ = await ProcessService.GetHydratedCurrentProcessRev(theNewProcessID);
 
             /******************************** make Revision 2 ********************************/
-            var theGeneratedProcessRevision2Model = GenerateProcessRevisionModel(theNewProcessID, theArbitraryRev2EmpID);
+            var theBaselineProcessRevision2Model = CreateBaselineProcessRevisionModel(theNewProcessID, theArbitraryRev2EmpID);
             
-            var theReturnedNewRevision2Model = await ProcessService.CreateNewRevForExistingProcess(theGeneratedProcessRevision2Model);
+            var theReturnedNewRevision2Model = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevision2Model);
             var theRev2ID = theReturnedNewRevision2Model.ProcessRevId;
 
             //*** create new step sequence based on old ***
@@ -236,16 +236,16 @@ namespace Armis.Test
 
             var theNewArbitraryStepIDListForRev2 = theArbitraryStepIDListForRev1.ToList();
             theNewArbitraryStepIDListForRev2.RemoveAt(0);
-            var theReturnStepIDA = await StepService.CreateStep(GenerateStepModel("a", theNewProcessID, theRev2ID));
-            var theReturnStepIDB = await StepService.CreateStep(GenerateStepModel("b", theNewProcessID, theRev2ID));
+            var theReturnStepIDA = await StepService.CreateStep(CreateBaselineStepModel("a", theNewProcessID, theRev2ID));
+            var theReturnStepIDB = await StepService.CreateStep(CreateBaselineStepModel("b", theNewProcessID, theRev2ID));
             theNewArbitraryStepIDListForRev2.Insert(0, theReturnStepIDA.StepId);
             theNewArbitraryStepIDListForRev2.Insert(1, theReturnStepIDB.StepId);
             theNewArbitraryStepIDListForRev2.Reverse();
 
             // TODO: Fix OPERATION ID copying
-            theGeneratedStepSeqModel = GenerateStepSeqModel(theNewProcessID, theRev2ID, theNewArbitraryStepIDListForRev2, theArbitraryRev2OprID); //TODO: Fix overriding operationID
+            theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theRev2ID, theNewArbitraryStepIDListForRev2, theArbitraryRev2OprID); //TODO: Fix overriding operationID
 
-            var theReturnProcessRevision2ModelToValidate = await ProcessService.UpdateStepsForRev(theGeneratedStepSeqModel);
+            var theReturnProcessRevision2ModelToValidate = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModel);
 
             var theReturnProcessRevisionModelList = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions;
             Assert.AreEqual(2, theReturnProcessRevisionModelList.Count());
@@ -287,12 +287,12 @@ namespace Armis.Test
             }
 
         }
-        private ProcessModel GenerateProcessModel()
+        private ProcessModel CreateBaselineProcessModel()
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
             return new ProcessModel() { Name = TESTPREFIX + "-Process-" + theTimeStamp };
         }
-        private ProcessRevisionModel GenerateProcessRevisionModel(int aProcessID, short aEmpID)
+        private ProcessRevisionModel CreateBaselineProcessRevisionModel(int aProcessID, short aEmpID)
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmssffff");
             return new ProcessRevisionModel()
@@ -302,7 +302,7 @@ namespace Armis.Test
                 Comments = TESTPREFIX + "-comment-" + theTimeStamp + "-PID: " + aProcessID.ToString()
             };
         }
-        private StepModel GenerateStepModel(string aSeqID, int aProcessID, int aRevID)
+        private StepModel CreateBaselineStepModel(string aSeqID, int aProcessID, int aRevID)
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmssffff");
 
@@ -316,7 +316,7 @@ namespace Armis.Test
             };
         }
 
-        private IEnumerable<StepSeqModel> GenerateStepSeqModel(int aProcessID, int aProcessRevID, List<int> aStepIDList, int aOperationID)
+        private IEnumerable<StepSeqModel> CreateBaselineStepSeqModel(int aProcessID, int aProcessRevID, List<int> aStepIDList, int aOperationID)
         {
             var theStepSeqModel = new List<StepSeqModel>();
             //foreach (var stepID in aStepIDList)

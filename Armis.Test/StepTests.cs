@@ -46,18 +46,18 @@ namespace Armis.Test
             var thePreAddStepCount = thePreAddStepList.Count();
             var theExpectedStepID = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
 
-            var theGeneratedStepModel = GenerateStepModel();
-            _ = await StepService.CreateStep(theGeneratedStepModel);
+            var theBaselineStepModel = CreateBaselineStepModel();
+            _ = await StepService.CreateStep(theBaselineStepModel);
 
             var thePostAddStepCount = (await StepService.GetAll()).Count();
 
             var theReturnStep = await StepService.GetStepById(theExpectedStepID); //find it to prove it was created
 
             Assert.AreEqual(thePreAddStepCount + 1, thePostAddStepCount);
-            Assert.AreEqual(theGeneratedStepModel.StepName, theReturnStep.StepName);
+            Assert.AreEqual(theBaselineStepModel.StepName, theReturnStep.StepName);
         }
 
-        private StepModel GenerateStepModel()
+        private StepModel CreateBaselineStepModel()
         {
             var theTimeStamp = DateTime.Now.ToString("yyyyMMddhhmmss");
             return new StepModel()
