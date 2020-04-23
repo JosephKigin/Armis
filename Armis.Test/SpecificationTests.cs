@@ -37,7 +37,7 @@ namespace Armis.Test
             }
             set { _specService = value; }
         }
-        private SpecModel CreateBaselineSpecModel(string aExtRev, short aEmpId, int numSubLevels, int numChoicesPerSub)
+        private SpecModel CreateBaselineSpecModel(string aExtRev, short aEmpId, int aSamplePlan, int numSubLevels, int numChoicesPerSub)
         {
             //Spec needs a revision even though the DB will allow a spec without a rev
             //SpecRev needs a sublevel even though the DB will allow a specrev without a sublevel
@@ -97,16 +97,24 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "A";
-
+            int samplePlanID = 1;
+            
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, 0, 0);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanID, 0, 0);
             _ = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var thePostAddSpecList = await SpecService.GetAllHydratedSpecs();
 
             //total spec count increased by 1
             Assert.AreEqual(thePostAddSpecList.Count(), thePreAddSpecList.Count() + 1);
-            Assert.AreEqual(1, thePostAddSpecList.ElementAt(0).SpecRevModels.Count());
+
+            validateSpecModel(theBaselineSpecModel, thePostAddSpecList.ElementAt(0));
+        }
+
+        private void validateSpecModel(SpecModel aSpecModelExpected, SpecModel aSpecModelActual)
+        {
+            Assert.AreEqual(aSpecModelExpected.Code, aSpecModelActual.Code);
+            Assert.AreEqual(1, aSpecModelActual.SpecRevModels.Count());
         }
 
         [TestMethod]
@@ -114,12 +122,13 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "AA";
+            int samplePlanID = 1;
             int numSublevels = 6;
             int numSubChoices = 6;
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, numSublevels, numSubChoices);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanID, numSublevels, numSubChoices);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
@@ -149,12 +158,13 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "X";
+            int samplePlanId = 1;
             int numSublevels = 2;
             int numSubChoices = 3;
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, numSublevels, numSubChoices);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanId, numSublevels, numSubChoices);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
             ////END SET UP////
