@@ -8,6 +8,8 @@ using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Armis.DataLogic.Services.PartService;
 using Armis.DataLogic.Services.PartService.Interfaces;
 using Armis.DataLogic.Services.QualityServices;
+using Armis.DataLogic.Services.QualityServices.Inspection;
+using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,16 +52,29 @@ namespace Armis.Api
             });
 
             //Setting up dependency injection
+            //Process
             services.AddScoped<IStepService, StepService>();
             services.AddScoped<IProcessService, ProcessService>();
-            services.AddScoped<ICustomerService, CustomerService>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IOperationService, OperationService>();
+
+            //Specification
             services.AddScoped<ISpecService, SpecService>();
             services.AddScoped<ISpecProcessAssignService, SpecProcessAssignService>();
+
+            //Inspection
+            services.AddScoped<ISamplePlanService, SamplePlanService>();
+            services.AddScoped<IInspectTestTypeService, InspectTestTypeService>();
+
+            //Part
             services.AddScoped<IHardnessService, HardnessService>();
             services.AddScoped<IMaterialSeriesService, MaterialSeriesService>();
             services.AddScoped<IMaterialAlloyService, MaterialAlloyService>();
+
+            //Customer
+            services.AddScoped<ICustomerService, CustomerService>();
+
+            //Coop
+            services.AddScoped<IEmployeeService, EmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
