@@ -4,6 +4,7 @@ using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,8 +54,11 @@ namespace Armis.Test
 
             var theReturnStep = await StepService.GetStepById(theExpectedStepID); //find it to prove it was created
 
+
             Assert.AreEqual(thePreAddStepCount + 1, thePostAddStepCount);
-            Assert.AreEqual(theBaselineStepModel.StepName, theReturnStep.StepName);
+
+            Validate.ValidateModelCompleteness(theBaselineStepModel, theReturnStep,
+                new List<Object>() { "StepCategory" });//test, test, test
         }
 
         private StepModel CreateBaselineStepModel()

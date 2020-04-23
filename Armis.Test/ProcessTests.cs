@@ -4,6 +4,7 @@ using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -57,13 +58,18 @@ namespace Armis.Test
         public async Task CreateNewProcess()
         {
             var thePreAddProcessList = await ProcessService.GetAllProcesses();
+            var calcNewMaxProcessId = thePreAddProcessList.Max(i => i.ProcessId) + 1;
 
             var theBaselineProcessModel = CreateBaselineProcessModel();
             var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
+
+            theBaselineProcessModel.ProcessId = calcNewMaxProcessId;
+
             var thePostAddProcessList = await ProcessService.GetAllProcesses();
 
             Assert.AreEqual(thePostAddProcessList.Count(), thePreAddProcessList.Count() + 1);
-            Assert.AreEqual(theBaselineProcessModel.Name, thePostAddProcess.Name);
+
+            Validate.ValidateModelCompleteness(theBaselineProcessModel, thePostAddProcess);
         }
 
         [TestMethod]
@@ -72,6 +78,7 @@ namespace Armis.Test
             short theArbitraryEmpID = 941;
 
             var theBaselineProcessModel = CreateBaselineProcessModel();
+
             var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
             var theNewAddedProcessID = thePostAddProcess.ProcessId;
 
@@ -79,12 +86,16 @@ namespace Armis.Test
 
             _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevisionModel);
 
+            theBaselineProcessRevisionModel.ProcessRevId = 1; //for test
+            theBaselineProcessRevisionModel.RevStatusCd = "UNLOCKED"; //for test
+
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
             var theReturnedProcessRevisionModel = theReturnHydratedProcessModel.Revisions.ElementAt(0);
 
-            Assert.AreEqual("UNLOCKED", theReturnedProcessRevisionModel.RevStatusCd);
-            Assert.AreEqual(1, theReturnedProcessRevisionModel.ProcessRevId);
-            Assert.AreEqual(theArbitraryEmpID, theReturnedProcessRevisionModel.CreatedByEmp);
+
+            Validate.ValidateModelCompleteness(theBaselineProcessRevisionModel, theReturnedProcessRevisionModel,
+                new List<Object>() { "DateTimeCreated", "StepSeqs" }); //TODO: Remove exclusions and Test!
+
             Assert.AreEqual(0, theReturnedProcessRevisionModel.StepSeqs.Count());
 
             await ProcessService.DeleteProcessRev(theNewAddedProcessID, 1); //delete process rev

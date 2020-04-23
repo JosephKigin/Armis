@@ -149,10 +149,9 @@ namespace Armis.Test
             var theReturnProcessRevision = theReturnProcessRevisionModelList.ElementAt(0);
 
             //assert ProcessService.UpdateStepsForRev returned model correctly (not testing steps!)
-            Assert.AreEqual(theReturnProcessRevision.Comments, theReturnProcessRevisionModelToValidate.Comments);
-            Assert.AreEqual(theReturnProcessRevision.ProcessId, theReturnProcessRevisionModelToValidate.ProcessId);
-            Assert.AreEqual(theReturnProcessRevision.RevStatusCd, theReturnProcessRevisionModelToValidate.RevStatusCd);
-            Assert.AreEqual(theReturnProcessRevision.DateTimeCreated, theReturnProcessRevisionModelToValidate.DateTimeCreated);
+
+            Validate.ValidateModelCompleteness(theReturnProcessRevision, theReturnProcessRevisionModelToValidate,
+                new List<Object>() { "StepSeqs" }); //TODO: Remove exclusions and Test!
 
             //extract steps from hydrated model from query
             var theReturnStepModelList = theReturnProcessRevision.StepSeqs;
@@ -168,10 +167,8 @@ namespace Armis.Test
             var theCurrProcessRevisionModelWithSteps = await ProcessService.GetHydratedCurrentProcessRev(theNewAddedProcessID);
 
             //assert ProcessService.UpdateUnlockToLockRev returned model correctly (not testing steps!)
-            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.Comments, theReturnProcessRevisionModelToValidate.Comments);
-            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.ProcessId, theReturnProcessRevisionModelToValidate.ProcessId);
-            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.RevStatusCd, theReturnProcessRevisionModelToValidate.RevStatusCd);
-            Assert.AreEqual(theCurrProcessRevisionModelWithSteps.DateTimeCreated, theReturnProcessRevisionModelToValidate.DateTimeCreated);
+            Validate.ValidateModelCompleteness(theCurrProcessRevisionModelWithSteps, theReturnProcessRevisionModelToValidate,
+                new List<Object>() { "StepSeqs" }); //TODO: Remove exclusions and Test!
 
             //validate the current rev is now locked, has the required steps, and first step name is still in right spot
             Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);
