@@ -86,7 +86,6 @@ namespace Armis.Test
                         Description = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff") + " - This is a test. Rev: " + aExtRev,
                         ExternalRev = aExtRev,
                         EmployeeNumber = aEmpId,
-                        DateModified = DateTime.Now,
                         SubLevels = theSpecSubLevelList
                     }
                 }
@@ -107,7 +106,10 @@ namespace Armis.Test
             var theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
+            ///set test values
             theBaselineSpecModel.Id = calcNewMaxSpecId;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateModified = DateTime.Now.Date;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeModified = DateTime.Now.TimeOfDay;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).SpecId = calcNewMaxSpecId;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).InternalRev = 10;
 
@@ -116,7 +118,8 @@ namespace Armis.Test
 
             Validate.ValidateModelCompleteness(theBaselineSpecModel, theCreatedSpecModel, new List<Object>() { "SpecRevModels" });
             Validate.ValidateModelCompleteness(theBaselineSpecModel.SpecRevModels.ElementAt(0), theCreatedSpecModel.SpecRevModels.ElementAt(0),
-                new List<Object>() { "DateModified", "TimeModified", "SubLevels" }); //TODO: Remove exclusions and Test!
+                new List<Object>() { "TimeModified", "SubLevels" }); // included TimeModified because there is a variation in (milli)seconds we can't account for
+            //Warning! Testing against DateModified might be problematic if tested within seconds of midnight
         }
 
         [TestMethod]
@@ -142,7 +145,7 @@ namespace Armis.Test
             for (int i = 0; i < numSublevels; i++)
             {
                 Validate.ValidateModelCompleteness(theBaselineSpecSubLevelModels.ElementAt(i), theCreatedSpecSubLevelModels.ElementAt(i),
-                    new List<Object>() { "Choices" }); //TODO: Remove exclusions and Test!
+                    new List<Object>() { "Choices" }); 
 
                 var theCreatedSpecChoiceList = theCreatedSpecSubLevelModels.ElementAt(i).Choices;
                 var theBaselineSpecChoiceList = theBaselineSpecSubLevelModels.ElementAt(i).Choices;
@@ -150,7 +153,7 @@ namespace Armis.Test
                 for (int j = 0; j < numSubChoices; j++)
                 {
                     Validate.ValidateModelCompleteness(theBaselineSpecChoiceList.ElementAt(j), theCreatedSpecChoiceList.ElementAt(j),
-                        new List<Object>() { }); //TODO: Remove exclusions and Test!
+                        new List<Object>() { });
                 }
             }
         }
