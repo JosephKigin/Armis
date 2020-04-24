@@ -118,7 +118,7 @@ namespace Armis.Test
 
             Validate.ValidateModelCompleteness(theBaselineSpecModel, theCreatedSpecModel, new List<Object>() { "SpecRevModels" });
             Validate.ValidateModelCompleteness(theBaselineSpecModel.SpecRevModels.ElementAt(0), theCreatedSpecModel.SpecRevModels.ElementAt(0),
-                new List<Object>() { "TimeModified", "SubLevels" }); // included TimeModified because there is a variation in (milli)seconds we can't account for
+                new List<Object>() { "TimeModified", "SubLevels" }); // excluded TimeModified because there is a variation in (milli)seconds we can't account for
             //Warning! Testing against DateModified might be problematic if tested within seconds of midnight
         }
 
