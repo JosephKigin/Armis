@@ -66,8 +66,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ExternalRev = aSpecRevModel.ExternalRev,
                 SamplePlan = aSpecRevModel.SamplePlanId,
                 CreatedByEmp = aSpecRevModel.EmployeeNumber,
-                DateModified = aSpecRevModel.DateModified.Date,
-                TimeModified = aSpecRevModel.DateModified.TimeOfDay
+                DateModified = DateTime.Now.Date,//aSpecRevModel.DateModified.Date,
+                TimeModified = DateTime.Now.TimeOfDay
             };
         }
     }

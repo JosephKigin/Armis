@@ -146,7 +146,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     Description = SpecDescription,
                     ExternalRev = ExternalRev,
                     DateModified = DateTime.Now,
-                    TimeModified = DateTime.Now.TimeOfDay,
+                    TimeModified = DateTime.Now.TimeOfDay, //I dont think this is being used.
                     EmployeeNumber = 941
                 };
 

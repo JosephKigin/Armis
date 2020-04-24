@@ -55,5 +55,29 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
 
             return resultModels;
         }
+
+        public static SamplePlanLevel ToEntity(this SamplePlanLevelModel aSamplePlanLevelModel)
+        {
+            return new SamplePlanLevel()
+            {
+                SamplePlanId = aSamplePlanLevelModel.SamplePlanId,
+                SamplePlanLevelId = aSamplePlanLevelModel.SamplePlanLevelId,
+                FromQty = aSamplePlanLevelModel.FromQty,
+                ToQty = aSamplePlanLevelModel.ToQty
+            };
+        }
+
+        public static SamplePlanLevel ToHydratedEntity(this SamplePlanLevelModel aSamplePlanLevelModel)
+        {
+            return new SamplePlanLevel()
+            {
+                SamplePlanId = aSamplePlanLevelModel.SamplePlanId,
+                SamplePlanLevelId = aSamplePlanLevelModel.SamplePlanLevelId,
+                FromQty = aSamplePlanLevelModel.FromQty,
+                ToQty = aSamplePlanLevelModel.ToQty,
+
+                //SamplePlanReject = aSamplePlanLevelModel.SamplePlanRejectModels.ToEntities()
+            };
+        }
     }
 }

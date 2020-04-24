@@ -21,6 +21,15 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection
         }
 
         //CREATE
+        public async Task<SamplePlanModel> CreateSamplePlan(SamplePlanModel aSamplePlan)
+        {
+            var lastUsedSamplePlanId = await Context.SamplePlanHead.MaxAsync(s => s.SamplePlanId);
+            //Should the extensions handle loading up all the entities, or should ToEntity be called on all the different levels right here? (Sample Plan, level, and reject)
+            //Probaby the second option because the level will need a LevelId assigned to it based on how many levels are in the Sample Plan.
+            Context.SamplePlanHead.Add(aSamplePlan.ToHydratedEntity());
+
+            return null;
+        }
 
         //READ
         public async Task<IEnumerable<SamplePlanModel>> GetAllSamplePlans()
