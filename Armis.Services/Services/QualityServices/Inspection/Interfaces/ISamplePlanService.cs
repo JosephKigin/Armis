@@ -8,6 +8,7 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection.Interfaces
 {
     public interface ISamplePlanService
     {
+        Task<SamplePlanModel> CreateSamplePlan(SamplePlanModel aSamplePlan);
         Task<IEnumerable<SamplePlanModel>> GetAllSamplePlans(); 
         Task<IEnumerable<SamplePlanModel>> GetAllHydratedSamplePlans();
     }

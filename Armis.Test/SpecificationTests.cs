@@ -37,6 +37,7 @@ namespace Armis.Test
             }
             set { _specService = value; }
         }
+
         private SpecModel CreateBaselineSpecModel(string aExtRev, short aEmpId, int aSamplePlan, int numSubLevels, int numChoicesPerSub)
         {
             //Spec needs a revision even though the DB will allow a spec without a rev
