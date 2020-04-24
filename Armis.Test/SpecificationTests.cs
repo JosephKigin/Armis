@@ -117,7 +117,7 @@ namespace Armis.Test
             Validate.ValidateModelCompleteness(theBaselineSpecModel.SpecRevModels.ElementAt(0), theCreatedSpecModel.SpecRevModels.ElementAt(0),
                 new List<Object>() { "DateModified", "TimeModified", "SubLevels" }); //TODO: Remove exclusions and Test!
         }
-        
+
         [TestMethod]
         public async Task CreateNewSpecificationWithSubLevelChoices()
         {

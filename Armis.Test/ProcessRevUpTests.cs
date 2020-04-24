@@ -187,7 +187,7 @@ namespace Armis.Test
 
             int theArbitraryNumStepsForRev1 = 4;
 
-            var theArbitraryStepIDListForRev1 = new List<int>();
+            var theArbitraryStepIdListForRev1 = new List<int>(); //created steps for the test
 
             var theBaselineProcessModel = CreateBaselineProcessModel();
             var theNewProcessID = (await ProcessService.CreateNewProcess(theBaselineProcessModel)).ProcessId;
@@ -203,12 +203,12 @@ namespace Armis.Test
             for (int i = 0; i < theArbitraryNumStepsForRev1; i++)
             {
                 var theBaselineStepModel = CreateBaselineStepModel((i + 1).ToString(), theNewProcessID, theReturnedProcessRevision1ID);
-                var theReturnStepID = await StepService.CreateStep(theBaselineStepModel);
+                var theReturnStepModel = await StepService.CreateStep(theBaselineStepModel);
 
-                theArbitraryStepIDListForRev1.Add(theReturnStepID.StepId);
+                theArbitraryStepIdListForRev1.Add(theReturnStepModel.StepId);
             }
 
-            var theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theReturnedProcessRevision1ID, theArbitraryStepIDListForRev1, theArbitraryRev1OprID);
+            var theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theReturnedProcessRevision1ID, theArbitraryStepIdListForRev1, theArbitraryRev1OprID);
 
             _ = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModel);
             //requery db with processID and return all revisions (but expecting 1)
@@ -230,31 +230,31 @@ namespace Armis.Test
             // 3. reverse order
             //*********************************************
 
-            var theNewArbitraryStepIDListForRev2 = theArbitraryStepIDListForRev1.ToList();
-            theNewArbitraryStepIDListForRev2.RemoveAt(0);
+            var theNewArbitraryStepIdListForRev2 = theArbitraryStepIdListForRev1.ToList();
+            theNewArbitraryStepIdListForRev2.RemoveAt(0);
             var theReturnStepIDA = await StepService.CreateStep(CreateBaselineStepModel("a", theNewProcessID, theRev2ID));
             var theReturnStepIDB = await StepService.CreateStep(CreateBaselineStepModel("b", theNewProcessID, theRev2ID));
-            theNewArbitraryStepIDListForRev2.Insert(0, theReturnStepIDA.StepId);
-            theNewArbitraryStepIDListForRev2.Insert(1, theReturnStepIDB.StepId);
-            theNewArbitraryStepIDListForRev2.Reverse();
+            theNewArbitraryStepIdListForRev2.Insert(0, theReturnStepIDA.StepId);
+            theNewArbitraryStepIdListForRev2.Insert(1, theReturnStepIDB.StepId);
+            theNewArbitraryStepIdListForRev2.Reverse();
 
             // TODO: Fix OPERATION ID copying
-            theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theRev2ID, theNewArbitraryStepIDListForRev2, theArbitraryRev2OprID); //TODO: Fix overriding operationID
+            theBaselineStepSeqModel = CreateBaselineStepSeqModel(theNewProcessID, theRev2ID, theNewArbitraryStepIdListForRev2, theArbitraryRev2OprID); //TODO: Fix overriding operationID
 
             var theReturnProcessRevision2ModelToValidate = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModel);
 
             var theReturnProcessRevisionModelList = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions;
             Assert.AreEqual(2, theReturnProcessRevisionModelList.Count());
-            Assert.AreEqual(theNewArbitraryStepIDListForRev2.Count(), theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.Count());
+            Assert.AreEqual(theNewArbitraryStepIdListForRev2.Count(), theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.Count());
 
             // validate step sequences are as expected
-            for (int i = 0; i < theArbitraryStepIDListForRev1.Count(); i++) //rev 1
+            for (int i = 0; i < theArbitraryStepIdListForRev1.Count(); i++) //rev 1
             {
-                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theReturnProcessRevisionModelList.ElementAt(0).StepSeqs.ElementAt(i).StepId);
+                Assert.AreEqual(theArbitraryStepIdListForRev1[i], theReturnProcessRevisionModelList.ElementAt(0).StepSeqs.ElementAt(i).StepId);
             }
-            for (int i = 0; i < theNewArbitraryStepIDListForRev2.Count(); i++) //rev 2
+            for (int i = 0; i < theNewArbitraryStepIdListForRev2.Count(); i++) //rev 2
             {
-                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.ElementAt(i).StepId);
+                Assert.AreEqual(theNewArbitraryStepIdListForRev2[i], theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.ElementAt(i).StepId);
             }
 
             //LOCK and Validate
@@ -273,14 +273,16 @@ namespace Armis.Test
             Assert.AreEqual("LOCKED", theRevision2Data.RevStatusCd);
 
             // validate step sequences are as expected POST-LOCK
-            for (int i = 0; i < theArbitraryStepIDListForRev1.Count(); i++) //rev 1
+            for (int i = 0; i < theArbitraryStepIdListForRev1.Count(); i++) //rev 1
             {
-                Assert.AreEqual(theArbitraryStepIDListForRev1[i], theRevision1Data.StepSeqs.ElementAt(i).StepId);
+                Assert.AreEqual(theArbitraryStepIdListForRev1[i], theRevision1Data.StepSeqs.ElementAt(i).StepId);
             }
-            for (int i = 0; i < theNewArbitraryStepIDListForRev2.Count(); i++) //rev 2
+            for (int i = 0; i < theNewArbitraryStepIdListForRev2.Count(); i++) //rev 2
             {
-                Assert.AreEqual(theNewArbitraryStepIDListForRev2[i], theRevision2Data.StepSeqs.ElementAt(i).StepId);
+                Assert.AreEqual(theNewArbitraryStepIdListForRev2[i], theRevision2Data.StepSeqs.ElementAt(i).StepId);
             }
+
+            //add validation logic for StepSeq (create manual test models)
 
         }
         private ProcessModel CreateBaselineProcessModel()
