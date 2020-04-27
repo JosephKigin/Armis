@@ -40,7 +40,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 FromQty = aSamplePlanLevelEntity.FromQty,
                 ToQty = aSamplePlanLevelEntity.ToQty,
 
-                SamplePlanRejectModels = aSamplePlanLevelEntity.SamplePlanReject.ToModels()
+                SamplePlanRejectModels = aSamplePlanLevelEntity.SamplePlanReject.ToHydratedModels()
             };
         }
 
@@ -56,28 +56,27 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             return resultModels;
         }
 
-        public static SamplePlanLevel ToEntity(this SamplePlanLevelModel aSamplePlanLevelModel)
+        public static SamplePlanLevel ToEntity(this SamplePlanLevelModel aSamplePlanLevelModel, int aSamplePlanId)
         {
             return new SamplePlanLevel()
             {
-                SamplePlanId = aSamplePlanLevelModel.SamplePlanId,
+                SamplePlanId = aSamplePlanId,
                 SamplePlanLevelId = aSamplePlanLevelModel.SamplePlanLevelId,
                 FromQty = aSamplePlanLevelModel.FromQty,
                 ToQty = aSamplePlanLevelModel.ToQty
             };
         }
 
-        public static SamplePlanLevel ToHydratedEntity(this SamplePlanLevelModel aSamplePlanLevelModel)
+        public static IEnumerable<SamplePlanLevel> ToEntities(this IEnumerable<SamplePlanLevelModel> aSamplePlanLevelModels, int aSamplePlanId)
         {
-            return new SamplePlanLevel()
-            {
-                SamplePlanId = aSamplePlanLevelModel.SamplePlanId,
-                SamplePlanLevelId = aSamplePlanLevelModel.SamplePlanLevelId,
-                FromQty = aSamplePlanLevelModel.FromQty,
-                ToQty = aSamplePlanLevelModel.ToQty,
+            var resultingEntities = new List<SamplePlanLevel>();
 
-                //SamplePlanReject = aSamplePlanLevelModel.SamplePlanRejectModels.ToEntities()
-            };
+            foreach (var samplePlanModel in aSamplePlanLevelModels)
+            {
+                resultingEntities.Add(samplePlanModel.ToEntity(aSamplePlanId));
+            }
+
+            return resultingEntities;
         }
     }
 }

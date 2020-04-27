@@ -57,11 +57,11 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             return resultModels;
         }
 
-        public static SamplePlanReject ToEntity(this SamplePlanRejectModel aSamplePlanRejectModel)
+        public static SamplePlanReject ToEntity(this SamplePlanRejectModel aSamplePlanRejectModel, int aSamplePlanId)
         {
             return new SamplePlanReject()
             {
-                SamplePlanId = aSamplePlanRejectModel.SamplePlanId,
+                SamplePlanId = aSamplePlanId,
                 SamplePlanLevelId = aSamplePlanRejectModel.SamplePlanLevelId,
                 InspectTestId = aSamplePlanRejectModel.InspectTestTypeId,
                 SampleQty = aSamplePlanRejectModel.SampleQty,
@@ -69,13 +69,13 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             };
         }
 
-        public static IEnumerable<SamplePlanReject> ToEntities(this IEnumerable<SamplePlanRejectModel> aSamplePlanRejectModels)
+        public static IEnumerable<SamplePlanReject> ToEntities(this IEnumerable<SamplePlanRejectModel> aSamplePlanRejectModels, int aSamplePlanId)
         {
             var resultModels = new List<SamplePlanReject>();
 
             foreach (var model in aSamplePlanRejectModels)
             {
-                resultModels.Add(model.ToEntity());
+                resultModels.Add(model.ToEntity(aSamplePlanId));
             }
 
             return resultModels;

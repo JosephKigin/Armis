@@ -50,5 +50,20 @@ namespace Armis.Api.Controllers.Quality.Inspection
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<SamplePlanModel>> CreateHydratedSamplePlan(SamplePlanModel aSamplePlanModel)
+        {
+            try
+            {
+                var data = await SamplePlanService.CreateSamplePlan(aSamplePlanModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

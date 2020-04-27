@@ -1,0 +1,53 @@
+﻿@page
+@model ArmisWebsite.Pages.Quality.Inspection.SamplePlanEntryModel
+@{
+    ViewData["Title"] = "SamplePlanEntry";
+}
+
+<h1>Sample Plan Entry</h1>
+@*Sample Plan Head inputs*@
+<div class="">
+    <label>Name</label> <input id="inputName" type="text" class="form-control w-50" />
+</div>
+<div class="">
+    <label>Description</label> <input id="inputDescription" type="text" class="form-control" />
+</div>
+
+@*Sample Plan Level Inputs*@
+<div class="card p-2 mt-3">
+    <div class="row">
+        @*From - To level values*@
+        <div class="col-lg-3 text-center">
+            <u># of Parts</u><input />
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-lg"> <input type="number" class="form-control" /> </div> <div class="col-lg">To</div> <div class="col-lg"> <input type="number" class="form-control" /> </div>
+            </div>
+        </div>
+
+        @*Test sample and reject amounts*@
+        <div class="col-lg-9">
+            <select class="form-control"><option></option><option>Corrosion</option><option>Visual</option><option>Adhesion</option><option>Bake</option></select>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+            <div class="row form-inline mt-1"><label>Sample</label><input type="number" class="form-control" /> <label>Reject</label> <input type="number" class="form-control" /></div>
+        </div>
+    </div>
+</div>

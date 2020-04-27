@@ -142,11 +142,10 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
                 var theSpecRev = new SpecRevModel()
                 {
+                    //Date & Time Modified will be set at the API level.
                     SpecId = CurrentSpecId,
                     Description = SpecDescription,
                     ExternalRev = ExternalRev,
-                    DateModified = DateTime.Now,
-                    TimeModified = DateTime.Now.TimeOfDay, //I dont think this is being used.
                     EmployeeNumber = 941
                 };
 

@@ -115,7 +115,7 @@ namespace Armis.DataLogic.Services.QualityServices
                     newRevEntity.ProcessStepSeq.Add(newStepSeq);
                 }
             }
-            newRevEntity.DateModified = DateTime.Now;
+            newRevEntity.DateModified = DateTime.Now; //TODO: Move this to entity extension just like spec rev is.
             newRevEntity.TimeModified = DateTime.Now.TimeOfDay;
             context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
