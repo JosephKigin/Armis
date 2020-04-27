@@ -28,7 +28,7 @@ namespace Armis.Test
                 var expValue = expectedModelProperties.ElementAt(i).GetValue(anExpectedModel);
 
                 //if (actValue.ToString() != expValue.ToString())
-                //{ } //uncomment for testing                }
+                //{ } //uncomment for testing
                 
                 Assert.AreEqual(expValueName, actValueName, anActuaModel.GetType().ToString());
                 Assert.AreEqual(expValue, actValue, actValueName);

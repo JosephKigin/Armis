@@ -75,21 +75,21 @@ namespace Armis.Test
         [TestMethod]
         public async Task CreateNewRevOnNewProcessAndThenDeleteRev()
         {
-            short theArbitraryEmpID = 941;
+            short theArbitraryEmpId = 941;
 
             var theBaselineProcessModel = CreateBaselineProcessModel();
 
             var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
-            var theNewAddedProcessID = thePostAddProcess.ProcessId;
+            var theNewAddedProcessId = thePostAddProcess.ProcessId;
 
-            var theBaselineProcessRevisionModel = CreateBaselineProcessRevisionModel(theNewAddedProcessID, theArbitraryEmpID);
+            var theBaselineProcessRevisionModel = CreateBaselineProcessRevisionModel(theNewAddedProcessId, theArbitraryEmpId);
 
             _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevisionModel);
 
             theBaselineProcessRevisionModel.ProcessRevId = 1; //for test
             theBaselineProcessRevisionModel.RevStatusCd = "UNLOCKED"; //for test
 
-            var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
+            var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessId);
             var theReturnedProcessRevisionModel = theReturnHydratedProcessModel.Revisions.ElementAt(0);
 
 
@@ -98,9 +98,9 @@ namespace Armis.Test
 
             Assert.AreEqual(0, theReturnedProcessRevisionModel.StepSeqs.Count());
 
-            await ProcessService.DeleteProcessRev(theNewAddedProcessID, 1); //delete process rev
+            await ProcessService.DeleteProcessRev(theNewAddedProcessId, 1); //delete process rev
 
-            theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessID);
+            theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessId);
             Assert.AreEqual(0, theReturnHydratedProcessModel.Revisions.Count());
         }
 

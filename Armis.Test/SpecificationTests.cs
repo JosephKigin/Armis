@@ -98,13 +98,13 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "A";
-            int samplePlanID = 1;
+            int samplePlanId = 1;
             string descPrefix = " - This is a test. Rev: ";
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
             var calcNewMaxSpecId = thePreAddSpecList.Max(i => i.Id) + 1;
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanID, 0, 0);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanId, 0, 0);
             var theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
@@ -129,14 +129,14 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "AA";
-            int samplePlanID = 1;
+            int samplePlanId = 1;
             int numSublevels = 6;
             int numSubChoices = 6;
             string descPrefix = " - Sublevel test. Rev: ";
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanID, numSublevels, numSubChoices);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanId, numSublevels, numSubChoices);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
@@ -178,12 +178,9 @@ namespace Armis.Test
             int numSubChoicesRev2 = 4;
             string descPrefixRev1 = " - This is the inital rev. Rev: ";
             string descPrefixRev2 = " - This is the new rev. Rev: ";
-
-            var thePreAddSpecList = await SpecService.GetAllHydratedSpecs(); //used for counting later?
-
+            
             var theBaselineSpecModel = CreateBaselineSpecModel(theExtRev1Id, descPrefixRev1, theEmpIdRev1, samplePlanIdRev1, numSublevelsRev1, numSubChoicesRev1);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
-            var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId); //count assert?
             
             var theExpectedRev2SpecModel = CreateBaselineSpecModel(theExtRev2Id, descPrefixRev2, theEmpIdRev2, samplePlanIdRev2, numSublevelsRev2, numSubChoicesRev2);
             var theExpectedRev2SpecRevModel = theExpectedRev2SpecModel.SpecRevModels.ElementAt(0);
