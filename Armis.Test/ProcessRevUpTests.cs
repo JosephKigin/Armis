@@ -2,7 +2,6 @@
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -27,7 +26,6 @@ namespace Armis.Test
             }
             set { _context = value; }
         }
-
 
         private IProcessService _processService;
         private IStepService _stepService;
@@ -140,8 +138,12 @@ namespace Armis.Test
                 theArbitraryStepIDList.Add(theReturnStepID.StepId);
             }
 
-            var theBaselineStepSeqModelList = CreateBaselineStepSeqModelList(theNewAddedProcessID, theReturnedProcessRevisionID, theArbitraryStepIDList, theArbitraryOprID);
-
+            var theBaselineStepSeqModelList = new List<StepSeqModel>();
+            for (int i = 0; i < theArbitraryStepIDList.Count; i++)
+            {
+                theBaselineStepSeqModelList.Add(
+                    CreateBaselineStepSeqModel(theNewAddedProcessID, theReturnedProcessRevisionID, theArbitraryStepIDList[i], theArbitraryOprID, i + 1));
+            }
             //update steps but get return process rev model for validation purposes later
             var theReturnProcessRevisionModelToValidate = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModelList);
             //requery db with processID and return all revisions (but expecting 1)
@@ -177,7 +179,7 @@ namespace Armis.Test
 
         }
         [TestMethod]
-        private async Task CreateNewLockedRevAndRevUpWithDiffStepSeq()
+        public async Task CreateNewLockedRevAndRevUpWithDiffStepSeq()
         {
             const int REV1ID = 1;
             const int REV2ID = 2;
@@ -185,8 +187,7 @@ namespace Armis.Test
             short theArbitraryRev2EmpID = 991; //Ben Johnson
 
             short theArbitraryRev1OprID = 6;
-            short theArbitraryRev2OprID = 2;
-            short theArbitraryRev2OprIDForAddlSteps = 4;
+            short theArbitraryRev2OprID = 4;
 
             int theArbitraryNumStepsForRev1 = 4;
 
@@ -201,10 +202,8 @@ namespace Armis.Test
             _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevision1Model); //TODO: test that return model validates
 
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewProcessID);
-            //var theReturnedProcessRevision1ID = theReturnHydratedProcessModel.Revisions.ElementAt(0).ProcessRevId; //change this index 0
 
             var theStepSeqTestModelListForRev1 = new List<StepSeqModel>();
-            //List<StepSeqModel> theStepSeqTestModelListForRev2 = new List<StepSeqModel>();
 
             for (int i = 0; i < theArbitraryNumStepsForRev1; i++)
             {
@@ -225,7 +224,12 @@ namespace Armis.Test
                     });
             }
 
-            var theBaselineStepSeqModelList = CreateBaselineStepSeqModelList(theNewProcessID, REV1ID, theArbitraryStepIdListForRev1, theArbitraryRev1OprID);
+            var theBaselineStepSeqModelList = new List<StepSeqModel>();
+            for (int i = 0; i < theArbitraryStepIdListForRev1.Count; i++)
+            {
+                theBaselineStepSeqModelList.Add(
+                    CreateBaselineStepSeqModel(theNewProcessID, REV1ID, theArbitraryStepIdListForRev1[i], theArbitraryRev1OprID, i + 1));
+            }
 
             _ = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModelList);
             //requery db with processID and return all revisions (but expecting 1)
@@ -247,76 +251,44 @@ namespace Armis.Test
             // 3. reverse order
             //*********************************************
 
-            var theNewArbitraryStepIdListForRev2 = theArbitraryStepIdListForRev1.ToList();
-            theNewArbitraryStepIdListForRev2.RemoveAt(0);
-            var theReturnStepIDA = await StepService.CreateStep(CreateBaselineStepModel("a", theNewProcessID, theRev2ID));
-            var theReturnStepIDB = await StepService.CreateStep(CreateBaselineStepModel("b", theNewProcessID, theRev2ID));
-            theNewArbitraryStepIdListForRev2.Insert(0, theReturnStepIDA.StepId);
-            theNewArbitraryStepIdListForRev2.Insert(1, theReturnStepIDB.StepId);
-            theNewArbitraryStepIdListForRev2.Reverse();
-
-            var theStepSeqTestModelListForRev2 = theStepSeqTestModelListForRev1.ToList();
-            //theStepSeqTestModelListForRev2.RemoveAt(0);
-            //var theReturnStepIDA = await StepService.CreateStep(CreateBaselineStepModel("a", theNewProcessID, REV2ID));
-            //var theReturnStepIDB = await StepService.CreateStep(CreateBaselineStepModel("b", theNewProcessID, REV2ID));
-            //for (int i = 0; i < theStepSeqTestModelListForRev1.Count; i++) { theStepSeqTestModelListForRev2.Add(theStepSeqTestModelListForRev1[i]); }
+            var theStepSeqTestModelListForRev2 = DeepCopyStepSeqModel(theStepSeqTestModelListForRev1);
+            
             theStepSeqTestModelListForRev2.RemoveAt(0);
+            var theReturnStepIDA = await StepService.CreateStep(CreateBaselineStepModel("a", theNewProcessID, REV2ID));
+            var theReturnStepIDB = await StepService.CreateStep(CreateBaselineStepModel("b", theNewProcessID, REV2ID));
+
             theStepSeqTestModelListForRev2.Insert(0, new StepSeqModel()
             {
                 StepId = theReturnStepIDA.StepId,
                 ProcessId = theNewProcessID,
-                //Sequence = 0,
-                //RevisionId = REV2ID,
-                OperationId = theArbitraryRev2OprIDForAddlSteps
+                OperationId = theArbitraryRev2OprID
             });
             theStepSeqTestModelListForRev2.Insert(1, new StepSeqModel()
             {
                 StepId = theReturnStepIDB.StepId,
                 ProcessId = theNewProcessID,
-                //Sequence = 0,
-                //RevisionId = REV2ID,
-                OperationId = theArbitraryRev2OprIDForAddlSteps
+                OperationId = theArbitraryRev2OprID
             });
             theStepSeqTestModelListForRev2.Reverse();
+
+            var theNewArbitraryStepIdListForRev2 = new List<int>();
+
             for (int i = 0; i < theStepSeqTestModelListForRev2.Count; i++)
             { 
                 theStepSeqTestModelListForRev2[i].Sequence = Convert.ToInt16(i + 1); 
                 theStepSeqTestModelListForRev2[i].RevisionId = REV2ID;
+                theNewArbitraryStepIdListForRev2.Add(theStepSeqTestModelListForRev2[i].StepId);
             } //resequence
 
-            // TODO: Fix OPERATION ID copying
-            theBaselineStepSeqModelList = CreateBaselineStepSeqModelList(theNewProcessID, REV2ID, theNewArbitraryStepIdListForRev2, theArbitraryRev2OprID); //TODO: Fix overriding operationID
+            var theBaselineStepSeqModelListRev2 = new List<StepSeqModel>();
+            for (int i = 0; i < theNewArbitraryStepIdListForRev2.Count; i++)
+            {
+                theBaselineStepSeqModelListRev2.Add(
+                    CreateBaselineStepSeqModel(theNewProcessID, REV2ID, theNewArbitraryStepIdListForRev2[i], 
+                    theStepSeqTestModelListForRev2[i].OperationId, i + 1));
+            }
 
-            
-            var theReturnProcessRevision2ModelToValidate = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModelList);
-
-            //set test data
-            //for (int i = 0; i < theArbitraryNumStepsForRev1; i++)
-            //{
-            //    theStepSeqTestModelListForRev2.Add(
-            //        new StepSeqModel()
-            //        {
-            //            StepId = theReturnStepModel.StepId,
-            //            Sequence = Convert.ToInt16(i + 1),
-            //            ProcessId = theNewProcessID, //change?
-            //            RevisionId = REV1ID,
-            //            OperationId = theArbitraryRev1OprID
-            //        });
-            //}
-            ///set test data
-            //StepSeqModel theStepSeqTestModelForRev1 = new StepSeqModel()
-            //{
-            //    StepId = 1,
-            //    Sequence = 1,
-            //    ProcessId = 1,
-            //    RevisionId = 1,
-            //    OperationId = 1
-            //};
-            //StepSeqModel theStepSeqTestModelForRev2 = new StepSeqModel();
-
-            ///////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!////////////////
-            ////////////SOMETHING'S WRONG WITH THE COPY TO theNewArbitraryStepIdListForRev2////////////////
-            ///////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!////////////////
+            _ = await ProcessService.UpdateStepsForRev(theBaselineStepSeqModelListRev2);
 
             var theReturnProcessRevisionModelList = (await ProcessService.GetHydratedProcess(theNewProcessID)).Revisions;
             Assert.AreEqual(2, theReturnProcessRevisionModelList.Count());
@@ -334,7 +306,6 @@ namespace Armis.Test
                 Validate.ValidateModelCompleteness(
                     theStepSeqTestModelListForRev2[i], theReturnProcessRevisionModelList.ElementAt(REV2ID - 1).StepSeqs.ElementAt(i),
                     new List<object>() { "Step", "Operation" });
-                //Assert.AreEqual(theNewArbitraryStepIdListForRev2[i], theReturnProcessRevisionModelList.ElementAt(1).StepSeqs.ElementAt(i).StepId);
             }
 
             //LOCK and Validate
@@ -362,8 +333,23 @@ namespace Armis.Test
                 Assert.AreEqual(theNewArbitraryStepIdListForRev2[i], theRevision2Data.StepSeqs.ElementAt(i).StepId);
             }
 
-            //add validation logic for StepSeq (create manual test models)
+        }
+        private List<StepSeqModel> DeepCopyStepSeqModel(List<StepSeqModel> aStepSeqModelList)
+        {
+            var returnStepSeqModelList = new List<StepSeqModel>();
 
+            foreach (StepSeqModel sseqMdl in aStepSeqModelList)
+            {
+                returnStepSeqModelList.Add(new StepSeqModel() {
+                    StepId = sseqMdl.StepId,
+                    Sequence = sseqMdl.Sequence,
+                    ProcessId = sseqMdl.ProcessId,
+                    RevisionId = sseqMdl.RevisionId,
+                    OperationId = sseqMdl.OperationId
+                });
+            }
+
+            return returnStepSeqModelList;
         }
         private ProcessModel CreateBaselineProcessModel()
         {
@@ -394,23 +380,16 @@ namespace Armis.Test
             };
         }
 
-        private IEnumerable<StepSeqModel> CreateBaselineStepSeqModelList(int aProcessID, int aProcessRevID, List<int> aStepIDList, int aOperationID)
+        private StepSeqModel CreateBaselineStepSeqModel(int aProcessID, int aProcessRevID, int aStepId, int aOperationID, int aSequence)
         {
-            var theStepSeqModel = new List<StepSeqModel>();
-            //foreach (var stepID in aStepIDList)
-            for (int i = 0; i < aStepIDList.Count(); i++)
+            return new StepSeqModel()
             {
-                theStepSeqModel.Add(
-                    new StepSeqModel()
-                    {
-                        ProcessId = aProcessID,
-                        RevisionId = aProcessRevID,
-                        Sequence = Convert.ToInt16(i + 1), //TODO: figure out sequencing
-                        StepId = aStepIDList[i],
-                        OperationId = aOperationID
-                    });
-            }
-            return theStepSeqModel;
+                ProcessId = aProcessID,
+                RevisionId = aProcessRevID,
+                Sequence = Convert.ToInt16(aSequence),
+                StepId = aStepId,
+                OperationId = aOperationID
+            };
         }
     }
 }
