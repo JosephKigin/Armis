@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.QualityModels.Spec;
 using Armis.Data.DatabaseContext;
+using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;
 using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,28 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection
         //CREATE
         public async Task<SamplePlanModel> CreateSamplePlan(SamplePlanModel aSamplePlan)
         {
-            var lastUsedSamplePlanId = await Context.SamplePlanHead.MaxAsync(s => s.SamplePlanId);
-            //Should the extensions handle loading up all the entities, or should ToEntity be called on all the different levels right here? (Sample Plan, level, and reject)
-            //Probaby the second option because the level will need a LevelId assigned to it based on how many levels are in the Sample Plan.
-            Context.SamplePlanHead.Add(aSamplePlan.ToHydratedEntity());
+            using (var transaction = await Context.Database.BeginTransactionAsync())
+            {
+                var newSamplePlanId = (await Context.SamplePlanHead.MaxAsync(s => s.SamplePlanId)) + 1;
 
-            return null;
+                await Context.SamplePlanHead.AddAsync(aSamplePlan.ToEntity(newSamplePlanId));
+                await Context.SamplePlanLevel.AddRangeAsync(aSamplePlan.SamplePlanLevelModels.ToEntities(newSamplePlanId));
+
+                var tempSamplePlanRejectEntities = new List<SamplePlanReject>();
+                foreach (var levelModel in aSamplePlan.SamplePlanLevelModels)
+                {
+                    await Context.AddRangeAsync(levelModel.SamplePlanRejectModels.ToEntities(newSamplePlanId));
+                }
+
+                await Context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                //Goes back to the database and returns the fully hydrated Sample Plan it just created.  This is done so the user on the front-end can verify that the data got into the database correctly.
+                return (await Context.SamplePlanHead.Where(i => i.SamplePlanId == newSamplePlanId)
+                                                        .Include(h => h.SamplePlanLevel)
+                                                            .ThenInclude(l => l.SamplePlanReject)
+                                                                .ThenInclude(r => r.InspectTest).FirstOrDefaultAsync()).ToHydratedModel(); ;
+            }
         }
 
         //READ
