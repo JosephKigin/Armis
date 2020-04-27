@@ -298,7 +298,7 @@ namespace Armis.Test
             {
                 Validate.ValidateModelCompleteness(
                     theStepSeqTestModelListForRev1[i], theReturnProcessRevisionModelList.ElementAt(REV1ID - 1).StepSeqs.ElementAt(i),
-                    new List<object>() { "Step", "Operation", "Sequence" });
+                    new List<object>() { "Step", "Operation" });
             }
             for (int i = 0; i < theStepSeqTestModelListForRev2.Count(); i++) //rev 2
             {
