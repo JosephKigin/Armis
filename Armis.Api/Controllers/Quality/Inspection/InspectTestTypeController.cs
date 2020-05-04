@@ -22,7 +22,7 @@ namespace Armis.Api.Controllers.Quality.Inspection
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InspectTestTypeModel>>> GetAll()
+        public async Task<ActionResult<IEnumerable<InspectTestTypeModel>>> GetAllTestTypes()
         {
             try
             {

@@ -319,7 +319,7 @@
     </div>
 
     <button class="btn btn-lg btn-success my-2">Submit</button>
-    <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/Quality/Specification/SpecificationCreation">Clear</a>
+    <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/Quality/Specification/SpecificationCreation">Reset</a>
 </form>
 
 
@@ -444,7 +444,7 @@
                 if (divChoiceItems[j].nodeName == "INPUT") {
                     if (divChoiceItems[j].type == "text") {
                         divChoiceItems[j].id = "inputChoice" + aCardNumber + "-" + i;
-                        divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]"
+                        divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]";
                         divChoiceItems[j].dataset.choiceNumber = i;
                     }
                     else {
