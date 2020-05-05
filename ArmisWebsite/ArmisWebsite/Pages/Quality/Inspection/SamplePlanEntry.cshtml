@@ -32,14 +32,14 @@
         <div class="row">
             @*From - To level values*@
             <div id="sectionNumOfParts" class="col-lg-4 text-center">
-                <div style="margin-bottom:1.15em"><u># of Parts</u></div> @*The margin is to make sure the two different tables line up.*@
+                <div style="margin-bottom:2.55em"><h4># of Parts</h4></div> @*The margin is to make sure the two different tables line up.*@
                 <div id="numPartsLevel1" class="row mt-1">
                     <div class="col-lg-1">
                         <a id="ancInsertLine1" data-level="1" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a>
                     </div>
                     <div class="col-lg-4"> <input name="inputNumOfPartsFrom1" type="number" class="form-control" value="1" /> </div>
                     <div class="col-lg-1">-</div>
-                    <div class="col-lg-4"> <input name="inputNumOfPartsTo1" type="number" class="form-control" /> </div>
+                    <div class="col-lg-4"> <input name="inputNumOfPartsTo1" type="number" data-level="1" class="form-control" onblur="updateNextFrom(this)" /> </div>
                     <div class="col-lg-1"><a id="ancRemoveLine1" data-level="1" onclick="DeleteLevel(this.dataset.level)"><i class="fa fa-sm fa-minus-circle ml-2" style="color:red"></i></a></div>
                 </div>
             </div>
@@ -52,6 +52,10 @@
                             @*"Title" select used to choose test type.*@
                             <div class="row">
                                 <select class="form-control col-lg-11" name="selectTestType1" asp-items="Model.AllTestTypeSelectItems"></select>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">Spl</div>
+                                <div class="col-lg-5">Rej</div>
                             </div>
                             <div id="numSampleReject1-1" class="row mt-1">
                                 @*1-1: first number is test number, second number is level.*@
