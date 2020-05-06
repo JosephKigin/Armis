@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.Quality.Inspection.Interfaces
     public interface ISamplePlanDataAccess
     {
         Task<SamplePlanModel> CreateNewSamplePlan(SamplePlanModel aSamplePlanModel);
+        Task<IEnumerable<SamplePlanModel>> GetAllHydratedSamplePlans();
     }
 }

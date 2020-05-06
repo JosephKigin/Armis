@@ -26,6 +26,7 @@ namespace ArmisWebsite.Pages.Quality.Inspection
 
 
         //Front-End
+        //The rest of the values will be pulled using HttpContext.  This is usually not the best way to do it, but in this case the inputs are too variable to handle it with model binding.`
         [BindProperty]
         public List<SelectListItem> AllTestTypeSelectItems { get; set; }
 
@@ -41,7 +42,8 @@ namespace ArmisWebsite.Pages.Quality.Inspection
         [BindProperty]
         public int AmountOfTests { get; set; }
 
-        //The rest of the values will be pulled using HttpContext.  This is usually not the best way to do it, but in this case the inputs are too variable to handle it with model binding.
+        [BindProperty]
+        public string Message { get; set; }
 
         public SamplePlanEntryModel(ITestTypeDataAccess aTestTypeDataAccess, ISamplePlanDataAccess aSamplePlanDataAccess)
         {
@@ -49,8 +51,10 @@ namespace ArmisWebsite.Pages.Quality.Inspection
             SamplePlanDataAccess = aSamplePlanDataAccess;
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(string aMessage)
         {
+            if(aMessage != null && aMessage != "") { Message = aMessage; }
+
             await SetUpProperties();
 
             return Page();
@@ -70,13 +74,16 @@ namespace ArmisWebsite.Pages.Quality.Inspection
                 for (int i = 1; i <= AmountOfLevels; i++)
                 {
                     var fromValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsFrom" + i]);
-                    var toValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsTo" + i]);
+                    int toValue;
+                    if(i == AmountOfLevels) { toValue = int.MaxValue; }
+                    else { toValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsTo" + i]); }
                     var newSamplePlanLevel = new SamplePlanLevelModel()
                     {
                         SamplePlanLevelId = i,
                         FromQty = fromValue,
                         ToQty = toValue
                     };
+
                     var tempRejectModelList = new List<SamplePlanRejectModel>();
 
                     for (int j = 1; j <= AmountOfTests; j++)
@@ -105,7 +112,7 @@ namespace ArmisWebsite.Pages.Quality.Inspection
 
                 await SamplePlanDataAccess.CreateNewSamplePlan(newSamplePlan);
 
-                return Page();
+                return RedirectToPage("/Quality/Inspection/SamplePlanEntry", new { aMessage = "Sample Plan created successfully" });
 
             }
             catch (Exception ex)

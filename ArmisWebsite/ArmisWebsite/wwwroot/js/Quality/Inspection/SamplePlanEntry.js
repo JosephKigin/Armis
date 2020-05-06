@@ -10,10 +10,11 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     var newDiv = document.createElement("div");
     newDiv.id = "numPartsLevel" + currentLevel;
     newDiv.classList = "row mt-1";
-    newDiv.innerHTML = '<div class="col-lg-1"><a id="ancInsertLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a></div> <div class="col-lg-4"> <input name="inputNumOfPartsFrom' + currentLevel + '" type="number" class="form-control" /> </div> <div class="col-lg-1">-</div> <div class="col-lg-4"> <input name="inputNumOfPartsTo' + currentLevel + '" type="number" data-level="' + currentLevel + '" class="form-control" onblur="updateNextFrom(this)" /> </div><div class="col-lg-1"><a id="ancRemoveLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="DeleteLevel(this.dataset.level)"><i class="fa fa-sm fa-minus-circle ml-2" style="color:red"></i></a></div>';
+    newDiv.innerHTML = '<div class="col-lg-1"><a id="ancInsertLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a></div> <div class="col-lg-4"> <input name="inputNumOfPartsFrom' + currentLevel + '" type="number" class="form-control" tabindex="-1" readonly/> </div> <div class="col-lg-1">-</div> <div class="col-lg-4"> <input name="inputNumOfPartsTo' + currentLevel + '" type="number" data-level="' + currentLevel + '" class="form-control" onblur="updateNextFrom(this)" /> </div><div class="col-lg-1"><a id="ancRemoveLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="DeleteLevel(this.dataset.level)"><i class="fa fa-sm fa-minus-circle ml-2" style="color:red"></i></a></div>';
     sectionNumOfParts.appendChild(newDiv);
 
     //!This starts at 1, not 0!  This was done to keep consistant with the amount of tests, which is not 0 based.
+    //Adds a new level to each test.
     for (var i = 1; i <= currentAmntOfTests; i++) {
         var sectionTestType = document.getElementById("testType" + i);
         var newDiv = document.createElement("div");
@@ -36,7 +37,22 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     }
 
     //Updating the from value of the newly inserted level
+    if ($('input[name = "inputNumOfPartsTo' + levelNum + '"]')[0] == undefined) { console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY") }
     updateNextFrom($('input[name = "inputNumOfPartsTo' + levelNum + '"]')[0]);
+
+    //Undo any of the disables or placeholder changes that the next couple lines after this does.
+    $("input[name ^= 'inputNumOfPartsTo']").prop("disabled", false);
+    $("input[name ^= 'inputNumOfPartsTo']").prop("placeholder", "");
+
+    //Make the last to value disabled and give it the placeholder "Over" to indicate that it is the last level and the last value is anything over what was specified.
+    $("input[name = 'inputNumOfPartsTo" + currentLevel + "']").prop("disabled", true);
+    $("input[name = 'inputNumOfPartsTo" + currentLevel + "']").prop("placeholder", "OVER");
+
+    //Unhide all anchors.
+    $("a").prop("hidden", false);
+
+    //Hide the delete anchor on the last element.
+    $("a[id = 'ancRemoveLine" + currentLevel + "']").prop("hidden", true);
 }
 
 function AddTest() {
@@ -100,10 +116,15 @@ function DeleteLevel(levelNum) {
             //Reassigning new ids to make sure they stay sequencial.
             numOfPartsInputsDiv.id = "numPartsLevel" + (i - 1); //The div
 
+            //Insert Anchor
+            var insertAnchor = document.getElementById("ancInsertLine" + i);
+            insertAnchor.dataset.level = (i - 1);
+            insertAnchor.id = "ancInsertLine" + (i - 1);
+
             //Delete Anchor
             var deleteAnchor = document.getElementById("ancRemoveLine" + i);
-            deleteAnchor.id = "ancRemoveLine" + (i - 1);
             deleteAnchor.dataset.level = (i - 1);
+            deleteAnchor.id = "ancRemoveLine" + (i - 1);
 
             //From Input
             var fromInput = document.getElementsByName("inputNumOfPartsFrom" + i); //This will return as an array, but all names on this page are unique so it will always return only 1;
@@ -111,6 +132,7 @@ function DeleteLevel(levelNum) {
 
             //To Input
             var toInput = document.getElementsByName("inputNumOfPartsTo" + i); //This will return as an array, but all names on this page are unique so it will always return only 1;
+            toInput[0].dataset.level = (i - 1);
             toInput[0].name = "inputNumOfPartsTo" + (i - 1);
 
             //Test Type inputs
@@ -138,7 +160,7 @@ function updateNextFrom(toInput) {
 
     var nextFrom = $('input[name = "inputNumOfPartsFrom' + nextLevel + '"]');
 
-    if (nextFrom != undefined) {
+    if (nextFrom != undefined && toInput.value != "") {
         var temp = parseInt(toInput.value) + 1;
         nextFrom.val(temp);
     }
@@ -147,25 +169,27 @@ function updateNextFrom(toInput) {
 //Using a little bit more jQuery here just to get a little more familiar with it.
 function validateForm() {
     var isValid = true;
-    var allInputs = document.getElementsByTagName("input");
 
-    //Make sure no input is empty.
-    for (var i = 0; i < allInputs.length; i++) {
-        if (allInputs[i].value == "") {
-            allInputs[i].classList.add("border-danger");
-            isValid = false;
-        }
-        else {
-            allInputs[i].classList.remove("border-danger");
-        }
+    var nameInput = $("#inputName");
+    var descInput = $("#inputDescription");
+
+    if (nameInput.val() == "") {
+        isValid = false;
+        nameInput.addClass("border-danger");
+    }
+    else { nameInput.removeClass("border-danger"); }
+
+    if (descInput.val() == "") {
+        isValid = false;
+        descInput.addClass("border-danger");
     }
 
     var amntOfLevels = $("#hdnNumOfLevels").val();
     var amntOfTests = $("#hdnNumOfTests").val();
 
     //Iterating through all the tests to validate that test types are all unique.
-    var selectNames = []; //TODO: The remove classes are overwriting the add classes when something errors out. This needs to be fixed so that if something isnt valid at first but is valid in a different category, it should still show up as invalid.
-    for (var i = 1; i <= amntOfTest; i++) {
+    var selectNames = [];
+    for (var i = 1; i <= amntOfTests; i++) {
         var testTypeSelect = $("[name='selectTestType" + i + "']");
         for (var j = 0; j < selectNames.length; j++) {
             if (selectNames[j] == testTypeSelect.val()) {
@@ -177,50 +201,111 @@ function validateForm() {
     }
 
     //Iterating through all the levels
+    /*Validation:  1) No empty inputs
+                   2) From amount < To amount
+                   3) Sample amount < To amount
+                   4) Reject amount < Sample amount*/
     for (var i = 1; i <= amntOfLevels; i++) {
         var fromInput = $("[name='inputNumOfPartsFrom" + i + "']");
         var toInput = $("[name='inputNumOfPartsTo" + i + "']");
 
-        //Validates that FromValue is less than or equal to ToValue
-        if (fromInput.val() > toInput.val()) {
-            isValid = false;
-            fromInput.addClass("border-danger");
-            toInput.addClass("border-danger");
+        var isFromValid = true;
+        var isToValid = true;
+
+        var isLastLevel = false;
+        if (i == amntOfLevels) { isLastLevel = true; } //Some validation is different at the last level because the last To value is "OVER" which is technically blank.
+
+        //1
+        if (fromInput.val() == "") {
+            isFromValid = false;
         }
-        else {
-            fromInput.removeClass("border-warning");
-            toInput.removeClass("border-warning");
+
+        //1
+        if (!isLastLevel) {
+            if (toInput.val() == "") {
+                isToValid = false;
+            }
         }
+
+
+        //2
+        if (!isLastLevel) {
+            if (parseInt(fromInput.val()) > parseInt(toInput.val())) {
+                isFromValid = false;
+                isToValid = false;
+            }
+        }
+
 
         //Iterate through each test
         for (var j = 1; j <= amntOfTests; j++) {
             var sampleInput = $("[name = 'inputSampleNum" + j + "-" + i + "']");
             var rejectInput = $("[name = 'inputRejectNum" + j + "-" + i + "']");
 
-            //Validate that sampleInput is greater than rejectInput
-            if (sampleInput.val() < rejectInput.val()) {
+            var isSampleValid = true;
+            var isRejectValid = true;
+
+            //1
+            if (sampleInput.val() == "") {
+                isSampleValid = false;
+            }
+
+            //1
+            if (rejectInput.val() == "") {
+                isRejectValid = false;
+            }
+
+            //3
+            if (!isLastLevel) {
+                if (parseInt(sampleInput.val()) > parseInt(toInput.val())) {
+                    isSampleValid = false;
+                    isToValid = false;
+                }
+            }
+
+            //4
+            if (parseInt(sampleInput.val()) < parseInt(rejectInput.val())) {
+                isSampleValid = false;
+                isRejectValid = false;
+            }
+
+            if (!isSampleValid) {
                 isValid = false;
                 sampleInput.addClass("border-danger");
+            }
+            else { sampleInput.removeClass("border-danger"); }
+
+            if (!isRejectValid) {
+                isValid = false;
                 rejectInput.addClass("border-danger");
             }
-            else {
-                sampleInput.removeClass("border-danger");
-                rejectInput.removeClass("border-danger");
-            }
+            else { rejectInput.removeClass("border-danger"); }
 
-            //Validate sampleInput is less than or equal to fromInput
-            if (sampleInput.val() > toInput.val()) {
-                isValid = false;
-                sampleInput.addClass("border-danger");
-                toInput.addClass("border-danger");
-            }
-            else {
-                sampleInput.removeClass("border-danger");
-                fromInput.removeClass("border-danger");
-            }
         }
 
+        if (!isFromValid) {
+            isValid = false;
+            fromInput.addClass("border-danger");
+        }
+        else { fromInput.removeClass("border-danger"); }
+
+        if (!isToValid) {
+            isValid = false
+            toInput.addClass("border-danger");
+        }
+        else { toInput.removeClass("border-danger"); }
+
     }
-    return false;
-    //return isValid;
+
+    return isValid;
 }
+
+//Prevents user from pressing "Enter" to submit the form.
+$(document).ready(function () {
+    $(window).keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+});

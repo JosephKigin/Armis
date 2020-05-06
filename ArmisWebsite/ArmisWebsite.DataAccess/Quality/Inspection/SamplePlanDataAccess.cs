@@ -21,5 +21,10 @@ namespace ArmisWebsite.DataAccess.Quality.Inspection
         {
             return await DataAccessGeneric.HttpPostRequest<SamplePlanModel>(Config["APIAddress"] + "api/SamplePlan/CreateHydratedSamplePlan/", aSamplePlanModel);
         }
+
+        public async Task<IEnumerable<SamplePlanModel>> GetAllHydratedSamplePlans()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<SamplePlanModel>>(Config["APIAddress"] + "api/SamplePlan/GetAllHydratedSamplePlans");
+        }
     }
 }

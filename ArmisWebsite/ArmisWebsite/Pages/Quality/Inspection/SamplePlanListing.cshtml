@@ -1,0 +1,40 @@
+﻿@page
+@model ArmisWebsite.Pages.Quality.Inspection.SamplePlanListingModel
+@{
+    ViewData["Title"] = "SamplePlanListing";
+}
+
+<h1>SamplePlanListing</h1>
+<ul class="list-group" style="height:42em; overflow-y:scroll;">
+    @foreach (var samplePlan in Model.AllSamplePlans)
+    {
+        <li class="list-group-item">
+            <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+            <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">
+                <div class="row">
+                    <div class="col-lg-1"><u><b>From</b></u></div>
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-1"><u><b>To</b></u></div>
+                    <div class="col-lg"><u><b>Test (Sample - Reject)</b></u></div>
+                </div>
+                @foreach (var level in samplePlan.SamplePlanLevelModels)
+                {
+                    <div class="row border border-light ml-1" style="width:99%;">
+                        <div class="col-lg-1">@level.FromQty</div>
+                        <div class="col-lg-1">-</div>
+                        <div class="col-lg-1">
+                        @if (level.ToQty == int.MaxValue)
+                        { <text>OVER</text> }
+                        else
+                        { <text>@level.ToQty</text> }
+                        </div>
+                        @foreach (var test in level.SamplePlanRejectModels)
+                        {
+                            <div class="col-lg">@test.InspectioneTestType.TestCode (@test.SampleQty - @test.RejectAllowQty)</div>
+                        }
+                    </div>
+                }
+            </div>
+        </li>
+    }
+</ul>

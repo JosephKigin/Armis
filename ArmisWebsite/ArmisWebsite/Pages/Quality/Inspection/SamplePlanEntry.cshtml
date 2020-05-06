@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{aMessage?}"
 @model ArmisWebsite.Pages.Quality.Inspection.SamplePlanEntryModel
 @{
     ViewData["Title"] = "SamplePlanEntry";
@@ -9,11 +9,17 @@
 </head>
 
 <h1>Sample Plan Entry</h1>
+
+@if (Model.Message != null && Model.Message != "")
+{
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+}
+
 @*Sample Plan Head inputs*@
 <label>Name</label>
-<input id="inputName" type="text" class="form-control w-50" asp-for="SamplePlanName" form="mainForm" />
+<input id="inputName" type="text" class="form-control w-50" asp-for="SamplePlanName" maxlength="10" form="mainForm" />
 <label>Description</label>
-<input id="inputDescription" type="text" class="form-control w-50" asp-for="SamplePlanDescription" form="mainForm" />
+<input id="inputDescription" type="text" class="form-control w-50" asp-for="SamplePlanDescription" maxlength="50" form="mainForm" />
 <div class="row">
     <div class="col-lg-7"></div><a class="btn btn-lg btn-primary text-light float-right col-lg-2 w-25" onclick="AddTest()">Add Test</a>
     <a class="btn btn-lg btn-danger text-light col-lg-2 w-25 ml-1" onclick="RemoveTest()">Remove Test</a>
@@ -37,10 +43,10 @@
                     <div class="col-lg-1">
                         <a id="ancInsertLine1" data-level="1" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a>
                     </div>
-                    <div class="col-lg-4"> <input name="inputNumOfPartsFrom1" type="number" class="form-control" value="1" /> </div>
+                    <div class="col-lg-4"> <input name="inputNumOfPartsFrom1" type="number" class="form-control" value="1" tabindex="-1" readonly /> </div>
                     <div class="col-lg-1">-</div>
-                    <div class="col-lg-4"> <input name="inputNumOfPartsTo1" type="number" data-level="1" class="form-control" onblur="updateNextFrom(this)" /> </div>
-                    <div class="col-lg-1"><a id="ancRemoveLine1" data-level="1" onclick="DeleteLevel(this.dataset.level)"><i class="fa fa-sm fa-minus-circle ml-2" style="color:red"></i></a></div>
+                    <div class="col-lg-4"> <input name="inputNumOfPartsTo1" type="number" data-level="1" class="form-control" onblur="updateNextFrom(this)" placeholder="OVER" disabled /> </div>
+                    <div class="col-lg-1"></div>
                 </div>
             </div>
 
