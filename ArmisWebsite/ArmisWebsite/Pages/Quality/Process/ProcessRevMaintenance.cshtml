@@ -24,7 +24,7 @@
                 Process: <b> @Model.CurrentProcess.Name</b>
                 Rev:  @if (Model.CurrentRevId != 0)
                 {<b>@Model.CurrentRevId </b>}
-                <span class="alert-success"> Unlocked </span>
+                <i class="fa fa-lock-open"></i>
             </h3>
         }
         else if (Model.CurrentRev.RevStatusCd == "LOCKED")
@@ -33,7 +33,7 @@
                 Process: <b> @Model.CurrentProcess.Name</b>
                 Rev: @if (Model.CurrentRevId != 0)
                 {<b>@Model.CurrentRevId </b>}
-                <span class="alert-danger">Locked</span>
+                <i class="fa fa-lock"></i>
             </h3>
         }
         else
@@ -127,8 +127,8 @@
                     @if ((Model.CurrentRev.RevStatusCd == "LOCKED") || (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId == 0))
                     {
                         <div class="row justify-content-center">
-                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
-                            <input type="button" class="btn btn-success col-lg-5 my-1 mx-2" data-toggle="modal" data-target="#modalCopyProcessDetails" value="Copy" />
+                            <a class="btn btn-primary col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <input type="button" class="btn btn-primary col-lg-5 my-1 mx-2" data-toggle="modal" data-target="#modalCopyProcessDetails" value="Copy" />
                         </div>
                         <input type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#modalRevUpComment" value="Rev Up" />
                         <button id="btnLock" type="submit" class="btn btn-outline-secondary m-1" disabled>Lock</button>
@@ -138,7 +138,7 @@
                     else if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                     {
                         <div class="row justify-content-center">
-                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <a class="btn btn-primary col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
                             <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
                         </div>
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
@@ -149,7 +149,7 @@
                     else
                     {
                         <div class="row justify-content-center">
-                            <a class="btn btn-success col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
+                            <a class="btn btn-primary col-lg-5 my-1 mx-2" asp-page="ProcessMaintenance">Create</a>
                             <input type="button" class="btn btn-outline-secondary col-lg-5 my-1 mx-2" value="Copy" disabled />
                         </div>
                         <input type="button" data-toggle="modal" data-target="#modalRevUpComment" class="btn btn-outline-secondary m-1" disabled value="Rev Up" />
@@ -230,7 +230,7 @@
                 var borderColor = "grey";
                 if (Model.CurrentRev.RevStatusCd == "UNLOCKED")
                 {
-                    borderColor = "green";
+                    borderColor = "#007bff";
                 }
 
                 @*Current step list.  If the revision is "UNLCOKED", the border will be green and the list will be sortable.  If the current revision is "LOCKED", the border will be grey and the list will be unsortable.  If there is no current revision, the list will not show up.*@

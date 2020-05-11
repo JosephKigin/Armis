@@ -9,6 +9,7 @@ namespace ArmisWebsite.DataAccess.Quality.Interfaces
     public interface ISpecDataAccess
     {
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecs();
+        Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithSamplePlans();
         Task<int> CreateNewHydratedSpec(SpecModel aSpecModel);
         Task<SpecModel> GetHydratedCurrentRevOfSpec(int aSpecId);
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev();

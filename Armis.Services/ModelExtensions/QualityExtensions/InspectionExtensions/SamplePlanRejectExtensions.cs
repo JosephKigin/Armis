@@ -41,7 +41,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SampleQty = aRejectEntity.SampleQty,
                 RejectAllowQty = aRejectEntity.RejectAllowQty,
 
-                InspectioneTestType = aRejectEntity.InspectTest.ToModel()
+                InspectionTestType = (aRejectEntity.InspectTest != null) ? aRejectEntity.InspectTest.ToModel() : null
             };
         }
 

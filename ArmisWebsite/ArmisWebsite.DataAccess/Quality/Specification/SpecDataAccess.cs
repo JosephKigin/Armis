@@ -24,6 +24,11 @@ namespace ArmisWebsite.DataAccess.Quality
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecs");
         }
 
+        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithSamplePlans()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecsWithSamplePlans");
+        }
+
         public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecModel>>(Config["APIAddress"] + "api/spec/GetAllHydratedSpecsWithOnlyCurrentRev");

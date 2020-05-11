@@ -32,6 +32,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Description = aSpecRevEntity.Description,
                 ExternalRev = aSpecRevEntity.ExternalRev,
                 SamplePlanId = aSpecRevEntity.SamplePlan,
+                SamplePlan = (aSpecRevEntity.SamplePlanNavigation != null) ? aSpecRevEntity.SamplePlanNavigation.ToHydratedModel() : null,
                 EmployeeNumber = aSpecRevEntity.CreatedByEmp,
                 DateModified = aSpecRevEntity.DateModified,
                 TimeModified = aSpecRevEntity.TimeModified,
