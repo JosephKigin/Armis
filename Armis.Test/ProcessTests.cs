@@ -87,7 +87,7 @@ namespace Armis.Test
             _ = await ProcessService.CreateNewRevForExistingProcess(theBaselineProcessRevisionModel);
 
             theBaselineProcessRevisionModel.ProcessRevId = 1; //for test
-            theBaselineProcessRevisionModel.RevStatusCd = "UNLOCKED"; //for test
+            theBaselineProcessRevisionModel.RevStatusId = 2; //2=unlocked
 
             var theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessId);
             var theReturnedProcessRevisionModel = theReturnHydratedProcessModel.Revisions.ElementAt(0);
@@ -102,6 +102,12 @@ namespace Armis.Test
 
             theReturnHydratedProcessModel = await ProcessService.GetHydratedProcess(theNewAddedProcessId);
             Assert.AreEqual(0, theReturnHydratedProcessModel.Revisions.Count());
+        }
+
+        [TestMethod]
+        private async Task ValidateProcessRevisionStatusCodes()
+        {
+            //TODO!!!
         }
 
         private ProcessModel CreateBaselineProcessModel()

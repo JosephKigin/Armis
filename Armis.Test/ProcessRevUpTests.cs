@@ -61,7 +61,7 @@ namespace Armis.Test
             {
                 foreach (var aProcessRevModel in aProcessModel.Revisions)
                 {
-                    if (aProcessRevModel.RevStatusCd == "LOCKED")
+                    if (aProcessRevModel.RevStatusId == 1) //1=locked
                     {
                         theProcessRevisionModelToAttemptDelete = aProcessRevModel;
                         break;
@@ -91,7 +91,7 @@ namespace Armis.Test
             {
                 foreach (var aProcessRevModel in aProcessModel.Revisions)
                 {
-                    if (aProcessRevModel.RevStatusCd == "INACTIVE")
+                    if (aProcessRevModel.RevStatusId == 3) //3=inactive
                     {
                         theProcessRevisionModelToAttemptDelete = aProcessRevModel;
                         break;
@@ -173,7 +173,7 @@ namespace Armis.Test
                 new List<Object>() { "StepSeqs" }); //TODO: Remove exclusions and Test!
 
             //validate the current rev is now locked, has the required steps, and first step name is still in right spot
-            Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);
+            Assert.AreEqual(1, theCurrProcessRevisionModelWithSteps.RevStatusId); //1=locked
             Assert.AreEqual(theArbitraryNumSteps, theCurrProcessRevisionModelWithSteps.StepSeqs.Count());
             Assert.AreEqual(theStrToCheckStepName, theCurrProcessRevisionModelWithSteps.StepSeqs.ElementAt(0).Step.StepName.Substring(0, theStrToCheckStepName.Length));
 
@@ -309,9 +309,9 @@ namespace Armis.Test
 
             //LOCK and Validate
             var theReturnedLockedRevision2Model = await ProcessService.UpdateUnlockToLockRev(theReturnedNewRevision2Model.ProcessId, theReturnedNewRevision2Model.ProcessRevId);
-            Assert.AreEqual("LOCKED", theReturnedLockedRevision2Model.RevStatusCd);
+            Assert.AreEqual(1, theReturnedLockedRevision2Model.RevStatusId); //1=locked
             ProcessRevisionModel theCurrProcessRevisionModelWithSteps = await ProcessService.GetHydratedCurrentProcessRev(theNewProcessId);
-            Assert.AreEqual("LOCKED", theCurrProcessRevisionModelWithSteps.RevStatusCd);
+            Assert.AreEqual(1, theCurrProcessRevisionModelWithSteps.RevStatusId); //1=locked
 
             var theReturnProcessRevisionModelListPostLock = (await ProcessService.GetHydratedProcess(theNewProcessId)).Revisions;
             Assert.AreEqual(2, theReturnProcessRevisionModelListPostLock.Count());
@@ -319,8 +319,8 @@ namespace Armis.Test
             var theRevision1Data = theReturnProcessRevisionModelListPostLock.ElementAt(0);
             var theRevision2Data = theReturnProcessRevisionModelListPostLock.ElementAt(1);
 
-            Assert.AreEqual("INACTIVE", theRevision1Data.RevStatusCd);
-            Assert.AreEqual("LOCKED", theRevision2Data.RevStatusCd);
+            Assert.AreEqual(3, theRevision1Data.RevStatusId); //3=inactive
+            Assert.AreEqual(1, theRevision2Data.RevStatusId); //1=locked
 
             // validate step sequences are as expected POST-LOCK
             for (int i = 0; i < theArbitraryStepIdListForRev1.Count(); i++) //rev 1
@@ -371,7 +371,7 @@ namespace Armis.Test
 
             return new StepModel()
             {
-                StepCategory = new StepCategoryModel { Name = "None", Code="NONE", Type="Other"},
+                StepCategory = new StepCategoryModel { Id = 4, Name = "None", Code="NONE", Type="Other"},
                 Inactive = false,
                 StepName = TEST_CODE + aSeqId + "-PId:" + aProcessId.ToString() + "-RevId:" + aRevId,
                 SignOffIsRequired = true,

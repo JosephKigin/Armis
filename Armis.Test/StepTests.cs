@@ -66,7 +66,7 @@ namespace Armis.Test
             var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new StepModel()
             {
-                StepCategory = new StepCategoryModel { Name = "None", Code = "NONE", Type = "Other" },
+                StepCategory = new StepCategoryModel { Id=4, Name = "None", Code = "NONE", Type = "Other" },
                 Inactive = false,
                 StepName = TEST_CODE + theTimeStamp,
                 SignOffIsRequired = true,
