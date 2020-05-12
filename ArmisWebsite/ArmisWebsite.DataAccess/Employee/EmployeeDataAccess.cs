@@ -20,7 +20,7 @@ namespace ArmisWebsite.DataAccess.Employee
             Config = aConfig;
         }
 
-        public async Task<EmployeeModel> GetEmployeeById(short id)
+        public async Task<EmployeeModel> GetEmployeeById(int id)
         {
             return await DataAccessGeneric.HttpGetRequest<EmployeeModel>(Config["APIAddress"] + "api/Employee/GetEmployeeById/" + id);
         }

@@ -11,9 +11,10 @@ namespace Armis.Data.DatabaseContext.Entities
             PartTran = new HashSet<PartTran>();
         }
 
-        public short PriceCodeId { get; set; }
-        public string PriceCode1 { get; set; }
-        public string PriceCodeDesc { get; set; }
+        public byte PriceCodeId { get; set; }
+        public string LongCode { get; set; }
+        public string ShortCode { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
         public virtual ICollection<PartTran> PartTran { get; set; }

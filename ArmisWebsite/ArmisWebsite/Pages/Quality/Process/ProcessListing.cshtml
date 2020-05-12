@@ -39,9 +39,9 @@
                         <option class="list-group-item" id="process-@process.ProcessId" value="@process.ProcessId" onmousedown="loadSteps(@process.ProcessId, '@process.Name'); togglePrintButton()">
                             @process.ProcessId: @process.Name
                             (Rev:
-                            @if (process.Revisions != null && process.Revisions.Any() && process.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED") != null)
+                            @if (process.Revisions != null && process.Revisions.Any() && process.Revisions.FirstOrDefault(i => i.RevStatusId == 1) != null) //1 = LOCKED
                             {
-                                @process.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED").ProcessRevId
+                                @process.Revisions.FirstOrDefault(i => i.RevStatusId == 1).ProcessRevId //1 = LOCKED
                             }
                             else
                             {

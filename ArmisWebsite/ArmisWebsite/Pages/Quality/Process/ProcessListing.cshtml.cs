@@ -66,7 +66,7 @@ namespace ArmisWebsite
         public async Task<IActionResult> OnPostPrint()
         {
             var theProcess = await ProcessDataAccess.GetHydratedProcess(ProcessIdSelection);
-            var theCurrentRev = theProcess.Revisions.FirstOrDefault(i => i.RevStatusCd == "LOCKED");
+            var theCurrentRev = theProcess.Revisions.FirstOrDefault(i => i.RevStatusId == 1); //1 = LOCKED
 
             if (theCurrentRev == null)
             {

@@ -10,7 +10,8 @@ namespace Armis.Data.DatabaseContext.Entities
             ProcessRevision = new HashSet<ProcessRevision>();
         }
 
-        public string RevStatusCd { get; set; }
+        public byte RevStatusId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }

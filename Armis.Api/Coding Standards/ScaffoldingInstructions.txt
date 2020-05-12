@@ -1,0 +1,14 @@
+﻿After the database has been updated, paste the following statement into the nuget package manager console.
+
+scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection "Data Source = .\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True" -project Armis.Data -ContextDir DatabaseContext -OutputDir DatabaseContext\Entities -f
+
+After that successfully updates, copy the following chunk of code into the OnConfigure() method in the ArmisContext.  Be sure to keep the If() statement.  The braces replace the If() statements braces.
+
+{
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
+                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ARMISTEST; User Id=armisadmin; Password=8#6C1xLopq@z;");
+                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True");
+}
+
+Keep the Azure Sql connection statment uncommented.

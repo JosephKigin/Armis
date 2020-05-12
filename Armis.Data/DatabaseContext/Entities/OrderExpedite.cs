@@ -6,12 +6,12 @@ namespace Armis.Data.DatabaseContext.Entities
     public partial class OrderExpedite
     {
         public int OrderId { get; set; }
-        public short ApprovedByEmp { get; set; }
+        public int ApprovedByEmp { get; set; }
         public bool? IsFree { get; set; }
         public bool? IsOnTime { get; set; }
         public bool? IsEmailOnly { get; set; }
         public decimal? FeeAmount { get; set; }
-        public short? ExpeditedByEmp { get; set; }
+        public int? ExpeditedByEmp { get; set; }
         public DateTime? ExpeditedDate { get; set; }
         public int? ReworkOrder { get; set; }
         public short? DepartmentId { get; set; }

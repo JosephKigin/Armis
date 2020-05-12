@@ -17,7 +17,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusCd = aProcessRev.RevStatusCd
+                RevStatusId = aProcessRev.RevStatusId
             };
         }
 
@@ -31,7 +31,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusCd = aProcessRev.RevStatusCd,
+                RevStatusId = aProcessRev.RevStatusId,
                 StepSeqs = aStepSeqs
             };
         }
@@ -61,7 +61,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 DateModified = aProcessRevModel.DateTimeCreated.Date,
                 ProcessId = aProcessRevModel.ProcessId,
                 ProcessRevId = aProcessRevModel.ProcessRevId,
-                RevStatusCd = aProcessRevModel.RevStatusCd,
+                RevStatusId = aProcessRevModel.RevStatusId,
                 TimeModified = aProcessRevModel.DateTimeCreated.TimeOfDay
             };
         }
@@ -75,7 +75,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 CreatedByEmp = aProcessRevisionModel.CreatedByEmp,
                 DateModified = aProcessRevisionModel.DateTimeCreated.Date,
                 TimeModified = aProcessRevisionModel.DateTimeCreated.TimeOfDay,
-                RevStatusCd = aProcessRevisionModel.RevStatusCd,
+                RevStatusId = aProcessRevisionModel.RevStatusId,
                 Comments = aProcessRevisionModel.Comments,
                 ProcessStepSeq = aStepSeq
             };

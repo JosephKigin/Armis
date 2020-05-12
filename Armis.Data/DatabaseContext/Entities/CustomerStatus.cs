@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class CreditStatus
+    public partial class CustomerStatus
     {
-        public CreditStatus()
+        public CustomerStatus()
         {
             Customer = new HashSet<Customer>();
         }
 
-        public byte CredStatusId { get; set; }
+        public byte StatusId { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
 

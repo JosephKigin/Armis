@@ -22,7 +22,7 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
         {
-            var entities = await context.Customer.ToListAsync();
+            var entities = await context.Customer.Include(i => i.Status).ToListAsync();
 
             if(entities == null)
             {

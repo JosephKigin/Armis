@@ -3,20 +3,21 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class Carrier
+    public partial class CarrierCode
     {
-        public Carrier()
+        public CarrierCode()
         {
             ShipAccount = new HashSet<ShipAccount>();
-            ShipVia = new HashSet<ShipVia>();
+            ShipViaCode = new HashSet<ShipViaCode>();
         }
 
-        public string CarrierCd { get; set; }
+        public byte CarrierId { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string OurAcctNum { get; set; }
         public string Type { get; set; }
 
         public virtual ICollection<ShipAccount> ShipAccount { get; set; }
-        public virtual ICollection<ShipVia> ShipVia { get; set; }
+        public virtual ICollection<ShipViaCode> ShipViaCode { get; set; }
     }
 }

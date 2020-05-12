@@ -20,7 +20,7 @@
         var newCheckBox = '<input id="chkDefaultChoice' + cardNumber + '-' + count + '" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + (count * 1 + 1) + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')" disabled/>';
         newDiv.innerHTML += newCheckBox;
 
-        var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this,' + cardNumber + ')" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';
+        var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this,' + cardNumber + ');" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';
         newDiv.innerHTML += newChoiceInput;
 
         var newDeleteAnchor = '<a id="iconChoiceDelete' + cardNumber + '-' + count + '" data-card-number="' + cardNumber + '" data-choice="' + count + '" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)"> <i class="fa fa-trash-alt ml-1"></i> </a>';
@@ -59,6 +59,7 @@ function ToggleCheckBoxes(chkBox, cardNumber) {
 
 function ToggleCheckBoxDisabled(anInput, aCardNumber) {
     var theCheckBox = document.getElementById("chkDefaultChoice" + aCardNumber + "-" + anInput.dataset.choiceNumber);
+    console.log("1");
     if (anInput.value.trim() == "") {
         if (theCheckBox.checked) {
             document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(No default selected)";
@@ -70,10 +71,11 @@ function ToggleCheckBoxDisabled(anInput, aCardNumber) {
     else {
         theCheckBox.disabled = false;
     }
-
+    console.log("2");
     if (theCheckBox.checked) {
         document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(" + anInput.value + " is default)";
     }
+    console.log("3");
 }
 
 function ApplyRevUpStatus() { //This sets the rev-up status to true and activates all input fields and buttons and unhides all anchors.
@@ -233,5 +235,21 @@ function searchSpecList(searchInput) {
         else {
             processListItems[i].style.display = "block";
         }
+    }
+}
+
+function searchSamplePlanList(searchTerm) {
+    var steps = document.getElementById("listAllSamplePlans").getElementsByTagName("li");
+
+    for (var i = 0; i < steps.length; i++) {
+        if (steps[i] != undefined) {
+            if (!steps[i].dataset.samplePlanName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                steps[i].hidden = true;
+            }
+            else {
+                steps[i].hidden = false;
+            }
+        }
+
     }
 }

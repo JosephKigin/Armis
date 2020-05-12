@@ -116,7 +116,7 @@
                                     <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@defaultChoiceValue1" onclick="ToggleCheckBoxes(this, 1)" />
                                 }
 
-                                <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete1-@i" data-card-number="1" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -153,7 +153,7 @@
                                 else
                                 { <input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@defaultChoiceValue2" onclick="ToggleCheckBoxes(this, 2)" />}
 
-                                <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete2-@i" data-card-number="2" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -190,7 +190,7 @@
                                 else
                                 { <input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@defaultChoiceValue3" onclick="ToggleCheckBoxes(this, 3)" />}
 
-                                <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete3-@i" data-card-number="3" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -229,7 +229,7 @@
                                 else
                                 { <input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@defaultChoiceValue4" onclick="ToggleCheckBoxes(this, 4)" />}
 
-                                <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete4-@i" data-card-number="4" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -266,7 +266,7 @@
                                 else
                                 { <input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@defaultChoiceValue5" onclick="ToggleCheckBoxes(this, 5)" />}
 
-                                <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete5-@i" data-card-number="5" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -303,7 +303,7 @@
                                 else
                                 { <input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@defaultChoiceValue6" onclick="ToggleCheckBoxes(this, 6)" />}
 
-                                <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete6-@i" data-card-number="6" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -332,12 +332,21 @@
                     <h5 class="modal-title">Sample Plan</h5>
                 </div>
                 <div class="modal-body">
+                    @*Search Bar*@
+                    <div class="input-group my-1">
+                        <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchSamplePlanList(this.value)" />
+                        <span class="input-group-append bg-white border-left-0">
+                            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                        </span>
+                    </div>
+
                     <div class="card">
 
-                        <ul class="list-group" style="height:42em; overflow-y:scroll;">
+
+                        <ul id="listAllSamplePlans" class="list-group" style="height:42em; overflow-y:scroll;">
                             @foreach (var samplePlan in Model.AllSamplePlans)
                             {
-                                <li class="list-group-item">
+                                <li class="list-group-item" data-sample-plan-name="@samplePlan.Description">
                                     <input id="radioSamplePlan-@samplePlan.SamplePlanId" type="radio" value="@samplePlan.SamplePlanId" asp-for="SamplePlanId" />
                                     <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
                                     <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">

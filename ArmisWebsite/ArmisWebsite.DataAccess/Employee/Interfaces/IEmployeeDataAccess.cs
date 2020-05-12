@@ -8,6 +8,6 @@ namespace ArmisWebsite.DataAccess.Employee.Interfaces
 {
     public interface IEmployeeDataAccess
     {
-        Task<EmployeeModel> GetEmployeeById(short id);
+        Task<EmployeeModel> GetEmployeeById(int id);
     }
 }

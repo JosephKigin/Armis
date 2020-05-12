@@ -10,8 +10,10 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHead = new HashSet<OrderHead>();
         }
 
+        public short PackageId { get; set; }
         public string PackageCd { get; set; }
         public string Description { get; set; }
+        public decimal AddOnPercent { get; set; }
 
         public virtual ICollection<OrderHead> OrderHead { get; set; }
     }

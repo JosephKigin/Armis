@@ -31,7 +31,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? NotifyWhenMasking { get; set; }
         public int? Alloy { get; set; }
         public int? SeriesId { get; set; }
-        public short CreatedByEmp { get; set; }
+        public int CreatedByEmp { get; set; }
         public DateTime DateModified { get; set; }
         public TimeSpan TimeModified { get; set; }
 

@@ -24,8 +24,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public string SearchName { get; set; }
         public string Name { get; set; }
         public byte? PriorityId { get; set; }
-        public short? SalesPerson { get; set; }
-        public string Status { get; set; }
+        public int? SalesPerson { get; set; }
+        public byte StatusId { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsInspectAll { get; set; }
         public bool? IsPrePriceAll { get; set; }
@@ -35,7 +35,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? LeadTime { get; set; }
         public int? TaxJurisdId { get; set; }
         public bool? IsChargeHandling { get; set; }
-        public string CreditStatus { get; set; }
+        public byte CredStatusId { get; set; }
         public DateTime? LeaveOffCredHoldUntil { get; set; }
         public byte? CertId { get; set; }
         public bool? IsKioskValid { get; set; }
@@ -50,20 +50,20 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? IsIgnoreDupePos { get; set; }
         public short? DefaultShipToId { get; set; }
         public byte? FreeExpPerMonth { get; set; }
-        public string DefaultShipVia { get; set; }
+        public short? DefaultShipViaId { get; set; }
         public int? DefaultContactNum { get; set; }
-        public byte? DefaultShipAccount { get; set; }
+        public short? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
 
         public virtual Certification Cert { get; set; }
-        public virtual CreditStatus CreditStatusNavigation { get; set; }
+        public virtual CreditStatus CredStatus { get; set; }
         public virtual Contact DefaultContactNumNavigation { get; set; }
-        public virtual ShipVia DefaultShipViaNavigation { get; set; }
+        public virtual ShipViaCode DefaultShipVia { get; set; }
         public virtual Priority Priority { get; set; }
         public virtual Employee SalesPersonNavigation { get; set; }
         public virtual ShipAccount ShipAccount { get; set; }
         public virtual ShipTo ShipTo { get; set; }
-        public virtual Status StatusNavigation { get; set; }
+        public virtual CustomerStatus Status { get; set; }
         public virtual TaxJurisdiction TaxJurisd { get; set; }
         public virtual Terms Terms { get; set; }
         public virtual CustBillTo CustBillTo { get; set; }

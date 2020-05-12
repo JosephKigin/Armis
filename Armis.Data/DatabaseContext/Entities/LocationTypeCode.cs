@@ -10,7 +10,8 @@ namespace Armis.Data.DatabaseContext.Entities
             ShopLocation = new HashSet<ShopLocation>();
         }
 
-        public string LocTypeCd { get; set; }
+        public byte LocationTypeId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<ShopLocation> ShopLocation { get; set; }

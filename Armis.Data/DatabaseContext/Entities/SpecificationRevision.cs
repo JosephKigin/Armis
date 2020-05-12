@@ -18,7 +18,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Description { get; set; }
         public string ExternalRev { get; set; }
         public int? SamplePlan { get; set; }
-        public short CreatedByEmp { get; set; }
+        public int CreatedByEmp { get; set; }
         public DateTime DateModified { get; set; }
         public TimeSpan TimeModified { get; set; }
 

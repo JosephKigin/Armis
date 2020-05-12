@@ -21,7 +21,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeModel>> GetEmployeeById(short id)
+        public async Task<ActionResult<EmployeeModel>> GetEmployeeById(int id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<bool>> CheckIfEmployeeNumberExists(short id)
+        public async Task<ActionResult<bool>> CheckIfEmployeeNumberExists(int id)
         {
             try
             {

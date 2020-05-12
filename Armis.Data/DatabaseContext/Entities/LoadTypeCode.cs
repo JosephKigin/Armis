@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class LoadType
+    public partial class LoadTypeCode
     {
-        public LoadType()
+        public LoadTypeCode()
         {
             Department = new HashSet<Department>();
             OprLoadPrice = new HashSet<OprLoadPrice>();
@@ -13,7 +13,8 @@ namespace Armis.Data.DatabaseContext.Entities
             ProcessLoad = new HashSet<ProcessLoad>();
         }
 
-        public string LoadTypeCd { get; set; }
+        public byte LoadTypeId { get; set; }
+        public string Code { get; set; }
         public string LoadTypeName { get; set; }
 
         public virtual ICollection<Department> Department { get; set; }
