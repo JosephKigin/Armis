@@ -43,6 +43,7 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public MaterialAlloyModel? AlloyOption { get; set; }
         public CustomerModel? Customer { get; set; }
         public ProcessRevisionModel? ProcessRevision { get; set; }
+        public SpecRevModel? SpecificationRevision { get; set; }
         public SpecSubLevelChoiceModel? Choice1 { get; set; }
         public SpecSubLevelChoiceModel? Choice2 { get; set; }
         public SpecSubLevelChoiceModel? Choice3 { get; set; }
