@@ -63,20 +63,21 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task SetUpProperties()
         {
+            //All of these calls will grab an IEnumerable of models from the api, assign that IEnumerable to a temp variable, and then assign that temp variable to a property while also changing it to a list.  If the IEnumerable/temp variable is null, then an empty list will be assigned to the property instead.
             var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
-            AllBakeSteps = tempAllBakes.ToList();
+            AllBakeSteps = (tempAllBakes != null)? tempAllBakes.ToList() : new List<StepModel>();
 
             var tempAllMasks = await StepDataAccess.GetAllStepsByCategory("mask");
-            AllMaskSteps = tempAllMasks.ToList();
+            AllMaskSteps = (tempAllMasks != null)? tempAllMasks.ToList() : new List<StepModel>();
 
             var tempAllHardnesses = await HardnessDataAccess.GetAllHardnesses();
-            AllHardnesses = (tempAllHardnesses != null)? tempAllHardnesses.ToList(): null;
+            AllHardnesses = (tempAllHardnesses != null)? tempAllHardnesses.ToList(): new List<HardnessModel>();
 
             var tempAllSeries = await MaterialSeriesDataAccess.GetAllMaterialSeries();
-            AllMaterialSeries = tempAllSeries.ToList();
+            AllMaterialSeries = (tempAllSeries != null)? tempAllSeries.ToList() : new List<MaterialSeriesModel>();
 
             var tempAllAlloys = await MaterialAlloyDataAccess.GetAllMaterialAlloys();
-            AllMaterialAlloys = tempAllAlloys.ToList();
+            AllMaterialAlloys = (tempAllAlloys != null)? tempAllAlloys.ToList() : new List<MaterialAlloyModel>();
         }
     }
 }
