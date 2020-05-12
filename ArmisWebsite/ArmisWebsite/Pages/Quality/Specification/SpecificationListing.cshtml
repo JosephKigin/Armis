@@ -67,14 +67,17 @@
                                     <div class="modal-dialog modal-lg" style="max-width:90%">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Sample Plan</h5>
+                                                <div class="row">
+                                                    <div class="col-lg-3"><h5 class="modal-title">Sample Plan</h5></div>
+                                                    <div class="col-lg">@theCurrentSpecRev.SamplePlan.Description</div>
+                                                </div>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card">
                                                     <div class="row">
-                                                        <div class="col-lg-1 text-center"><u><b>From</b></u></div>
+                                                        <div class="col-lg-1"><u><b>From</b></u></div>
                                                         <div class="col-lg-1"></div>
-                                                        <div class="col-lg-1 text-center"><u><b>To</b></u></div>
+                                                        <div class="col-lg-1"><u><b>To</b></u></div>
                                                         @if (theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.Any())
                                                         {
                                                             var testLevelList = theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.ToList();
@@ -82,7 +85,7 @@
 
                                                             @foreach (var test in firstLevelTests)
                                                             {
-                                                                <div class="col-lg text-center"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                                                                <div class="col-lg"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
                                                             }
 
                                                         }
@@ -90,9 +93,9 @@
                                                     @foreach (var level in theCurrentSpecRev.SamplePlan.SamplePlanLevelModels)
                                                     {
                                                         <div class="row border border-light ml-1" style="width:99%;">
-                                                            <div class="col-lg-1 text-center">@level.FromQty</div>
-                                                            <div class="col-lg-1 text-center">-</div>
-                                                            <div class="col-lg-1 text-center">
+                                                            <div class="col-lg-1">@level.FromQty</div>
+                                                            <div class="col-lg-1">-</div>
+                                                            <div class="col-lg-1">
                                                                 @if (level.ToQty == int.MaxValue)
                                                                 {<text>OVER</text> }
                                                             else
@@ -100,7 +103,7 @@
                                                             </div>
                                                             @foreach (var test in level.SamplePlanRejectModels)
                                                             {
-                                                                <div class="col-lg text-center">@test.SampleQty / @test.RejectAllowQty</div>
+                                                                <div class="col-lg">@test.SampleQty / @test.RejectAllowQty</div>
                                                             }
                                                         </div>
                                                     }

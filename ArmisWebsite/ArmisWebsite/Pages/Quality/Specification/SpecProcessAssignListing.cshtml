@@ -5,10 +5,10 @@
 }
 
 <h1>Specification-Process Assignment Listing</h1>
-<ul class="list-group">
+<ul class="list-group" style="height:42em; overflow-y:scroll">
     @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
     {
-        <li class="list-group-item">
+        <li class="list-group-item" data-spec="">
             Process: @specProcessAssign.ProcessId
             Rev: @specProcessAssign.ProcessRevId
             Specification: @specProcessAssign.SpecId
@@ -17,6 +17,7 @@
 
             <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
                 <div class="card col-lg-6">
+                    <b>Choices</b>
                     @if (specProcessAssign.Choice1 != null && @specProcessAssign.Choice1.Name != null)
                     {<p>@specProcessAssign.Choice1.Name</p>}
                     @if (specProcessAssign.Choice2 != null && @specProcessAssign.Choice2.Name != null)
@@ -32,6 +33,7 @@
                 </div>
 
                 <div class="card col-lg-6">
+                    <b>Details</b>
                     <p>Customer: @specProcessAssign.CustomerId</p>
                     @if (specProcessAssign.SeriesOption != null)
                     {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
