@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.QualityModels.Spec;
 using Armis.Data.DatabaseContext;
+using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;
 using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,31 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection
         }
 
         //CREATE
+        public async Task<SamplePlanModel> CreateSamplePlan(SamplePlanModel aSamplePlan)
+        {
+            using (var transaction = await Context.Database.BeginTransactionAsync())
+            {
+                var newSamplePlanId = (await Context.SamplePlanHead.MaxAsync(s => s.SamplePlanId)) + 1;
+
+                await Context.SamplePlanHead.AddAsync(aSamplePlan.ToEntity(newSamplePlanId));
+                await Context.SamplePlanLevel.AddRangeAsync(aSamplePlan.SamplePlanLevelModels.ToEntities(newSamplePlanId));
+
+                var tempSamplePlanRejectEntities = new List<SamplePlanReject>();
+                foreach (var levelModel in aSamplePlan.SamplePlanLevelModels)
+                {
+                    await Context.AddRangeAsync(levelModel.SamplePlanRejectModels.ToEntities(newSamplePlanId));
+                }
+
+                await Context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                //Goes back to the database and returns the fully hydrated Sample Plan it just created.  This is done so the user on the front-end can verify that the data got into the database correctly.
+                return (await Context.SamplePlanHead.Where(i => i.SamplePlanId == newSamplePlanId)
+                                                        .Include(h => h.SamplePlanLevel)
+                                                            .ThenInclude(l => l.SamplePlanReject)
+                                                                .ThenInclude(r => r.InspectTest).FirstOrDefaultAsync()).ToHydratedModel(); ;
+            }
+        }
 
         //READ
         public async Task<IEnumerable<SamplePlanModel>> GetAllSamplePlans()

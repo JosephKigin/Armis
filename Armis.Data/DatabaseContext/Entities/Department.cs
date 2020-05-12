@@ -28,13 +28,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal PlaterBurRate { get; set; }
         public decimal HelperBurRate { get; set; }
         public decimal ReworkBurRate { get; set; }
-        public string DeptTypeCd { get; set; }
+        public byte DeptTypeId { get; set; }
         public short? ScheduleAreaId { get; set; }
         public decimal? LeadTime { get; set; }
-        public string LoadTypeCd { get; set; }
+        public byte? LoadTypeId { get; set; }
 
-        public virtual DeptTypeCode DeptTypeCdNavigation { get; set; }
-        public virtual LoadType LoadTypeCdNavigation { get; set; }
+        public virtual DeptTypeCode DeptType { get; set; }
+        public virtual LoadTypeCode LoadType { get; set; }
         public virtual Area ScheduleArea { get; set; }
         public virtual ICollection<DeptArea> DeptArea { get; set; }
         public virtual ICollection<DeptOperation> DeptOperation { get; set; }

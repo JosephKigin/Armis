@@ -40,7 +40,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 FromQty = aSamplePlanLevelEntity.FromQty,
                 ToQty = aSamplePlanLevelEntity.ToQty,
 
-                SamplePlanRejectModels = aSamplePlanLevelEntity.SamplePlanReject.ToModels()
+                SamplePlanRejectModels = aSamplePlanLevelEntity.SamplePlanReject.ToHydratedModels()
             };
         }
 
@@ -54,6 +54,29 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             }
 
             return resultModels;
+        }
+
+        public static SamplePlanLevel ToEntity(this SamplePlanLevelModel aSamplePlanLevelModel, int aSamplePlanId)
+        {
+            return new SamplePlanLevel()
+            {
+                SamplePlanId = aSamplePlanId,
+                SamplePlanLevelId = aSamplePlanLevelModel.SamplePlanLevelId,
+                FromQty = aSamplePlanLevelModel.FromQty,
+                ToQty = aSamplePlanLevelModel.ToQty
+            };
+        }
+
+        public static IEnumerable<SamplePlanLevel> ToEntities(this IEnumerable<SamplePlanLevelModel> aSamplePlanLevelModels, int aSamplePlanId)
+        {
+            var resultingEntities = new List<SamplePlanLevel>();
+
+            foreach (var samplePlanModel in aSamplePlanLevelModels)
+            {
+                resultingEntities.Add(samplePlanModel.ToEntity(aSamplePlanId));
+            }
+
+            return resultingEntities;
         }
     }
 }

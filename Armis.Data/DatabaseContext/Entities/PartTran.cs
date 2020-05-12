@@ -16,7 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public decimal? PiecePrice { get; set; }
-        public short? PriceCodeId { get; set; }
+        public byte? PriceCodeId { get; set; }
         public string LegacyProcess { get; set; }
         public int? FromLocation { get; set; }
         public int? ToLocation { get; set; }

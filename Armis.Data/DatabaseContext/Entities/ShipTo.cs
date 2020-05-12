@@ -22,13 +22,13 @@ namespace Armis.Data.DatabaseContext.Entities
         public string State { get; set; }
         public string Zip { get; set; }
         public string Country { get; set; }
-        public string DefaultShipVia { get; set; }
+        public short? DefaultShipViaId { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNum { get; set; }
         public string FaxNum { get; set; }
 
         public virtual Customer Cust { get; set; }
-        public virtual ShipVia DefaultShipViaNavigation { get; set; }
+        public virtual ShipViaCode DefaultShipVia { get; set; }
         public virtual ICollection<Contact> Contact { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
     }

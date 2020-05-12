@@ -13,8 +13,9 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
         {
             return new StepCategoryModel()
             {
+                Id = aStepCategoryEntity.StepCategoryId,
                 Name = aStepCategoryEntity.Name,
-                Code = aStepCategoryEntity.StepCategoryCd,
+                Code = aStepCategoryEntity.Code,
                 Type = aStepCategoryEntity.Type
             };
         }

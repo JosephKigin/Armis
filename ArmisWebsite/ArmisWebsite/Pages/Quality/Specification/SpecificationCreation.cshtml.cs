@@ -8,6 +8,7 @@ using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
+using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
 {
@@ -15,8 +16,11 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
     {
         //Data Access
         public ISpecDataAccess SpecDataAccess { get; set; }
+        public ISamplePlanDataAccess SamplePlanDataAccess { get; set; }
+
         //Data Models 
         public List<SpecModel> AllSpecModels { get; set; }
+        public List<SamplePlanModel> AllSamplePlans { get; set; }
 
         //Front-End Models
         public string PopUpMessage { get; set; }
@@ -94,9 +98,14 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public byte? DefaultChoice6 { get; set; }
 
-        public SpecificationCreationModel(ISpecDataAccess aSpecDataAccess)
+        //Radio button for Sample Plan
+        [BindProperty]
+        public int? SamplePlanId { get; set; }
+
+        public SpecificationCreationModel(ISpecDataAccess aSpecDataAccess, ISamplePlanDataAccess aSamplePlanDataAccess)
         {
             SpecDataAccess = aSpecDataAccess;
+            SamplePlanDataAccess = aSamplePlanDataAccess;
         }
 
         public async Task<IActionResult> OnGet(int? aSpecId, string aPopUpMessage = null)
@@ -142,12 +151,12 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
                 var theSpecRev = new SpecRevModel()
                 {
+                    //Date & Time Modified will be set at the API level.
                     SpecId = CurrentSpecId,
                     Description = SpecDescription,
                     ExternalRev = ExternalRev,
-                    DateModified = DateTime.Now,
-                    TimeModified = DateTime.Now.TimeOfDay,
-                    EmployeeNumber = 941
+                    EmployeeNumber = 941,
+                    SamplePlanId = SamplePlanId
                 };
 
                 var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
@@ -248,6 +257,8 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             var tempAllSpecModels = await SpecDataAccess.GetAllHydratedSpecs();
             AllSpecModels = tempAllSpecModels.ToList();
 
+            var tempAllSamplePlanModels = await SamplePlanDataAccess.GetAllHydratedSamplePlans();
+            AllSamplePlans = tempAllSamplePlanModels.ToList();
         }
 
         //This method loads up some models to be added into a spec.  This is used in the default OnPost so far.

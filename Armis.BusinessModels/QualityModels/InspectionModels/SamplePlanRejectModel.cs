@@ -12,6 +12,6 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public int SampleQty { get; set; }
         public int RejectAllowQty { get; set; }
 
-        public InspectTestTypeModel InspectioneTestType { get; set; }
+        public InspectTestTypeModel InspectionTestType { get; set; }
     }
 }

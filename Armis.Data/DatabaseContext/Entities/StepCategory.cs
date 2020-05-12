@@ -10,7 +10,8 @@ namespace Armis.Data.DatabaseContext.Entities
             Step = new HashSet<Step>();
         }
 
-        public string StepCategoryCd { get; set; }
+        public short StepCategoryId { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
 

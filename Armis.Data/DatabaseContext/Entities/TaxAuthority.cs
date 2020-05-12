@@ -13,9 +13,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public int TaxAuthId { get; set; }
         public string Name { get; set; }
         public decimal SalesTaxPerc { get; set; }
-        public string AuthorityLevelCd { get; set; }
+        public byte TaxAuthorityLevelId { get; set; }
 
-        public virtual TaxAuthLevelCode AuthorityLevelCdNavigation { get; set; }
+        public virtual TaxAuthorityLevelCode TaxAuthorityLevel { get; set; }
         public virtual ICollection<TaxJurisAuthority> TaxJurisAuthority { get; set; }
     }
 }

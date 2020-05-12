@@ -14,7 +14,7 @@
                     <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                 </span>
             </div>
-            <ul id="specificationList" class="list-group" style="height:45em; overflow-y:scroll">
+            <ul id="specificationList" class="list-group" style="height:42em; overflow-y:scroll">
                 @foreach (var spec in Model.AllSpecs)
                 {
                     if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
@@ -58,6 +58,59 @@
                         <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="list-group-item collapse" data-parent="#collapseGroup">
                             <p><b>Code: </b>@theCurrentSpecRev.Description </p>
                             <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
+                            @*If there is a sample plan for the current spec rev, an anchor tag and modal will be created that opens and contains sample plan info.*@
+                            @if (theCurrentSpecRev.SamplePlan != null)
+                            {
+                                <a data-toggle="modal" href="#modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">Sample Plan</a><br />
+
+                                <div class="modal fade" id="modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">
+                                    <div class="modal-dialog modal-lg" style="max-width:90%">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Sample Plan</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card">
+                                                    <div class="row">
+                                                        <div class="col-lg-1 text-center"><u><b>From</b></u></div>
+                                                        <div class="col-lg-1"></div>
+                                                        <div class="col-lg-1 text-center"><u><b>To</b></u></div>
+                                                        @if (theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.Any())
+                                                        {
+                                                            var testLevelList = theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.ToList();
+                                                            var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+
+                                                            @foreach (var test in firstLevelTests)
+                                                            {
+                                                                <div class="col-lg text-center"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                                                            }
+
+                                                        }
+                                                    </div>
+                                                    @foreach (var level in theCurrentSpecRev.SamplePlan.SamplePlanLevelModels)
+                                                    {
+                                                        <div class="row border border-light ml-1" style="width:99%;">
+                                                            <div class="col-lg-1 text-center">@level.FromQty</div>
+                                                            <div class="col-lg-1 text-center">-</div>
+                                                            <div class="col-lg-1 text-center">
+                                                                @if (level.ToQty == int.MaxValue)
+                                                                {<text>OVER</text> }
+                                                            else
+                                                            { <text>@level.ToQty</text>}
+                                                            </div>
+                                                            @foreach (var test in level.SamplePlanRejectModels)
+                                                            {
+                                                                <div class="col-lg text-center">@test.SampleQty / @test.RejectAllowQty</div>
+                                                            }
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
                             <b>Sublevels</b>
                             <ul class="nested">
                                 @foreach (var subLevel in theCurrentSpecRev.SubLevels)
@@ -67,7 +120,7 @@
                                         <ul class="nested">
                                             @foreach (var choice in subLevel.Choices)
                                             {
-                                                <li class="">
+                                                <li>
                                                     @choice.Name
                                                 </li>
                                             }
@@ -77,7 +130,6 @@
                             </ul>
                         </li>
                     }
-
                 }
             </ul>
         </div>

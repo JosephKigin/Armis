@@ -10,6 +10,8 @@ using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Part;
 using ArmisWebsite.DataAccess.Part.Interfaces;
 using ArmisWebsite.DataAccess.Quality;
+using ArmisWebsite.DataAccess.Quality.Inspection;
+using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Specification;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
@@ -39,17 +41,33 @@ namespace ArmisWebsite
 
 
             services.AddRazorPages();
+
+            //QUALITY
+            //Inspection
+            services.AddScoped<ITestTypeDataAccess, TestTypeDataAccess>();
+            services.AddScoped<ISamplePlanDataAccess, SamplePlanDataAccess>();
+
+            //Process
             services.AddScoped<IStepDataAccess, StepDataAccess>();
             services.AddScoped<IProcessDataAccess, ProcessDataAccess>();
-            services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
             services.AddScoped<IOperationDataAccess, OperationDataAccess>();
-            services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
+
+            //Specification
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
-            services.AddScoped<IPdfGenerator, PdfGenerator>();
             services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
+
+            //CUSTOMER
+            services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
+
+            //EMPLOYEE
+            services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
+
+            //PART
             services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
+
+            services.AddScoped<IPdfGenerator, PdfGenerator>(); //TODO: Is this really needed???
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,7 +8,7 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<bool> CheckIfEmployeeNumberExists(short anEmpNum);
-        Task<EmployeeModel> GetEmployeeById(short anEmpNum);
+        Task<bool> CheckIfEmployeeNumberExists(int anEmpNum);
+        Task<EmployeeModel> GetEmployeeById(int anEmpNum);
     }
 }

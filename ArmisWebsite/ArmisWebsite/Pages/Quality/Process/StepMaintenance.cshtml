@@ -68,18 +68,19 @@
 
                 <div class="form-group">
                     <label><b>Step Category: </b></label>
-                    <select asp-for="StepCategoryCode" class="form-control">
+                    <select asp-for="StepCategoryId" class="form-control">
                         <option></option>
                         @foreach (var stepCategory in Model.StepCategories)
                         {
-                            <option value="@stepCategory.Code">
+                            <option value="@stepCategory.Id">
                                 @stepCategory.Name
                             </option>
                         }
                     </select>
-                    <span asp-validation-for="StepCategoryCode" class="alert-danger"></span>
+                    <span asp-validation-for="StepCategoryId" class="alert-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-outline-primary">Save</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a class="btn btn-danger text-light" href="/Quality/Process/StepMaintenance">Reset</a>
             </form>
         </div>
 

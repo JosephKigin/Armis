@@ -17,10 +17,10 @@ namespace Armis.Data.DatabaseContext.Entities
         public string LocCode { get; set; }
         public string Description { get; set; }
         public short? AreaId { get; set; }
-        public string LocTypeCd { get; set; }
+        public byte LocationTypeId { get; set; }
 
         public virtual Area AreaNavigation { get; set; }
-        public virtual LocationTypeCode LocTypeCdNavigation { get; set; }
+        public virtual LocationTypeCode LocationType { get; set; }
         public virtual ICollection<Area> Area { get; set; }
         public virtual ICollection<OrderLocation> OrderLocation { get; set; }
         public virtual ICollection<PartTran> PartTranFromLocationNavigation { get; set; }

@@ -17,10 +17,10 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Stamp { get; set; }
         public int SpecId { get; set; }
         public short SpecRevId { get; set; }
-        public string QualStdCd { get; set; }
+        public short QualStdId { get; set; }
         public string Description { get; set; }
 
-        public virtual QualityStandard QualStdCdNavigation { get; set; }
+        public virtual QualityStandard QualStd { get; set; }
         public virtual SpecificationRevision Spec { get; set; }
         public virtual ICollection<CustForm> CustForm { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }

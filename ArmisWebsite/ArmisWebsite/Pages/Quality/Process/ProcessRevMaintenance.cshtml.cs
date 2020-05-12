@@ -94,7 +94,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page." + ex.Message });
+                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page. " + ex.Message });
             }
         }
 

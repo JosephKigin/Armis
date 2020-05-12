@@ -3,22 +3,23 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class ShipVia
+    public partial class ShipViaCode
     {
-        public ShipVia()
+        public ShipViaCode()
         {
             Customer = new HashSet<Customer>();
             OrderHead = new HashSet<OrderHead>();
             ShipTo = new HashSet<ShipTo>();
         }
 
-        public string ShipViaCd { get; set; }
+        public short ShipViaId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
-        public string SvtypeCd { get; set; }
-        public string CarrierCd { get; set; }
+        public byte ShipViaTypeId { get; set; }
+        public byte CarrierId { get; set; }
 
-        public virtual Carrier CarrierCdNavigation { get; set; }
-        public virtual ShipViaTypeCode SvtypeCdNavigation { get; set; }
+        public virtual CarrierCode Carrier { get; set; }
+        public virtual ShipViaTypeCode ShipViaType { get; set; }
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
         public virtual ICollection<ShipTo> ShipTo { get; set; }

@@ -9,9 +9,9 @@ namespace Armis.BusinessModels.QualityModels.Process
         public string ProcessName { get; set; }
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
-        public short CreatedByEmp { get; set; }
+        public int CreatedByEmp { get; set; }
         public DateTime DateTimeCreated { get; set; }
-        public string RevStatusCd { get; set; }
+        public byte RevStatusId { get; set; }
         public string Comments { get; set; }
 
         public IEnumerable<StepSeqModel> StepSeqs { get; set; }

@@ -1,0 +1,50 @@
+﻿@page
+@model ArmisWebsite.Pages.Quality.Inspection.SamplePlanListingModel
+@{
+    ViewData["Title"] = "SamplePlanListing";
+}
+
+<h1>Sample Plan Listing</h1>
+<ul class="list-group" style="height:42em; overflow-y:scroll;">
+    @foreach (var samplePlan in Model.AllSamplePlans)
+    {
+        <li class="list-group-item">
+            <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+            <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">
+                <div class="row">
+                    <div class="col-lg-1 text-center"><u><b>From</b></u></div>
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-1 text-center"><u><b>To</b></u></div>
+                    @if (samplePlan.SamplePlanLevelModels.Any())
+                    {
+                        var testLevelList = samplePlan.SamplePlanLevelModels.ToList();
+                        var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+
+                        @foreach (var test in firstLevelTests)
+                        {
+                            <div class="col-lg text-center"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                        }
+
+                    }
+                </div>
+                @foreach (var level in samplePlan.SamplePlanLevelModels)
+                {
+                    <div class="row border border-light ml-1" style="width:99%;">
+                        <div class="col-lg-1">@level.FromQty</div>
+                        <div class="col-lg-1">-</div>
+                        <div class="col-lg-1">
+                            @if (level.ToQty == int.MaxValue)
+                            {<text>OVER</text> }
+                        else
+                        { <text>@level.ToQty</text>}
+                        </div>
+                        @foreach (var test in level.SamplePlanRejectModels)
+                        {
+                            <div class="col-lg text-center">@test.SampleQty / @test.RejectAllowQty</div>
+                        }
+                    </div>
+                }
+            </div>
+        </li>
+    }
+</ul>

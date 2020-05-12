@@ -45,14 +45,14 @@ namespace Armis.Test
             var thePreAddStepList = await StepService.GetAll();
             thePreAddStepList.OrderBy(i => i.StepId);
             var thePreAddStepCount = thePreAddStepList.Count();
-            var theExpectedStepID = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
+            var theExpectedStepId = (thePreAddStepList.ElementAt(thePreAddStepCount - 1).StepId) + 1; //calc EXPECTED step id to be created
 
             var theBaselineStepModel = CreateBaselineStepModel();
             _ = await StepService.CreateStep(theBaselineStepModel);
 
             var thePostAddStepCount = (await StepService.GetAll()).Count();
 
-            var theReturnStep = await StepService.GetStepById(theExpectedStepID); //find it to prove it was created
+            var theReturnStep = await StepService.GetStepById(theExpectedStepId); //find it to prove it was created
 
 
             Assert.AreEqual(thePreAddStepCount + 1, thePostAddStepCount);
@@ -66,7 +66,7 @@ namespace Armis.Test
             var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
             return new StepModel()
             {
-                StepCategory = new StepCategoryModel { Name = "None", Code = "NONE", Type = "Other" },
+                StepCategory = new StepCategoryModel { Id=4, Name = "None", Code = "NONE", Type = "Other" },
                 Inactive = false,
                 StepName = TEST_CODE + theTimeStamp,
                 SignOffIsRequired = true,

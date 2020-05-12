@@ -7,11 +7,13 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public ShipViaTypeCode()
         {
-            ShipVia = new HashSet<ShipVia>();
+            ShipViaCode = new HashSet<ShipViaCode>();
         }
 
-        public string SvtypeCd { get; set; }
+        public byte ShipViaTypeId { get; set; }
+        public string Code { get; set; }
+        public string Description { get; set; }
 
-        public virtual ICollection<ShipVia> ShipVia { get; set; }
+        public virtual ICollection<ShipViaCode> ShipViaCode { get; set; }
     }
 }

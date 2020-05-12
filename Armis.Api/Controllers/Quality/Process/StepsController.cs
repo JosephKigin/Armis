@@ -60,12 +60,12 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpGet("{code}")]
-        public async Task<ActionResult<StepCategoryModel>> GetStepCategoryByCode(string code)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<StepCategoryModel>> GetStepCategoryById(short id)
         {
             try
             {
-                var data = await StepService.GetStepCategoryByCode(code);
+                var data = await StepService.GetStepCategoryById(id);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -120,38 +120,6 @@ namespace Armis.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        // PUT: api/Steps/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStep(int id, Step step)
-        {
-            if (id != step.StepId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(step).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StepExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Steps

@@ -11,7 +11,8 @@ namespace Armis.Data.DatabaseContext.Entities
             Department = new HashSet<Department>();
         }
 
-        public string DeptTypeCd { get; set; }
+        public byte DeptTypeId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<Area> Area { get; set; }

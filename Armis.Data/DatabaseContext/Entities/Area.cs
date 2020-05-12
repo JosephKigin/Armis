@@ -19,12 +19,12 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public short AreaId { get; set; }
         public string Description { get; set; }
-        public string Type { get; set; }
+        public byte? DeptTypeId { get; set; }
         public bool? AllowLogin { get; set; }
         public int? DefaultLocation { get; set; }
 
         public virtual ShopLocation DefaultLocationNavigation { get; set; }
-        public virtual DeptTypeCode TypeNavigation { get; set; }
+        public virtual DeptTypeCode DeptType { get; set; }
         public virtual ICollection<AreaRemark> AreaRemark { get; set; }
         public virtual ICollection<Department> Department { get; set; }
         public virtual ICollection<DeptArea> DeptArea { get; set; }

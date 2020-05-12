@@ -14,7 +14,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
             {
                 Instructions = aStep.Instructions,
                 SignOffIsRequired = aStep.SignOffIsRequired,
-                StepCategory = aStep.StepCategoryCdNavigation.ToModel(),
+                StepCategory = aStep.StepCategory.ToModel(),
                 Inactive = aStep.Inactive,
                 StepId = aStep.StepId,
                 StepName = aStep.StepName
@@ -42,7 +42,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
             {
                 Instructions = aStepModel.Instructions,
                 SignOffIsRequired = aStepModel.SignOffIsRequired,
-                StepCategoryCd = aStepModel.StepCategory.Code,
+                StepCategoryId = aStepModel.StepCategory.Id,
                 StepId = aStepModel.StepId,
                 StepName = aStepModel.StepName
             };

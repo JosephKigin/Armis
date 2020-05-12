@@ -1,0 +1,82 @@
+﻿@page "{aMessage?}"
+@model ArmisWebsite.Pages.Quality.Inspection.SamplePlanEntryModel
+@{
+    ViewData["Title"] = "SamplePlanEntry";
+}
+
+<head>
+    <script type="text/javascript" src="~/js/Quality/Inspection/SamplePlanEntry.js"></script>
+</head>
+
+<h1>Sample Plan Entry</h1>
+
+@if (Model.Message != null && Model.Message != "")
+{
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+}
+
+@*Sample Plan Head inputs*@
+<label>Name</label>
+<input id="inputName" type="text" class="form-control w-50" asp-for="SamplePlanName" maxlength="10" form="mainForm" />
+<label>Description</label>
+<input id="inputDescription" type="text" class="form-control w-50" asp-for="SamplePlanDescription" maxlength="50" form="mainForm" />
+<div class="row">
+    <div class="col-lg-7"></div><a class="btn btn-lg btn-primary text-light float-right col-lg-2 w-25" onclick="AddTest()">Add Test</a>
+    <a class="btn btn-lg btn-danger text-light col-lg-2 w-25 ml-1" onclick="RemoveTest()">Remove Test</a>
+</div>
+
+@*Hidden inputs to keep track of the pages state.*@
+<input id="hdnNumOfLevels" type="number" value="1" asp-for="AmountOfLevels" form="mainForm" hidden /> @*How many levels there are on the page.*@
+<input id="hdnNumOfTests" type="number" value="1" asp-for="AmountOfTests" form="mainForm" hidden />
+
+@*This will load the test type options available to be pulled when the test type select lists are loaded dynamically*@
+<select id="selectTestTypePlaceholder" asp-items="Model.AllTestTypeSelectItems" hidden></select>
+
+@*Sample Plan Level Inputs*@
+<form id="mainForm" method="post" onsubmit="return validateForm()">
+    <div class="card p-2 mt-2">
+        <div class="row">
+            @*From - To level values*@
+            <div id="sectionNumOfParts" class="col-lg-4 text-center">
+                <div style="margin-bottom:2.55em"><h4># of Parts</h4></div> @*The margin is to make sure the two different tables line up.*@
+                <div id="numPartsLevel1" class="row mt-1">
+                    <div class="col-lg-1">
+                        <a id="ancInsertLine1" data-level="1" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a>
+                    </div>
+                    <div class="col-lg-4"> <input name="inputNumOfPartsFrom1" type="number" class="form-control" value="1" tabindex="-1" readonly /> </div>
+                    <div class="col-lg-1">-</div>
+                    <div class="col-lg-4"> <input name="inputNumOfPartsTo1" type="number" data-level="1" class="form-control" onblur="updateNextFrom(this)" placeholder="OVER" disabled /> </div>
+                    <div class="col-lg-1"></div>
+                </div>
+            </div>
+
+            @*Test sample and reject amounts*@
+            <div class="col-lg-8">
+                <div id="sectionTestType" class="row">
+                    <div id="testTypePlaceholder" class="col-lg-11 row">
+                        <div id="testType1" class="col-lg mr-3">
+                            @*"Title" select used to choose test type.*@
+                            <div class="row">
+                                <select class="form-control col-lg-11" name="selectTestType1" asp-items="Model.AllTestTypeSelectItems"></select>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">Spl</div>
+                                <div class="col-lg-5">Rej</div>
+                            </div>
+                            <div id="numSampleReject1-1" class="row mt-1">
+                                @*1-1: first number is test number, second number is level.*@
+                                <input name="inputSampleNum1-1" type="number" class="form-control col-lg-5 mr-3" placeholder="Sample" /> <input name="inputRejectNum1-1" type="number" class="form-control col-lg-5" placeholder="Reject" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-success my-2">Submit</button>
+    <a class="btn btn-lg btn-danger" href="/Quality/Inspection/SamplePlanEntry">Reset</a>
+</form>
+
+<script>
+
+</script>

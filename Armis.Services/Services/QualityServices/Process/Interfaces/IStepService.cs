@@ -10,7 +10,7 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
     {
         Task<IEnumerable<StepModel>> GetAll();
         Task<IEnumerable<StepCategoryModel>> GetAllStepCategories();
-        Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode);
+        Task<StepCategoryModel> GetStepCategoryById(short aStepCategoryId);
         Task<StepModel> GetStepById(int aStepId);
         Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory);
         Task<StepModel> CreateStep(StepModel aStepModel);

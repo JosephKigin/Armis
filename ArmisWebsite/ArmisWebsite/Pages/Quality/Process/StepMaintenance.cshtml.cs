@@ -38,7 +38,7 @@ namespace ArmisWebsite
 
         [BindProperty]
         [Required]
-        public string StepCategoryCode { get; set; }
+        public short StepCategoryId { get; set; }
 
         [BindProperty]
         [Required]
@@ -71,7 +71,7 @@ namespace ArmisWebsite
                 {
                     Step = await StepDataAccess.GetStepById(aStepId);
 
-                    StepCategoryCode = Step.StepCategory.Code;
+                    StepCategoryId = Step.StepCategory.Id;
                     StepName = Step.StepName;
                     StepInstructions = Step.Instructions;
 
@@ -101,7 +101,7 @@ namespace ArmisWebsite
                 Step.Instructions = StepInstructions;
                 Step.SignOffIsRequired = (IsSignOffRequired == 1) ? true : false;
                 Step.StepName = StepName;
-                Step.StepCategory = await StepDataAccess.GetStepCategoryByCode(StepCategoryCode);
+                Step.StepCategory = await StepDataAccess.GetStepCategoryById(StepCategoryId);
 
                 var currentStepsWithSameName = await StepDataAccess.GetStepByName(StepName);
                 if (currentStepsWithSameName != null && currentStepsWithSameName.Any())

@@ -26,7 +26,7 @@ namespace Armis.Data.DatabaseContext.Entities
             SpecificationRevision = new HashSet<SpecificationRevision>();
         }
 
-        public short EmpId { get; set; }
+        public int EmpId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public byte? DefaultShift { get; set; }

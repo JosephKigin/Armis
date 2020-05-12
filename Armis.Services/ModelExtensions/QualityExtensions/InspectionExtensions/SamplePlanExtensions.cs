@@ -53,5 +53,15 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
 
             return resultModels;
         }
+
+        public static SamplePlanHead ToEntity(this SamplePlanModel aSamplePlanModel, int aSamplePlanId)
+        {
+            return new SamplePlanHead()
+            {
+                SamplePlanId = aSamplePlanId,
+                Description = aSamplePlanModel.Description,
+                PlanName = aSamplePlanModel.PlanName
+            };
+        }
     }
 }

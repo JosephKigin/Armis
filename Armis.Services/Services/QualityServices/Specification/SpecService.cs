@@ -37,6 +37,24 @@ namespace Armis.DataLogic.Services.QualityServices
             return entities.ToHydratedModels();
         }
 
+        public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithSamplePlans()
+        {
+            var entities = await context.Specification
+                                            .Include(i => i.SpecificationRevision)
+                                                .ThenInclude(i => i.SamplePlanNavigation)
+                                                    .ThenInclude(i => i.SamplePlanLevel)
+                                                        .ThenInclude(i => i.SamplePlanReject)
+                                                            .ThenInclude(i => i.InspectTest)
+                                            .Include(i => i.SpecificationRevision)
+                                                .ThenInclude(i => i.SpecSubLevel)
+                                                    .ThenInclude(i => i.SpecChoice)
+                                                        .ToListAsync();
+
+            if (entities == null || !entities.Any()) { throw new Exception("No Specs were returned."); }
+
+            return entities.ToHydratedModels();
+        }
+
         public async Task<IEnumerable<SpecModel>> GetAllSpecsWithCurrentRev()
         {
             var theSpecEntities = await context.Specification.Include(i => i.SpecificationRevision).ToListAsync();
@@ -147,6 +165,7 @@ namespace Armis.DataLogic.Services.QualityServices
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
+                //TODO: Sample Plan data needs to be copied over from the last Revision, but maybe that sample plan will be passed in from the user making a decision on what they want the sample plan to be.
                 var newSpecRevId = await context.SpecificationRevision.Where(i => i.SpecId == aSpecRevModel.SpecId).MaxAsync(i => i.SpecRevId);
                 if (newSpecRevId == 0) { throw new Exception("Could not find previous revision to rev-up from."); }
                 newSpecRevId += 1;

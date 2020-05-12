@@ -39,7 +39,7 @@ namespace Armis.DataLogic.Services.QualityServices
         //READ
         public async Task<IEnumerable<StepModel>> GetAll()
         {
-            var theStepEntities = await Context.Step.Include(i => i.StepCategoryCdNavigation).ToListAsync();
+            var theStepEntities = await Context.Step.Include(i => i.StepCategory).ToListAsync();
 
             if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps were returned."); }
 
@@ -50,7 +50,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<StepModel> GetStepById(int aStepId)
         {
-            var theStepEntity = await Context.Step.Where(i => i.StepId == aStepId).Include(i => i.StepCategoryCdNavigation).FirstOrDefaultAsync();
+            var theStepEntity = await Context.Step.Where(i => i.StepId == aStepId).Include(i => i.StepCategory).FirstOrDefaultAsync();
 
             if (theStepEntity == null) { throw new NullReferenceException("There is no step with that ID."); }
 
@@ -60,7 +60,7 @@ namespace Armis.DataLogic.Services.QualityServices
         //This should realistically only return one step because the fron-end forces names to be unique
         public async Task<List<StepModel>> GetStepByName(string aStepName)
         {
-            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName).Include(i => i.StepCategoryCdNavigation).ToListAsync();
+            var theStepEntities = await Context.Step.Where(i => i.StepName == aStepName).Include(i => i.StepCategory).ToListAsync();
 
             if (theStepEntities == null) { throw new NullReferenceException("There is no step with that name."); }
 
@@ -73,7 +73,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<StepModel>> GetAllByCategory(string aCategory)
         {
-            var theStepEntities = await Context.Step.Where(i => i.StepCategoryCd.ToLower() == aCategory.ToLower()).Include(i => i.StepCategoryCdNavigation).ToListAsync();
+            var theStepEntities = await Context.Step.Where(i => i.StepCategory.Code.ToLower() == aCategory.ToLower()).Include(i => i.StepCategory).ToListAsync();
 
             if (theStepEntities == null || !theStepEntities.Any()) { throw new NullReferenceException("No steps returned that belong to " + aCategory + "."); }
 
@@ -96,11 +96,11 @@ namespace Armis.DataLogic.Services.QualityServices
             return resultModels;
         }
 
-        public async Task<StepCategoryModel> GetStepCategoryByCode(string aStepCategoryCode)
+        public async Task<StepCategoryModel> GetStepCategoryById(short aStepCategoryId)
         {
-            var theStepCategoryEntity = await Context.StepCategory.FindAsync(aStepCategoryCode);
+            var theStepCategoryEntity = await Context.StepCategory.FindAsync(aStepCategoryId);
 
-            if (theStepCategoryEntity == null) { throw new Exception("No step category with that code exists."); }
+            if (theStepCategoryEntity == null) { throw new Exception("No step category with that ID exists."); }
 
             return theStepCategoryEntity.ToModel();
         }

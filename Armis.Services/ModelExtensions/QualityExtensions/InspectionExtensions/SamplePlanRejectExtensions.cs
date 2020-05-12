@@ -41,7 +41,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SampleQty = aRejectEntity.SampleQty,
                 RejectAllowQty = aRejectEntity.RejectAllowQty,
 
-                InspectioneTestType = aRejectEntity.InspectTest.ToModel()
+                InspectionTestType = (aRejectEntity.InspectTest != null) ? aRejectEntity.InspectTest.ToModel() : null
             };
         }
 
@@ -52,6 +52,30 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             foreach (var entity in aRejectEntities)
             {
                 resultModels.Add(entity.ToHydratedModel());
+            }
+
+            return resultModels;
+        }
+
+        public static SamplePlanReject ToEntity(this SamplePlanRejectModel aSamplePlanRejectModel, int aSamplePlanId)
+        {
+            return new SamplePlanReject()
+            {
+                SamplePlanId = aSamplePlanId,
+                SamplePlanLevelId = aSamplePlanRejectModel.SamplePlanLevelId,
+                InspectTestId = aSamplePlanRejectModel.InspectTestTypeId,
+                SampleQty = aSamplePlanRejectModel.SampleQty,
+                RejectAllowQty = aSamplePlanRejectModel.RejectAllowQty
+            };
+        }
+
+        public static IEnumerable<SamplePlanReject> ToEntities(this IEnumerable<SamplePlanRejectModel> aSamplePlanRejectModels, int aSamplePlanId)
+        {
+            var resultModels = new List<SamplePlanReject>();
+
+            foreach (var model in aSamplePlanRejectModels)
+            {
+                resultModels.Add(model.ToEntity(aSamplePlanId));
             }
 
             return resultModels;

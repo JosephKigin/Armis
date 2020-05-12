@@ -36,15 +36,14 @@
 <script>
     function searchStepList(searchTerm) {
         var steps = document.getElementById("listAllSteps").getElementsByTagName("li");
-
         for (var i = 0; i < steps.length; i++) {
             if (steps[i] != undefined) {
                 if (steps[i].dataset.stepName.toLowerCase().includes(searchTerm.toLowerCase())) {
-
-                    steps[i].hidden = false;
+                    console.log(steps[i].dataset.stepName.toLowerCase() + " : " + searchTerm);
+                    steps[i].style.display = "block";
                 }
                 else {
-                    steps[i].hideen = true;
+                    steps[i].style.display = "none";
                 }
             }
         }

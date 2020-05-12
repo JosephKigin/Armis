@@ -37,7 +37,8 @@ namespace Armis.Test
             }
             set { _specService = value; }
         }
-        private SpecModel CreateBaselineSpecModel(string aExtRev, short aEmpId, int aSamplePlan, int numSubLevels, int numChoicesPerSub)
+
+        private SpecModel CreateBaselineSpecModel(string aExtRev, string aDescPrefix, short aEmpId, int aSamplePlan, int numSubLevels, int numChoicesPerSub)
         {
             //Spec needs a revision even though the DB will allow a spec without a rev
             //SpecRev needs a sublevel even though the DB will allow a specrev without a sublevel
@@ -82,10 +83,10 @@ namespace Armis.Test
                 {
                     new SpecRevModel()
                     {
-                        Description = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff") + " - This is a test. Rev: " + aExtRev,
+                        Description = DateTime.Now.ToString("yyyy/MM/dd") + aDescPrefix + aExtRev,
+                        SamplePlanId = aSamplePlan,
                         ExternalRev = aExtRev,
                         EmployeeNumber = aEmpId,
-                        DateModified = DateTime.Now,
                         SubLevels = theSpecSubLevelList
                     }
                 }
@@ -97,39 +98,45 @@ namespace Armis.Test
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "A";
-            int samplePlanID = 1;
+            int samplePlanId = 1;
+            string descPrefix = " - This is a test. Rev: ";
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
             var calcNewMaxSpecId = thePreAddSpecList.Max(i => i.Id) + 1;
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanID, 0, 0);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanId, 0, 0);
             var theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
+            ///set test values
             theBaselineSpecModel.Id = calcNewMaxSpecId;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateModified = DateTime.Now.Date;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeModified = DateTime.Now.TimeOfDay;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).SpecId = calcNewMaxSpecId;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).InternalRev = 10;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).Description = DateTime.Now.Date.ToString("yyyy/MM/dd") + descPrefix + theExtRevId;
 
             //total spec count increased by 1
-            //Assert.AreEqual(thePostAddSpecList.Count(), thePreAddSpecList.Count() + 1); //TODO - FIX ME
 
             Validate.ValidateModelCompleteness(theBaselineSpecModel, theCreatedSpecModel, new List<Object>() { "SpecRevModels" });
             Validate.ValidateModelCompleteness(theBaselineSpecModel.SpecRevModels.ElementAt(0), theCreatedSpecModel.SpecRevModels.ElementAt(0),
-                new List<Object>() { "DateModified", "TimeModified", "SubLevels" }); //TODO: Remove exclusions and Test!
+                new List<Object>() { "TimeModified", "SubLevels" }); // excluded TimeModified because there is a variation in (milli)seconds we can't account for
+            //Warning! Testing against DateModified might be problematic if tested within seconds of midnight
         }
-        
+
         [TestMethod]
         public async Task CreateNewSpecificationWithSubLevelChoices()
         {
             short theEmpID = 991; //Ben Johnson
             string theExtRevId = "AA";
-            int samplePlanID = 1;
+            int samplePlanId = 1;
             int numSublevels = 6;
             int numSubChoices = 6;
+            string descPrefix = " - Sublevel test. Rev: ";
 
             var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
 
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanID, numSublevels, numSubChoices);
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, descPrefix, theEmpID, samplePlanId, numSublevels, numSubChoices);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
             var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
 
@@ -141,38 +148,78 @@ namespace Armis.Test
             for (int i = 0; i < numSublevels; i++)
             {
                 Validate.ValidateModelCompleteness(theBaselineSpecSubLevelModels.ElementAt(i), theCreatedSpecSubLevelModels.ElementAt(i),
-                    new List<Object>() { "Choices" }); //TODO: Remove exclusions and Test!
+                    new List<Object>() { "Choices" }); 
 
                 var theCreatedSpecChoiceList = theCreatedSpecSubLevelModels.ElementAt(i).Choices;
                 var theBaselineSpecChoiceList = theBaselineSpecSubLevelModels.ElementAt(i).Choices;
 
                 for (int j = 0; j < numSubChoices; j++)
                 {
-                    Validate.ValidateModelCompleteness(theBaselineSpecChoiceList.ElementAt(j), theCreatedSpecChoiceList.ElementAt(j),
-                        new List<Object>() { }); //TODO: Remove exclusions and Test!
+                    Validate.ValidateModelCompleteness(theBaselineSpecChoiceList.ElementAt(j), theCreatedSpecChoiceList.ElementAt(j));
                 }
             }
         }
 
         [TestMethod]
-        private async Task RevUpASpecification()
+        public async Task RevUpASpecification()
         {
-            short theEmpID = 991; //Ben Johnson
-            string theExtRevId = "X";
-            int samplePlanId = 1;
-            int numSublevels = 2;
-            int numSubChoices = 3;
+            //create a new rev with 2 sublevels with 3 choices each
+            //then rev up with 3 sublevels and 4 choices each
 
-            var thePreAddSpecList = await SpecService.GetAllHydratedSpecs();
-
-            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRevId, theEmpID, samplePlanId, numSublevels, numSubChoices);
+            short theEmpIdRev1 = 991; //Ben Johnson
+            short theEmpIdRev2 = 941; //Ed Wakefeild
+            string theExtRev1Id = "X";
+            string theExtRev2Id = "Y";
+            int samplePlanIdRev1 = 1;
+            int samplePlanIdRev2 = 7;
+            int numSublevelsRev1 = 2;
+            int numSubChoicesRev1 = 3;
+            int numSublevelsRev2 = 3;
+            int numSubChoicesRev2 = 4;
+            string descPrefixRev1 = " - This is the inital rev. Rev: ";
+            string descPrefixRev2 = " - This is the new rev. Rev: ";
+            
+            var theBaselineSpecModel = CreateBaselineSpecModel(theExtRev1Id, descPrefixRev1, theEmpIdRev1, samplePlanIdRev1, numSublevelsRev1, numSubChoicesRev1);
             int theCreatedSpecId = await SpecService.CreateNewSpec(theBaselineSpecModel);
-            var theCreatedSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theCreatedSpecId);
-            ////END SET UP////
+            
+            var theExpectedRev2SpecModel = CreateBaselineSpecModel(theExtRev2Id, descPrefixRev2, theEmpIdRev2, samplePlanIdRev2, numSublevelsRev2, numSubChoicesRev2);
+            var theExpectedRev2SpecRevModel = theExpectedRev2SpecModel.SpecRevModels.ElementAt(0);
 
-            int theRevUpSpecId = await SpecService.RevUpSpec(theCreatedSpecModel.SpecRevModels.ElementAt(0));
-            var theRevUpSpecModel = await SpecService.GetHydratedCurrentRevForSpec(theRevUpSpecId);
+            theExpectedRev2SpecRevModel.SpecId = theCreatedSpecId;
 
+            int theSpecId = await SpecService.RevUpSpec(theExpectedRev2SpecRevModel);
+
+            //set up test values
+            theExpectedRev2SpecRevModel.InternalRev = 11; //rev was incremented
+            theExpectedRev2SpecRevModel.DateModified = DateTime.Now.Date;
+            theBaselineSpecModel.Id = theCreatedSpecId;
+
+            var theNewRev2SpecModel = await SpecService.GetHydratedCurrentRevForSpec(theSpecId); //get new model for comparison
+
+            Validate.ValidateModelCompleteness(theBaselineSpecModel, theNewRev2SpecModel, new List<Object>() { "SpecRevModels" });
+
+            var theNewSpecRev2Model = theNewRev2SpecModel.SpecRevModels.ElementAt(1);
+
+            Validate.ValidateModelCompleteness(theExpectedRev2SpecRevModel, theNewSpecRev2Model, new List<Object>() { "TimeModified", "SubLevels", "SamplePlan" });
+
+            /////////////////////////////////////////////////////////////
+            //Verify rev2 is accurate
+            var theNewRev2SpecSubLevelModels = theNewSpecRev2Model.SubLevels;
+            var theExpectedRev2SpecSubLevelModels = theExpectedRev2SpecRevModel.SubLevels;
+            
+            for (int i = 0; i < numSublevelsRev2; i++)
+            {
+                Validate.ValidateModelCompleteness(theExpectedRev2SpecSubLevelModels.ElementAt(i), theNewRev2SpecSubLevelModels.ElementAt(i),
+                    new List<Object>() { "Choices" });
+            
+                var theNewRev2SpecChoiceList = theNewRev2SpecSubLevelModels.ElementAt(i).Choices;
+                var theExpectedRev2SpecChoiceList = theExpectedRev2SpecSubLevelModels.ElementAt(i).Choices;
+            
+                for (int j = 0; j < numSubChoicesRev2; j++)
+                {
+                    Validate.ValidateModelCompleteness(theExpectedRev2SpecChoiceList.ElementAt(j), theNewRev2SpecChoiceList.ElementAt(j));
+                }
+            }
 
         }
     }

@@ -52,6 +52,21 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithSamplePlans()
+        {
+            try
+            {
+                var data = await SpecService.GetAllHydratedSpecsWithSamplePlans();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithOnlyCurrentRev() //TODO: This is a very long call to make.  Maybe there is a better way to do this?
         {
             try

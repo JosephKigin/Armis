@@ -18,7 +18,7 @@ namespace Armis.DataLogic.Services.QualityServices
             context = aContext;
         }
 
-        public async Task<bool> CheckIfEmployeeNumberExists(short anEmpNum)
+        public async Task<bool> CheckIfEmployeeNumberExists(int anEmpNum)
         {
             var entity = await context.Employee.FindAsync(anEmpNum);
 
@@ -26,7 +26,7 @@ namespace Armis.DataLogic.Services.QualityServices
             else { return false; }
         }
 
-        public async Task<EmployeeModel> GetEmployeeById(short anEmpNum)
+        public async Task<EmployeeModel> GetEmployeeById(int anEmpNum)
         {
             var entity = await context.Employee.FindAsync(anEmpNum);
 

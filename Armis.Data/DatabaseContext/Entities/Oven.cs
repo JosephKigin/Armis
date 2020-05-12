@@ -10,7 +10,8 @@ namespace Armis.Data.DatabaseContext.Entities
             BakeResult = new HashSet<BakeResult>();
         }
 
-        public string OvenCd { get; set; }
+        public short OvenId { get; set; }
+        public string Code { get; set; }
         public string OvenName { get; set; }
 
         public virtual ICollection<BakeResult> BakeResult { get; set; }

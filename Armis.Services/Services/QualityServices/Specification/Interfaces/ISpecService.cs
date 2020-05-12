@@ -11,6 +11,7 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
         Task<int> CreateNewSpec(SpecModel aSpecModel);
         Task<IEnumerable<SpecModel>> GetAllSpecsWithCurrentRev();
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecs();
+        Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithSamplePlans();
         Task<IEnumerable<SpecSubLevelModel>> GetSpecSubLevels(int aSpecId, short aSpecRevId);
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev();
         Task<SpecModel> GetHydratedCurrentRevForSpec(int aSpecId);

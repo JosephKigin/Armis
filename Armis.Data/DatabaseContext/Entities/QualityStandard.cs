@@ -11,7 +11,8 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHead = new HashSet<OrderHead>();
         }
 
-        public string QualStdCd { get; set; }
+        public short QualStdId { get; set; }
+        public string QualStdCode { get; set; }
         public string Qsdescription { get; set; }
 
         public virtual ICollection<Certification> Certification { get; set; }

@@ -4,6 +4,10 @@
     ViewData["Title"] = "SpecificationCreation";
 }
 
+<head>
+    <script type="text/javascript" src="~/js/Quality/Specification/SpecificationCreation.js"></script>
+</head>
+
 <h1>Specification Maintenance</h1>
 
 @*Preloaded message.*@
@@ -112,7 +116,7 @@
                                     <input id="chkDefaultChoice1-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice1" tabindex="-1" value="@defaultChoiceValue1" onclick="ToggleCheckBoxes(this, 1)" />
                                 }
 
-                                <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice1-@i" type="text" asp-for="ChoiceNames1[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 1);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete1-@i" data-card-number="1" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -149,7 +153,7 @@
                                 else
                                 { <input id="chkDefaultChoice2-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice2" tabindex="-1" value="@defaultChoiceValue2" onclick="ToggleCheckBoxes(this, 2)" />}
 
-                                <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice2-@i" type="text" asp-for="ChoiceNames2[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 2);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete2-@i" data-card-number="2" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -186,7 +190,7 @@
                                 else
                                 { <input id="chkDefaultChoice3-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice3" tabindex="-1" value="@defaultChoiceValue3" onclick="ToggleCheckBoxes(this, 3)" />}
 
-                                <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice3-@i" type="text" asp-for="ChoiceNames3[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 3);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete3-@i" data-card-number="3" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -225,7 +229,7 @@
                                 else
                                 { <input id="chkDefaultChoice4-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice4" tabindex="-1" value="@defaultChoiceValue4" onclick="ToggleCheckBoxes(this, 4)" />}
 
-                                <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice4-@i" type="text" asp-for="ChoiceNames4[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 4);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete4-@i" data-card-number="4" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -262,7 +266,7 @@
                                 else
                                 { <input id="chkDefaultChoice5-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice5" tabindex="-1" value="@defaultChoiceValue5" onclick="ToggleCheckBoxes(this, 5)" />}
 
-                                <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice5-@i" type="text" asp-for="ChoiceNames5[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 5);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete5-@i" data-card-number="5" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -299,7 +303,7 @@
                                 else
                                 { <input id="chkDefaultChoice6-@i" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice6" tabindex="-1" value="@defaultChoiceValue6" onclick="ToggleCheckBoxes(this, 6)" />}
 
-                                <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
+                                <input id="inputChoice6-@i" type="text" asp-for="ChoiceNames6[i]" data-choice-number="@i" class="form-control col-lg-10" onchange="ToggleCheckBoxDisabled(this, 6);" onkeydown="return event.key != `Enter`;" maxlength="50" />
 
                                 <a id="iconChoiceDelete6-@i" data-card-number="6" data-choice="@i" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)">
                                     <i class="fa fa-trash-alt ml-1"></i>
@@ -318,250 +322,80 @@
         </div>
     </div>
 
-    <button class="btn btn-lg btn-success my-2">Submit</button>
-    <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/Quality/Specification/SpecificationCreation">Clear</a>
+    <a class="btn btn-lg btn-primary text-light my-2" onclick="validateMainPage()">Ok</a>
+    <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/Quality/Specification/SpecificationCreation">Reset</a>
+
+    <div class="modal fade" id="modalSamplePlan">
+        <div class="modal-dialog modal-lg" style="max-width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sample Plan</h5>
+                </div>
+                <div class="modal-body">
+                    @*Search Bar*@
+                    <div class="input-group my-1">
+                        <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchSamplePlanList(this.value)" />
+                        <span class="input-group-append bg-white border-left-0">
+                            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                        </span>
+                    </div>
+
+                    <div class="card">
+
+
+                        <ul id="listAllSamplePlans" class="list-group" style="height:42em; overflow-y:scroll;">
+                            @foreach (var samplePlan in Model.AllSamplePlans)
+                            {
+                                <li class="list-group-item" data-sample-plan-name="@samplePlan.Description">
+                                    <input id="radioSamplePlan-@samplePlan.SamplePlanId" type="radio" value="@samplePlan.SamplePlanId" asp-for="SamplePlanId" />
+                                    <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+                                    <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">
+                                        <div class="row">
+                                            <div class="col-lg-1 text-center"><u><b>From</b></u></div>
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-1 text-center"><u><b>To</b></u></div>
+                                            @if (samplePlan.SamplePlanLevelModels.Any())
+                                            {
+                                                var testLevelList = samplePlan.SamplePlanLevelModels.ToList();
+                                                var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+
+                                                @foreach (var test in firstLevelTests)
+                                                {
+                                                    <div class="col-lg text-center"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                                                }
+
+                                            }
+                                        </div>
+                                        @foreach (var level in samplePlan.SamplePlanLevelModels)
+                                        {
+                                            <div class="row border border-light ml-1" style="width:99%;">
+                                                <div class="col-lg-1">@level.FromQty</div>
+                                                <div class="col-lg-1">-</div>
+                                                <div class="col-lg-1">
+                                                    @if (level.ToQty == int.MaxValue)
+                                                    {<text>OVER</text> }
+                                                else
+                                                { <text>@level.ToQty</text>}
+                                                </div>
+                                                @foreach (var test in level.SamplePlanRejectModels)
+                                                {
+                                                    <div class="col-lg text-center">@test.SampleQty / @test.RejectAllowQty</div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <button class="btn btn-success my-2">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 
-
-
-<script>
-    function AddChoiceInput(cardNumber) {
-        var count = document.getElementById("choiceCount" + cardNumber).value;
-        var areAllPreviousInputsFilled = true;
-        var theBlankInputToFocus = null;
-        for (var i = 0; i < count; i++) {
-            var inputToCheckForBlank = document.getElementById('inputChoice' + cardNumber + '-' + (i));
-            if (inputToCheckForBlank.value == "") {
-                areAllPreviousInputsFilled = false;
-                theBlankInputToFocus = inputToCheckForBlank;
-            }
-        }
-
-
-        //lastInputAdded.value won't get checked if the lastInpuitAdded is undefined.
-        if (areAllPreviousInputsFilled) {
-            var newDiv = document.createElement("div");
-            newDiv.className = "form-inline";
-            newDiv.id = "divChoiceNameGroup" + cardNumber + "-" + count;
-
-            var newCheckBox = '<input id="chkDefaultChoice' + cardNumber + '-' + count + '" title="Default" type="checkbox" class="mx-1" name="chkBoxGroupDefaultChoice' + cardNumber + '" tabindex="-1"  value="' + (count * 1 + 1) + '" onclick="ToggleCheckBoxes(this, ' + cardNumber + ')" disabled/>';
-            newDiv.innerHTML += newCheckBox;
-
-            var newChoiceInput = '<input id="inputChoice' + cardNumber + '-' + count + '" data-choice-number=' + count + ' type="text" name="ChoiceNames' + cardNumber + '[' + count + ']" class="form-control col-lg-10" onkeyup="ToggleCheckBoxDisabled(this,' + cardNumber + ')" onkeydown="return event.key != `Enter`;"  maxlength="50"/>';
-            newDiv.innerHTML += newChoiceInput;
-
-            var newDeleteAnchor = '<a id="iconChoiceDelete' + cardNumber + '-' + count + '" data-card-number="' + cardNumber + '" data-choice="' + count + '" onclick="DeleteChoiceInput(this.dataset.cardNumber, this.dataset.choice)"> <i class="fa fa-trash-alt ml-1"></i> </a>';
-            newDiv.innerHTML += newDeleteAnchor;
-
-            document.getElementById("choiceInputPlaceholder" + cardNumber).appendChild(newDiv);
-            document.getElementById('inputChoice' + cardNumber + '-' + (count)).focus();
-
-            document.getElementById("choiceCount" + cardNumber).value++;
-        }
-        else {
-            theBlankInputToFocus.focus();
-        }
-
-    }
-
-    function ToggleCheckBoxes(chkBox, cardNumber) {
-        var checkBoxes = document.getElementsByName(chkBox.name);
-
-        for (var i = 0; i < checkBoxes.length; i++) {
-            if (checkBoxes[i] != chkBox) {
-                checkBoxes[i].checked = false;
-            }
-        }
-
-        //When a checkbox is checked, a hidden input field is updated with the value of that checkbox so the back end model can access that information more easily.
-        if (chkBox.checked) {
-            document.getElementById("defaultChoice" + cardNumber).value = chkBox.value;
-            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(" + document.getElementById("inputChoice" + cardNumber + "-" + (chkBox.value - 1)).value + " is default)";
-        }
-        else {
-            document.getElementById("defaultChoice" + cardNumber).value = '';
-            document.getElementById("spanDefaultText" + cardNumber).innerHTML = "(No default selected)";
-        }
-    }
-
-    function ToggleCheckBoxDisabled(anInput, aCardNumber) {
-        var theCheckBox = document.getElementById("chkDefaultChoice" + aCardNumber + "-" + anInput.dataset.choiceNumber);
-        if (anInput.value.trim() == "") {
-            if (theCheckBox.checked) {
-                document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(No default selected)";
-            }
-            theCheckBox.checked = false;
-            theCheckBox.disabled = true;
-
-        }
-        else {
-            theCheckBox.disabled = false;
-        }
-
-        if (theCheckBox.checked) {
-            document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(" + anInput.value + " is default)";
-        }
-    }
-
-    function ApplyRevUpStatus() { //This sets the rev-up status to true and activates all input fields and buttons and unhides all anchors.
-        document.getElementById("chkRevUpSelected").checked = true;
-
-        var allInputElements = document.getElementsByTagName("input");
-        for (var i = 0; i < allInputElements.length; i++) {
-            allInputElements[i].disabled = false;
-            if (allInputElements[i].id == "inputBtnRevUp" || allInputElements[i].id == "inputSpecCode") //Rev-up button and Spec Code get/stay disabled when rev-up is clicked.
-            { allInputElements[i].readOnly = true; }
-        }
-
-        var allAnchorElements = document.getElementsByTagName("a");
-        for (var i = 0; i < allAnchorElements.length; i++) {
-            allAnchorElements[i].hidden = false;
-        }
-
-        var allButtonElements = document.getElementsByTagName("button");
-        for (var i = 0; i < allButtonElements.length; i++) {
-            allButtonElements[i].disabled = false;
-            allButtonElements[i].hidden = false;
-        }
-    }
-
-    function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
-        var divChoiceGroupToRemove = document.getElementById("divChoiceNameGroup" + aCardNumber + "-" + aGroupChoiceNum);
-
-        if (document.getElementById("chkDefaultChoice" + aCardNumber + "-" + aGroupChoiceNum).checked == true) {
-            document.getElementById("spanDefaultText" + aCardNumber).innerHTML = "(No default selected)";
-        }
-
-        divChoiceGroupToRemove.parentNode.removeChild(divChoiceGroupToRemove);
-        document.getElementById("choiceCount" + aCardNumber).value--;
-
-        var remainingChoiceDivGroups = document.getElementById("choiceInputPlaceholder" + aCardNumber).children;
-        for (var i = 0; i < remainingChoiceDivGroups.length; i++) {
-            remainingChoiceDivGroups[i].id = "divChoiceNameGroup" + aCardNumber + "-" + i;
-
-            var divChoiceItems = remainingChoiceDivGroups[i].children;
-            for (var j = 0; j < divChoiceItems.length; j++) {
-                if (divChoiceItems[j].nodeName == "INPUT") {
-                    if (divChoiceItems[j].type == "text") {
-                        divChoiceItems[j].id = "inputChoice" + aCardNumber + "-" + i;
-                        divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]"
-                        divChoiceItems[j].dataset.choiceNumber = i;
-                    }
-                    else {
-                        divChoiceItems[j].id = "chkDefaultChoice" + aCardNumber + "-" + i;
-                        divChoiceItems[j].value = i;
-                    }
-                }
-                else {
-                    divChoiceItems[j].id = "iconChoiceDelete" + aCardNumber + "-" + i;
-                    divChoiceItems[j].dataset.choice = i;
-                }
-            }
-
-        }
-    }
-
-    function validateForm() {
-        var isValid = true;
-        var theSpecCodeInput = document.getElementById("inputSpecCode");
-        var theSpecRev = document.getElementById("inputNewExternalRev");
-        var theSpecDescription = document.getElementById("textAreaSpecDescription");
-
-        if (theSpecCodeInput.value == "") {
-            theSpecCodeInput.classList = "form-control border-danger border-right-0";
-            document.getElementById("iconInvalidSpecCode").hidden = false;
-            isValid = false;
-        }
-        else {
-            theSpecCodeInput.classList = "form-control";
-            document.getElementById("iconInvalidSpecCode").hidden = true;
-        }
-
-        if (theSpecRev.value == "") {
-            theSpecRev.classList = "form-control border-danger border-right-0";
-            document.getElementById("iconInvalidSpecRev").hidden = false;
-            isValid = false;
-        }
-        else {
-            theSpecRev.classList = "form-control";
-            document.getElementById("iconInvalidSpecRev").hidden = true;
-        }
-
-        if (theSpecDescription.value == "") {
-            theSpecDescription.classList = "form-control border-danger border-right-0";
-            document.getElementById("iconInvalidSpecDesc").hidden = false;
-            isValid = false;
-        }
-        else {
-            theSpecDescription.classList = "form-control";
-            document.getElementById("iconInvalidSpecDesc").hidden = true;
-        }
-
-        if (!validatChoiceCard(document.getElementById("cardChoice1"))) { isValid = false; }
-        if (!validatChoiceCard(document.getElementById("cardChoice2"))) { isValid = false; }
-        if (!validatChoiceCard(document.getElementById("cardChoice3"))) { isValid = false; }
-        if (!validatChoiceCard(document.getElementById("cardChoice4"))) { isValid = false; }
-        if (!validatChoiceCard(document.getElementById("cardChoice5"))) { isValid = false; }
-        if (!validatChoiceCard(document.getElementById("cardChoice6"))) { isValid = false; }
-        return isValid;
-    }
-
-    function validatChoiceCard(aChoiceCard) {
-        var cardInputs = aChoiceCard.getElementsByTagName("input"); //All the inputs from card
-        var isSubLevelNameFilled = false; //If sublevel name is filled in, this will be true.
-        var isChoiceFilled = false; //If at lease 1 choice name is filled in, this will be true TODO: If any choice is blank, this is should be false.
-        var areAllChoicesFilled = true;
-
-        //Iterating through the inputs
-        for (var i = 0; i < cardInputs.length; i++) {
-            //Finds the sublevel name input
-            if (cardInputs[i].id.startsWith("SubLevelName")) {
-                if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isSubLevelNameFilled = true; }
-                else { isSubLevelNameFilled = false; }
-            }
-
-            //Finds the choice name inputs only if a choice name that has been filled has not been found yet.
-
-            if (cardInputs[i].id.startsWith("inputChoice")) {
-                if (!isChoiceFilled) {
-                    if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isChoiceFilled = true; }
-                    else { isChoiceFilled = false; }
-                }
-
-                if (cardInputs[i].value == undefined || cardInputs[i].value.trim() == "") {
-                    areAllChoicesFilled = false;
-                }
-            }
-        }
-
-        if ((isSubLevelNameFilled == isChoiceFilled) && areAllChoicesFilled) {
-            aChoiceCard.classList = "card p-3";
-            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = true;
-            return true;
-        }
-        else {
-            aChoiceCard.classList = "card p-3 border-danger";
-            aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
-            return false;
-        }
-    }
-
-    function searchSpecList(searchInput) {
-        var searchTerm = searchInput.value.toUpperCase();
-        var processList = document.getElementById("specList");
-        var processListItems = processList.getElementsByTagName("option");
-
-        for (var i = 0; i < processListItems.length; i++) {
-            if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
-                processListItems[i].style.display = "none";
-            }
-            else {
-                processListItems[i].style.display = "block";
-            }
-        }
-    }
-</script>
-
+@*This needs to be here because it will only execute based on the C# condition below.*@
 @if (Model.CurrentSpecId != 0)
 {
     <script>

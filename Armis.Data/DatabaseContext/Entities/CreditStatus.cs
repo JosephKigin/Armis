@@ -10,7 +10,8 @@ namespace Armis.Data.DatabaseContext.Entities
             Customer = new HashSet<Customer>();
         }
 
-        public string CredStatusCd { get; set; }
+        public byte CredStatusId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<Customer> Customer { get; set; }

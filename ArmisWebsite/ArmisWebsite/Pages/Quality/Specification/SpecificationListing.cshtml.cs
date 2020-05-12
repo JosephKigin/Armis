@@ -46,7 +46,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task SetUpProperties()
         {
-            var theAllSpecs = await SpecDataAccess.GetAllHydratedSpecs();
+            var theAllSpecs = await SpecDataAccess.GetAllHydratedSpecsWithSamplePlans();
             AllSpecs = theAllSpecs.OrderBy(i => i.Code).ToList();
         }
     }

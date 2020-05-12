@@ -5,7 +5,8 @@ namespace Armis.Data.DatabaseContext.Entities
 {
     public partial class AdjustReason
     {
-        public string AdjustReasonCd { get; set; }
+        public short AdjustReasonId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
     }
 }
