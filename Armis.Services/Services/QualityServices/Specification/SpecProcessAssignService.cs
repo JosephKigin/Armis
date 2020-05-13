@@ -40,6 +40,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedSpecProcessAssign()
         {
+
             var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Include(i => i.SpecChoiceNavigation)
                                                                               .Include(i => i.SpecChoice)
                                                                               .Include(i => i.SpecChoice1)
