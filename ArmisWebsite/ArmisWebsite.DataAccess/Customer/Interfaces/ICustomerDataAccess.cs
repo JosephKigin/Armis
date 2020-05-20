@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.Customer.Interfaces
     public interface ICustomerDataAccess
     {
         Task<IEnumerable<CustomerModel>> GetAllCustomers();
+        Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers();
     }
 }

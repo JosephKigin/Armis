@@ -51,6 +51,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet("{aSpecProcessChoices}")]
+        public async Task<ActionResult<bool>> VerifyUniqueChoices(int[] aSpecProcessChoices)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.VerifyUniqueChoices(aSpecProcessChoices);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<SpecProcessAssignModel>> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssignModel)
         {

@@ -26,7 +26,19 @@ namespace Armis.DataLogic.Services.CustomerServices
 
             if(entities == null)
             {
-                throw new NullReferenceException("No customers available.");
+                throw new NullReferenceException("No customers returned");
+            }
+
+            return entities.ToModels();
+        }
+
+        public async Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers()
+        {
+            var entities = await context.Customer.Where(i => i.StatusId == 1 || i.StatusId == 3).ToListAsync();
+
+            if(entities == null || !entities.Any())
+            {
+                throw new NullReferenceException("No customers returned");
             }
 
             return entities.ToModels();

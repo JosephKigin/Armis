@@ -22,18 +22,18 @@ namespace Armis.DataLogic.Services.QualityServices
         }
 
         //CREATE
-        public async Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessASsignModel) //The model that gets passed in is returned with an updated SpecAssignId
+        public async Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssignModel) //The model that gets passed in is returned with an updated SpecAssignId
         {
             int theNewSpecAssignId;
-            var theCurrenSpecProcessAssigns = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessASsignModel.SpecId && i.SpecRevId == aSpecProcessASsignModel.SpecRevId).ToListAsync();
-            if (theCurrenSpecProcessAssigns != null && theCurrenSpecProcessAssigns.Any()) { theNewSpecAssignId = (theCurrenSpecProcessAssigns.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId)++; }
+            var theCurrenSpecProcessAssigns = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId && i.SpecRevId == aSpecProcessAssignModel.SpecRevId).ToListAsync();
+            if (theCurrenSpecProcessAssigns != null && theCurrenSpecProcessAssigns.Any()) { theNewSpecAssignId = (theCurrenSpecProcessAssigns.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId) + 1; }
             else { theNewSpecAssignId = 1; }
-            aSpecProcessASsignModel.SpecAssignId = theNewSpecAssignId;
-            var theSpecProcessAssignEntity = aSpecProcessASsignModel.ToEntity();
+            aSpecProcessAssignModel.SpecAssignId = theNewSpecAssignId;
+            var theSpecProcessAssignEntity = aSpecProcessAssignModel.ToEntity();
             Context.SpecProcessAssign.Add(theSpecProcessAssignEntity);
             await Context.SaveChangesAsync();
 
-            return aSpecProcessASsignModel;
+            return aSpecProcessAssignModel;
         }
 
         //READ
@@ -69,6 +69,32 @@ namespace Armis.DataLogic.Services.QualityServices
             if (theSpecProcesAssignEntity == null) { throw new Exception("No Spec Process Assignment was found."); }
 
             return theSpecProcesAssignEntity.ToModel();
+        }
+
+        public async Task<bool> VerifyUniqueChoices(int[] aSpecProcesschoices)
+        {
+            var entity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.ChoiceOption1 == aSpecProcesschoices[0] &&
+                                                                                  i.ChoiceOption2 == aSpecProcesschoices[1] &&
+                                                                                  i.ChoiceOption3 == aSpecProcesschoices[2] &&
+                                                                                  i.ChoiceOption4 == aSpecProcesschoices[3] &&
+                                                                                  i.ChoiceOption5 == aSpecProcesschoices[4] &&
+                                                                                  i.ChoiceOption6 == aSpecProcesschoices[5] &&
+                                                                                  i.PreBakeOption == aSpecProcesschoices[6] &&
+                                                                                  i.PostBakeOption == aSpecProcesschoices[7] &&
+                                                                                  i.MaskOption == aSpecProcesschoices[8] &&
+                                                                                  i.HardnessOption == aSpecProcesschoices[9] &&
+                                                                                  i.SeriesOption == aSpecProcesschoices[10] &&
+                                                                                  i.AlloyOption == aSpecProcesschoices[11] &&
+                                                                                  i.Customer == aSpecProcesschoices[12]);
+
+            if(entity == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

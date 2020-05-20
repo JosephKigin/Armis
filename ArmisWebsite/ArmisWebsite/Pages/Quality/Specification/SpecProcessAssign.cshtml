@@ -1,226 +1,355 @@
-﻿@page
+﻿@page "{aSpecId:int?}/{aMessage?}"
 @model ArmisWebsite.Pages.ProcessMaintenance.SpecProcessAssignModel
 @{
     ViewData["Title"] = "SpecProcessAssign";
 }
 
-    <head>
-        <script type="text/javascript" src="~/js/Quality/Specification/SpecProcessAssign.js"></script>
-    </head>
+<head>
+    <script type="text/javascript" src="~/js/Quality/Specification/SpecProcessAssign.js"></script>
+</head>
 
-<h1>Specification-Process Assignment</h1>
+<div class="container-fluid w-75">
+    <h1>Specification-Process Assignment</h1>
 
-<div class="row">
-    <div class="col-lg-3">
-        <button class="btn btn-primary">Find Specification</button>
-        <br />
-        <label>Spec Code</label>
-        <input class="form-control mb-2" value="ABC-123" readonly />
-        <label>Spec Rev</label>
-        <input class="form-control mb-2" value="A1" readonly />
-        <div class="card p-2">
-            <h5>Class</h5>
-            <div><input type="radio" name="class" />1</div>
-            <div><input type="radio" name="class" />2</div>
-            <div><input type="radio" name="class" />3</div>
+    @*Preloaded message.*@
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
 
-            <h5>Type</h5>
-            <div><input type="radio" name="type" />II</div>
-            <div><input type="radio" name="type" />IV</div>
+    <form method="post">
+        <div class="row">
+            @*Left Side*@
+            <div class="col-lg-3">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalSpecificationSelect">Find Specification</button>
 
-            <h5>Color</h5>
-            <div><input type="radio" name="color" />Red</div>
-            <div><input type="radio" name="color" />Green</div>
-            <div><input type="radio" name="color" />Blue</div>
-        </div>
-    </div>
-
-    <div class="col-lg-5">
-        <input class="form-control" placeholder="Search..." />
-        <select class="list-group w-100" size="12">
-            <option class="list-group-item">
-                Zinc - Clear
-            </option>
-            <option class="list-group-item">
-                Zinc - Yellow
-            </option>
-            <option class="list-group-item">
-                Zinc - Red
-            </option>
-            <option class="list-group-item">
-                Nickel Seal
-            </option>
-            <option class="list-group-item">
-                Chrome Seal
-            </option>
-            <option class="list-group-item">
-                Anodize - Clear
-            </option>
-            <option class="list-group-item">
-                Anodize - Red
-            </option>
-            <option class="list-group-item">
-                Anodize - Blue
-            </option>
-            <option class="list-group-item">
-                Silver
-            </option>
-            <option class="list-group-item">
-                Gold
-            </option>
-            <option class="list-group-item">
-                Cadmium
-            </option>
-            <option class="list-group-item">
-                Hardcoat - Gold
-            </option>
-        </select>
-    </div>
-
-    <div class="col-lg-4">
-        @*Pre-Bake*@
-        <div class="mb-1">
-            <label>Pre-Bake</label><button class="btn btn-sm btn-primary float-right" onclick="openPreBakeModal()">Find</button>
-            <input id="inputPreBake" class="form-control" data-pre-bake-id="" readonly />
-        </div>
-
-        <div class="modal fade" id="modalPreBakeSelect">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Choose a Pre-Bake</h5>
-                    </div>
-                    <div class="modal-body">
-                        <select id="selectAllPreBakes" class="list-group w-100" size="16">
-                            @foreach (var bake in Model.AllBakeSteps)
-                            {
-                                <option class="list-group-item" data-pre-bake-id="@bake.StepId" value="@bake.StepName">
-                                    @bake.StepName -
-                                    @bake.Instructions
-                                </option>
-                            }
-                        </select>
-                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                        <button class="btn btn-primary my-2" data-dismiss="modal" onclick="updatePreBakeInput()">Ok</button>
+                <div class="modal fade" id="modalSpecificationSelect">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Choose a Specification</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Specification')" />
+                                <select id="selectSpecificationList" class="list-group w-100" size="14">
+                                    @foreach (var spec in Model.AllSpecifications)
+                                    {
+                                        <option class="list-group-item" data-id="@spec.Id" value="@spec.Code" onmousedown="udpateSpecIdOnAnchor(@spec.Id)">
+                                            @spec.Code
+                                        </option>
+                                    }
+                                </select>
+                                <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                <a id="ancSpecChoiceCommit" class="btn btn-primary my-2" href="">Ok</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                @if (Model.CurrentSpec != null)
+                {
+                    <br />
+                    <label>Spec Code</label>
+                    <input class="form-control mb-2" value="@Model.CurrentSpec.Code" readonly />
+                    <label>Spec Rev</label>
+                    <input class="form-control mb-2" value="@Model.CurrentSpecCurrentRev.ExternalRev" readonly />
 
-        @*Post Bake*@
-        <div class="mb-2">
-            <label>Post-Bake</label><button class="btn btn-sm btn-primary float-right" onclick="openPostBakeModal()">Find</button>
-            <input id="inputPostBake" class="form-control" data-post-bake-id="" value="" readonly />
-        </div>
+                    <input asp-for="SpecId" />
+                    <input asp-for="SpecInternalRevId" />
 
-        <div class="modal fade" id="modalPostBakeSelect">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Choose a Post-Bake</h5>
+                    <div class="card p-2">
+                        @foreach (var sublevel in Model.CurrentSpecCurrentRev.SubLevels)
+                        {
+                            <div class="border border-light p-1">
+                                <h5>@sublevel.Name</h5>
+                                @foreach (var choice in sublevel.Choices)
+                                {
+                                    <div><input type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeq" onchange="updateChoiceIdInput(@sublevel.LevelSeq, this)" /> @choice.Name</div>
+                                }
+                            </div>
+                        }
+                        <input id="hdnChoiceId1" type="number" asp-for="ChoiceId1" />
+                        <input id="hdnChoiceId2" type="number" asp-for="ChoiceId2" />
+                        <input id="hdnChoiceId3" type="number" asp-for="ChoiceId3" />
+                        <input id="hdnChoiceId4" type="number" asp-for="ChoiceId4" />
+                        <input id="hdnChoiceId5" type="number" asp-for="ChoiceId5" />
+                        <input id="hdnChoiceId6" type="number" asp-for="ChoiceId6" />
                     </div>
-                    <div class="modal-body">
-                        <select id="selectAllPostBakes" class="list-group w-100" size="16">
-                            @foreach (var bake in Model.AllBakeSteps)
-                            {
-                                <option class="list-group-item" data-post-bake-id="@bake.StepId" value="@bake.StepName">
-                                    @bake.StepName -
-                                    @bake.Instructions
-                                </option>
-                            }
-                        </select>
-                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                        <button class="btn btn-primary my-2" data-dismiss="modal" onclick="updatePostBakeInput()">Ok</button>
+                }
+
+            </div>
+            @if (Model.CurrentSpec != null)
+            {
+                @*Middle*@
+                <div class="col-lg-4">
+                    @*Pre-Bake*@
+                    <div class="mb-1 border border-dark p-1">
+                        <label>Pre-Bake</label><button type="button" class="btn btn-sm btn-primary float-right my-1" data-toggle="modal" data-target="#modalPreBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right  my-1 mx-1" onclick="clearInput('PreBake')">Clear</button>
+                        <input id="inputPreBake" class="form-control" data-id="" readonly />
+                        <input id="hdnPreBakeId" asp-for="PreBakeStepId" />
+                    </div>
+
+                    <div class="modal fade" id="modalPreBakeSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Pre-Bake</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PreBake')" />
+                                    <select id="selectPreBakeList" class="list-group w-100" size="16">
+                                        @foreach (var bake in Model.AllBakeSteps)
+                                        {
+                                            <option class="list-group-item" data-id="@bake.StepId" value="@bake.StepName">
+                                                @bake.StepName -
+                                                @bake.Instructions
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PreBake')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Post Bake*@
+                    <div class="mb-2 border border-dark p-1">
+                        <label>Post-Bake</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalPostBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('PostBake')">Clear</button>
+                        <input id="inputPostBake" class="form-control" data-id="" value="" readonly />
+                        <input id="hdnPostBakeId" asp-for="PostBakeStepId" />
+                    </div>
+
+                    <div class="modal fade" id="modalPostBakeSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Post-Bake</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PostBake')" />
+                                    <select id="selectPostBakeList" class="list-group w-100" size="16">
+                                        @foreach (var bake in Model.AllBakeSteps)
+                                        {
+                                            <option class="list-group-item" data-id="@bake.StepId" value="@bake.StepName">
+                                                @bake.StepName -
+                                                @bake.Instructions
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PostBake')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Mask*@
+                    <div class="mb-2 border border-dark p-1">
+                        <label>Mask</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
+                        <input id="inputMask" data-id="" class="form-control" value="" readonly />
+                        <input id="hdnMaskId" asp-for="MaskStepId" />
+                    </div>
+
+                    <div class="modal fade" id="modalMaskSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Mask</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Mask')" />
+                                    <select id="selectMaskList" class="list-group w-100" size="16">
+                                        @foreach (var mask in Model.AllMaskSteps)
+                                        {
+                                            <option class="list-group-item" data-id="@mask.StepId" value="@mask.StepName">
+                                                @mask.StepName
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Mask')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Hardness*@
+                    <div class="mb-2 border border-dark p-1">
+                        <label>Hardness</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalHardnessSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Hardness')">Clear</button>
+                        <input id="inputHardness" class="form-control" data-id="" readonly />
+                        <input id="hdnHardnessId" asp-for="HardnessId" />
+                    </div>
+
+                    <div class="modal fade" id="modalHardnessSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Hardness</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Hardness')" />
+                                    <select id="selectHardnessList" class="list-group w-100" size="16">
+                                        @foreach (var hardness in Model.AllHardnesses)
+                                        {
+                                            <option class="list-group-item" data-id="@hardness.HardnessId" value="@hardness.ShortName">
+                                                @hardness.ShortName -
+                                                @hardness.Description
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Hardness')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Series*@
+                    <div class="mb-2 border border-dark p-1">
+                        <label>Series</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialSeriesSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialSeries')">Clear</button>
+                        <input id="inputMaterialSeries" class="form-control" data-id="" readonly />
+                        <input id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
+                    </div>
+
+                    <div class="modal fade" id="modalMaterialSeriesSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Material Series</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'MaterialSeries')" />
+                                    <select id="selectMaterialSeriesList" class="list-group w-100" size="16">
+                                        @foreach (var series in Model.AllMaterialSeries)
+                                        {
+                                            <option class="list-group-item" data-id="@series.SeriesId" value="@series.Description">
+                                                @series.ShortName -
+                                                @series.Description
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('MaterialSeries')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Alloy*@
+                    <div class="mb-2 border border-dark p-1">
+                        <label>Alloy</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialAlloySelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialAlloy')">Clear</button>
+                        <input id="inputMaterialAlloy" class="form-control" data-id="" readonly />
+                        <input id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
+                    </div>
+
+                    <div class="modal fade" id="modalMaterialAlloySelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Material Series</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'MaterialAlloy')" />
+                                    <select id="selectMaterialAlloyList" class="list-group w-100" size="16">
+                                        @foreach (var alloy in Model.AllMaterialAlloys)
+                                        {
+                                            <option class="list-group-item" data-id="@alloy.AlloyId" value="@alloy.Description">
+                                                @alloy.Description
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('MaterialAlloy')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @*Customer*@
+                    <div class=" border border-dark p-1">
+                        <label>Customer</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalCustomerSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Customer')">Clear</button>
+                        <input id="inputCustomer" class="form-control" data-id="" readonly />
+                        <input id="hdnCustomerId" asp-for="CustomerId" />
+                    </div>
+
+                    <div class="modal fade" id="modalCustomerSelect">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Choose a Material Series</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Customer')" />
+                                    <select id="selectCustomerList" class="list-group w-100" size="16">
+                                        @foreach (var customer in Model.AllCustomers)
+                                        {
+                                            <option class="list-group-item" data-id="@customer.Id" value="@customer.Name">
+                                                @customer.SearchName -
+                                                @customer.Name
+                                            </option>
+                                        }
+                                    </select>
+                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
+                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Customer')">Ok</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        @*Mask*@
-        <div class="mb-2">
-            <label>Mask</label><button class="btn btn-sm btn-primary float-right" onclick="openMaskModal()">Find</button>
-            <input class="form-control" value="Plug Holes" readonly />
-        </div>
-
-        <div class="modal fade" id="modalMaskSelect">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Choose a Mask</h5>
-                    </div>
-                    <div class="modal-body">
-                        <select id="selectAllMasks" class="list-group w-100" size="16">
-                            @foreach (var hardness in Model.AllHardnesses)
-                            {
-                                <option class="list-group-item" data-hardness-id="@hardness.HardnessId" value="@hardness.ShortName">
-                                    @hardness.ShortName -
-                                    @hardness.Description
-                                </option>
-                            }
-                        </select>
-                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                        <button class="btn btn-primary my-2" data-dismiss="modal" onclick="updateMaskInput()">Ok</button>
-                    </div>
+                @*Right side*@
+                <div class="col-lg-5">
+                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Process')" />
+                    <select id="selectProcessList" class="list-group w-100" size="12" asp-for="ProcessId" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
+                        @foreach (var process in Model.AllProcessesWithCurrentRev)
+                        {
+                            var currentRevId = process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId;
+                            <option data-process-id="@process.ProcessId" data-current-rev-id="@currentRevId" class="list-group-item" value="@process.ProcessId">
+                                @process.Name
+                            </option>
+                        }
+                    </select>
+                    <input id="hdnProcessRevId" asp-for="ProcessRevId" />
+                    <button type="button" class="btn btn-sm btn-primary float-right my-1" onclick="openModalSteps()">View Steps</button>
                 </div>
-            </div>
-        </div>
 
-        @*Hardness*@
-        <div class="mb-2">
-            <label>Hardness</label><button class="btn btn-sm btn-primary float-right" onclick="openHardnessModal()">Find</button>
-            <input id="inputHardness" class="form-control" data-hardness-id="" readonly />
-        </div>
+                @foreach (var process in Model.AllProcessesWithCurrentRev)
+                {
+                    <div class="modal fade" id="modalStepList-@process.ProcessId">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">@process.Name Steps</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="list-group w-100" size="16">
+                                        @foreach (var stepSeq in process.Revisions.ToList()[0].StepSeqs)
+                                        {
+                                            <li class="list-group-item">
 
-        <div class="modal fade" id="modalHardnessSelect">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Choose a Hardness</h5>
+                                                <a href="#stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" data-toggle="collapse">@stepSeq.Step.StepName</a>
+                                                <div id="stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" class="card collapse p-1">
+                                                    <h6>@stepSeq.Step.StepCategory.Name</h6>
+                                                    @stepSeq.Step.Instructions
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <input type="button" class="btn btn-danger mt-1" data-dismiss="modal" value="Close" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <select id="selectAllHardnesses" class="list-group w-100" size="16">
-                            @foreach (var hardness in Model.AllHardnesses)
-                            {
-                                <option class="list-group-item" data-hardness-id="@hardness.HardnessId" value="@hardness.ShortName">
-                                    @hardness.ShortName -
-                                    @hardness.Description
-                                </option>
-                            }
-                        </select>
-                        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                        <button class="btn btn-primary my-2" data-dismiss="modal" onclick="updateHardnessInput()">Ok</button>
-                    </div>
-                </div>
+                }
+            }
+        </div>
+        @if (Model.CurrentSpec != null)
+        {
+            <div class="row">
+                <div class="col-lg-3"><a class="btn btn-lg btn-danger mt-3" href="/Quality/Specification/SpecProcessAssign/"><h4>Reset</h4></a></div> @**@
+                <div class="col-lg-5"></div>
+                <div class="col-lg-4"><button type="submit" class="btn btn-lg btn-primary mt-3 float-right"><h4>Submit</h4></button></div>
             </div>
-        </div>
+        }
+    </form>
 
-        @*Series*@
-        <div class="mb-2">
-            <label>Series</label><button class="btn btn-sm btn-primary float-right">Find</button>
-            <input class="form-control" value="Stainless" readonly />
-        </div>
-
-
-
-        @*Alloy*@
-        <div class="mb-2">
-            <label>Alloy</label><button class="btn btn-sm btn-primary float-right">Find</button>
-            <input class="form-control" value="Steel" readonly />
-        </div>
-
-
-        @*Customer*@
-        <div>
-            <label>Customer</label><button class="btn btn-sm btn-primary float-right">Find</button>
-            <input class="form-control" value="Graco" readonly />
-        </div>
-
-
-
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-3"></div>
-    <div class="col-lg-5"><button class="btn btn-lg btn-primary mt-3 w-100"><h4>Submit</h4></button></div>
-    <div class="col-lg-4"></div>
+    <button type="button" onclick="validateUniqueChoices()">Click It!</button>
 </div>

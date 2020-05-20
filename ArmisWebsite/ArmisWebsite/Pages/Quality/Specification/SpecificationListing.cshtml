@@ -4,141 +4,142 @@
     ViewData["Title"] = "SpecificationListing";
 }
 
-<h1>Specification Listing</h1>
-<div id="collapseGroup" class="accordion">
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="input-group my-1">
-                <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecList(this.value)" />
-                <span class="input-group-append bg-white border-left-0">
-                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
-                </span>
+<div class="container-fluid w-75">
+    <h1>Specification Listing</h1>
+    <div id="collapseGroup" class="accordion">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="input-group my-1">
+                    <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecList(this.value)" />
+                    <span class="input-group-append bg-white border-left-0">
+                        <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                    </span>
+                </div>
+                <ul id="specificationList" class="list-group" style="height:42em; overflow-y:scroll">
+                    @foreach (var spec in Model.AllSpecs)
+                    {
+                        if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+                        {
+                            var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision.
+
+                            <li id="@spec.Code" class="list-group-item">
+                                <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
+                                    @spec.Code
+                                    <b>Rev:</b>
+                                    @if (theCurrentSpecRev.ExternalRev.Trim() != "")
+                                    {<text>@theCurrentSpecRev.ExternalRev</text>}
+                                else
+                                { <text>NONE</text>}
+                                    <b>Sublevels:</b> [@theCurrentSpecRev.SubLevels.Count()]
+                                </a>
+                                <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
+                                @if (theCurrentSpecRev.Description.Trim() != "")
+                                {<p><b>Description: </b>@theCurrentSpecRev.Description</p>}
+                            </li>
+                        }
+                        else
+                        {
+                            <li id="@spec.Code" class="list-group-item">
+                                @spec.Code [ERROR: No Rev]
+                            </li>
+                        }
+
+                    }
+                </ul>
             </div>
-            <ul id="specificationList" class="list-group" style="height:42em; overflow-y:scroll">
-                @foreach (var spec in Model.AllSpecs)
-                {
-                    if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+
+            <div class="col-lg-6">
+                <ul class="list-group">
+                    @foreach (var spec in Model.AllSpecs)
                     {
-                        var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision.
+                        if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
+                        {
+                            var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision
 
-                        <li id="@spec.Code" class="list-group-item">
-                            <a class="text-dark" data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
-                                @spec.Code
-                                <b>Rev:</b>
-                                @if (theCurrentSpecRev.ExternalRev.Trim() != "")
-                                {<text>@theCurrentSpecRev.ExternalRev</text>}
-                            else
-                            { <text>NONE</text>}
-                                <b>Sublevels:</b> [@theCurrentSpecRev.SubLevels.Count()]
-                            </a>
-                            <a class"btn" style="float:right" href="./SpecificationCreation?CurrentSpecId=@spec.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a> @*asp-route-aSpecId="@spec.Id"*@
-                            @if (theCurrentSpecRev.Description.Trim() != "")
-                            {<p><b>Description: </b>@theCurrentSpecRev.Description</p>}
-                        </li>
-                    }
-                    else
-                    {
-                        <li id="@spec.Code" class="list-group-item">
-                            @spec.Code [ERROR: No Rev]
-                        </li>
-                    }
+                            <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="list-group-item collapse" data-parent="#collapseGroup">
+                                <p><b>Code: </b>@theCurrentSpecRev.Description </p>
+                                <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
+                                @*If there is a sample plan for the current spec rev, an anchor tag and modal will be created that opens and contains sample plan info.*@
+                                @if (theCurrentSpecRev.SamplePlan != null)
+                                {
+                                    <a data-toggle="modal" href="#modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">Sample Plan</a><br />
 
-                }
-            </ul>
-        </div>
-
-        <div class="col-lg-6">
-            <ul class="list-group">
-                @foreach (var spec in Model.AllSpecs)
-                {
-                    if (spec.SpecRevModels != null && spec.SpecRevModels.Any())
-                    {
-                        var theCurrentSpecRev = spec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault(); //Grabs the most current revision
-
-                        <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="list-group-item collapse" data-parent="#collapseGroup">
-                            <p><b>Code: </b>@theCurrentSpecRev.Description </p>
-                            <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
-                            @*If there is a sample plan for the current spec rev, an anchor tag and modal will be created that opens and contains sample plan info.*@
-                            @if (theCurrentSpecRev.SamplePlan != null)
-                            {
-                                <a data-toggle="modal" href="#modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">Sample Plan</a><br />
-
-                                <div class="modal fade" id="modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">
-                                    <div class="modal-dialog modal-lg" style="max-width:90%">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <div class="row">
-                                                    <div class="col-lg-3"><h5 class="modal-title">Sample Plan</h5></div>
-                                                    <div class="col-lg">@theCurrentSpecRev.SamplePlan.Description</div>
+                                    <div class="modal fade" id="modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">
+                                        <div class="modal-dialog modal-lg" style="max-width:90%">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5>@theCurrentSpecRev.SamplePlan.Description</h5>
+                                                    <h5 class="modal-title">Sample Plan</h5>
                                                 </div>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="card">
-                                                    <div class="row">
-                                                        <div class="col-lg-1"><u><b>From</b></u></div>
-                                                        <div class="col-lg-1"></div>
-                                                        <div class="col-lg-1"><u><b>To</b></u></div>
-                                                        @if (theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.Any())
-                                                        {
-                                                            var testLevelList = theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.ToList();
-                                                            var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+                                                <div class="modal-body">
+                                                    <div class="card">
+                                                        <table class="table table-bordered table-striped table-hover">
+                                                            <tr>
+                                                                <td class="text-center" style="border-bottom-color:black"><u><b>From</b></u></td>
+                                                                <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>To</b></u></td>
+                                                                @if (theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.Any())
+                                                                {
+                                                                    var testLevelList = theCurrentSpecRev.SamplePlan.SamplePlanLevelModels.ToList();
+                                                                    var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
 
-                                                            @foreach (var test in firstLevelTests)
+                                                                    @foreach (var test in firstLevelTests)
+                                                                    {
+                                                                        <td class="text-center" style="border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Sample</b></u></td>
+                                                                        <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Reject</b></u></td>
+                                                                    }
+
+                                                                }
+                                                            </tr>
+                                                            @foreach (var level in theCurrentSpecRev.SamplePlan.SamplePlanLevelModels)
                                                             {
-                                                                <div class="col-lg"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                                                                <tr>
+                                                                    <td>@level.FromQty</td>
+                                                                    <td style="border-right-color:black">
+                                                                        @if (level.ToQty == int.MaxValue)
+                                                                        {<text>OVER</text> }
+                                                                    else
+                                                                    { <text>@level.ToQty</text>}
+                                                                    </td>
+                                                                    @foreach (var test in level.SamplePlanRejectModels)
+                                                                    {
+                                                                        <td class="text-center">@test.SampleQty</td>
+                                                                        <td class="text-center" style="border-right-color:black">@test.RejectAllowQty</td>
+                                                                    }
+                                                                </tr>
                                                             }
-
-                                                        }
+                                                        </table>
                                                     </div>
-                                                    @foreach (var level in theCurrentSpecRev.SamplePlan.SamplePlanLevelModels)
-                                                    {
-                                                        <div class="row border border-light ml-1" style="width:99%;">
-                                                            <div class="col-lg-1">@level.FromQty</div>
-                                                            <div class="col-lg-1">-</div>
-                                                            <div class="col-lg-1">
-                                                                @if (level.ToQty == int.MaxValue)
-                                                                {<text>OVER</text> }
-                                                            else
-                                                            { <text>@level.ToQty</text>}
-                                                            </div>
-                                                            @foreach (var test in level.SamplePlanRejectModels)
-                                                            {
-                                                                <div class="col-lg">@test.SampleQty / @test.RejectAllowQty</div>
-                                                            }
-                                                        </div>
-                                                    }
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
-
-                            <b>Sublevels</b>
-                            <ul class="nested">
-                                @foreach (var subLevel in theCurrentSpecRev.SubLevels)
-                                {
-                                    <li>
-                                        @subLevel.Name
-                                        <ul class="nested">
-                                            @foreach (var choice in subLevel.Choices)
-                                            {
-                                                <li>
-                                                    @choice.Name
-                                                </li>
-                                            }
-                                        </ul>
-                                    </li>
                                 }
-                            </ul>
-                        </li>
+
+                                <b>Sublevels</b>
+                                <ul class="nested">
+                                    @foreach (var subLevel in theCurrentSpecRev.SubLevels)
+                                    {
+                                        <li>
+                                            @subLevel.Name
+                                            <ul class="nested">
+                                                @foreach (var choice in subLevel.Choices)
+                                                {
+                                                    <li>
+                                                        @choice.Name
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
                     }
-                }
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
-
 <script>
     function searchSpecList(searchTerm) {
         var specListItems = document.getElementById("specificationList").getElementsByTagName("li");

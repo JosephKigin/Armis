@@ -56,6 +56,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetHydratedProcessesWithCurrentRev()
+        {
+            try
+            {
+                var data = await ProcessService.GetHydratedProcessesWithCurrentRev();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET: api/Processes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProcessModel>> GetProcess(int id)
