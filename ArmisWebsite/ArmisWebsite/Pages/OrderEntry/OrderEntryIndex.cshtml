@@ -4,20 +4,379 @@
     ViewData["Title"] = "OrderEntryIndex";
 }
 
-<div class="container-fluid">
-    <h3>Order Entry</h3>
-
+<div class="container-fluid" style="width: 100%; font-size:14px; background-color:#EAF1FA;">
     @*Main info entry*@
     <div class="card">
+        <div class="card-header">
+            Enter New Order
+        </div>
         <div class="row">
+            @*First column*@
+            <div class="col-lg-3">
+                <div class="row py-3">
+                    <div class="col-lg-3 text-right">Order #</div>
+                    <div class="col-lg-9"> <input class="form-control" placeholder="123456 | No user input" disabled /> </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right">Customer</div>
+                    <div class="col-lg-9"> <input class="form-control" placeholder="Autosuggest" /> </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right">Bill To</div>
+                    <div class="col-lg-9">
+                        <input class="form-control" placeholder="Autosuggest" />
+                        <textarea class="form-control" placeholder="123 Street ave. City, ST 12345" disabled></textarea>
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right">Ship To</div>
+                    <div class="col-lg-9">
+                        <input class="form-control" placeholder="Autosuggest" />
+                        <textarea class="form-control" placeholder="123 Street ave. City, ST 12345" disabled></textarea>
+                    </div>
+                </div>
+            </div>
 
+            @*Second column*@
+            <div class="col-lg-3">
+                <div class="row py-3">
+                    <div class="col-lg-3 text-right">PO #</div>
+                    <div class="col-lg-9"> <input class="form-control" placeholder="1A2B3C4D" /> </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right"></div>
+                    <div class="col-lg-9"></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right">Contact</div>
+                    <div class="col-lg-9"><input class="form-control" placeholder="Autosuggest" /></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-3 text-right">Job/Shipper</div>
+                    <div class="col-lg-9"><input class="form-control" placeholder="????" /></div>
+                </div>
+            </div>
+
+            @*Third column*@
+            <div class="col-lg-2">
+                <div class="row py-1">
+                    <div class="col-lg-4 text-right">Quote #</div>
+                    <div class="col-lg-8"> <input class="form-control" placeholder="????" /> </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Expedite</div>
+                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Ship Via</div>
+                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Bill Ship</div>
+                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Acct #</div>
+                    <div class="col-lg-8"> <input class="form-control" placeholder="123456789" /> </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Packaging</div>
+                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right">Container</div>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-7">
+                                Type
+                            </div>
+                            <div class="col-lg-5">
+                                Qty
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <select class="form-control"><option selected="selected">Drop Down</option></select>
+                            </div>
+                            <div class="col-lg-5">
+                                <input class="form-control" placeholder="12" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*Fourth Column*@
+            <div class="col-lg-2">
+                <br />
+                <br />
+                <div class="row py-1">
+                    <div class="col-lg-4 text-right">Order Date</div>
+                    <div class="col-lg-8"> <input type="date" class="form-control" placeholder="123456789" /> </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-4 text-right">Req Date</div>
+                    <div class="col-lg-8"> <input type="date" class="form-control" placeholder="123456789" /> </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-4 text-right">Due Date</div>
+                    <div class="col-lg-8"> <input type="date" class="form-control" placeholder="123456789" /> </div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-4 text-right">Due Time</div>
+                    <div class="col-lg-8"> <input type="time" class="form-control" placeholder="123456789" /> </div>
+                </div>
+                <br />
+                <div class="row pb-1">
+                    <div class="col-lg-4 text-right"> ROHS Type</div>
+                    <div class="col-lg-8"> <input class="form-control" placeholder="??????" /> </div>
+                </div>
+            </div>
+
+            @*Fifth Column*@
+            <div class="col-lg-2">
+                <br />
+                <br />
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">1 - Rework</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">2-Print Rec'd</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">3-Don't Scan Prints</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">4-ROHS Compliant</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">5-Strip & Replate</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">6-Special Shipping</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">7-Production Hold</div>
+                </div>
+                <div class="row py-1">
+                    <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
+                    <div class="col-lg-10">8-Return As Is</div>
+                </div>
+            </div>
         </div>
     </div>
 
     @*Line items*@
-    <div class="card">
+    <div class="card p-2 my-2">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row my-1">
+                    <div class="col-lg">
+                        <h5>Line Items</h5>
+                    </div>
+                    <div class="col-lg text-right">
+                        <div class="row"><div class="col-lg-4">Lot Charge:</div> <div class="col-lg-8"><input class="form-control w-25" /></div></div>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered" style="        table-layout: fixed
+">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width:4%">Line</th>
+                            <th scope="col" style="width:8%">Qty</th>
+                            <th scope="col" style="width:12%">Part #</th>
+                            <th scope="col" style="width:4%">Rev</th>
+                            <th scope="col" style="width:20%">Description</th>
+                            <th scope="col" style="width:8%">PO Price</th>
+                            <th scope="col" style="width:8%">U/M</th>
+                            <th scope="col" style="width:8%">Piece Weight</th>
+                            <th scope="col" style="width:8%">Total</th>
+                            <th scope="col" style="width:20%">Part Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
+            <div class="col-lg-3 border-left">
+                <div class="row my-1">
+                    <div class="col-lg">
+                        <h5>Order Comments</h5>
+                    </div>
+                    <div class="col-lg">
+                        <select class="form-control"><option selected="selected">Add Code</option></select>
+                    </div>
+                </div>
+                <textarea class="form-control h-75">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+            </div>
+        </div>
     </div>
 
     @*Process and Cert details*@
+    <div class="card p-2">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="row my-3">
+                    <div class="col-lg-2 text-right">
+                        <h6>Quality Std:</h6>
+                    </div>
+                    <div class="col-lg-4">
+                        <select class="form-control"><option selected="selected">Very good?</option></select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 text-right">
+                        <h6>Cert:</h6>
+                    </div>
+                    <div class="col-lg-8">
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 text-right">
+                        <h6>Internal Comments:</h6>
+                    </div>
+                    <div class="col-lg-8">
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row mb-1">
+                    <div class="col-lg-4">
+                        <h6>Process</h6>
+                        <select class="form-control"><option selected="selected">Zinc Clear</option></select>
+                    </div>
+                    <div class="col-lg-4">
+                        <h6>Alloy</h6>
+                        <select class="form-control"><option selected="selected">455 SST</option></select>
+                    </div>
+                    <div class="col-lg-4">
+                        <h6>Base Metal</h6>
+                        <select class="form-control"><option selected="selected">Steel</option></select>
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered" style="table-layout:fixed">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width:7%">Oper</th>
+                            <th scope="col" style="width:12%">Desc</th>
+                            <th scope="col" style="width:12%">Thickness</th>
+                            <th scope="col" style="width:8%">Temp</th>
+                            <th scope="col" style="width:16%">Length</th>
+                            <th scope="col" style="width:10%">Spec</th>
+                            <th scope="col" style="width:8%">Router</th>
+                            <th scope="col" style="width:9%">Step #s</th>
+                            <th scope="col" style="width:18%">Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                            <td><input style="box-sizing: border-box; width:100%;" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg text-right"><button class="btn btn-lg btn-primary p-1 m-3 ">Create Order</button></div>
+    </div>
 </div>

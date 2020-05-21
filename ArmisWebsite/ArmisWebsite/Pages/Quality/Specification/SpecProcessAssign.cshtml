@@ -353,3 +353,20 @@
 
     <button type="button" onclick="validateUniqueChoices()">Click It!</button>
 </div>
+
+<script>
+    //This needs to be on the actual page in order to access the Model... But that isn't actually true. You can just pass it in as a parameter... TODO: Read words before these words.
+function validateUniqueChoices() {
+    var isValid = true;
+    var resultArray = [document.getElementById("hdnChoiceId1").value, document.getElementById("hdnChoiceId2").value, document.getElementById("hdnChoiceId3").value, document.getElementById("hdnChoiceId4").value, document.getElementById("hdnChoiceId5").value, document.getElementById("hdnChoiceId6").value, document.getElementById("hdnPreBakeId").value, document.getElementById("hdnPostBakeId").value, document.getElementById("hdnMaskId").value, document.getElementById("hdnHardnessId").value, document.getElementById("hdnMaterialSeriesId").value, document.getElementById("hdnMaterialAlloyId").value, document.getElementById("hdnCustomerId").value];
+    var jsonResult = JSON.stringify(resultArray);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '@Model._apiAddress' + 'api/SpecProcessAssign/VerifyUniqueChoices/' + jsonResult, true);
+    xhr.send();
+
+    xhr.onload = function () {
+    console.log(resultArray);
+    }
+    }
+
+</script>

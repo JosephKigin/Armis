@@ -56,16 +56,3 @@ function updateChoiceIdInput(sublevelNum, chkBox) {
     if (chkBox.checked) { document.getElementById("hdnChoiceId" + sublevelNum).value = chkBox.value; }
     else { document.getElementById("hdnChoiceId" + sublevelNum).value = ""; }
 }
-
-function validateUniqueChoices() {
-    var isValid = true;
-    var resultArray = [document.getElementById("hdnChoiceId1").value, document.getElementById("hdnChoiceId2").value, document.getElementById("hdnChoiceId3").value, document.getElementById("hdnChoiceId4").value, document.getElementById("hdnChoiceId5").value, document.getElementById("hdnChoiceId6").value, document.getElementById("hdnPreBakeId").value, document.getElementById("hdnPostBakeId").value, document.getElementById("hdnMaskId").value, document.getElementById("hdnHardnessId").value, document.getElementById("hdnMaterialSeriesId").value, document.getElementById("hdnMaterialAlloyId").value, document.getElementById("hdnCustomerId").value];
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '@Model._apiAddress' + 'api/SpecProcessAssign/VerifyUniqueChoices/' + resultArray, true);
-    xhr.send();
-
-    xhr.onload = function () {
-        console.log(resultArray);
-    }
-}
