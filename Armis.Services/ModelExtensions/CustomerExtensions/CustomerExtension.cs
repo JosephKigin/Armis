@@ -16,7 +16,7 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 Name = aCustomer.Name,
                 SearchName = aCustomer.SearchName,
                 Id = aCustomer.CustId,
-                StatusCode = aCustomer.Status.Code,
+                StatusId = aCustomer.StatusId,
                 CreatedDate = aCustomer.CreatedDate
             };
         }

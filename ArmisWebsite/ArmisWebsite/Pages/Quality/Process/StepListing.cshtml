@@ -7,10 +7,10 @@
 <head>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 </head>
+<div class="container-fluid w-75">
+    <h1>Step Listing</h1>
 
-<h1>Step Listing</h1>
 
-<body>
     <div class="input-group my-1">
         <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchStepList(this.value)" />
         <span class="input-group-append bg-white border-left-0">
@@ -31,8 +31,8 @@
             </li>
         }
     </ul>
-</body>
 
+</div>
 <script>
     function searchStepList(searchTerm) {
         var steps = document.getElementById("listAllSteps").getElementsByTagName("li");

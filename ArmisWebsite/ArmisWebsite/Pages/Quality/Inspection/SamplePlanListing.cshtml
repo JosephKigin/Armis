@@ -3,48 +3,51 @@
 @{
     ViewData["Title"] = "SamplePlanListing";
 }
+<div class="container-fluid w-75">
+    <h1>Sample Plan Listing</h1>
+    <ul class="list-group" style="height:42em; overflow-y:scroll;">
+        @foreach (var samplePlan in Model.AllSamplePlans)
+        {
+            <li class="list-group-item">
+                <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+                <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card border border-dark collapse">
+                    <table class="table table-bordered table-striped table-hover">
+                        <tr>
+                            <td class="text-center" style="border-bottom-color:black"><u><b>From</b></u></td>
+                            <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>To</b></u></td>
+                            @if (samplePlan.SamplePlanLevelModels.Any())
+                            {
+                                var testLevelList = samplePlan.SamplePlanLevelModels.ToList();
+                                var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
 
-<h1>Sample Plan Listing</h1>
-<ul class="list-group" style="height:42em; overflow-y:scroll;">
-    @foreach (var samplePlan in Model.AllSamplePlans)
-    {
-        <li class="list-group-item">
-            <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
-            <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">
-                <div class="row">
-                    <div class="col-lg-1 text-center"><u><b>From</b></u></div>
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg-1 text-center"><u><b>To</b></u></div>
-                    @if (samplePlan.SamplePlanLevelModels.Any())
-                    {
-                        var testLevelList = samplePlan.SamplePlanLevelModels.ToList();
-                        var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+                                @foreach (var test in firstLevelTests)
+                                {
+                                    <td class="text-center" style="border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Sample</b></u></td>
+                                    <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Reject</b></u></td>
+                                }
 
-                        @foreach (var test in firstLevelTests)
+                            }
+                        </tr>
+                        @foreach (var level in samplePlan.SamplePlanLevelModels)
                         {
-                            <div class="col-lg text-center"><u><b>@test.InspectionTestType.TestCode: Smpl / Rej</b></u></div>
+                            <tr>
+                                <td>@level.FromQty</td>
+                                <td style="border-right-color:black">
+                                    @if (level.ToQty == int.MaxValue)
+                                    {<text>OVER</text> }
+                                else
+                                { <text>@level.ToQty</text>}
+                                </td>
+                                @foreach (var test in level.SamplePlanRejectModels)
+                                {
+                                    <td class="text-center">@test.SampleQty</td>
+                                    <td class="text-center" style="border-right-color:black">@test.RejectAllowQty</td>
+                                }
+                            </tr>
                         }
-
-                    }
+                    </table>
                 </div>
-                @foreach (var level in samplePlan.SamplePlanLevelModels)
-                {
-                    <div class="row border border-light ml-1" style="width:99%;">
-                        <div class="col-lg-1">@level.FromQty</div>
-                        <div class="col-lg-1">-</div>
-                        <div class="col-lg-1">
-                            @if (level.ToQty == int.MaxValue)
-                            {<text>OVER</text> }
-                        else
-                        { <text>@level.ToQty</text>}
-                        </div>
-                        @foreach (var test in level.SamplePlanRejectModels)
-                        {
-                            <div class="col-lg text-center">@test.SampleQty / @test.RejectAllowQty</div>
-                        }
-                    </div>
-                }
-            </div>
-        </li>
-    }
-</ul>
+            </li>
+        }
+    </ul>
+</div>

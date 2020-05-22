@@ -7,13 +7,15 @@
 <head>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
 </head>
-<div class="row">
-    <h1>Step Maintenance </h1>
-    @if (Model.HelpMessage != null)
-    {<partial name="/Pages/shared/partials/popuphelppartial.cshtml" class="text-right" model="Model.HelpMessage" />}
-</div>
 
-<body>
+<div class="container-fluid w-75">
+    <div class="row">
+        <h1>Step Maintenance </h1>
+        @if (Model.HelpMessage != null)
+        {<partial name="/Pages/shared/partials/popuphelppartial.cshtml" class="text-right" model="Model.HelpMessage" />}
+    </div>
+
+
     <div class="row">
         <div class="col-lg-6">
             <form method="post">
@@ -108,7 +110,7 @@
             </ul>
         </div>
     </div>
-</body>
+</div>
 
 <script>
     function searchFilter() {

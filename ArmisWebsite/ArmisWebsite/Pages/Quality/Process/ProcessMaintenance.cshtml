@@ -4,29 +4,31 @@
     ViewData["Title"] = "Process Maintenance";
 }
 
-<h1>Create Process</h1>
-@*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
-@if (Model.Message != "" && Model.Message != null)
-{
-    if (Model.IsMessageGood)
-    {<label class="alert alert-success">@Model.Message</label> }
-else
-{ <label class="alert alert-danger">@Model.Message</label>}
+<div class="container-fluid w-75">
+    <h1>Create Process</h1>
+    @*Preloaded message.  The message can be set to a success or danger based on what IsMessageGood is set to.*@
+    @if (Model.Message != "" && Model.Message != null)
+    {
+        if (Model.IsMessageGood)
+        {<label class="alert alert-success">@Model.Message</label> }
+    else
+    { <label class="alert alert-danger">@Model.Message</label>}
 }
-<br />
-@*Process input*@
-<form method="post">
-    <div class="form-group">
-        <div class="row">
-            <div class="col-lg-2 mr-1">
-                <h5>Process Name: </h5>
-            </div>
-            <div class="col-lg-9">
-                <input type="text" asp-for="ProcessName" class="form-control" />
-                <span asp-validation-for="ProcessName" class="alert-danger"></span>
+    <br />
+    @*Process input*@
+    <form method="post">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-2 mr-1">
+                    <h5>Process Name: </h5>
+                </div>
+                <div class="col-lg-9">
+                    <input type="text" asp-for="ProcessName" class="form-control" />
+                    <span asp-validation-for="ProcessName" class="alert-danger"></span>
+                </div>
             </div>
         </div>
-    </div>
-    <button type="submit" class="btn btn-primary m-3">Save</button>
-    <a class="btn btn-success" asp-page="ProcessRevMaintenance">Process Revision Maintenance</a>
-</form>
+        <button type="submit" class="btn btn-primary m-3">Save</button>
+        <a class="btn btn-success" asp-page="ProcessRevMaintenance">Process Revision Maintenance</a>
+    </form>
+</div>

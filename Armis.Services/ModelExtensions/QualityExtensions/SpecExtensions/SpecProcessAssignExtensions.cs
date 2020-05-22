@@ -2,6 +2,7 @@
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.PartExtensions;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions;
+using Armis.DataLogic.ModelExtensions.CustomerExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -80,7 +81,9 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Choice3 = (aSpecProcessAssignEntity.SpecChoice1 != null) ? aSpecProcessAssignEntity.SpecChoice1.ToModel() : null,
                 Choice4 = (aSpecProcessAssignEntity.SpecChoice2 != null) ? aSpecProcessAssignEntity.SpecChoice2.ToModel() : null,
                 Choice5 = (aSpecProcessAssignEntity.SpecChoice3 != null) ? aSpecProcessAssignEntity.SpecChoice3.ToModel() : null,
-                Choice6 = (aSpecProcessAssignEntity.SpecChoice4 != null) ? aSpecProcessAssignEntity.SpecChoice4.ToModel() : null
+                Choice6 = (aSpecProcessAssignEntity.SpecChoice4 != null) ? aSpecProcessAssignEntity.SpecChoice4.ToModel() : null,
+                ProcessRevision = aSpecProcessAssignEntity.Process.ToModel(),
+                Customer = (aSpecProcessAssignEntity.CustomerNavigation != null)? aSpecProcessAssignEntity.CustomerNavigation.ToModel() : null
             };
         }
 

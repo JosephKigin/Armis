@@ -3,45 +3,46 @@
 @{
     ViewData["Title"] = "SpecProcessAssignListing";
 }
+<div class="container-fluid w-75">
+    <h1>Specification-Process Assignment Listing</h1>
+    <ul class="list-group" style="height:42em; overflow-y:scroll">
+        @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
+        {
+            <li class="list-group-item" data-spec="">
+                Process: @specProcessAssign.ProcessId
+                Rev: @specProcessAssign.ProcessRevId
+                Specification: @specProcessAssign.SpecId
+                Rev: @specProcessAssign.SpecRevId
+                <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
 
-<h1>Specification-Process Assignment Listing</h1>
-<ul class="list-group" style="height:42em; overflow-y:scroll">
-    @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
-    {
-        <li class="list-group-item" data-spec="">
-            Process: @specProcessAssign.ProcessId
-            Rev: @specProcessAssign.ProcessRevId
-            Specification: @specProcessAssign.SpecId
-            Rev: @specProcessAssign.SpecRevId
-            <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
+                <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
+                    <div class="card col-lg-6">
+                        <b>Choices</b>
+                        @if (specProcessAssign.Choice1 != null && @specProcessAssign.Choice1.Name != null)
+                        {<p>@specProcessAssign.Choice1.Name</p>}
+                        @if (specProcessAssign.Choice2 != null && @specProcessAssign.Choice2.Name != null)
+                        {<p>@specProcessAssign.Choice2.Name</p>}
+                        @if (specProcessAssign.Choice3 != null && @specProcessAssign.Choice3.Name != null)
+                        {<p>@specProcessAssign.Choice3.Name</p>}
+                        @if (specProcessAssign.Choice4 != null && @specProcessAssign.Choice4.Name != null)
+                        {<p>@specProcessAssign.Choice4.Name</p>}
+                        @if (specProcessAssign.Choice5 != null && @specProcessAssign.Choice5.Name != null)
+                        {<p>@specProcessAssign.Choice5.Name</p>}
+                        @if (specProcessAssign.Choice6 != null && @specProcessAssign.Choice6.Name != null)
+                        {<p>@specProcessAssign.Choice6.Name</p>}
+                    </div>
 
-            <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                <div class="card col-lg-6">
-                    <b>Choices</b>
-                    @if (specProcessAssign.Choice1 != null && @specProcessAssign.Choice1.Name != null)
-                    {<p>@specProcessAssign.Choice1.Name</p>}
-                    @if (specProcessAssign.Choice2 != null && @specProcessAssign.Choice2.Name != null)
-                    {<p>@specProcessAssign.Choice2.Name</p>}
-                    @if (specProcessAssign.Choice3 != null && @specProcessAssign.Choice3.Name != null)
-                    {<p>@specProcessAssign.Choice3.Name</p>}
-                    @if (specProcessAssign.Choice4 != null && @specProcessAssign.Choice4.Name != null)
-                    {<p>@specProcessAssign.Choice4.Name</p>}
-                    @if (specProcessAssign.Choice5 != null && @specProcessAssign.Choice5.Name != null)
-                    {<p>@specProcessAssign.Choice5.Name</p>}
-                    @if (specProcessAssign.Choice6 != null && @specProcessAssign.Choice6.Name != null)
-                    {<p>@specProcessAssign.Choice6.Name</p>}
+                    <div class="card col-lg-6">
+                        <b>Details</b>
+                        <p>Customer: @specProcessAssign.CustomerId</p>
+                        @if (specProcessAssign.SeriesOption != null)
+                        {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
+                        <p>Hardness: @specProcessAssign.HardnessOptionId</p>
+
+                        <p>Alloy: @specProcessAssign.AlloyOptionId</p>
+                    </div>
                 </div>
-
-                <div class="card col-lg-6">
-                    <b>Details</b>
-                    <p>Customer: @specProcessAssign.CustomerId</p>
-                    @if (specProcessAssign.SeriesOption != null)
-                    {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
-                    <p>Hardness: @specProcessAssign.HardnessOptionId</p>
-
-                    <p>Alloy: @specProcessAssign.AlloyOptionId</p>
-                </div>
-            </div>
-        </li>
-    }
-</ul>
+            </li>
+        }
+    </ul>
+</div>

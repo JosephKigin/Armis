@@ -25,7 +25,7 @@
                             <a class="nav-link" asp-page="/Index"><i class="fa fa-home"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="">OrderEntry</a>
+                            <a class="nav-link text-dark" asp-page="/OrderEntry/OrderEntryIndex">OrderEntry</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-page="/Quality/QualityMenu">Quality</a>
@@ -41,11 +41,11 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid w-75">
+    @*<div class="container-fluid">*@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    @*</div>*@
 
     <footer class="border-top footer text-muted">
         <div class="container">

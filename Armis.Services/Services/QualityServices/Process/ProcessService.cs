@@ -158,6 +158,28 @@ namespace Armis.DataLogic.Services.QualityServices
             return result;
         }
 
+        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
+        {
+            var processModels = await GetHydratedProcessRevs();
+            
+            foreach (var processModel in processModels)
+            {
+                var maxRevId = processModel.Revisions.Max(i => i.ProcessRevId);
+                var tempRevList = processModel.Revisions.ToList();
+                foreach (var rev in processModel.Revisions)
+                {
+                    if (rev.ProcessRevId != maxRevId)
+                    {
+                        tempRevList.Remove(rev);
+                    }
+                }
+
+                processModel.Revisions = tempRevList;
+            }
+
+            return processModels;
+        }
+
         public async Task<ProcessModel> GetHydratedProcess(int aProcessId)
         {
             var processEntity = await context.Process.Where(i => i.ProcessId == aProcessId)

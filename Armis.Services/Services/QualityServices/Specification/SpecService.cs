@@ -39,16 +39,24 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithSamplePlans()
         {
-            var entities = await context.Specification
-                                            .Include(i => i.SpecificationRevision)
-                                                .ThenInclude(i => i.SamplePlanNavigation)
-                                                    .ThenInclude(i => i.SamplePlanLevel)
-                                                        .ThenInclude(i => i.SamplePlanReject)
-                                                            .ThenInclude(i => i.InspectTest)
-                                            .Include(i => i.SpecificationRevision)
-                                                .ThenInclude(i => i.SpecSubLevel)
-                                                    .ThenInclude(i => i.SpecChoice)
-                                                        .ToListAsync();
+            await context.SpecificationRevision.LoadAsync();
+            await context.SpecSubLevel.LoadAsync();
+            await context.SpecChoice.LoadAsync();
+            await context.SamplePlanHead.LoadAsync();
+            await context.SamplePlanLevel.LoadAsync();
+            await context.SamplePlanReject.LoadAsync();
+            await context.InspectTestType.LoadAsync();
+
+            var entities = await context.Specification.ToListAsync();
+
+            /*
+               .Include(i => i.SpecificationRevision)
+                .ThenInclude(i => i.SamplePlanNavigation)
+                    .ThenInclude(i => i.SamplePlanLevel)
+                        .ThenInclude(i => i.SamplePlanReject)
+                            .ThenInclude(i => i.InspectTest).Include(i => i.SpecificationRevision)
+                .ThenInclude(i => i.SpecSubLevel)
+                    .ThenInclude(i => i.SpecChoice)*/
 
             if (entities == null || !entities.Any()) { throw new Exception("No Specs were returned."); }
 
