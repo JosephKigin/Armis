@@ -9,11 +9,14 @@ using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite
 {
     public class ProcessMaintenanceModel : PageModel
     {
+        public readonly string _apiAddress;
+
         //Data Access
         public IProcessDataAccess ProcessDataAccess { get; set; }
 
@@ -26,10 +29,18 @@ namespace ArmisWebsite
         [Required, StringLength(50), Display(Name = "Process Name")]
         public string ProcessName { get; set; }
 
+        [BindProperty]
+        [Required, StringLength(100)]
+        public string Comment { get; set; }
 
-        public ProcessMaintenanceModel(IProcessDataAccess aProcessDataAccess)
+        [BindProperty]
+        [Required]
+        public int EmployeeId { get; set; }
+
+        public ProcessMaintenanceModel(IProcessDataAccess aProcessDataAccess, IConfiguration aConfig)
         {
             ProcessDataAccess = aProcessDataAccess;
+            _apiAddress = aConfig["APIAddress"];
         }
 
         //A string message can be passed in and will display on the top of the screen as a success or danger message depending on the property IsMessageGood.
@@ -48,6 +59,18 @@ namespace ArmisWebsite
                 {
                     Name = ProcessName
                 };
+
+                var newRevision = new ProcessRevisionModel()
+                {
+                    Comments = Comment,
+                    CreatedByEmp = EmployeeId,
+                    ProcessName = ProcessName
+                };
+                
+                var tempRevList = new List<ProcessRevisionModel>();
+                tempRevList.Add(newRevision);
+                processToAdd.Revisions = tempRevList;
+
                 var result = await ProcessDataAccess.PostNewProcess(processToAdd);
 
                 IsMessageGood = true;

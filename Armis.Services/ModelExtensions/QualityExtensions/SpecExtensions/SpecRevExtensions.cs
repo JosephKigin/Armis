@@ -65,7 +65,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SpecRevId = aSpecRevId,
                 Description = aSpecRevModel.Description,
                 ExternalRev = aSpecRevModel.ExternalRev,
-                SamplePlan = aSpecRevModel.SamplePlanId,
+                SamplePlan = (aSpecRevModel.SamplePlanId == 0) ? null : aSpecRevModel.SamplePlanId,
                 CreatedByEmp = aSpecRevModel.EmployeeNumber,
                 DateModified = DateTime.Now.Date,
                 TimeModified = DateTime.Now.TimeOfDay

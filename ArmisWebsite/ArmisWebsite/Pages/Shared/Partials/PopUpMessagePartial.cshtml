@@ -1,16 +1,17 @@
-﻿@model string
+﻿@model ArmisWebsite.FrontEndModels.PopUpMessageModel
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@if (Model != "" && Model != null)
+@if (Model.Text != "" && Model != null)
 {
-    <span id="responseMessage" class="alert alert-success"><i class="fas fa-check"></i> @Model</span>
-
-
+    if (Model.IsMessageGood == true)
+    { <div class="my-3"><span id="responseMessage" class="alert alert-success" style="position:relative;"><i class="fas fa-check"></i> @Model.Text</span></div> }
+    else if(Model.IsMessageGood == false)
+    { <div class="my-3"><span id="responseMessage" class="alert alert-danger"><i class="fas fa-times"></i> @Model.Text</span></div> } 
+    
     @*TODO: Took delay away to be consistant across all pages.  Enable this and make it a standard throughout the site.*@
-        <script>
-        $("#responseMessage").delay(2000).fadeOut(1000);
+    <script>
+        $("#responseMessage").delay(5000).fadeOut(1000);
     </script>
 }
-

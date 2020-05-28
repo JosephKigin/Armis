@@ -51,12 +51,26 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpGet("{aSpecProcessChoices}")]
-        public async Task<ActionResult<bool>> VerifyUniqueChoices(int[] aSpecProcessChoices)
+        [HttpGet("{specId}/{internalSpecId}/{choice1}/{choice2}/{choice3}/{choice4}/{choice5}/{choice6}/{preBake}/{postBake}/{mask}/{hardness}/{series}/{alloy}/{customer}")]
+        public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
         {
             try
             {
-                var data = await SpecProcessAssignService.VerifyUniqueChoices(aSpecProcessChoices);
+                choice1 = (choice1 == 0) ? null : choice1;
+                choice2 = (choice2 == 0) ? null : choice2;
+                choice3 = (choice3 == 0) ? null : choice3;
+                choice4 = (choice4 == 0) ? null : choice4;
+                choice5 = (choice5 == 0) ? null : choice5;
+                choice6 = (choice6 == 0) ? null : choice6;
+                preBake = (preBake == 0) ? null : preBake;
+                postBake = (postBake == 0) ? null : postBake;
+                mask = (mask == 0) ? null : mask;
+                hardness = (hardness == 0) ? null : hardness;
+                series = (series == 0) ? null : series;
+                alloy = (alloy == 0) ? null : alloy;
+                customer = (customer == 0) ? null : customer;
+
+                var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecId, choice1, choice2, choice3, choice4, choice5, choice6, preBake, postBake, mask, hardness, series, alloy, customer);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

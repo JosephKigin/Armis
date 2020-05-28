@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using iTextSharp.text;
@@ -31,7 +32,7 @@ namespace ArmisWebsite
         public List<ProcessModel> Processes { get; set; }
 
         //Front-End
-        public string PopUpMessage { get; set; }
+        public PopUpMessageModel Message { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public int ProcessIdSelection { get; set; }
@@ -52,6 +53,8 @@ namespace ArmisWebsite
         {
             try
             {
+                Message = new PopUpMessageModel(); //This is here to make sure a null reference doesn't happen.
+
                 await SetUpProperties();
 
                 return Page();
@@ -70,8 +73,7 @@ namespace ArmisWebsite
 
             if (theCurrentRev == null)
             {
-                PopUpMessage = "Cannot create router for a process that does not have a LOCKED revision.";
-                await SetUpProperties();
+                await SetUpProperties(false, "Cannot create router for a process that does not have a LOCKED revision.");
                 return Page();
             }
 
@@ -83,8 +85,14 @@ namespace ArmisWebsite
             return fsResult;
         }
 
-        public async Task SetUpProperties()
+        public async Task SetUpProperties(bool? isMessageGood = null, string aMessage = "")
         {
+            Message = new PopUpMessageModel()
+            {
+                Text = aMessage,
+                IsMessageGood = isMessageGood
+            };
+
             var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
 
             Processes = theProcesses.ToList();
