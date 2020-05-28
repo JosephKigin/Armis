@@ -50,8 +50,8 @@
                     <label>Spec Rev</label>
                     <input class="form-control mb-2" value="@Model.CurrentSpecCurrentRev.ExternalRev" readonly />
 
-                    <input asp-for="SpecId" />
-                    <input asp-for="SpecInternalRevId" />
+                    <input type="hidden" asp-for="SpecId" />
+                    <input type="hidden" asp-for="SpecInternalRevId" />
 
                     <div class="card p-2">
                         @foreach (var sublevel in Model.CurrentSpecCurrentRev.SubLevels)
@@ -64,12 +64,12 @@
                                 }
                             </div>
                         }
-                        <input id="hdnChoiceId1" type="number" asp-for="ChoiceId1" />
-                        <input id="hdnChoiceId2" type="number" asp-for="ChoiceId2" />
-                        <input id="hdnChoiceId3" type="number" asp-for="ChoiceId3" />
-                        <input id="hdnChoiceId4" type="number" asp-for="ChoiceId4" />
-                        <input id="hdnChoiceId5" type="number" asp-for="ChoiceId5" />
-                        <input id="hdnChoiceId6" type="number" asp-for="ChoiceId6" />
+                        <input type="hidden" id="hdnChoiceId1" asp-for="ChoiceId1" />
+                        <input type="hidden" id="hdnChoiceId2" asp-for="ChoiceId2" />
+                        <input type="hidden" id="hdnChoiceId3" asp-for="ChoiceId3" />
+                        <input type="hidden" id="hdnChoiceId4" asp-for="ChoiceId4" />
+                        <input type="hidden" id="hdnChoiceId5" asp-for="ChoiceId5" />
+                        <input type="hidden" id="hdnChoiceId6" asp-for="ChoiceId6" />
                     </div>
                 }
 
@@ -82,7 +82,8 @@
                     <div class="mb-1 border border-dark p-1">
                         <label>Pre-Bake</label><button type="button" class="btn btn-sm btn-primary float-right my-1" data-toggle="modal" data-target="#modalPreBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right  my-1 mx-1" onclick="clearInput('PreBake')">Clear</button>
 
-                        <input id="hdnPreBakeId" asp-for="PreBakeStepId" />
+                        <input type="hidden" id="hdnPreBakeId" asp-for="PreBakeStepId" />
+
                         @if (Model.PreBakeStepId != null)
                         {<input id="inputPreBake" class="form-control" data-id="@Model.PreBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PreBakeStepId).StepName" readonly /> }
                         else
@@ -116,11 +117,13 @@
                     @*Post Bake*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Post-Bake</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalPostBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('PostBake')">Clear</button>
+
+                        <input type="hidden" id="hdnPostBakeId" asp-for="PostBakeStepId" />
+
                         @if (Model.PostBakeStepId != null)
                         {<input id="inputPostBake" class="form-control" data-id="@Model.PostBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PostBakeStepId).StepName" readonly /> }
                         else
                         { <input id="inputPostBake" class="form-control" data-id="" value="" readonly />}
-                        <input id="hdnPostBakeId" asp-for="PostBakeStepId" />
                     </div>
 
                     <div class="modal fade" id="modalPostBakeSelect">
@@ -150,12 +153,14 @@
                     @*Mask*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Mask</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
+
+                        <input type="hidden" id="hdnMaskId" asp-for="MaskStepId" />
+
                         @if (Model.MaskStepId != null)
                         {<input id="inputMask" data-id="@Model.MaskStepId" class="form-control" value="@Model.AllMaskSteps.FirstOrDefault(i => i.StepId == Model.MaskStepId).StepName" readonly /> }
                         else
                         { <input id="inputMask" data-id="" class="form-control" value="" readonly />}
 
-                        <input id="hdnMaskId" asp-for="MaskStepId" />
                     </div>
 
                     <div class="modal fade" id="modalMaskSelect">
@@ -184,11 +189,13 @@
                     @*Hardness*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Hardness</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalHardnessSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Hardness')">Clear</button>
+
+                        <input type="hidden" id="hdnHardnessId" asp-for="HardnessId" />
+
                         @if (Model.HardnessId != null)
                         {<input id="inputHardness" class="form-control" data-id="@Model.HardnessId" value="@Model.AllHardnesses.FirstOrDefault(i => i.HardnessId == Model.HardnessId).ShortName" readonly /> }
                         else
                         { <input id="inputHardness" data-id="" class="form-control" value="" readonly />}
-                        <input id="hdnHardnessId" asp-for="HardnessId" />
                     </div>
 
                     <div class="modal fade" id="modalHardnessSelect">
@@ -218,12 +225,14 @@
                     @*Series*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Series</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialSeriesSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialSeries')">Clear</button>
+
+                        <input type="hidden" id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
+
                         @if (Model.MaterialSeriesId != null)
                         {<input id="inputMaterialSeries" class="form-control" data-id="@Model.MaterialSeriesId" value="@Model.AllMaterialSeries.FirstOrDefault(i => i.SeriesId == Model.MaterialSeriesId).Description" readonly /> }
                         else
                         { <input id="inputMaterialSeries" data-id="" class="form-control" value="" readonly />}
 
-                        <input id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
                     </div>
 
                     <div class="modal fade" id="modalMaterialSeriesSelect">
@@ -253,12 +262,14 @@
                     @*Alloy*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Alloy</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialAlloySelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialAlloy')">Clear</button>
+
+                        <input type="hidden" id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
+
                         @if (Model.MaterialAlloyId != null)
                         {<input id="inputMaterialAlloy" class="form-control" data-id="@Model.MaterialAlloyId" value="@Model.AllMaterialAlloys.FirstOrDefault(i => i.AlloyId == Model.MaterialAlloyId).Description" readonly /> }
                         else
                         { <input id="inputMaterialAlloy" class="form-control" data-id="" readonly />}
 
-                        <input id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
                     </div>
 
                     <div class="modal fade" id="modalMaterialAlloySelect">
@@ -288,11 +299,13 @@
                     @*Customer*@
                     <div class=" border border-dark p-1">
                         <label>Customer</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalCustomerSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Customer')">Clear</button>
+
+                        <input type="hidden" id="hdnCustomerId" asp-for="CustomerId" />
+
                         @if (Model.CustomerId != null)
                         {<input id="inputCustomer" class="form-control" data-id="@Model.CustomerId" value="@Model.AllCustomers.FirstOrDefault(i => i.Id == Model.CustomerId).Name" readonly /> }
                         else
                         { <input id="inputCustomer" class="form-control" data-id="" readonly />}
-                        <input id="hdnCustomerId" asp-for="CustomerId" />
                     </div>
 
                     <div class="modal fade" id="modalCustomerSelect">
@@ -336,7 +349,7 @@
 
                         }
                     </select>
-                    <input id="hdnProcessRevId" asp-for="ProcessRevId" />
+                    <input type="hidden" id="hdnProcessRevId" asp-for="ProcessRevId" />
                     <button type="button" class="btn btn-sm btn-primary float-right my-1" onclick="openModalSteps()">View Steps</button>
                 </div>
 
