@@ -14,17 +14,17 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public int SpecId { get; set; }
         public short SpecRevId { get; set; }
         public int SpecAssignId { get; set; }
-        public byte? SubLevelOption1 { get; set; }
+        public byte SubLevelOption1 { get; set; }
         public byte? ChoiceOptionId1 { get; set; }
-        public byte? SubLevelOption2 { get; set; }
+        public byte SubLevelOption2 { get; set; }
         public byte? ChoiceOptionId2 { get; set; }
-        public byte? SubLevelOption3 { get; set; }
+        public byte SubLevelOption3 { get; set; }
         public byte? ChoiceOptionId3 { get; set; }
-        public byte? SubLevelOption4 { get; set; }
+        public byte SubLevelOption4 { get; set; }
         public byte? ChoiceOptionId4 { get; set; }
-        public byte? SubLevelOption5 { get; set; }
+        public byte SubLevelOption5 { get; set; }
         public byte? ChoiceOptionId5 { get; set; }
-        public byte? SubLevelOption6 { get; set; }
+        public byte SubLevelOption6 { get; set; }
         public byte? ChoiceOptionId6 { get; set; }
         public int? PreBakeOptionId { get; set; }
         public int? PostBakeOptionId { get; set; }

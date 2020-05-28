@@ -7,6 +7,7 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public int OrderId { get; set; }
         public string OrderComments1 { get; set; }
+        public string InternalComments { get; set; }
         public string Raicomments { get; set; }
         public string CredAuthComments { get; set; }
         public string VoidComments { get; set; }

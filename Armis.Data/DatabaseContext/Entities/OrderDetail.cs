@@ -12,17 +12,19 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public int OrderId { get; set; }
         public byte OrderLine { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
         public int PartId { get; set; }
-        public short? PartRevId { get; set; }
-        public decimal? Poprice { get; set; }
-        public decimal? AssignedPrice { get; set; }
-        public byte? PriceCodeId { get; set; }
-        public string ProcessComments { get; set; }
+        public short PartRevId { get; set; }
+        public decimal Poprice { get; set; }
+        public decimal CalcPrice { get; set; }
+        public decimal AssignPrice { get; set; }
+        public byte PriceCodeId { get; set; }
+        public decimal LotCharge { get; set; }
 
         public virtual OrderHead Order { get; set; }
         public virtual PartRevision Part { get; set; }
         public virtual PriceCode PriceCode { get; set; }
+        public virtual OrderDetailComments OrderDetailComments { get; set; }
         public virtual ICollection<OrderLocation> OrderLocation { get; set; }
     }
 }

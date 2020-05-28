@@ -15,8 +15,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public int CreatedByEmp { get; set; }
-        public DateTime DateModified { get; set; }
-        public TimeSpan TimeModified { get; set; }
+        public DateTime DateCreated { get; set; }
+        public TimeSpan TimeCreated { get; set; }
         public byte RevStatusId { get; set; }
         public string Comments { get; set; }
 

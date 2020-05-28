@@ -8,7 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int OprMaterialPriceId { get; set; }
         public int? OperationId { get; set; }
         public short? DepartmentId { get; set; }
-        public int? MaterialCd { get; set; }
+        public int? MaterialId { get; set; }
         public int? CustId { get; set; }
         public decimal? PercInc { get; set; }
         public decimal? MinLotInc { get; set; }
@@ -16,7 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual Customer Cust { get; set; }
         public virtual Department Department { get; set; }
-        public virtual MaterialAlloy MaterialCdNavigation { get; set; }
+        public virtual MaterialAlloy Material { get; set; }
         public virtual Operation Operation { get; set; }
     }
 }
