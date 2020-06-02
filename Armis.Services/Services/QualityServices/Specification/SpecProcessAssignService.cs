@@ -82,6 +82,15 @@ namespace Armis.DataLogic.Services.QualityServices
             return theSpecProcesAssignEntity.ToModel();
         }
 
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeeded() //This call needs to be able to return null because there may not be any SpecProcessAssignments to review.
+        {
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.ReviewNeeded == true).ToListAsync();
+
+            if(theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
+
+            return theSpecProcessAssignEntities.ToModels();
+        }
+
         public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecRev, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
         {
             var entity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == specId &&
@@ -109,5 +118,6 @@ namespace Armis.DataLogic.Services.QualityServices
                 return false;
             }
         }
+
     }
 }

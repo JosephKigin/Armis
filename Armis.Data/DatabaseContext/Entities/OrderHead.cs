@@ -9,8 +9,9 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             BakeResult = new HashSet<BakeResult>();
             Memo = new HashSet<Memo>();
+            OrderCommentStatic = new HashSet<OrderCommentStatic>();
             OrderDetail = new HashSet<OrderDetail>();
-            OrderDetailComments = new HashSet<OrderDetailComments>();
+            OrderDetailComment = new HashSet<OrderDetailComment>();
             OrderExpediteReworkOrderNavigation = new HashSet<OrderExpedite>();
             OrderReceived = new HashSet<OrderReceived>();
             PartTran = new HashSet<PartTran>();
@@ -74,13 +75,14 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual AddlCharge ShipCharge { get; set; }
         public virtual ShipViaCode ShipVia { get; set; }
         public virtual SpecProcessAssign Spec { get; set; }
-        public virtual OrderComments OrderComments { get; set; }
+        public virtual OrderComment OrderComment { get; set; }
         public virtual OrderExpedite OrderExpediteOrder { get; set; }
         public virtual OrderShipToOverride OrderShipToOverride { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
+        public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
-        public virtual ICollection<OrderDetailComments> OrderDetailComments { get; set; }
+        public virtual ICollection<OrderDetailComment> OrderDetailComment { get; set; }
         public virtual ICollection<OrderExpedite> OrderExpediteReworkOrderNavigation { get; set; }
         public virtual ICollection<OrderReceived> OrderReceived { get; set; }
         public virtual ICollection<PartTran> PartTran { get; set; }

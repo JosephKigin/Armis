@@ -24,7 +24,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual OrderHead Order { get; set; }
         public virtual PartRevision Part { get; set; }
         public virtual PriceCode PriceCode { get; set; }
-        public virtual OrderDetailComments OrderDetailComments { get; set; }
+        public virtual OrderDetailComment OrderDetailComment { get; set; }
         public virtual ICollection<OrderLocation> OrderLocation { get; set; }
     }
 }

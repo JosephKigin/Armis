@@ -57,9 +57,10 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual DbSet<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual DbSet<OprThickPrice> OprThickPrice { get; set; }
-        public virtual DbSet<OrderComments> OrderComments { get; set; }
+        public virtual DbSet<OrderComment> OrderComment { get; set; }
+        public virtual DbSet<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
-        public virtual DbSet<OrderDetailComments> OrderDetailComments { get; set; }
+        public virtual DbSet<OrderDetailComment> OrderDetailComment { get; set; }
         public virtual DbSet<OrderExpedite> OrderExpedite { get; set; }
         public virtual DbSet<OrderHead> OrderHead { get; set; }
         public virtual DbSet<OrderLocation> OrderLocation { get; set; }
@@ -116,9 +117,7 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
-                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
-                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
+                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
             }
         }
 
@@ -297,7 +296,17 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.CommentId)
                     .HasName("PK_CommentCode_CommentId");
 
+                entity.HasIndex(e => e.CommentCode1)
+                    .HasName("UNQ_CommentCode")
+                    .IsUnique();
+
                 entity.Property(e => e.CommentId).ValueGeneratedNever();
+
+                entity.Property(e => e.CommentCode1)
+                    .IsRequired()
+                    .HasColumnName("CommentCode")
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CommentDesc)
                     .IsRequired()
@@ -765,8 +774,8 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<DeptSpec>(entity =>
             {
-                entity.HasKey(e => new { e.DepartmentId, e.SpecId, e.SpecRevId })
-                    .HasName("PK_DeptSpec_DepartmentId_SpecId_SpecRevId");
+                entity.HasKey(e => new { e.DepartmentId, e.SpecId, e.SpecRevId, e.ListPriorityNum })
+                    .HasName("PK_DeptSpec_DepartmentId_SpecId_SpecRevId_ListPriorityNum");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.DeptSpec)
@@ -1140,10 +1149,10 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_OprThickPrice_OperationId_Operation_OperationId");
             });
 
-            modelBuilder.Entity<OrderComments>(entity =>
+            modelBuilder.Entity<OrderComment>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK_OrderComments_OrderId");
+                    .HasName("PK_OrderComment_OrderId");
 
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
@@ -1159,8 +1168,7 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.OrderComments1)
-                    .HasColumnName("OrderComments")
+                entity.Property(e => e.OrderComments)
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
@@ -1174,10 +1182,32 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Order)
-                    .WithOne(p => p.OrderComments)
-                    .HasForeignKey<OrderComments>(d => d.OrderId)
+                    .WithOne(p => p.OrderComment)
+                    .HasForeignKey<OrderComment>(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderComments_OrderId_OrderHead_OrderId");
+                    .HasConstraintName("FK_OrderComment_OrderId_OrderHead_OrderId");
+            });
+
+            modelBuilder.Entity<OrderCommentStatic>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.CommentSeq })
+                    .HasName("PK_OrderCommentStatic_OrderId_CommentSeq");
+
+                entity.Property(e => e.StaticComments)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Dept)
+                    .WithMany(p => p.OrderCommentStatic)
+                    .HasForeignKey(d => d.DeptId)
+                    .HasConstraintName("FK_OrderCommentStatic_DeptId_Department_DepartmentId");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderCommentStatic)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderCommentStatic_OrderId_OrderHead_OrderId");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -1214,10 +1244,10 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_OrderDetail_PartRevId_PartRevision_PartRevId");
             });
 
-            modelBuilder.Entity<OrderDetailComments>(entity =>
+            modelBuilder.Entity<OrderDetailComment>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.OrderLine })
-                    .HasName("PK_OrderDetailComments_OrderId_OrderLine");
+                    .HasName("PK_OrderDetailComment_OrderId_OrderLine");
 
                 entity.Property(e => e.Comments1)
                     .IsRequired()
@@ -1233,16 +1263,16 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderDetailComments)
+                    .WithMany(p => p.OrderDetailComment)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderDetailComments_OrderId_OrderHead_OrderId");
+                    .HasConstraintName("FK_OrderDetailComment_OrderId_OrderHead_OrderId");
 
                 entity.HasOne(d => d.OrderNavigation)
-                    .WithOne(p => p.OrderDetailComments)
-                    .HasForeignKey<OrderDetailComments>(d => new { d.OrderId, d.OrderLine })
+                    .WithOne(p => p.OrderDetailComment)
+                    .HasForeignKey<OrderDetailComment>(d => new { d.OrderId, d.OrderLine })
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderDetailComments_OrderLine_OrderDetail_OrderLine");
+                    .HasConstraintName("FK_OrderDetailComment_OrderLine_OrderDetail_OrderLine");
             });
 
             modelBuilder.Entity<OrderExpedite>(entity =>
@@ -1418,12 +1448,13 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<OrderLocation>(entity =>
             {
-                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationId })
-                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationId");
+                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationId, e.ContainerId })
+                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationId_ContainerId");
 
                 entity.HasOne(d => d.Container)
                     .WithMany(p => p.OrderLocation)
                     .HasForeignKey(d => d.ContainerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLocation_ContainerId_Container_ContainerId");
 
                 entity.HasOne(d => d.Location)

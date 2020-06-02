@@ -42,6 +42,18 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
             };
         }
 
+        public static IEnumerable<SpecProcessAssignModel> ToModels(this IEnumerable<SpecProcessAssign> aSpecProcessAssigns)
+        {
+            var theResultingModels = new List<SpecProcessAssignModel>();
+
+            foreach (var specProcessAssign in aSpecProcessAssigns)
+            {
+                theResultingModels.Add(specProcessAssign.ToModel());
+            }
+
+            return theResultingModels;
+        }
+
         public static SpecProcessAssignModel ToHydratedModel(this SpecProcessAssign aSpecProcessAssignEntity)
         {
             return new SpecProcessAssignModel()

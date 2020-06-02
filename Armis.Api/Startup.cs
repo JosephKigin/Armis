@@ -5,12 +5,16 @@ using System.Threading.Tasks;
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.Services.CustomerServices;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
-using Armis.DataLogic.Services.PartService;
-using Armis.DataLogic.Services.PartService.Interfaces;
+using Armis.DataLogic.Services.OrderEntryServices;
+using Armis.DataLogic.Services.OrderEntryServices.Interfaces;
+using Armis.DataLogic.Services.PartServices;
+using Armis.DataLogic.Services.PartServices.Interfaces;
 using Armis.DataLogic.Services.QualityServices;
 using Armis.DataLogic.Services.QualityServices.Inspection;
 using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
+using Armis.DataLogic.Services.ShippingService;
+using Armis.DataLogic.Services.ShippingService.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -64,6 +68,7 @@ namespace Armis.Api
             //Inspection
             services.AddScoped<ISamplePlanService, SamplePlanService>();
             services.AddScoped<IInspectTestTypeService, InspectTestTypeService>();
+            services.AddScoped<IQualityStandardService, QualityStandardService>();
 
             //Part
             services.AddScoped<IHardnessService, HardnessService>();
@@ -72,6 +77,12 @@ namespace Armis.Api
 
             //Customer
             services.AddScoped<ICustomerService, CustomerService>();
+
+            //Shipping
+            services.AddScoped<IShipViaService, ShipViaService>();
+            services.AddScoped<IPackagCodeService, PackageCodeService>();
+            services.AddScoped<IContainerService, ContainerService>();
+            services.AddScoped<ICommentCodeService, CommentCodeService>();
 
             //Coop
             services.AddScoped<IEmployeeService, EmployeeService>();
