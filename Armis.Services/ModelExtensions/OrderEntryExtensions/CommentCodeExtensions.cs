@@ -13,6 +13,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             return new CommentCodeModel()
             {
                 CommentId = aCommentCodeEntity.CommentId,
+                CommentCode = aCommentCodeEntity.CommentCode1,
                 CommentDesc = aCommentCodeEntity.CommentDesc,
                 PriceIncPerc = aCommentCodeEntity.PriceIncPerc
             };
