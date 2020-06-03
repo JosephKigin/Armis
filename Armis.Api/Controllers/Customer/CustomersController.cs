@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
+using Armis.BusinessModels.Customer;
 
 namespace Armis.Api.Controllers
 {
@@ -27,7 +28,7 @@ namespace Armis.Api.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetCustomers()
         {
             try
             {
@@ -42,7 +43,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetAllCurrentAndProspectCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCurrentAndProspectCustomers()
         {
             try
             {

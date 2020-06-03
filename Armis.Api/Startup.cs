@@ -77,8 +77,10 @@ namespace Armis.Api
 
             //Customer
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IBillToService, BillToService>();
 
             //Shipping
+            services.AddScoped<IShipToService, ShipToService>();
             services.AddScoped<IShipViaService, ShipViaService>();
             services.AddScoped<IPackagCodeService, PackageCodeService>();
             services.AddScoped<IContainerService, ContainerService>();
