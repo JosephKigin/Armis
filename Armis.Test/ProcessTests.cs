@@ -51,10 +51,12 @@ namespace Armis.Test
         }
 
         [TestMethod]
-        private async Task CheckProcessNameUniqueness()
+        public async Task CheckProcessNameUniqueness()
         {
-            var theBaselineProcessModel = CreateTestProcessModel(991, "");//fix
-            var thePostAddProcess = await ProcessService.CreateNewProcess(theBaselineProcessModel);
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+
+            var theTestProcessModel = CreateTestProcessModel(991, theTimeStamp);
+            var thePostAddProcess = await ProcessService.CreateNewProcess(theTestProcessModel);
 
             var theNewExistingProcessName = thePostAddProcess.Name;
 
