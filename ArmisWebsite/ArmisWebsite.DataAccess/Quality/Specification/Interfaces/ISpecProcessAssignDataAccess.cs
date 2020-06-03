@@ -10,5 +10,6 @@ namespace ArmisWebsite.DataAccess.Quality.Specification.Interfaces
     {
         Task<IEnumerable<SpecProcessAssignModel>> GetAllSpecProcessAssigns();
         Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssign);
+        Task<bool> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer);
     }
 }

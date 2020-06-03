@@ -1,4 +1,4 @@
-﻿@page "{aSpecId:int?}/{aMessage?}"
+﻿@page "{aSpecId:int?}/{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.Pages.ProcessMaintenance.SpecProcessAssignModel
 @{
     ViewData["Title"] = "SpecProcessAssign";
@@ -14,7 +14,7 @@
     @*Preloaded message.*@
     <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
 
-    <form method="post">
+    <form method="post" onsubmit="return validate()">
         <div class="row">
             @*Left Side*@
             <div class="col-lg-3">
@@ -50,8 +50,8 @@
                     <label>Spec Rev</label>
                     <input class="form-control mb-2" value="@Model.CurrentSpecCurrentRev.ExternalRev" readonly />
 
-                    <input asp-for="SpecId" />
-                    <input asp-for="SpecInternalRevId" />
+                    <input type="hidden" asp-for="SpecId" />
+                    <input type="hidden" asp-for="SpecInternalRevId" />
 
                     <div class="card p-2">
                         @foreach (var sublevel in Model.CurrentSpecCurrentRev.SubLevels)
@@ -64,12 +64,12 @@
                                 }
                             </div>
                         }
-                        <input id="hdnChoiceId1" type="number" asp-for="ChoiceId1" />
-                        <input id="hdnChoiceId2" type="number" asp-for="ChoiceId2" />
-                        <input id="hdnChoiceId3" type="number" asp-for="ChoiceId3" />
-                        <input id="hdnChoiceId4" type="number" asp-for="ChoiceId4" />
-                        <input id="hdnChoiceId5" type="number" asp-for="ChoiceId5" />
-                        <input id="hdnChoiceId6" type="number" asp-for="ChoiceId6" />
+                        <input type="hidden" id="hdnChoiceId1" asp-for="ChoiceId1" />
+                        <input type="hidden" id="hdnChoiceId2" asp-for="ChoiceId2" />
+                        <input type="hidden" id="hdnChoiceId3" asp-for="ChoiceId3" />
+                        <input type="hidden" id="hdnChoiceId4" asp-for="ChoiceId4" />
+                        <input type="hidden" id="hdnChoiceId5" asp-for="ChoiceId5" />
+                        <input type="hidden" id="hdnChoiceId6" asp-for="ChoiceId6" />
                     </div>
                 }
 
@@ -81,8 +81,13 @@
                     @*Pre-Bake*@
                     <div class="mb-1 border border-dark p-1">
                         <label>Pre-Bake</label><button type="button" class="btn btn-sm btn-primary float-right my-1" data-toggle="modal" data-target="#modalPreBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right  my-1 mx-1" onclick="clearInput('PreBake')">Clear</button>
-                        <input id="inputPreBake" class="form-control" data-id="" readonly />
-                        <input id="hdnPreBakeId" asp-for="PreBakeStepId" />
+
+                        <input type="hidden" id="hdnPreBakeId" asp-for="PreBakeStepId" />
+
+                        @if (Model.PreBakeStepId != null)
+                        {<input id="inputPreBake" class="form-control" data-id="@Model.PreBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PreBakeStepId).StepName" readonly /> }
+                        else
+                        { <input id="inputPreBake" class="form-control" data-id="" value="" readonly />}
                     </div>
 
                     <div class="modal fade" id="modalPreBakeSelect">
@@ -112,8 +117,13 @@
                     @*Post Bake*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Post-Bake</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalPostBakeSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('PostBake')">Clear</button>
-                        <input id="inputPostBake" class="form-control" data-id="" value="" readonly />
-                        <input id="hdnPostBakeId" asp-for="PostBakeStepId" />
+
+                        <input type="hidden" id="hdnPostBakeId" asp-for="PostBakeStepId" />
+
+                        @if (Model.PostBakeStepId != null)
+                        {<input id="inputPostBake" class="form-control" data-id="@Model.PostBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PostBakeStepId).StepName" readonly /> }
+                        else
+                        { <input id="inputPostBake" class="form-control" data-id="" value="" readonly />}
                     </div>
 
                     <div class="modal fade" id="modalPostBakeSelect">
@@ -143,8 +153,14 @@
                     @*Mask*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Mask</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
-                        <input id="inputMask" data-id="" class="form-control" value="" readonly />
-                        <input id="hdnMaskId" asp-for="MaskStepId" />
+
+                        <input type="hidden" id="hdnMaskId" asp-for="MaskStepId" />
+
+                        @if (Model.MaskStepId != null)
+                        {<input id="inputMask" data-id="@Model.MaskStepId" class="form-control" value="@Model.AllMaskSteps.FirstOrDefault(i => i.StepId == Model.MaskStepId).StepName" readonly /> }
+                        else
+                        { <input id="inputMask" data-id="" class="form-control" value="" readonly />}
+
                     </div>
 
                     <div class="modal fade" id="modalMaskSelect">
@@ -173,8 +189,13 @@
                     @*Hardness*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Hardness</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalHardnessSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Hardness')">Clear</button>
-                        <input id="inputHardness" class="form-control" data-id="" readonly />
-                        <input id="hdnHardnessId" asp-for="HardnessId" />
+
+                        <input type="hidden" id="hdnHardnessId" asp-for="HardnessId" />
+
+                        @if (Model.HardnessId != null)
+                        {<input id="inputHardness" class="form-control" data-id="@Model.HardnessId" value="@Model.AllHardnesses.FirstOrDefault(i => i.HardnessId == Model.HardnessId).ShortName" readonly /> }
+                        else
+                        { <input id="inputHardness" data-id="" class="form-control" value="" readonly />}
                     </div>
 
                     <div class="modal fade" id="modalHardnessSelect">
@@ -204,8 +225,14 @@
                     @*Series*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Series</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialSeriesSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialSeries')">Clear</button>
-                        <input id="inputMaterialSeries" class="form-control" data-id="" readonly />
-                        <input id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
+
+                        <input type="hidden" id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
+
+                        @if (Model.MaterialSeriesId != null)
+                        {<input id="inputMaterialSeries" class="form-control" data-id="@Model.MaterialSeriesId" value="@Model.AllMaterialSeries.FirstOrDefault(i => i.SeriesId == Model.MaterialSeriesId).Description" readonly /> }
+                        else
+                        { <input id="inputMaterialSeries" data-id="" class="form-control" value="" readonly />}
+
                     </div>
 
                     <div class="modal fade" id="modalMaterialSeriesSelect">
@@ -235,8 +262,14 @@
                     @*Alloy*@
                     <div class="mb-2 border border-dark p-1">
                         <label>Alloy</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialAlloySelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialAlloy')">Clear</button>
-                        <input id="inputMaterialAlloy" class="form-control" data-id="" readonly />
-                        <input id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
+
+                        <input type="hidden" id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
+
+                        @if (Model.MaterialAlloyId != null)
+                        {<input id="inputMaterialAlloy" class="form-control" data-id="@Model.MaterialAlloyId" value="@Model.AllMaterialAlloys.FirstOrDefault(i => i.AlloyId == Model.MaterialAlloyId).Description" readonly /> }
+                        else
+                        { <input id="inputMaterialAlloy" class="form-control" data-id="" readonly />}
+
                     </div>
 
                     <div class="modal fade" id="modalMaterialAlloySelect">
@@ -258,7 +291,7 @@
                                     <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
                                     <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('MaterialAlloy')">Ok</button>
                                 </div>
-                            </div>
+                            </div>7
                         </div>
                     </div>
 
@@ -266,15 +299,20 @@
                     @*Customer*@
                     <div class=" border border-dark p-1">
                         <label>Customer</label><button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalCustomerSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Customer')">Clear</button>
-                        <input id="inputCustomer" class="form-control" data-id="" readonly />
-                        <input id="hdnCustomerId" asp-for="CustomerId" />
+
+                        <input type="hidden" id="hdnCustomerId" asp-for="CustomerId" />
+
+                        @if (Model.CustomerId != null)
+                        {<input id="inputCustomer" class="form-control" data-id="@Model.CustomerId" value="@Model.AllCustomers.FirstOrDefault(i => i.Id == Model.CustomerId).Name" readonly /> }
+                        else
+                        { <input id="inputCustomer" class="form-control" data-id="" readonly />}
                     </div>
 
                     <div class="modal fade" id="modalCustomerSelect">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Material Series</h5>
+                                    <h5 class="modal-title">Choose a Customer</h5>
                                 </div>
                                 <div class="modal-body">
                                     <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Customer')" />
@@ -298,46 +336,53 @@
                 @*Right side*@
                 <div class="col-lg-5">
                     <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Process')" />
-                    <select id="selectProcessList" class="list-group w-100" size="12" asp-for="ProcessId" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
+                    <select id="selectProcessList" class="list-group w-100 border" size="12" asp-for="ProcessId" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
                         @foreach (var process in Model.AllProcessesWithCurrentRev)
                         {
-                            var currentRevId = process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId;
-                            <option data-process-id="@process.ProcessId" data-current-rev-id="@currentRevId" class="list-group-item" value="@process.ProcessId">
-                                @process.Name
-                            </option>
+                            if (process.Revisions.Any())
+                            {
+                                var currentRevId = process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId;
+                                <option data-process-id="@process.ProcessId" data-current-rev-id="@currentRevId" class="list-group-item" value="@process.ProcessId">
+                                    @process.Name
+                                </option>
+                            }
+
                         }
                     </select>
-                    <input id="hdnProcessRevId" asp-for="ProcessRevId" />
+                    <input type="hidden" id="hdnProcessRevId" asp-for="ProcessRevId" />
                     <button type="button" class="btn btn-sm btn-primary float-right my-1" onclick="openModalSteps()">View Steps</button>
                 </div>
 
                 @foreach (var process in Model.AllProcessesWithCurrentRev)
                 {
-                    <div class="modal fade" id="modalStepList-@process.ProcessId">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">@process.Name Steps</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <ul class="list-group w-100" size="16">
-                                        @foreach (var stepSeq in process.Revisions.ToList()[0].StepSeqs)
-                                        {
-                                            <li class="list-group-item">
+                    if (process.Revisions.Any())
+                    {
+                        <div class="modal fade" id="modalStepList-@process.ProcessId">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">@process.Name Steps</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group w-100" size="16">
+                                            @foreach (var stepSeq in process.Revisions.ToList()[0].StepSeqs)
+                                            {
+                                                <li class="list-group-item">
 
-                                                <a href="#stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" data-toggle="collapse">@stepSeq.Step.StepName</a>
-                                                <div id="stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" class="card collapse p-1">
-                                                    <h6>@stepSeq.Step.StepCategory.Name</h6>
-                                                    @stepSeq.Step.Instructions
-                                                </div>
-                                            </li>
-                                        }
-                                    </ul>
-                                    <input type="button" class="btn btn-danger mt-1" data-dismiss="modal" value="Close" />
+                                                    <a href="#stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" data-toggle="collapse">@stepSeq.Step.StepName</a>
+                                                    <div id="stepDetails-@stepSeq.StepId-@stepSeq.ProcessId" class="card collapse p-1">
+                                                        <h6>@stepSeq.Step.StepCategory.Name</h6>
+                                                        @stepSeq.Step.Instructions
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                        <input type="button" class="btn btn-danger mt-1" data-dismiss="modal" value="Close" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
             }
         </div>
@@ -350,23 +395,4 @@
             </div>
         }
     </form>
-
-    <button type="button" onclick="validateUniqueChoices()">Click It!</button>
 </div>
-
-<script>
-    //This needs to be on the actual page in order to access the Model... But that isn't actually true. You can just pass it in as a parameter... TODO: Read words before these words.
-function validateUniqueChoices() {
-    var isValid = true;
-    var resultArray = [document.getElementById("hdnChoiceId1").value, document.getElementById("hdnChoiceId2").value, document.getElementById("hdnChoiceId3").value, document.getElementById("hdnChoiceId4").value, document.getElementById("hdnChoiceId5").value, document.getElementById("hdnChoiceId6").value, document.getElementById("hdnPreBakeId").value, document.getElementById("hdnPostBakeId").value, document.getElementById("hdnMaskId").value, document.getElementById("hdnHardnessId").value, document.getElementById("hdnMaterialSeriesId").value, document.getElementById("hdnMaterialAlloyId").value, document.getElementById("hdnCustomerId").value];
-    var jsonResult = JSON.stringify(resultArray);
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '@Model._apiAddress' + 'api/SpecProcessAssign/VerifyUniqueChoices/' + jsonResult, true);
-    xhr.send();
-
-    xhr.onload = function () {
-    console.log(resultArray);
-    }
-    }
-
-</script>

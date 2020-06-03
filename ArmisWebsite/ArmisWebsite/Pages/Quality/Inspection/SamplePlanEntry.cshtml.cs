@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.QualityModels.Spec;
 using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -43,7 +44,7 @@ namespace ArmisWebsite.Pages.Quality.Inspection
         public int AmountOfTests { get; set; }
 
         [BindProperty]
-        public string Message { get; set; }
+        public PopUpMessageModel Message { get; set; }
 
         public SamplePlanEntryModel(ITestTypeDataAccess aTestTypeDataAccess, ISamplePlanDataAccess aSamplePlanDataAccess)
         {
@@ -51,9 +52,13 @@ namespace ArmisWebsite.Pages.Quality.Inspection
             SamplePlanDataAccess = aSamplePlanDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(string aMessage)
+        public async Task<IActionResult> OnGet(string aMessage, bool? isMessageGood)
         {
-            if(aMessage != null && aMessage != "") { Message = aMessage; }
+            Message = new PopUpMessageModel()
+            {
+                Text = aMessage,
+                IsMessageGood = isMessageGood
+            };
 
             await SetUpProperties();
 
@@ -112,7 +117,7 @@ namespace ArmisWebsite.Pages.Quality.Inspection
 
                 await SamplePlanDataAccess.CreateNewSamplePlan(newSamplePlan);
 
-                return RedirectToPage("/Quality/Inspection/SamplePlanEntry", new { aMessage = "Sample Plan created successfully" });
+                return RedirectToPage("/Quality/Inspection/SamplePlanEntry", new { aMessage = "Sample Plan created successfully", isMessageGood = true });
 
             }
             catch (Exception ex)

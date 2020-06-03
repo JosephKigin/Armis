@@ -1,4 +1,4 @@
-﻿@page "{aProcessId:int?}/{aPopUpMessage?}"
+﻿@page "{aProcessId:int?}/{aMessage?}"
 @model ArmisWebsite.ProcessRevMaintenanceModel
 @{
     ViewData["Title"] = "Process Maintenance";
@@ -14,7 +14,7 @@
     <h1>Process Revision Maintenance</h1>
 
     @*Preloaded message.*@
-    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></p>
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
 
     @if (Model.CurrentProcessId != 0)
     {

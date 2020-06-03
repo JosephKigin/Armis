@@ -1,4 +1,4 @@
-﻿@page "{aMessage?}"
+﻿@page "{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.Pages.Quality.Inspection.SamplePlanEntryModel
 @{
     ViewData["Title"] = "SamplePlanEntry";
@@ -10,10 +10,7 @@
 <div class="container-fluid w-75">
     <h1>Sample Plan Entry</h1>
 
-    @if (Model.Message != null && Model.Message != "")
-    {
-        <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
-    }
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
 
     @*Sample Plan Head inputs*@
     <label>Name</label>

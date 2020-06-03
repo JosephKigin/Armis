@@ -16,14 +16,14 @@ namespace Armis.Data.DatabaseContext
         {
         }
 
+        public virtual DbSet<AddlCharge> AddlCharge { get; set; }
+        public virtual DbSet<AddlChargeType> AddlChargeType { get; set; }
         public virtual DbSet<AdjustReason> AdjustReason { get; set; }
         public virtual DbSet<Area> Area { get; set; }
         public virtual DbSet<AreaRemark> AreaRemark { get; set; }
         public virtual DbSet<BakeResult> BakeResult { get; set; }
         public virtual DbSet<CarrierCode> CarrierCode { get; set; }
-        public virtual DbSet<Certification> Certification { get; set; }
-        public virtual DbSet<Charge> Charge { get; set; }
-        public virtual DbSet<ChargeType> ChargeType { get; set; }
+        public virtual DbSet<CertificationCharge> CertificationCharge { get; set; }
         public virtual DbSet<CommentCode> CommentCode { get; set; }
         public virtual DbSet<ContComment> ContComment { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
@@ -57,11 +57,14 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<OprLoadPrice> OprLoadPrice { get; set; }
         public virtual DbSet<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual DbSet<OprThickPrice> OprThickPrice { get; set; }
-        public virtual DbSet<OrderComments> OrderComments { get; set; }
+        public virtual DbSet<OrderComment> OrderComment { get; set; }
+        public virtual DbSet<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
+        public virtual DbSet<OrderDetailComment> OrderDetailComment { get; set; }
         public virtual DbSet<OrderExpedite> OrderExpedite { get; set; }
         public virtual DbSet<OrderHead> OrderHead { get; set; }
         public virtual DbSet<OrderLocation> OrderLocation { get; set; }
+        public virtual DbSet<OrderReceived> OrderReceived { get; set; }
         public virtual DbSet<OrderShipToOverride> OrderShipToOverride { get; set; }
         public virtual DbSet<Oven> Oven { get; set; }
         public virtual DbSet<PackageCode> PackageCode { get; set; }
@@ -113,13 +116,53 @@ namespace Armis.Data.DatabaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
                 optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
+                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AddlCharge>(entity =>
+            {
+                entity.HasKey(e => e.ChargeId)
+                    .HasName("PK_AddlCharge_ChargeId");
+
+                entity.Property(e => e.ChargeId).ValueGeneratedNever();
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(19, 6)");
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.ChargeType)
+                    .WithMany(p => p.AddlCharge)
+                    .HasForeignKey(d => d.ChargeTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AddlCharge_ChargeTypeId_AddlChargeType_ChargeTypeId");
+            });
+
+            modelBuilder.Entity<AddlChargeType>(entity =>
+            {
+                entity.HasKey(e => e.ChargeTypeId)
+                    .HasName("PK_AddlChargeType_ChargeTypeId");
+
+                entity.Property(e => e.ChargeTypeId).ValueGeneratedNever();
+
+                entity.Property(e => e.Code)
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<AdjustReason>(entity =>
             {
                 entity.Property(e => e.AdjustReasonId).ValueGeneratedNever();
@@ -238,65 +281,16 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Certification>(entity =>
+            modelBuilder.Entity<CertificationCharge>(entity =>
             {
-                entity.HasKey(e => e.CertId)
-                    .HasName("PK_Certification_CertId");
+                entity.HasKey(e => e.CertChargeId)
+                    .HasName("PK_CertificationCharge_CertChargeId");
 
-                entity.Property(e => e.ChargeAmt).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.CertChargeId).ValueGeneratedNever();
 
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.DefaultChargeAmt).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.Stamp)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.QualStd)
-                    .WithMany(p => p.Certification)
-                    .HasForeignKey(d => d.QualStdId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Certification_QualStdId_QualityStandard_QualStdId");
-
-                entity.HasOne(d => d.Spec)
-                    .WithMany(p => p.Certification)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Certification_SpecRevId_SpecificationRevision_SpecRevId");
-            });
-
-            modelBuilder.Entity<Charge>(entity =>
-            {
-                entity.Property(e => e.ChargeId).ValueGeneratedNever();
-
-                entity.Property(e => e.Amount).HasColumnType("decimal(9, 4)");
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(6)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.ChargeType)
-                    .WithMany(p => p.Charge)
-                    .HasForeignKey(d => d.ChargeTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Charge_ChargeTypeId_ChargeType_ChargeTypeId");
-            });
-
-            modelBuilder.Entity<ChargeType>(entity =>
-            {
-                entity.Property(e => e.ChargeTypeId).ValueGeneratedNever();
-
-                entity.Property(e => e.Code)
-                    .HasMaxLength(6)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+                entity.Property(e => e.NadcapChargeAmt).HasColumnType("decimal(19, 6)");
             });
 
             modelBuilder.Entity<CommentCode>(entity =>
@@ -304,7 +298,17 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.CommentId)
                     .HasName("PK_CommentCode_CommentId");
 
+                entity.HasIndex(e => e.CommentCode1)
+                    .HasName("UNQ_CommentCode")
+                    .IsUnique();
+
                 entity.Property(e => e.CommentId).ValueGeneratedNever();
+
+                entity.Property(e => e.CommentCode1)
+                    .IsRequired()
+                    .HasColumnName("CommentCode")
+                    .HasMaxLength(6)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CommentDesc)
                     .IsRequired()
@@ -563,11 +567,6 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Cert)
-                    .WithMany(p => p.CustForm)
-                    .HasForeignKey(d => d.CertId)
-                    .HasConstraintName("FK_CustForm_CertId_Certification_CertId");
-
                 entity.HasOne(d => d.Cust)
                     .WithOne(p => p.CustForm)
                     .HasForeignKey<CustForm>(d => d.CustId)
@@ -584,7 +583,7 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.CreatedDate).HasColumnType("date");
 
-                entity.Property(e => e.CreditLimit).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.CreditLimit).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.IsIgnoreDupePos).HasColumnName("IsIgnoreDupePOs");
 
@@ -613,10 +612,10 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(25)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Cert)
+                entity.HasOne(d => d.CertCharge)
                     .WithMany(p => p.Customer)
-                    .HasForeignKey(d => d.CertId)
-                    .HasConstraintName("FK_Customer_CertId_Certification_CertId");
+                    .HasForeignKey(d => d.CertChargeId)
+                    .HasConstraintName("FK_Customer_CertChargeId_CertificationCharge_CertChargeId");
 
                 entity.HasOne(d => d.CredStatus)
                     .WithMany(p => p.Customer)
@@ -777,8 +776,8 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<DeptSpec>(entity =>
             {
-                entity.HasKey(e => new { e.DepartmentId, e.SpecId, e.SpecRevId })
-                    .HasName("PK_DeptSpec_DepartmentId_SpecId_SpecRevId");
+                entity.HasKey(e => new { e.DepartmentId, e.SpecId, e.SpecRevId, e.ListPriorityNum })
+                    .HasName("PK_DeptSpec_DepartmentId_SpecId_SpecRevId_ListPriorityNum");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.DeptSpec)
@@ -871,9 +870,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.HardnessMax).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.HardnessMax).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.HardnessMin).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.HardnessMin).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.ShortName)
                     .HasMaxLength(8)
@@ -1064,13 +1063,13 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.Lbprice)
                     .HasColumnName("LBPrice")
-                    .HasColumnType("decimal(19, 4)");
+                    .HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinLotCharge).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinLotCharge).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinPiecePrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinPiecePrice).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.UnitPrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.UnitPrice).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.OprLoadPrice)
@@ -1097,11 +1096,11 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.Property(e => e.OprMaterialPriceId).ValueGeneratedNever();
 
-                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.OprMaterialPrice)
@@ -1113,10 +1112,10 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.DepartmentId)
                     .HasConstraintName("FK_OprMaterialPrice_DepartmentId_Department_DepartmentId");
 
-                entity.HasOne(d => d.MaterialCdNavigation)
+                entity.HasOne(d => d.Material)
                     .WithMany(p => p.OprMaterialPrice)
-                    .HasForeignKey(d => d.MaterialCd)
-                    .HasConstraintName("FK_OprMaterialPrice_MaterialCd_MaterialAlloy_AlloyId");
+                    .HasForeignKey(d => d.MaterialId)
+                    .HasConstraintName("FK_OprMaterialPrice_MaterialId_MaterialAlloy_AlloyId");
 
                 entity.HasOne(d => d.Operation)
                     .WithMany(p => p.OprMaterialPrice)
@@ -1128,13 +1127,13 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.Property(e => e.OprThickPriceId).ValueGeneratedNever();
 
-                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinThickness).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinThickness).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.OprThickPrice)
@@ -1152,10 +1151,10 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_OprThickPrice_OperationId_Operation_OperationId");
             });
 
-            modelBuilder.Entity<OrderComments>(entity =>
+            modelBuilder.Entity<OrderComment>(entity =>
             {
                 entity.HasKey(e => e.OrderId)
-                    .HasName("PK_OrderComments_OrderId");
+                    .HasName("PK_OrderComment_OrderId");
 
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
@@ -1163,13 +1162,15 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
+                entity.Property(e => e.InternalComments)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.JobHoldComments)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.OrderComments1)
-                    .IsRequired()
-                    .HasColumnName("OrderComments")
+                entity.Property(e => e.OrderComments)
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
@@ -1183,10 +1184,32 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Order)
-                    .WithOne(p => p.OrderComments)
-                    .HasForeignKey<OrderComments>(d => d.OrderId)
+                    .WithOne(p => p.OrderComment)
+                    .HasForeignKey<OrderComment>(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderComments_OrderId_OrderHead_OrderId");
+                    .HasConstraintName("FK_OrderComment_OrderId_OrderHead_OrderId");
+            });
+
+            modelBuilder.Entity<OrderCommentStatic>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.CommentSeq })
+                    .HasName("PK_OrderCommentStatic_OrderId_CommentSeq");
+
+                entity.Property(e => e.StaticComments)
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Dept)
+                    .WithMany(p => p.OrderCommentStatic)
+                    .HasForeignKey(d => d.DeptId)
+                    .HasConstraintName("FK_OrderCommentStatic_DeptId_Department_DepartmentId");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderCommentStatic)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderCommentStatic_OrderId_OrderHead_OrderId");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -1194,15 +1217,15 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => new { e.OrderId, e.OrderLine })
                     .HasName("PK_OrderDetail_OrderId_OrderLine");
 
-                entity.Property(e => e.AssignedPrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.AssignPrice).HasColumnType("decimal(19, 6)");
+
+                entity.Property(e => e.CalcPrice).HasColumnType("decimal(19, 6)");
+
+                entity.Property(e => e.LotCharge).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.Poprice)
                     .HasColumnName("POPrice")
-                    .HasColumnType("decimal(19, 4)");
-
-                entity.Property(e => e.ProcessComments)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetail)
@@ -1213,12 +1236,45 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.PriceCode)
                     .WithMany(p => p.OrderDetail)
                     .HasForeignKey(d => d.PriceCodeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_PriceCodeId_PriceCode_PriceCodeId");
 
                 entity.HasOne(d => d.Part)
                     .WithMany(p => p.OrderDetail)
                     .HasForeignKey(d => new { d.PartId, d.PartRevId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_PartRevId_PartRevision_PartRevId");
+            });
+
+            modelBuilder.Entity<OrderDetailComment>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.OrderLine })
+                    .HasName("PK_OrderDetailComment_OrderId_OrderLine");
+
+                entity.Property(e => e.Comments1)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comments2)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Comments3)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderDetailComment)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderDetailComment_OrderId_OrderHead_OrderId");
+
+                entity.HasOne(d => d.OrderNavigation)
+                    .WithOne(p => p.OrderDetailComment)
+                    .HasForeignKey<OrderDetailComment>(d => new { d.OrderId, d.OrderLine })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderDetailComment_OrderLine_OrderDetail_OrderLine");
             });
 
             modelBuilder.Entity<OrderExpedite>(entity =>
@@ -1230,7 +1286,7 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.ExpeditedDate).HasColumnType("date");
 
-                entity.Property(e => e.FeeAmount).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.FeeAmount).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.ApprovedByEmpNavigation)
                     .WithMany(p => p.OrderExpediteApprovedByEmpNavigation)
@@ -1267,6 +1323,8 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
+                entity.Property(e => e.CertChargeTotal).HasColumnType("decimal(19, 6)");
+
                 entity.Property(e => e.DoneDate).HasColumnType("date");
 
                 entity.Property(e => e.DoneTime).HasColumnType("time(0)");
@@ -1279,7 +1337,7 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.LastCompleteRemSentDt).HasColumnType("date");
 
-                entity.Property(e => e.LotCharge).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.LotChargeTotal).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.OrderDate).HasColumnType("date");
 
@@ -1288,24 +1346,20 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(30)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RecvDate).HasColumnType("date");
-
-                entity.Property(e => e.RecvTime).HasColumnType("time(0)");
-
                 entity.Property(e => e.ReqDate).HasColumnType("date");
 
                 entity.Property(e => e.ShipDate).HasColumnType("date");
 
                 entity.Property(e => e.ShipTime).HasColumnType("time(0)");
 
-                entity.Property(e => e.SubTotal).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.SubTotal).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.TargetDate).HasColumnType("date");
 
-                entity.HasOne(d => d.Cert)
+                entity.HasOne(d => d.CertCharge)
                     .WithMany(p => p.OrderHead)
-                    .HasForeignKey(d => d.CertId)
-                    .HasConstraintName("FK_OrderHead_CertId_Certification_CertId");
+                    .HasForeignKey(d => d.CertChargeId)
+                    .HasConstraintName("FK_OrderHead_CertChargeId_CertificationCharge_CertChargeId");
 
                 entity.HasOne(d => d.CreditAuthByEmpNavigation)
                     .WithMany(p => p.OrderHeadCreditAuthByEmpNavigation)
@@ -1320,7 +1374,7 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.HandlingCharge)
                     .WithMany(p => p.OrderHeadHandlingCharge)
                     .HasForeignKey(d => d.HandlingChargeId)
-                    .HasConstraintName("FK_OrderHead_HandlingChargeId_Charge_ChargeId");
+                    .HasConstraintName("FK_OrderHead_HandlingChargeId_AddlCharge_ChargeId");
 
                 entity.HasOne(d => d.IsInspectedNavigation)
                     .WithMany(p => p.OrderHeadIsInspectedNavigation)
@@ -1359,7 +1413,7 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.MiscCharge)
                     .WithMany(p => p.OrderHeadMiscCharge)
                     .HasForeignKey(d => d.MiscChargeId)
-                    .HasConstraintName("FK_OrderHead_MiscChargeId_Charge_ChargeId");
+                    .HasConstraintName("FK_OrderHead_MiscChargeId_AddlCharge_ChargeId");
 
                 entity.HasOne(d => d.Package)
                     .WithMany(p => p.OrderHead)
@@ -1377,15 +1431,10 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.QualStdId)
                     .HasConstraintName("FK_OrderHead_QualStdId_QualityStandard_QualStdId");
 
-                entity.HasOne(d => d.RecvContainer)
-                    .WithMany(p => p.OrderHead)
-                    .HasForeignKey(d => d.RecvContainerId)
-                    .HasConstraintName("FK_OrderHead_RecvContainerId_Container_ContainerId");
-
                 entity.HasOne(d => d.ShipCharge)
                     .WithMany(p => p.OrderHeadShipCharge)
                     .HasForeignKey(d => d.ShipChargeId)
-                    .HasConstraintName("FK_OrderHead_ShipChargeId_Charge_ChargeId");
+                    .HasConstraintName("FK_OrderHead_ShipChargeId_AddlCharge_ChargeId");
 
                 entity.HasOne(d => d.ShipVia)
                     .WithMany(p => p.OrderHead)
@@ -1401,12 +1450,13 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<OrderLocation>(entity =>
             {
-                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationId })
-                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationId");
+                entity.HasKey(e => new { e.OrderId, e.OrderLine, e.LocationId, e.ContainerId })
+                    .HasName("PK_OrderLocation_OrderId_OrderLine_LocationId_ContainerId");
 
                 entity.HasOne(d => d.Container)
                     .WithMany(p => p.OrderLocation)
                     .HasForeignKey(d => d.ContainerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLocation_ContainerId_Container_ContainerId");
 
                 entity.HasOne(d => d.Location)
@@ -1420,6 +1470,28 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => new { d.OrderId, d.OrderLine })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLocation_OrderLine_OrderDetail_OrderLine");
+            });
+
+            modelBuilder.Entity<OrderReceived>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.ReceivedNum })
+                    .HasName("PK_OrderReceived_OrderId_ReceivedNum");
+
+                entity.Property(e => e.ReceivedDate).HasColumnType("date");
+
+                entity.Property(e => e.ReceivedTime).HasColumnType("time(0)");
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderReceived)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderReceived_OrderId_OrderHead_OrderId");
+
+                entity.HasOne(d => d.ReceivedContainer)
+                    .WithMany(p => p.OrderReceived)
+                    .HasForeignKey(d => d.ReceivedContainerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderReceived_ReceivedContainerId_Container_ContainerId");
             });
 
             modelBuilder.Entity<OrderShipToOverride>(entity =>
@@ -1575,9 +1647,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.BasePrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.BasePrice).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.DateModified).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(100)
@@ -1603,7 +1675,7 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.SurfaceArea).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.TimeModified).HasColumnType("time(0)");
+                entity.Property(e => e.TimeCreated).HasColumnType("time(0)");
 
                 entity.HasOne(d => d.AlloyNavigation)
                     .WithMany(p => p.PartRevision)
@@ -1664,7 +1736,7 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(30)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PiecePrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.PiecePrice).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.SysDate).HasColumnType("date");
 
@@ -1798,9 +1870,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.MinLotCharge).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.MinLotCharge).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.PiecePrice).HasColumnType("decimal(19, 4)");
+                entity.Property(e => e.PiecePrice).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.ProcessLoad)
@@ -1829,9 +1901,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.DateModified).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("date");
 
-                entity.Property(e => e.TimeModified).HasColumnType("time(0)");
+                entity.Property(e => e.TimeCreated).HasColumnType("time(0)");
 
                 entity.HasOne(d => d.CreatedByEmpNavigation)
                     .WithMany(p => p.ProcessRevision)
@@ -1995,6 +2067,10 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => new { e.SamplePlanId, e.SamplePlanLevelId })
                     .HasName("PK_SamplePlanLevel_SamplePlanId_SamplePlanLevelId");
+
+                entity.HasIndex(e => new { e.SamplePlanId, e.FromQty, e.ToQty })
+                    .HasName("UNQ_FromQty")
+                    .IsUnique();
 
                 entity.HasOne(d => d.SamplePlan)
                     .WithMany(p => p.SamplePlanLevel)
@@ -2231,6 +2307,22 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId })
                     .HasName("PK_SpecProcessAssign_SpecId_SpecRevId_SpecAssignId");
 
+                entity.HasIndex(e => new { e.SpecId, e.SpecRevId, e.ProcessId, e.ProcessRevId, e.ChoiceOption1, e.ChoiceOption2, e.ChoiceOption3, e.ChoiceOption4, e.ChoiceOption5, e.ChoiceOption6, e.PreBakeOption, e.PostBakeOption, e.MaskOption, e.SeriesOption, e.AlloyOption, e.Customer })
+                    .HasName("UNQ_ProcessId")
+                    .IsUnique();
+
+                entity.Property(e => e.SubLevelOption1).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.SubLevelOption2).HasDefaultValueSql("((2))");
+
+                entity.Property(e => e.SubLevelOption3).HasDefaultValueSql("((3))");
+
+                entity.Property(e => e.SubLevelOption4).HasDefaultValueSql("((4))");
+
+                entity.Property(e => e.SubLevelOption5).HasDefaultValueSql("((5))");
+
+                entity.Property(e => e.SubLevelOption6).HasDefaultValueSql("((6))");
+
                 entity.HasOne(d => d.AlloyOptionNavigation)
                     .WithMany(p => p.SpecProcessAssign)
                     .HasForeignKey(d => d.AlloyOption)
@@ -2383,7 +2475,7 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId })
                     .HasName("PK_SpecificationRevision_SpecId_SpecRevId");
 
-                entity.Property(e => e.DateModified).HasColumnType("date");
+                entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(50)
@@ -2394,7 +2486,7 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(5)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TimeModified).HasColumnType("time(0)");
+                entity.Property(e => e.TimeCreated).HasColumnType("time(0)");
 
                 entity.HasOne(d => d.CreatedByEmpNavigation)
                     .WithMany(p => p.SpecificationRevision)

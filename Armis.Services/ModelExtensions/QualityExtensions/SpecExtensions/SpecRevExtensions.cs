@@ -18,8 +18,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ExternalRev = aSpecRev.ExternalRev,
                 SamplePlanId = aSpecRev.SamplePlan,
                 EmployeeNumber = aSpecRev.CreatedByEmp,
-                DateModified = aSpecRev.DateModified,
-                TimeModified = aSpecRev.TimeModified
+                DateModified = aSpecRev.DateCreated,
+                TimeModified = aSpecRev.TimeCreated
             };
         }
 
@@ -34,8 +34,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SamplePlanId = aSpecRevEntity.SamplePlan,
                 SamplePlan = (aSpecRevEntity.SamplePlanNavigation != null) ? aSpecRevEntity.SamplePlanNavigation.ToHydratedModel() : null,
                 EmployeeNumber = aSpecRevEntity.CreatedByEmp,
-                DateModified = aSpecRevEntity.DateModified,
-                TimeModified = aSpecRevEntity.TimeModified,
+                DateModified = aSpecRevEntity.DateCreated,
+                TimeModified = aSpecRevEntity.TimeCreated,
 
                 SubLevels = aSpecRevEntity.SpecSubLevel.ToHydratedModels()
             };
@@ -65,10 +65,10 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SpecRevId = aSpecRevId,
                 Description = aSpecRevModel.Description,
                 ExternalRev = aSpecRevModel.ExternalRev,
-                SamplePlan = aSpecRevModel.SamplePlanId,
+                SamplePlan = (aSpecRevModel.SamplePlanId == 0) ? null : aSpecRevModel.SamplePlanId,
                 CreatedByEmp = aSpecRevModel.EmployeeNumber,
-                DateModified = DateTime.Now.Date,
-                TimeModified = DateTime.Now.TimeOfDay
+                DateCreated = DateTime.Now.Date,
+                TimeCreated = DateTime.Now.TimeOfDay
             };
         }
     }

@@ -30,6 +30,17 @@ namespace Armis.DataLogic.Services.QualityServices
             else { theNewSpecAssignId = 1; }
             aSpecProcessAssignModel.SpecAssignId = theNewSpecAssignId;
             var theSpecProcessAssignEntity = aSpecProcessAssignModel.ToEntity();
+
+            // TODO: Revisit this section if the database is udpated to not include SubLevelOptions on the SpecProcessAssign table.
+            //This shouldn't be needed anymore. 5/28/2020
+            //if (theSpecProcessAssignEntity.ChoiceOption1 != null) { theSpecProcessAssignEntity.SubLevelOption1 = 1; }
+            //if (theSpecProcessAssignEntity.ChoiceOption2 != null) { theSpecProcessAssignEntity.SubLevelOption2 = 2; }
+            //if (theSpecProcessAssignEntity.ChoiceOption3 != null) { theSpecProcessAssignEntity.SubLevelOption3 = 3; }
+            //if (theSpecProcessAssignEntity.ChoiceOption4 != null) { theSpecProcessAssignEntity.SubLevelOption4 = 4; }
+            //if (theSpecProcessAssignEntity.ChoiceOption5 != null) { theSpecProcessAssignEntity.SubLevelOption5 = 5; }
+            //if (theSpecProcessAssignEntity.ChoiceOption6 != null) { theSpecProcessAssignEntity.SubLevelOption6 = 6; }
+            //End section
+
             Context.SpecProcessAssign.Add(theSpecProcessAssignEntity);
             await Context.SaveChangesAsync();
 
@@ -71,21 +82,32 @@ namespace Armis.DataLogic.Services.QualityServices
             return theSpecProcesAssignEntity.ToModel();
         }
 
-        public async Task<bool> VerifyUniqueChoices(int[] aSpecProcesschoices)
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeeded() //This call needs to be able to return null because there may not be any SpecProcessAssignments to review.
         {
-            var entity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.ChoiceOption1 == aSpecProcesschoices[0] &&
-                                                                                  i.ChoiceOption2 == aSpecProcesschoices[1] &&
-                                                                                  i.ChoiceOption3 == aSpecProcesschoices[2] &&
-                                                                                  i.ChoiceOption4 == aSpecProcesschoices[3] &&
-                                                                                  i.ChoiceOption5 == aSpecProcesschoices[4] &&
-                                                                                  i.ChoiceOption6 == aSpecProcesschoices[5] &&
-                                                                                  i.PreBakeOption == aSpecProcesschoices[6] &&
-                                                                                  i.PostBakeOption == aSpecProcesschoices[7] &&
-                                                                                  i.MaskOption == aSpecProcesschoices[8] &&
-                                                                                  i.HardnessOption == aSpecProcesschoices[9] &&
-                                                                                  i.SeriesOption == aSpecProcesschoices[10] &&
-                                                                                  i.AlloyOption == aSpecProcesschoices[11] &&
-                                                                                  i.Customer == aSpecProcesschoices[12]);
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.ReviewNeeded == true).ToListAsync();
+
+            if(theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
+
+            return theSpecProcessAssignEntities.ToModels();
+        }
+
+        public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecRev, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
+        {
+            var entity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == specId &&
+                                                                                  i.SpecRevId == internalSpecRev &&
+                                                                                  i.ChoiceOption1 == choice1 &&
+                                                                                  i.ChoiceOption2 == choice2 &&
+                                                                                  i.ChoiceOption3 == choice3 &&
+                                                                                  i.ChoiceOption4 == choice4 &&
+                                                                                  i.ChoiceOption5 == choice5 &&
+                                                                                  i.ChoiceOption6 == choice6 &&
+                                                                                  i.PreBakeOption == preBake &&
+                                                                                  i.PostBakeOption == postBake &&
+                                                                                  i.MaskOption == mask &&
+                                                                                  i.HardnessOption == hardness &&
+                                                                                  i.SeriesOption == series &&
+                                                                                  i.AlloyOption == alloy &&
+                                                                                  i.Customer == customer);
 
             if(entity == null)
             {
@@ -96,5 +118,6 @@ namespace Armis.DataLogic.Services.QualityServices
                 return false;
             }
         }
+
     }
 }

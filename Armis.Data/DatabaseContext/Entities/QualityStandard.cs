@@ -7,7 +7,6 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public QualityStandard()
         {
-            Certification = new HashSet<Certification>();
             OrderHead = new HashSet<OrderHead>();
         }
 
@@ -15,7 +14,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public string QualStdCode { get; set; }
         public string Qsdescription { get; set; }
 
-        public virtual ICollection<Certification> Certification { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
     }
 }

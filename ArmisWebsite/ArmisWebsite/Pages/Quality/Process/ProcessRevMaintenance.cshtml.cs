@@ -9,6 +9,7 @@ using Armis.BusinessModels.EmployeeModels;
 using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +36,7 @@ namespace ArmisWebsite
 
 
         //Page Properties
-        public string PopUpMessage { get; set; }
+        public PopUpMessageModel Message { get; set; }
         public int InitialStepSeq { get; set; }
 
         [BindProperty]
@@ -81,13 +82,17 @@ namespace ArmisWebsite
         }
 
         //If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
-        public async Task<IActionResult> OnGetAsync(int? aProcessId, string aPopUpMessage) 
+        public async Task<IActionResult> OnGetAsync(int? aProcessId, string aMessage)
         {
             try
             {
-               if (aProcessId != 0 && aProcessId != null && CurrentProcessId == 0) { CurrentProcessId = aProcessId ?? 0; }
-                if (aPopUpMessage != null && aPopUpMessage != "") { PopUpMessage = aPopUpMessage; }
-                
+                if (aProcessId != 0 && aProcessId != null && CurrentProcessId == 0) { CurrentProcessId = aProcessId ?? 0; }
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage
+                };
+                if (aMessage != null) { Message.IsMessageGood = true; } //Messages from this page will always be good.
+
                 await SetUpProperties(CurrentProcessId);
 
                 return Page();
@@ -103,19 +108,20 @@ namespace ArmisWebsite
             try
             {
                 var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
-
-                PopUpMessage = "Revision deleted successfully.";
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { ExMessage = "There was a problem deleting that revision. " + ex.Message});
+                return RedirectToPage("/Error", new
+                {
+                    ExMessage = "There was a problem deleting that revision. " + ex.Message
+                });
             }
 
             try
             {
                 await SetUpProperties(CurrentProcessId);
 
-                return Page();
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = CurrentProcessId, aMessage = "Revision deleted successfully." });
             }
             catch (Exception)
             {
@@ -133,14 +139,14 @@ namespace ArmisWebsite
             try
             {
                 var result = await ProcessDataAccess.RevUp(CurrentRev);
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aPopUpMessage = "A new revision has been created."});
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "A new revision has been created." });
             }
             catch (Exception ex)
             {
                 return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message });
             }
 
-            
+
         }
 
         public async Task<IActionResult> OnPostSave()
@@ -163,7 +169,7 @@ namespace ArmisWebsite
 
                 var theReturnRevModel = await ProcessDataAccess.SaveStepSeqToRevision(theStepSeqList);
 
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aPopUpMessage = "Process saved successfully." });
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Process saved successfully." });
             }
             catch (Exception ex)
             {
@@ -192,7 +198,7 @@ namespace ArmisWebsite
 
                 var theReturnRevModel = await ProcessDataAccess.LockRevision(CurrentProcessId, CurrentRevId, theStepSeqList);
 
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aPopUpMessage = "Revision was locked successfully." });
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Revision was locked successfully." });
             }
             catch (Exception ex)
             {
@@ -217,7 +223,7 @@ namespace ArmisWebsite
                 ModelState.Remove("CurrentProcessId");
 
                 await SetUpProperties(result.ProcessId);
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aPopUpMessage = "Process was successfully copied." });
+                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "Process was successfully copied." });
             }
             catch (Exception ex)
             {
@@ -236,7 +242,7 @@ namespace ArmisWebsite
             }
 
             var theSteps = await StepDataAccess.GetAllSteps();
-            AllSteps = theSteps.OrderBy(i =>i.StepName).ToList();
+            AllSteps = theSteps.OrderBy(i => i.StepName).ToList();
 
             var theOperations = await OperationDataAccess.GetAllOperations();
             AllOperations = theOperations.OrderBy(i => i.Name).ToList();

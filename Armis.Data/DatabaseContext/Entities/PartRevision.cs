@@ -32,8 +32,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? Alloy { get; set; }
         public int? SeriesId { get; set; }
         public int CreatedByEmp { get; set; }
-        public DateTime DateModified { get; set; }
-        public TimeSpan TimeModified { get; set; }
+        public DateTime DateCreated { get; set; }
+        public TimeSpan TimeCreated { get; set; }
 
         public virtual MaterialAlloy AlloyNavigation { get; set; }
         public virtual Employee CreatedByEmpNavigation { get; set; }

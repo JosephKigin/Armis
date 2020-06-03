@@ -26,6 +26,20 @@ namespace ArmisWebsite.DataAccess
             }
         }
 
+        //This is for gets with a different return type than the parameter type being passed in.
+        public static async Task<T> HttpGetRequest<T, U>(string aPath, U aModel)
+        {
+            using (var client = new HttpClient())
+            {
+                //StringContent data = new StringContent(, Encoding.UTF8, "application/json");
+                var response = await client.GetAsync(aPath + JsonSerializer.Serialize(aModel));
+
+                if (!response.IsSuccessStatusCode) { throw new Exception(response.ReasonPhrase + ": " + await response.Content.ReadAsStringAsync()); }
+                
+                return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
+            }
+        }
+
         //POST
         public static async Task<T> HttpPostRequest<T>(string aPath, T aModel)
         {

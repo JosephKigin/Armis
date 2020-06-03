@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
 using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
+using ArmisWebsite.FrontEndModels;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
 {
@@ -23,7 +24,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public List<SamplePlanModel> AllSamplePlans { get; set; }
 
         //Front-End Models
-        public string PopUpMessage { get; set; }
+        public PopUpMessageModel Message { get; set; }
         //Current
         [BindProperty(SupportsGet = true)]
         public int CurrentSpecId { get; set; }//This will only get a value if the current spec is being reved-up
@@ -108,11 +109,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             SamplePlanDataAccess = aSamplePlanDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(int? aSpecId, string aPopUpMessage = null)
+        public async Task<IActionResult> OnGet(int? aSpecId, string aMessage = null)
         {
             try
             {
-                PopUpMessage = aPopUpMessage;
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage
+                };
+                if (aMessage != null) { Message.IsMessageGood = true; }
+
                 if (aSpecId != 0 && aSpecId != null)
                 {
                     if (CurrentSpecId == 0)
@@ -136,9 +142,13 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<ActionResult> OnPost()
         {
-            if (!ModelState.IsValid)
+            Message = new PopUpMessageModel();
+
+            if (!ModelState.IsValid) //Is this even used?
             {
-                PopUpMessage = ModelState.ToString();
+                Message.Text = ModelState.ToString();
+                Message.IsMessageGood = false;
+                
                 return Page();
             }
             try
@@ -215,14 +225,15 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 {
                     theReturnedSpecId = await SpecDataAccess.CreateNewHydratedSpec(theSpec);
                     CurrentSpecId = theReturnedSpecId;
-                    PopUpMessage = "Spec created successfully.";
+                    Message.Text = "Spec created successfully.";
+                    Message.IsMessageGood = true;
                 }
                 else if (WasRevUpSelected) //Spec is being Reved-Up.
                 {
-                    //TODO: This section is for rev-up
                     theSpec.Id = CurrentSpecId;
                     theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpecRev);
-                    PopUpMessage = "Spec reved-up successfully";
+                    Message.Text = "Spec reved-up successfully";
+                    Message.IsMessageGood = true;
                 }
                 await SetUpProperties(theReturnedSpecId);
                 return Page();

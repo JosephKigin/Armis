@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Armis.DataLogic.Services.PartService.Interfaces
+namespace Armis.DataLogic.Services.PartServices.Interfaces
 {
     public interface IMaterialAlloyService
     {

@@ -1,14 +1,14 @@
 ﻿using Armis.BusinessModels.PartModels;
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.ModelExtensions.PartExtensions;
-using Armis.DataLogic.Services.PartService.Interfaces;
+using Armis.DataLogic.Services.PartServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Armis.DataLogic.Services.PartService
+namespace Armis.DataLogic.Services.PartServices
 {
     public class HardnessService : IHardnessService
     {

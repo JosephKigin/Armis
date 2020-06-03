@@ -1,4 +1,4 @@
-﻿@page "{anOperationId:int?}/{aPopUpMessage?}"
+﻿@page "{anOperationId:int?}/{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.OperationMaintenanceModel
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,8 +15,10 @@
 
 <div class="container-fluid w-75">
     <h1>Operation Maintenance</h1>
+
     @*Pop up partial*@
-    <div class="my-2"><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></div>
+    <div class="my-2"><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></div>
+
     <div class="row">
         <div class="col-lg-6">
             <form method="post">

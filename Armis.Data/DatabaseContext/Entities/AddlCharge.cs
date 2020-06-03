@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class Charge
+    public partial class AddlCharge
     {
-        public Charge()
+        public AddlCharge()
         {
             OrderHeadHandlingCharge = new HashSet<OrderHead>();
             OrderHeadMiscCharge = new HashSet<OrderHead>();
@@ -17,7 +17,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public short ChargeTypeId { get; set; }
         public decimal Amount { get; set; }
 
-        public virtual ChargeType ChargeType { get; set; }
+        public virtual AddlChargeType ChargeType { get; set; }
         public virtual ICollection<OrderHead> OrderHeadHandlingCharge { get; set; }
         public virtual ICollection<OrderHead> OrderHeadMiscCharge { get; set; }
         public virtual ICollection<OrderHead> OrderHeadShipCharge { get; set; }

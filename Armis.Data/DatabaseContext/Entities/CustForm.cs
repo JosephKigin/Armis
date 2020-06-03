@@ -6,7 +6,6 @@ namespace Armis.Data.DatabaseContext.Entities
     public partial class CustForm
     {
         public int CustId { get; set; }
-        public byte? CertId { get; set; }
         public byte? NumCertCopies { get; set; }
         public string WhenToPrint { get; set; }
         public string PackSlipFormId { get; set; }
@@ -18,7 +17,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public string InspectionFormId { get; set; }
         public string ConsolidatedInvoiceId { get; set; }
 
-        public virtual Certification Cert { get; set; }
         public virtual Customer Cust { get; set; }
     }
 }

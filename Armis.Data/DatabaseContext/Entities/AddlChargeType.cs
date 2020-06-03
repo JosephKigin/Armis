@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Armis.Data.DatabaseContext.Entities
 {
-    public partial class ChargeType
+    public partial class AddlChargeType
     {
-        public ChargeType()
+        public AddlChargeType()
         {
-            Charge = new HashSet<Charge>();
+            AddlCharge = new HashSet<AddlCharge>();
         }
 
         public short ChargeTypeId { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<Charge> Charge { get; set; }
+        public virtual ICollection<AddlCharge> AddlCharge { get; set; }
     }
 }

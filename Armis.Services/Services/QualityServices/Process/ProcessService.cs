@@ -22,16 +22,27 @@ namespace Armis.DataLogic.Services.QualityServices
         //Create
         public async Task<ProcessModel> CreateNewProcess(ProcessModel process)
         {
-            var entity = process.ToEntity();
+            var processEntity = process.ToEntity();
 
             var lastUsedId = await context.Process.MaxAsync(i => i.ProcessId);
 
-            entity.ProcessId = lastUsedId + 1;
+            processEntity.ProcessId = lastUsedId + 1;
 
-            context.Process.Add(entity);
+            if(process.Revisions.Count() > 1) { throw new Exception("Cannot save a process and multiple revisions at once"); }
+
+            var theRevision = process.Revisions.FirstOrDefault();
+
+            theRevision.DateTimeCreated = DateTime.Now;
+            theRevision.ProcessId = processEntity.ProcessId;
+            theRevision.ProcessRevId = 1; //This is the first revision of a new process, so it should always be 1.
+            theRevision.RevStatusId = 2; //The revisions will start as UNLOCKED.
+
+            processEntity.ProcessRevision.Add(theRevision.ToEntity());
+
+            context.Process.Add(processEntity);
             await context.SaveChangesAsync();
 
-            return entity.ToModel();
+            return processEntity.ToHydratedModel();
         }
 
         //Takes a current process and makes a copy of it with the only revision on it being the locked rev of the existing process
@@ -42,7 +53,7 @@ namespace Armis.DataLogic.Services.QualityServices
             theProcessEntity.ProcessId = lastUsedProcessId + 1;
 
             //Grabs the locked revision of the process being copied.
-            var theOldRevisionEntity = await context.ProcessRevision.Where(i => i.ProcessId == aProcessModel.ProcessId && i.RevStatusId == 1 ) //1 = LOCKED
+            var theOldRevisionEntity = await context.ProcessRevision.Where(i => i.ProcessId == aProcessModel.ProcessId && i.RevStatusId == 1) //1 = LOCKED
                                                             .Include(i => i.ProcessStepSeq)
                                                                 .ThenInclude(i => i.Operation)
                                                                     .ThenInclude(i => i.OperGroup)
@@ -51,8 +62,8 @@ namespace Armis.DataLogic.Services.QualityServices
             var theRevisionEntity = new ProcessRevision();
             theRevisionEntity.ProcessRevId = 1;
             theRevisionEntity.RevStatusId = 2; //2 = UNLOCKED
-            theRevisionEntity.DateModified = DateTime.Now;
-            theRevisionEntity.TimeModified = DateTime.Now.TimeOfDay;
+            theRevisionEntity.DateCreated = DateTime.Now;
+            theRevisionEntity.TimeCreated = DateTime.Now.TimeOfDay;
             theRevisionEntity.ProcessId = theProcessEntity.ProcessId;
             theRevisionEntity.Comments = aProcessModel.Revisions.FirstOrDefault().Comments;
             theRevisionEntity.CreatedByEmp = aProcessModel.Revisions.FirstOrDefault().CreatedByEmp;
@@ -73,7 +84,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
             theRevisionEntity.ProcessStepSeq = theNewStepSeqEntities;
             theProcessEntity.ProcessRevision.Add(theRevisionEntity);
-            
+
             context.Process.Add(theProcessEntity);
 
             await context.SaveChangesAsync();
@@ -115,8 +126,8 @@ namespace Armis.DataLogic.Services.QualityServices
                     newRevEntity.ProcessStepSeq.Add(newStepSeq);
                 }
             }
-            newRevEntity.DateModified = DateTime.Now; //TODO: Move this to entity extension just like spec rev is.
-            newRevEntity.TimeModified = DateTime.Now.TimeOfDay;
+            newRevEntity.DateCreated = DateTime.Now; //TODO: Move this to entity extension just like spec rev is.
+            newRevEntity.TimeCreated = DateTime.Now.TimeOfDay;
             context.ProcessRevision.Add(newRevEntity);
             await context.SaveChangesAsync();
 
@@ -160,21 +171,36 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
         {
+            //This code won't work until Entity Framework Core 5.0 is release, expected release dat is November 2020.  TODO: Check back with this in November 2020.
+            //var entities = await context.Process.Include(i => i.ProcessRevision.Where(i => i.RevStatusId == 1)) 
+            //                                        .ThenInclude(i => i.ProcessStepSeq)
+            //                                                .ThenInclude(i => i.Operation)
+            //                                                    .ThenInclude(i => i.OperGroup)
+            //                                         .Include(i => i.ProcessRevision)
+            //                                            .ThenInclude(i => i.ProcessStepSeq)
+            //                                                .ThenInclude(i => i.Step)
+            //                                                    .ThenInclude(i => i.StepCategory).ToListAsync();
+            //var result = entities.ToHydratedModels();
+
+            //return result;
+
             var processModels = await GetHydratedProcessRevs();
-            
+
             foreach (var processModel in processModels)
             {
-                var maxRevId = processModel.Revisions.Max(i => i.ProcessRevId);
-                var tempRevList = processModel.Revisions.ToList();
-                foreach (var rev in processModel.Revisions)
+                if (processModel.Revisions.Any())
                 {
-                    if (rev.ProcessRevId != maxRevId)
+                    var maxRevId = processModel.Revisions.Max(i => i.ProcessRevId);
+                    var tempRevList = processModel.Revisions.ToList();
+                    foreach (var rev in processModel.Revisions)
                     {
-                        tempRevList.Remove(rev);
+                        if (rev.RevStatusId != 1)
+                        {
+                            tempRevList.Remove(rev);
+                        }
                     }
+                    processModel.Revisions = tempRevList;
                 }
-
-                processModel.Revisions = tempRevList;
             }
 
             return processModels;
@@ -244,7 +270,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
             if (theRev.ProcessStepSeq != null && theRev.ProcessStepSeq.Any())
             {
-                foreach (var stepSeq 
+                foreach (var stepSeq
                     in theRev.ProcessStepSeq) //Delete all step seq current for that rev.
                 {
                     context.ProcessStepSeq.Remove(stepSeq);

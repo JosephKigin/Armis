@@ -1,4 +1,4 @@
-﻿@page "{aSpecId:int?}/{aPopUpMessage?}"
+﻿@page "{aSpecId:int?}/{aMessage?}"
 @model ArmisWebsite.Pages.ProcessMaintenance.SpecificationCreationModel
 @{
     ViewData["Title"] = "SpecificationCreation";
@@ -11,7 +11,7 @@
     <h1>Specification Maintenance</h1>
 
     @*Preloaded message.*@
-    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.PopUpMessage" /></p>
+    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
 
     @*Placeholder for a spec id only if one is passed in*@
     <input id="hdnCurrentSpecId" form="mainForm" asp-for="CurrentSpecId" value="@Model.CurrentSpecId" hidden />
@@ -323,7 +323,7 @@
         </div>
 
         <a class="btn btn-lg btn-primary text-light my-2" onclick="validateMainPage()">Ok</a>
-        <a id="btnClearPage" class="btn btn-lg btn-danger text-light" href="~/Quality/Specification/SpecificationCreation">Reset</a>
+        <a id="btnClearPage" class="btn btn-lg btn-danger text-light mt-1" href="~/Quality/Specification/SpecificationCreation">Reset</a>
 
         @*Sample Plan Selection Modal*@
         <div class="modal fade" id="modalSamplePlan">

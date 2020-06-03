@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -47,19 +48,18 @@ namespace ArmisWebsite
         [BindProperty]
         public int CurrentOperationGroupId { get; set; }
 
-        public string PopUpMessage { get; set; }
+        public PopUpMessageModel Message { get; set; }
 
         public OperationMaintenanceModel(IOperationDataAccess anOperationDataAccess)
         {
             OperationDataAccess = anOperationDataAccess;
         }
 
-        public async Task<ActionResult> OnGet(int anOperationId = 0, string aPopUpMessage = "")
+        public async Task<ActionResult> OnGet( string aMessage, bool? isMessageGood, int anOperationId = 0)
         {
             try
             {
-                PopUpMessage = aPopUpMessage;
-                await SetUpPageProperties(anOperationId);
+                await SetUpPageProperties(aMessage, isMessageGood, anOperationId);
 
                 return Page();
             }
@@ -72,51 +72,60 @@ namespace ArmisWebsite
 
         public async Task<ActionResult> OnPost()
         {
-            if (ModelState.IsValid)
+            try
             {
-                var theCurrentOperation = new OperationModel()
+                if (ModelState.IsValid)
                 {
-                    Name = CurrentOperationName,
-                    Code = CurrentOperationCode,
-                    DefaultDueDays = CurrentOperationDefaultDueDays,
-                    ThicknessIsRequired = CurrentOperationThicknessReq,
-                    Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
-                };
+                    var theCurrentOperation = new OperationModel()
+                    {
+                        Name = CurrentOperationName,
+                        Code = CurrentOperationCode,
+                        DefaultDueDays = CurrentOperationDefaultDueDays,
+                        ThicknessIsRequired = CurrentOperationThicknessReq,
+                        Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
+                    };
 
-                var theReturnMessage = "";
-                OperationModel result;
+                    var theReturnMessage = "";
+                    OperationModel result;
 
-                if (CurrentOperationId == 0) //If the operation ID is 0, then a new operation is to be created
-                {
-                    result = await OperationDataAccess.CreateOperation(theCurrentOperation);
+                    if (CurrentOperationId == 0) //If the operation ID is 0, then a new operation is to be created
+                    {
+                        result = await OperationDataAccess.CreateOperation(theCurrentOperation);
 
-                    await SetUpPageProperties(result.Id);
+                        theReturnMessage = "New operation was created successfully.";
+                    }
+                    else //If the operation Id is not 0, then the operation with the ID selected is to be updated
+                    {
+                        theCurrentOperation.Id = CurrentOperationId;
 
-                    theReturnMessage = "New operation was created successfully.";
+                        result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
+
+                        theReturnMessage = "The operation was updated successfully.";
+                    }
+
+                    return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aMessage = theReturnMessage, isMessageGood = true });
                 }
-                else //If the operation Id is not 0, then the operation with the ID selected is to be updated
-                {
-                    theCurrentOperation.Id = CurrentOperationId;
 
-                    result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
-
-                    await SetUpPageProperties(result.Id);
-
-                    theReturnMessage = "The operation was updated successfully.";
-                }
-
-                return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aPopUpMessage = theReturnMessage});
+                await SetUpPageProperties("Missing fields", false);
+                return Page();
             }
-
-            await SetUpPageProperties();
-            return Page();
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
 
         }
 
-        public async Task SetUpPageProperties(int anOperationId = 0)
+        public async Task SetUpPageProperties(string aMessage, bool? isMessageGood, int anOperationId = 0)
         {
             try
             {
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage,
+                    IsMessageGood = isMessageGood
+                };
+
                 var theAllOperationsTemp = await OperationDataAccess.GetAllOperations();
                 AllOperations = theAllOperationsTemp.OrderBy(i => i.Name).ToList();
 

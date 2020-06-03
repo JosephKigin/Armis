@@ -172,18 +172,18 @@ function validateMainPage() {
         document.getElementById("iconInvalidSpecDesc").hidden = true;
     }
 
-    if (!validatChoiceCard(document.getElementById("cardChoice1"))) { isValid = false; }
-    if (!validatChoiceCard(document.getElementById("cardChoice2"))) { isValid = false; }
-    if (!validatChoiceCard(document.getElementById("cardChoice3"))) { isValid = false; }
-    if (!validatChoiceCard(document.getElementById("cardChoice4"))) { isValid = false; }
-    if (!validatChoiceCard(document.getElementById("cardChoice5"))) { isValid = false; }
-    if (!validatChoiceCard(document.getElementById("cardChoice6"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice1"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice2"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice3"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice4"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice5"))) { isValid = false; }
+    if (!validateChoiceCard(document.getElementById("cardChoice6"))) { isValid = false; }
     if (isValid) {
         $("#modalSamplePlan").modal("show");
     }
 }
 
-function validatChoiceCard(aChoiceCard) {
+function validateChoiceCard(aChoiceCard) {
     var cardInputs = aChoiceCard.getElementsByTagName("input"); //All the inputs from card
     var isSubLevelNameFilled = false; //If sublevel name is filled in, this will be true.
     var isChoiceFilled = false; //If at lease 1 choice name is filled in, this will be true TODO: If any choice is blank, this is should be false.

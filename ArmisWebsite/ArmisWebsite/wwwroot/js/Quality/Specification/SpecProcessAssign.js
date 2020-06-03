@@ -56,3 +56,20 @@ function updateChoiceIdInput(sublevelNum, chkBox) {
     if (chkBox.checked) { document.getElementById("hdnChoiceId" + sublevelNum).value = chkBox.value; }
     else { document.getElementById("hdnChoiceId" + sublevelNum).value = ""; }
 }
+
+function validate() {
+    var isValid = true;
+
+    //Process Select validation
+    var processSelect = document.getElementById("selectProcessList");
+
+    if (processSelect.selectedIndex == -1) {
+        processSelect.classList.add("border-danger");
+        isValid = false;
+    }
+    else {
+        processSelect.classList.remove("border-danger")
+    }
+
+    return isValid;
+}

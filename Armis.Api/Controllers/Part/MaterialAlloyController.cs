@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Armis.BusinessModels.PartModels;
-using Armis.DataLogic.Services.PartService.Interfaces;
+using Armis.DataLogic.Services.PartServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

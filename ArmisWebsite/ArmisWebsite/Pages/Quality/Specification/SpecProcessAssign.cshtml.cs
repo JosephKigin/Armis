@@ -11,6 +11,7 @@ using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Part.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
@@ -48,7 +49,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public SpecRevModel CurrentSpecCurrentRev { get; set; }
 
         //Front-End
-        public string Message { get; set; }
+        public PopUpMessageModel Message { get; set; }
         //Left-Side
         [BindProperty]
         public int SpecId { get; set; } //Hidden input
@@ -68,7 +69,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public byte? ChoiceId6 { get; set; } //Hidden input
 
         //Middle, Required
-        [BindProperty, Required]
+        [BindProperty]
         public int ProcessId { get; set; }
         [BindProperty]
         public int ProcessRevId { get; set; }  //Hidden input
@@ -112,11 +113,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             _apiAddress = aConfig["APIAddress"];
         }
 
-        public async Task<ActionResult> OnGet(int? aSpecId, string aMessage)
+        public async Task<ActionResult> OnGet(int? aSpecId, string aMessage, bool? isMessageGood)
         {
             try
             {
-                Message = aMessage;
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage,
+                    IsMessageGood = isMessageGood
+                };
+
                 if (aSpecId != null)
                 {
                     int tempSpecId = aSpecId ?? default(int); //Converts the int? to an int.  The part after ?? means that if aSpecId == null, then assign a 0 to tempSpecId, but the if() handles null.
@@ -137,7 +143,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<ActionResult> OnPost()
         {
-            if (ModelState.IsValid)
+            try
             {
                 var theSpecProcessAssignModel = new Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel()
                 {
@@ -160,15 +166,33 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     ProcessRevId = ProcessRevId
                 };
 
-                await SpecProcessAssignDataAccess.PostSpecProcessAssign(theSpecProcessAssignModel);
-            }
-            else
-            {
-                await SetUpProperties();
-                return Page();
-            }
+                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, ChoiceId1 ?? 0, ChoiceId2 ?? 0, ChoiceId3 ?? 0, ChoiceId4 ?? 0, ChoiceId5 ?? 0, ChoiceId6 ?? 0, PreBakeStepId ?? 0, PostBakeStepId ?? 0, MaskStepId ?? 0, HardnessId ?? 0, MaterialSeriesId ?? 0, MaterialAlloyId ?? 0, CustomerId ?? 0);
 
-            return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Specification-Process Assignment created successfully" });
+                if (ModelState.IsValid && areChoicesUnique)
+                {
+                    await SpecProcessAssignDataAccess.PostSpecProcessAssign(theSpecProcessAssignModel);
+
+                    return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Specification-Process assignment saved successfully", isMessageGood = true });
+                }
+                else
+                {
+                    if (!ModelState.IsValid)
+                    {
+                        await SetUpProperties();
+                        return Page();
+                    }
+                    else if (!areChoicesUnique)
+                    {
+                        return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Another Specificaiton-Process assignment has already been created with those options", isMessageGood = false });
+                    }
+
+                    return RedirectToPage("/Error", new { ExMessage = "An unknown error occured" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+            }
         }
 
         public async Task SetUpProperties()
