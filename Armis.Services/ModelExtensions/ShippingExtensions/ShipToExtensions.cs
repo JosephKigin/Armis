@@ -49,5 +49,16 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
 
             return result;
         }
+        public static IEnumerable<ShipToModel> ToHydratedModels(this IEnumerable<ShipTo> aShipToEntities)
+        {
+            var result = new List<ShipToModel>();
+
+            foreach (var entity in aShipToEntities)
+            {
+                result.Add(entity.ToHydratedModel());
+            }
+
+            return result;
+        }
     }
 }

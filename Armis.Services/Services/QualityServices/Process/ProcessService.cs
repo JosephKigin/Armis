@@ -42,7 +42,7 @@ namespace Armis.DataLogic.Services.QualityServices
             context.Process.Add(processEntity);
             await context.SaveChangesAsync();
 
-            return processEntity.ToModel();
+            return processEntity.ToHydratedModel();
         }
 
         //Takes a current process and makes a copy of it with the only revision on it being the locked rev of the existing process
