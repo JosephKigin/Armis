@@ -53,7 +53,7 @@ namespace Armis.Test
         [TestMethod]
         public async Task CheckProcessNameUniqueness()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
 
             var theTestProcessModel = CreateTestProcessModel(991, theTimeStamp);
             var thePostAddProcess = await ProcessService.CreateNewProcess(theTestProcessModel);
@@ -70,7 +70,7 @@ namespace Armis.Test
         [TestMethod]
         public async Task CreateNewRevOnNewProcessAndThenDeleteRev()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
             short theArbitraryEmpId = 941;
 
             var thePreAddProcessListForCount = await ProcessService.GetAllProcesses();
@@ -177,7 +177,7 @@ namespace Armis.Test
         [TestMethod]
         public async Task CreateNewProcessRevStepsAndRevUp()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
             short theArbitraryEmpId = 941; //Ed Wakefield
             short theArbitraryOprId = 5;
             int theArbitraryNumSteps = 4;
@@ -243,7 +243,7 @@ namespace Armis.Test
         [TestMethod]
         public async Task CreateNewLockedRevAndRevUpWithDiffStepSeq()
         {
-            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss");
+            var theTimeStamp = DateTime.Now.ToString("yyyy/MM/dd/hh:mm:ss:ffff");
             const int REV1ID = 1;
             const int REV2ID = 2;
             short theArbitraryRev1EmpId = 941; //Ed Wakefield
