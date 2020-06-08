@@ -112,6 +112,7 @@ namespace Armis.Test
         {
             //TODO!!!
         }
+
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task FailToDeleteOrRevUpALOCKEDProcessRevision()

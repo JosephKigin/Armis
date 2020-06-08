@@ -82,7 +82,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly. " + ex.Message });  //Todo: this will not work!!!  Need to implement logging and return a smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly."});  //Todo: Need to implement logging and return a smaller value
             }
 
         }
@@ -116,7 +116,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = ex.Message });  ////Todo: this will not work!!!  Need to implement logging and return a                                                                                                                     smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not create step successfully" });  ////Todo: Need to implement logging.
             }
 
         }

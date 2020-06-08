@@ -71,7 +71,6 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<Part> Part { get; set; }
         public virtual DbSet<PartComment> PartComment { get; set; }
         public virtual DbSet<PartRevision> PartRevision { get; set; }
-        public virtual DbSet<PartSpecProcessAssign> PartSpecProcessAssign { get; set; }
         public virtual DbSet<PartTran> PartTran { get; set; }
         public virtual DbSet<PlateResult> PlateResult { get; set; }
         public virtual DbSet<PriceCode> PriceCode { get; set; }
@@ -97,6 +96,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<ShopLocation> ShopLocation { get; set; }
         public virtual DbSet<SpecChoice> SpecChoice { get; set; }
         public virtual DbSet<SpecProcessAssign> SpecProcessAssign { get; set; }
+        public virtual DbSet<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
         public virtual DbSet<SpecSubLevel> SpecSubLevel { get; set; }
         public virtual DbSet<SpecialHandling> SpecialHandling { get; set; }
         public virtual DbSet<Specification> Specification { get; set; }
@@ -116,8 +116,8 @@ namespace Armis.Data.DatabaseContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
+                #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
                 optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
                 //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
             }
@@ -129,6 +129,10 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.ChargeId)
                     .HasName("PK_AddlCharge_ChargeId");
+
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_AddlCharge_Code")
+                    .IsUnique();
 
                 entity.Property(e => e.ChargeId).ValueGeneratedNever();
 
@@ -151,6 +155,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.ChargeTypeId)
                     .HasName("PK_AddlChargeType_ChargeTypeId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_AddlChargeType_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.ChargeTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -165,6 +173,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<AdjustReason>(entity =>
             {
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_AdjustReason_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.AdjustReasonId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -262,6 +274,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.CarrierId)
                     .HasName("PK_CarrierCode_CarrierId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_CarrierCode_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(6)
@@ -299,7 +315,7 @@ namespace Armis.Data.DatabaseContext
                     .HasName("PK_CommentCode_CommentId");
 
                 entity.HasIndex(e => e.CommentCode1)
-                    .HasName("UNQ_CommentCode")
+                    .HasName("UNQ_CommentCode_CommentCode")
                     .IsUnique();
 
                 entity.Property(e => e.CommentId).ValueGeneratedNever();
@@ -333,6 +349,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Contact>(entity =>
             {
+                entity.HasIndex(e => e.TitleId)
+                    .HasName("UNQ_Contact_TitleId")
+                    .IsUnique();
+
                 entity.Property(e => e.ContactId).ValueGeneratedNever();
 
                 entity.Property(e => e.Address1)
@@ -390,8 +410,8 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_Contact_CustId_Customer_CustId");
 
                 entity.HasOne(d => d.Title)
-                    .WithMany(p => p.Contact)
-                    .HasForeignKey(d => d.TitleId)
+                    .WithOne(p => p.Contact)
+                    .HasForeignKey<Contact>(d => d.TitleId)
                     .HasConstraintName("FK_Contact_TitleId_ContactTitle_ContactTitleId");
 
                 entity.HasOne(d => d.ShipTo)
@@ -402,6 +422,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<ContactTitle>(entity =>
             {
+                entity.HasIndex(e => e.TitleName)
+                    .HasName("UNQ_ContactTitle_TitleName")
+                    .IsUnique();
+
                 entity.Property(e => e.ContactTitleId).ValueGeneratedNever();
 
                 entity.Property(e => e.TitleName)
@@ -412,6 +436,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Container>(entity =>
             {
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_Container_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.ContainerId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -429,6 +457,10 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.CredStatusId)
                     .HasName("PK_CreditStatus_CredStatusId");
+
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_CreditStatus_Code")
+                    .IsUnique();
 
                 entity.Property(e => e.Code)
                     .HasMaxLength(8)
@@ -579,6 +611,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.CustId)
                     .HasName("PK_Customer_CustId");
 
+                entity.HasIndex(e => e.SearchName)
+                    .HasName("UNQ_Customer_SearchName")
+                    .IsUnique();
+
                 entity.Property(e => e.CustId).ValueGeneratedNever();
 
                 entity.Property(e => e.CreatedDate).HasColumnType("date");
@@ -689,6 +725,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.StatusId)
                     .HasName("PK_CustomerStatus_StatusId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_CustomerStatus_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -702,6 +742,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Department>(entity =>
             {
+                entity.HasIndex(e => e.Name)
+                    .HasName("UNQ_Department_Name")
+                    .IsUnique();
+
                 entity.Property(e => e.DepartmentId).ValueGeneratedNever();
 
                 entity.Property(e => e.HelperBurRate).HasColumnType("decimal(9, 4)");
@@ -796,6 +840,10 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.DeptTypeId)
                     .HasName("PK_DeptTypeCode_DeptTypeId");
+
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_DeptTypeCode_Code")
+                    .IsUnique();
 
                 entity.Property(e => e.Code)
                     .IsRequired()
@@ -918,6 +966,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.LocationTypeId)
                     .HasName("PK_LocationTypeCode_LocationTypeId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_LocationTypeCode_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(6)
@@ -1025,6 +1077,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Operation>(entity =>
             {
+                entity.HasIndex(e => e.OperationCd)
+                    .HasName("UNQ_Operation_OperationCd")
+                    .IsUnique();
+
                 entity.Property(e => e.OperationId).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
@@ -1562,6 +1618,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Oven>(entity =>
             {
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_Oven_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.OvenId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -1580,6 +1640,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.PackageId)
                     .HasName("PK_PackageCode_PackageId");
 
+                entity.HasIndex(e => e.PackageCode1)
+                    .HasName("UNQ_PackageCode_PackageCode")
+                    .IsUnique();
+
                 entity.Property(e => e.PackageId).ValueGeneratedNever();
 
                 entity.Property(e => e.AddOnPercent).HasColumnType("decimal(9, 2)");
@@ -1589,8 +1653,9 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.PackageCd)
+                entity.Property(e => e.PackageCode1)
                     .IsRequired()
+                    .HasColumnName("PackageCode")
                     .HasMaxLength(4)
                     .IsUnicode(false);
             });
@@ -1705,26 +1770,6 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_PartRevision_StandardDept_Department_DepartmentId");
             });
 
-            modelBuilder.Entity<PartSpecProcessAssign>(entity =>
-            {
-                entity.HasKey(e => new { e.PartId, e.PartRevId, e.SpecId, e.SpecRevId, e.SpecAssignId })
-                    .HasName("PK_PartSpecProcessAssign_PartId_PartRevId_SpecId_SpecRevId_SpecAssignId");
-
-                entity.Property(e => e.LastUsedDate).HasColumnType("date");
-
-                entity.HasOne(d => d.Part)
-                    .WithMany(p => p.PartSpecProcessAssign)
-                    .HasForeignKey(d => new { d.PartId, d.PartRevId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartSpecProcessAssign_PartRevId_PartRevision_PartRevId");
-
-                entity.HasOne(d => d.Spec)
-                    .WithMany(p => p.PartSpecProcessAssign)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartSpecProcessAssign_SpecAssignId_SpecProcessAssign_SpecAssignId");
-            });
-
             modelBuilder.Entity<PartTran>(entity =>
             {
                 entity.HasKey(e => new { e.PartId, e.PartRevId, e.TranSeqNum })
@@ -1820,6 +1865,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<PriceCode>(entity =>
             {
+                entity.HasIndex(e => e.ShortCode)
+                    .HasName("UNQ_PriceCode_ShortCode")
+                    .IsUnique();
+
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -1840,6 +1889,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.PriceStatusId)
                     .HasName("PK_PriceStatusCode_PriceStatusId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_PriceStatusCode_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .HasMaxLength(8)
                     .IsUnicode(false);
@@ -1854,6 +1907,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Process>(entity =>
             {
+                entity.HasIndex(e => e.Name)
+                    .HasName("UNQ_Process_Name")
+                    .IsUnique();
+
                 entity.Property(e => e.ProcessId).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
@@ -1953,6 +2010,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.QualStdId)
                     .HasName("PK_QualityStandard_QualStdId");
 
+                entity.HasIndex(e => e.QualStdCode)
+                    .HasName("UNQ_QualityStandard_QualStdCode")
+                    .IsUnique();
+
                 entity.Property(e => e.QualStdId).ValueGeneratedNever();
 
                 entity.Property(e => e.Qsdescription)
@@ -2023,6 +2084,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.RevStatusId)
                     .HasName("PK_RevisionStatus_RevStatusId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_RevisionStatus_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .HasMaxLength(8)
                     .IsUnicode(false);
@@ -2051,6 +2116,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.SamplePlanId)
                     .HasName("PK_SamplePlanHead_SamplePlanId");
 
+                entity.HasIndex(e => e.PlanName)
+                    .HasName("UNQ_SamplePlanHead_PlanName")
+                    .IsUnique();
+
                 entity.Property(e => e.SamplePlanId).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
@@ -2069,7 +2138,7 @@ namespace Armis.Data.DatabaseContext
                     .HasName("PK_SamplePlanLevel_SamplePlanId_SamplePlanLevelId");
 
                 entity.HasIndex(e => new { e.SamplePlanId, e.FromQty, e.ToQty })
-                    .HasName("UNQ_FromQty")
+                    .HasName("UNQ_SamplePlanLevel_FromQty")
                     .IsUnique();
 
                 entity.HasOne(d => d.SamplePlan)
@@ -2217,6 +2286,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.ShipViaId)
                     .HasName("PK_ShipViaCode_ShipViaId");
 
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_ShipViaCode_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.ShipViaId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -2263,6 +2336,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.LocationId)
                     .HasName("PK_ShopLocation_LocationId");
 
+                entity.HasIndex(e => e.LocCode)
+                    .HasName("UNQ_ShopLocation_LocCode")
+                    .IsUnique();
+
                 entity.Property(e => e.LocationId).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
@@ -2306,10 +2383,6 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId })
                     .HasName("PK_SpecProcessAssign_SpecId_SpecRevId_SpecAssignId");
-
-                entity.HasIndex(e => new { e.SpecId, e.SpecRevId, e.ProcessId, e.ProcessRevId, e.ChoiceOption1, e.ChoiceOption2, e.ChoiceOption3, e.ChoiceOption4, e.ChoiceOption5, e.ChoiceOption6, e.PreBakeOption, e.PostBakeOption, e.MaskOption, e.SeriesOption, e.AlloyOption, e.Customer })
-                    .HasName("UNQ_ProcessId")
-                    .IsUnique();
 
                 entity.Property(e => e.SubLevelOption1).HasDefaultValueSql("((1))");
 
@@ -2401,6 +2474,26 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_SpecProcessAssign_ChoiceOption6_SpecChoice_ChoiceSeqId");
             });
 
+            modelBuilder.Entity<SpecProcessAssignHist>(entity =>
+            {
+                entity.HasKey(e => new { e.PartId, e.PartRevId, e.SpecId, e.SpecRevId, e.SpecAssignId })
+                    .HasName("PK_SpecProcessAssignHist_PartId_PartRevId_SpecId_SpecRevId_SpecAssignId");
+
+                entity.Property(e => e.LastUsedDate).HasColumnType("date");
+
+                entity.HasOne(d => d.Part)
+                    .WithMany(p => p.SpecProcessAssignHist)
+                    .HasForeignKey(d => new { d.PartId, d.PartRevId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignHist_PartRevId_PartRevision_PartRevId");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.SpecProcessAssignHist)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignHist_SpecAssignId_SpecProcessAssign_SpecAssignId");
+            });
+
             modelBuilder.Entity<SpecSubLevel>(entity =>
             {
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SubLevelSeqId })
@@ -2462,6 +2555,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => e.SpecId)
                     .HasName("PK_Specification_SpecId");
 
+                entity.HasIndex(e => e.SpecCode)
+                    .HasName("UNQ_Specification_SpecCode")
+                    .IsUnique();
+
                 entity.Property(e => e.SpecId).ValueGeneratedNever();
 
                 entity.Property(e => e.SpecCode)
@@ -2478,6 +2575,7 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -2548,6 +2646,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<StepCategory>(entity =>
             {
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_StepCategory_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.StepCategoryId).ValueGeneratedNever();
 
                 entity.Property(e => e.Code)
@@ -2590,6 +2692,10 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.TaxAuthorityLevelId)
                     .HasName("PK_TaxAuthorityLevelCode_TaxAuthorityLevelId");
+
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_TaxAuthorityLevelCode_Code")
+                    .IsUnique();
 
                 entity.Property(e => e.Code)
                     .IsRequired()
@@ -2642,6 +2748,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<TernaryCode>(entity =>
             {
+                entity.HasIndex(e => e.Code)
+                    .HasName("UNQ_TernaryCode_Code")
+                    .IsUnique();
+
                 entity.Property(e => e.Code)
                     .HasMaxLength(4)
                     .IsUnicode(false);
@@ -2649,6 +2759,10 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<TranType>(entity =>
             {
+                entity.HasIndex(e => e.TranCode)
+                    .HasName("UNQ_TranType_TranCode")
+                    .IsUnique();
+
                 entity.Property(e => e.TranTypeId).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)

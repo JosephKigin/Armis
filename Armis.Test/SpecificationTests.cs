@@ -110,8 +110,8 @@ namespace Armis.Test
 
             ///set test values
             theBaselineSpecModel.Id = calcNewMaxSpecId;
-            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateModified = DateTime.Now.Date;
-            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeModified = DateTime.Now.TimeOfDay;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateCreated = DateTime.Now.Date;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeCreated = DateTime.Now.TimeOfDay;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).SpecId = calcNewMaxSpecId;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).InternalRev = 10;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).Description = DateTime.Now.Date.ToString("yyyy/MM/dd") + descPrefix + theExtRevId;
@@ -120,7 +120,7 @@ namespace Armis.Test
 
             Validate.ValidateModelCompleteness(theBaselineSpecModel, theCreatedSpecModel, new List<Object>() { "SpecRevModels" });
             Validate.ValidateModelCompleteness(theBaselineSpecModel.SpecRevModels.ElementAt(0), theCreatedSpecModel.SpecRevModels.ElementAt(0),
-                new List<Object>() { "TimeModified", "SubLevels" }); // excluded TimeModified because there is a variation in (milli)seconds we can't account for
+                new List<Object>() { "TimeCreated", "SubLevels" }); // excluded TimeModified because there is a variation in (milli)seconds we can't account for
             //Warning! Testing against DateModified might be problematic if tested within seconds of midnight
         }
 
@@ -191,7 +191,7 @@ namespace Armis.Test
 
             //set up test values
             theExpectedRev2SpecRevModel.InternalRev = 11; //rev was incremented
-            theExpectedRev2SpecRevModel.DateModified = DateTime.Now.Date;
+            theExpectedRev2SpecRevModel.DateCreated = DateTime.Now.Date;
             theBaselineSpecModel.Id = theCreatedSpecId;
 
             var theNewRev2SpecModel = await SpecService.GetHydratedCurrentRevForSpec(theSpecId); //get new model for comparison
@@ -200,7 +200,7 @@ namespace Armis.Test
 
             var theNewSpecRev2Model = theNewRev2SpecModel.SpecRevModels.ElementAt(1);
 
-            Validate.ValidateModelCompleteness(theExpectedRev2SpecRevModel, theNewSpecRev2Model, new List<Object>() { "TimeModified", "SubLevels", "SamplePlan" });
+            Validate.ValidateModelCompleteness(theExpectedRev2SpecRevModel, theNewSpecRev2Model, new List<Object>() { "TimeCreated", "SubLevels", "SamplePlan" });
 
             /////////////////////////////////////////////////////////////
             //Verify rev2 is accurate

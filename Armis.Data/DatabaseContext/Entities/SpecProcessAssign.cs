@@ -8,7 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public SpecProcessAssign()
         {
             OrderHead = new HashSet<OrderHead>();
-            PartSpecProcessAssign = new HashSet<PartSpecProcessAssign>();
+            SpecProcessAssignHist = new HashSet<SpecProcessAssignHist>();
         }
 
         public int SpecId { get; set; }
@@ -16,6 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public int SpecAssignId { get; set; }
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
+        public bool Inactive { get; set; }
         public bool ReviewNeeded { get; set; }
         public byte SubLevelOption1 { get; set; }
         public byte? ChoiceOption1 { get; set; }
@@ -53,6 +54,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual SpecChoice SpecChoice4 { get; set; }
         public virtual SpecChoice SpecChoiceNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }
-        public virtual ICollection<PartSpecProcessAssign> PartSpecProcessAssign { get; set; }
+        public virtual ICollection<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
     }
 }

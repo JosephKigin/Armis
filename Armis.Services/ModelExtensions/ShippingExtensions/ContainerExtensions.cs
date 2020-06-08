@@ -8,9 +8,9 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
 {
     public static class ContainerExtensions
     {
-        public static ContainerModel ToModel(this Container aContainerEntity)
+        public static ContainerTypeModel ToModel(this Container aContainerEntity)
         {
-            return new ContainerModel()
+            return new ContainerTypeModel()
             {
                 ContainerId = aContainerEntity.ContainerId,
                 Code = aContainerEntity.Code,
@@ -18,9 +18,9 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
             };
         }
 
-        public static IEnumerable<ContainerModel> ToModels(this IEnumerable<Container> aContainerEntities)
+        public static IEnumerable<ContainerTypeModel> ToModels(this IEnumerable<Container> aContainerEntities)
         {
-            var result = new List<ContainerModel>();
+            var result = new List<ContainerTypeModel>();
 
             foreach (var entity in aContainerEntities)
             {

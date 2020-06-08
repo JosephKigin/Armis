@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ShippingService
 {
-    public class PackageCodeService : IPackagCodeService
+    public class PackageCodeService : IPackageCodeService
     {
         private ARMISContext Context;
 

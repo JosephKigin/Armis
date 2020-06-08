@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ShippingService.Interfaces
 {
-    public interface IPackagCodeService
+    public interface IPackageCodeService
     {
         Task<IEnumerable<PackageCodeModel>> GetAllPackageCodes();
     }

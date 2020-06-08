@@ -303,7 +303,7 @@
                         <input type="hidden" id="hdnCustomerId" asp-for="CustomerId" />
 
                         @if (Model.CustomerId != null)
-                        {<input id="inputCustomer" class="form-control" data-id="@Model.CustomerId" value="@Model.AllCustomers.FirstOrDefault(i => i.Id == Model.CustomerId).Name" readonly /> }
+                        {<input id="inputCustomer" class="form-control" data-id="@Model.CustomerId" value="@Model.AllCustomers.FirstOrDefault(i => i.CustId == Model.CustomerId).Name" readonly /> }
                         else
                         { <input id="inputCustomer" class="form-control" data-id="" readonly />}
                     </div>
@@ -319,7 +319,7 @@
                                     <select id="selectCustomerList" class="list-group w-100" size="16">
                                         @foreach (var customer in Model.AllCustomers)
                                         {
-                                            <option class="list-group-item" data-id="@customer.Id" value="@customer.Name">
+                                            <option class="list-group-item" data-id="@customer.CustId" value="@customer.Name">
                                                 @customer.SearchName -
                                                 @customer.Name
                                             </option>

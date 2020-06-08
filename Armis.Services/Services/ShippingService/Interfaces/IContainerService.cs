@@ -8,6 +8,6 @@ namespace Armis.DataLogic.Services.ShippingService.Interfaces
 {
     public interface IContainerService
     {
-        Task<IEnumerable<ContainerModel>> GetAllContainers();
+        Task<IEnumerable<ContainerTypeModel>> GetAllContainers();
     }
 }

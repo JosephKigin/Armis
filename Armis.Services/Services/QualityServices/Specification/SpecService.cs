@@ -71,14 +71,10 @@ namespace Armis.DataLogic.Services.QualityServices
 
             foreach (var specEntity in theSpecEntities)
             {
-                foreach (var revEntity in specEntity.SpecificationRevision)
-                {
-                    if (revEntity != specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault())
-                    {
-                        specEntity.SpecificationRevision.Remove(revEntity);
-                    }
-                }
-
+                //Adds the most current revision to the temp list and then overwrites the specEntity's original revision list with the temp list that only has the current revision in it.
+                var tempSpecRevList = new List<SpecificationRevision>();
+                tempSpecRevList.Add(specEntity.SpecificationRevision.OrderByDescending(i => i.SpecRevId).FirstOrDefault());
+                specEntity.SpecificationRevision = tempSpecRevList;
             }
 
             return theSpecEntities.ToHydratedModels();

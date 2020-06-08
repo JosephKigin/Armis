@@ -9,6 +9,7 @@ namespace Armis.DataLogic.Services.CustomerServices.Interfaces
     public interface ICustomerService
     {
         Task<IEnumerable<CustomerModel>> GetAllCustomers();
+        Task<IEnumerable<CustomerModel>> GetAllHydratedCustomers();
         Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers();
     }
 }

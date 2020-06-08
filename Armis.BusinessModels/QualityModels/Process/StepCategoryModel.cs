@@ -9,6 +9,6 @@ namespace Armis.BusinessModels.QualityModels.Process
         public short Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public string Type { get; set; } //TODO: Check up on this later, may or may not be needed.
+        public string Type { get; set; } 
     }
 }

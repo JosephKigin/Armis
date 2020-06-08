@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Armis.BusinessModels.ShippingModels
 {
-    public class ContainerModel
+    public class ContainerTypeModel
     {
         public short ContainerId { get; set; }
         public string Code { get; set; }

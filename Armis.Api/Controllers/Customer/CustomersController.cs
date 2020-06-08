@@ -43,6 +43,21 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllHydratedCustomers()
+        {
+            try
+            {
+                var data = await CustomerService.GetAllHydratedCustomers();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCurrentAndProspectCustomers()
         {
             try

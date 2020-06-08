@@ -56,38 +56,43 @@ namespace Armis.Api
             });
 
             //Setting up dependency injection
-            //Process
-            services.AddScoped<IStepService, StepService>();
-            services.AddScoped<IProcessService, ProcessService>();
-            services.AddScoped<IOperationService, OperationService>();
+            //Coop
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
-            //Specification
-            services.AddScoped<ISpecService, SpecService>();
-            services.AddScoped<ISpecProcessAssignService, SpecProcessAssignService>();
-
+            //Customer
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IBillToService, BillToService>();
+            services.AddScoped<IContactService, ContactService>();
+            
             //Inspection
             services.AddScoped<ISamplePlanService, SamplePlanService>();
             services.AddScoped<IInspectTestTypeService, InspectTestTypeService>();
             services.AddScoped<IQualityStandardService, QualityStandardService>();
+
+            //Order Entry
+            services.AddScoped<IOrderHeadService, OrderHeadService>();
 
             //Part
             services.AddScoped<IHardnessService, HardnessService>();
             services.AddScoped<IMaterialSeriesService, MaterialSeriesService>();
             services.AddScoped<IMaterialAlloyService, MaterialAlloyService>();
 
-            //Customer
-            services.AddScoped<ICustomerService, CustomerService>();
-            services.AddScoped<IBillToService, BillToService>();
+            //Process
+            services.AddScoped<IStepService, StepService>();
+            services.AddScoped<IProcessService, ProcessService>();
+            services.AddScoped<IOperationService, OperationService>();
 
             //Shipping
             services.AddScoped<IShipToService, ShipToService>();
             services.AddScoped<IShipViaService, ShipViaService>();
-            services.AddScoped<IPackagCodeService, PackageCodeService>();
+            services.AddScoped<IPackageCodeService, PackageCodeService>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<ICommentCodeService, CommentCodeService>();
 
-            //Coop
-            services.AddScoped<IEmployeeService, EmployeeService>();
+            //Specification
+            services.AddScoped<ISpecService, SpecService>();
+            services.AddScoped<ISpecProcessAssignService, SpecProcessAssignService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

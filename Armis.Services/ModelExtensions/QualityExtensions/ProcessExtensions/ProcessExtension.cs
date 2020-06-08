@@ -6,17 +6,6 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
 {
     public static class ProcessExtension
     {
-        //TODO: get rid of this and refactor everything that uses it to use the two methods below
-        public static ProcessModel ToHydratedModel(this Process aProcess, IEnumerable<ProcessRevisionModel> aProcessRevs) 
-        {
-            return new ProcessModel()
-            {
-                Name = aProcess.Name,
-                ProcessId = aProcess.ProcessId,
-                Revisions = aProcessRevs
-            };
-        }
-
         public static ProcessModel ToHydratedModel(this Process aProcess)
         {
             var theProcessModel = aProcess.ToModel();

@@ -32,6 +32,22 @@ namespace Armis.DataLogic.Services.CustomerServices
             return entities.ToModels();
         }
 
+        public async Task<IEnumerable<CustomerModel>> GetAllHydratedCustomers()
+        {
+            var entities = await context.Customer.Include(i => i.CertCharge)
+                                                 .Include(i => i.CredStatus)
+                                                 .Include(i => i.DefaultContactNumNavigation).ThenInclude(i => i.Title)
+                                                 .Include(i => i.DefaultShipVia)
+                                                 .Include(i => i.SalesPersonNavigation)
+                                                 .Include(i => i.ShipTo)
+                                                 .Include(i => i.Status)
+                                                 .ToListAsync();
+
+            if(entities == null || !entities.Any()) { throw new Exception("No customers were returned"); }
+
+            return entities.ToHydratedModels();
+        }
+
         public async Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers()
         {
             var entities = await context.Customer.Where(i => i.StatusId == 1 || i.StatusId == 3).ToListAsync();

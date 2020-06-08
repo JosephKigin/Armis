@@ -126,11 +126,18 @@ namespace Armis.DataLogic.Services.QualityServices
                     newRevEntity.ProcessStepSeq.Add(newStepSeq);
                 }
             }
-            newRevEntity.DateCreated = DateTime.Now; //TODO: Move this to entity extension just like spec rev is.
-            newRevEntity.TimeCreated = DateTime.Now.TimeOfDay;
-            context.ProcessRevision.Add(newRevEntity);
-            await context.SaveChangesAsync();
 
+            context.ProcessRevision.Add(newRevEntity);
+
+            //Update SpecProccessAssignment table
+            //ToDo: Only consider the SPA that have the most recent spec rev.  Rev up sec, update SPA spec revs, maybe for whole family?
+            var specProcAssignEntities = await context.SpecProcessAssign.Where(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId).ToListAsync();
+            foreach (var assignEntity in specProcAssignEntities)
+            {
+                assignEntity.ReviewNeeded = true;
+            }
+
+            await context.SaveChangesAsync();
             return newRevEntity.ToModel();
         }
 
@@ -143,12 +150,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
             foreach (var entity in processEntities)
             {
-                var theRevs = new List<ProcessRevisionModel>();
-
-                foreach (var rev in entity.ProcessRevision)
-                { theRevs.Add(rev.ToModel()); }
-
-                result.Add(entity.ToHydratedModel(theRevs));
+                result.Add(entity.ToHydratedModel());
             }
 
             return result;

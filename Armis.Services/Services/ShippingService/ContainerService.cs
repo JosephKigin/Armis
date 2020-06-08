@@ -20,7 +20,7 @@ namespace Armis.DataLogic.Services.ShippingService
             Context = aContext;
         }
 
-        public async Task<IEnumerable<ContainerModel>> GetAllContainers()
+        public async Task<IEnumerable<ContainerTypeModel>> GetAllContainers()
         {
             var entities = await Context.Container.ToListAsync();
 

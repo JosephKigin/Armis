@@ -52,10 +52,10 @@ namespace ArmisWebsite.DataAccess.Quality
             return await DataAccessGeneric.HttpGetRequest<ProcessModel>(Config["APIAddress"] + "api/Processes/GetProcess/" + id);
         }
 
-        public async Task<bool> CheckIfNameIsUnique(string aName) //TODO: Is this even being used anywhere? No it is not...
-        {
-            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
-        }
+        //public async Task<bool> CheckIfNameIsUnique(string aName) //TODO: Is this even being used anywhere? No it is not...
+        //{
+        //    return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
+        //}
 
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
         {
@@ -63,16 +63,9 @@ namespace ArmisWebsite.DataAccess.Quality
         }
 
         //UPDATE
-        public async Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList)
+        public async Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel)
         {
-            var thePassBackModel = new PassBackProcessRevStepSeqModel //TODO: should this be moved to the front-end?
-            {
-                ProcessId = aProcessId,
-                ProcessRevisionId = aProcessRevId,
-                StepSeqList = aStepList
-            };
-
-            return await DataAccessGeneric.HttpPostRequest<ProcessRevisionModel, PassBackProcessRevStepSeqModel>(Config["APIAddress"] + "api/processes/UpdateRevSaveAndLock/", thePassBackModel);
+            return await DataAccessGeneric.HttpPostRequest<ProcessRevisionModel, PassBackProcessRevStepSeqModel>(Config["APIAddress"] + "api/processes/UpdateRevSaveAndLock/", aPassBackModel);
         }
 
         //DELETE

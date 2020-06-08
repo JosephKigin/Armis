@@ -22,7 +22,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllSpecsWithCurrentRev() //TODO: This is a very long call to make.  Maybe there is a better way to do this?
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllSpecsWithCurrentRev() 
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithOnlyCurrentRev() //TODO: This is a very long call to make.  Maybe there is a better way to do this?
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllHydratedSpecsWithOnlyCurrentRev()
         {
             try
             {

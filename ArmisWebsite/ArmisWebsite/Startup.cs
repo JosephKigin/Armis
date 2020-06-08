@@ -67,7 +67,7 @@ namespace ArmisWebsite
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
 
-            services.AddScoped<IPdfGenerator, PdfGenerator>(); //TODO: Is this really needed???
+            services.AddScoped<IPdfGenerator, PdfGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
