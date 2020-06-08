@@ -13,7 +13,7 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
             return new PackageCodeModel()
             {
                 PackageId = aPackageCodeEntity.PackageId,
-                PackageCd = aPackageCodeEntity.PackageCd,
+                PackageCd = aPackageCodeEntity.PackageCode1,
                 Description = aPackageCodeEntity.Description,
                 AddOnPercent = aPackageCodeEntity.AddOnPercent
             };
