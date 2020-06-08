@@ -12,7 +12,22 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
         {
             return new OrderHeadModel()
             {
-                
+                OrderId = anOrderHeadEntity.OrderId,
+                CustId = anOrderHeadEntity.CustId,
+                Ponum = anOrderHeadEntity.Ponum,
+                OrderDate = anOrderHeadEntity.OrderDate,
+                DueDate = anOrderHeadEntity.DueDate,
+                ShipDate = anOrderHeadEntity.ShipDate,
+                ShipTime = anOrderHeadEntity.ShipTime,
+                ReqDate = anOrderHeadEntity.ReqDate,
+                DoneDate = anOrderHeadEntity.DoneDate,
+                DoneTime = anOrderHeadEntity.DoneTime,
+                TargetDate = anOrderHeadEntity.TargetDate,
+                PriceStatusId = anOrderHeadEntity.PriceStatusId,
+                IsPriceHold = anOrderHeadEntity.IsPriceHold,
+                IsBadJob = anOrderHeadEntity.IsBadJob,
+                IsJobHold = anOrderHeadEntity.IsJobHold,
+                JobHoldToEmp = anOrderHeadEntity.JobHoldToEmp 
             };
         }
     }
