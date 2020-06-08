@@ -31,16 +31,6 @@ namespace Armis.DataLogic.Services.QualityServices
             aSpecProcessAssignModel.SpecAssignId = theNewSpecAssignId;
             var theSpecProcessAssignEntity = aSpecProcessAssignModel.ToEntity();
 
-            // TODO: Revisit this section if the database is udpated to not include SubLevelOptions on the SpecProcessAssign table.
-            //This shouldn't be needed anymore. 5/28/2020
-            //if (theSpecProcessAssignEntity.ChoiceOption1 != null) { theSpecProcessAssignEntity.SubLevelOption1 = 1; }
-            //if (theSpecProcessAssignEntity.ChoiceOption2 != null) { theSpecProcessAssignEntity.SubLevelOption2 = 2; }
-            //if (theSpecProcessAssignEntity.ChoiceOption3 != null) { theSpecProcessAssignEntity.SubLevelOption3 = 3; }
-            //if (theSpecProcessAssignEntity.ChoiceOption4 != null) { theSpecProcessAssignEntity.SubLevelOption4 = 4; }
-            //if (theSpecProcessAssignEntity.ChoiceOption5 != null) { theSpecProcessAssignEntity.SubLevelOption5 = 5; }
-            //if (theSpecProcessAssignEntity.ChoiceOption6 != null) { theSpecProcessAssignEntity.SubLevelOption6 = 6; }
-            //End section
-
             Context.SpecProcessAssign.Add(theSpecProcessAssignEntity);
             await Context.SaveChangesAsync();
 

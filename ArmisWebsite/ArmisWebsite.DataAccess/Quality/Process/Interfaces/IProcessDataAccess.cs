@@ -1,4 +1,5 @@
-﻿using Armis.BusinessModels.QualityModels.Process;
+﻿using Armis.BusinessModels.QualityModels.PassBackModels;
+using Armis.BusinessModels.QualityModels.Process;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,11 +12,11 @@ namespace ArmisWebsite.DataAccess.Quality.Interfaces
         Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
         Task<ProcessModel> GetHydratedProcess(int id);
         Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev();
-        Task<bool> CheckIfNameIsUnique(string aName);
+        //Task<bool> CheckIfNameIsUnique(string aName);
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
         Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId);
         Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel);
-        Task<ProcessRevisionModel> LockRevision(int aProcessId, int aProcessRevId, List<StepSeqModel> aStepList);
+        Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel);
         Task<ProcessRevisionModel> SaveStepSeqToRevision(List<StepSeqModel> aStepSeqModel);
         Task<ProcessModel> CopyToNewProcessFromExisting(ProcessModel aProcessModel);
     }

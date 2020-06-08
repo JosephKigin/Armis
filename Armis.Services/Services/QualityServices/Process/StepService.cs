@@ -106,7 +106,7 @@ namespace Armis.DataLogic.Services.QualityServices
         }
 
         //UPDATE
-        public async Task<int> DeactivateStep(int aStepId) //TODO: Update this after step table has been updated
+        public async Task<int> DeactivateStep(int aStepId) 
         {
             var theStepToDelete = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
 
@@ -116,7 +116,7 @@ namespace Armis.DataLogic.Services.QualityServices
             return theStepToDelete.StepId;
         }
 
-        public async Task<int> UpdateStep(int aStepId, StepModel aStepModel) //TODO: Update this when step table is updated.
+        public async Task<int> UpdateStep(int aStepId, StepModel aStepModel)
         {
             var theStepEntityToChange = await Context.Step.SingleOrDefaultAsync(i => i.StepId == aStepId);
 

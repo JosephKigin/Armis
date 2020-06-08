@@ -6,7 +6,6 @@ namespace Armis.BusinessModels.QualityModels.Process
 {
     public class ProcessRevisionModel
     {
-        public string ProcessName { get; set; }
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public int CreatedByEmp { get; set; }

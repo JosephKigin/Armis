@@ -110,8 +110,8 @@ namespace Armis.Test
 
             ///set test values
             theBaselineSpecModel.Id = calcNewMaxSpecId;
-            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateModified = DateTime.Now.Date;
-            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeModified = DateTime.Now.TimeOfDay;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).DateCreated = DateTime.Now.Date;
+            theBaselineSpecModel.SpecRevModels.ElementAt(0).TimeCreated = DateTime.Now.TimeOfDay;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).SpecId = calcNewMaxSpecId;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).InternalRev = 10;
             theBaselineSpecModel.SpecRevModels.ElementAt(0).Description = DateTime.Now.Date.ToString("yyyy/MM/dd") + descPrefix + theExtRevId;
@@ -191,7 +191,7 @@ namespace Armis.Test
 
             //set up test values
             theExpectedRev2SpecRevModel.InternalRev = 11; //rev was incremented
-            theExpectedRev2SpecRevModel.DateModified = DateTime.Now.Date;
+            theExpectedRev2SpecRevModel.DateCreated = DateTime.Now.Date;
             theBaselineSpecModel.Id = theCreatedSpecId;
 
             var theNewRev2SpecModel = await SpecService.GetHydratedCurrentRevForSpec(theSpecId); //get new model for comparison

@@ -63,8 +63,7 @@ namespace ArmisWebsite
                 var newRevision = new ProcessRevisionModel()
                 {
                     Comments = Comment,
-                    CreatedByEmp = EmployeeId,
-                    ProcessName = ProcessName
+                    CreatedByEmp = EmployeeId
                 };
                 
                 var tempRevList = new List<ProcessRevisionModel>();

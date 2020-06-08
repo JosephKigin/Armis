@@ -11,7 +11,7 @@ namespace Armis.Data.DatabaseContext.Entities
         }
 
         public short PackageId { get; set; }
-        public string PackageCd { get; set; }
+        public string PackageCode1 { get; set; }
         public string Description { get; set; }
         public decimal AddOnPercent { get; set; }
 

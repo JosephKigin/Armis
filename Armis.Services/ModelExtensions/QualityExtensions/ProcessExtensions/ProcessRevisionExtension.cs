@@ -21,21 +21,6 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
             };
         }
 
-        //TODO: Refactor everything that uses this to use the methods below
-        public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aProcessRev, IEnumerable<StepSeqModel> aStepSeqs)
-        {
-            return new ProcessRevisionModel()
-            {
-                CreatedByEmp = aProcessRev.CreatedByEmp,
-                DateTimeCreated = aProcessRev.DateCreated.Add(aProcessRev.TimeCreated),
-                Comments = aProcessRev.Comments,
-                ProcessId = aProcessRev.ProcessId,
-                ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusId = aProcessRev.RevStatusId,
-                StepSeqs = aStepSeqs
-            };
-        }
-
         public static ProcessRevisionModel ToHydratedModel(this ProcessRevision aRev)
         {
             var theRevModel = aRev.ToModel();

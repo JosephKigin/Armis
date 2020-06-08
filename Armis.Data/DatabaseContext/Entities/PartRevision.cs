@@ -9,8 +9,8 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             CustomerPart = new HashSet<CustomerPart>();
             OrderDetail = new HashSet<OrderDetail>();
-            PartSpecProcessAssign = new HashSet<PartSpecProcessAssign>();
             PartTran = new HashSet<PartTran>();
+            SpecProcessAssignHist = new HashSet<SpecProcessAssignHist>();
         }
 
         public int PartId { get; set; }
@@ -43,7 +43,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual PartComment PartComment { get; set; }
         public virtual ICollection<CustomerPart> CustomerPart { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
-        public virtual ICollection<PartSpecProcessAssign> PartSpecProcessAssign { get; set; }
         public virtual ICollection<PartTran> PartTran { get; set; }
+        public virtual ICollection<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
     }
 }

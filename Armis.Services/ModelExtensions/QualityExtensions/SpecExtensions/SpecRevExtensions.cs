@@ -18,8 +18,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ExternalRev = aSpecRev.ExternalRev,
                 SamplePlanId = aSpecRev.SamplePlan,
                 EmployeeNumber = aSpecRev.CreatedByEmp,
-                DateModified = aSpecRev.DateCreated,
-                TimeModified = aSpecRev.TimeCreated
+                DateCreated = aSpecRev.DateCreated,
+                TimeCreated = aSpecRev.TimeCreated
             };
         }
 
@@ -34,8 +34,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 SamplePlanId = aSpecRevEntity.SamplePlan,
                 SamplePlan = (aSpecRevEntity.SamplePlanNavigation != null) ? aSpecRevEntity.SamplePlanNavigation.ToHydratedModel() : null,
                 EmployeeNumber = aSpecRevEntity.CreatedByEmp,
-                DateModified = aSpecRevEntity.DateCreated,
-                TimeModified = aSpecRevEntity.TimeCreated,
+                DateCreated = aSpecRevEntity.DateCreated,
+                TimeCreated = aSpecRevEntity.TimeCreated,
 
                 SubLevels = aSpecRevEntity.SpecSubLevel.ToHydratedModels()
             };

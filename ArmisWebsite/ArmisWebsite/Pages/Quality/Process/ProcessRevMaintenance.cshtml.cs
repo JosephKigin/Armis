@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Armis.BusinessModels.EmployeeModels;
+using Armis.BusinessModels.QualityModels.PassBackModels;
 using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
@@ -196,7 +197,14 @@ namespace ArmisWebsite
                     });
                 }
 
-                var theReturnRevModel = await ProcessDataAccess.LockRevision(CurrentProcessId, CurrentRevId, theStepSeqList);
+                var thePassBackModel = new PassBackProcessRevStepSeqModel() 
+                {
+                    ProcessId = CurrentProcessId,
+                    ProcessRevisionId = CurrentRevId,
+                    StepSeqList = theStepSeqList
+                };
+
+                var theReturnRevModel = await ProcessDataAccess.LockRevision(thePassBackModel);
 
                 return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Revision was locked successfully." });
             }

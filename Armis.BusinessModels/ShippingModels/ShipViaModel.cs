@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Armis.Data.DatabaseContext.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,6 +14,6 @@ namespace Armis.BusinessModels.ShippingModels
         public byte CarrierId { get; set; }
         public CarrierCodeModel CarrierCodeModel { get; set; }
 
-        //TODO: ShipViaType code might need to be in here.  It might need a model created for it as well.
+        public ShipViaTypeCodeModel ShipViaType { get; set; }
     }
 }
