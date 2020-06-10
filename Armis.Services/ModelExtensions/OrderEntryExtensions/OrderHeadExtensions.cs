@@ -46,12 +46,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 ShipViaId = anOrderHeadEntity.ShipViaId,
                 IsReturnAsIs = anOrderHeadEntity.IsReturnAsIs,
                 CreditAuthByEmp = anOrderHeadEntity.CreditAuthByEmp,
-                LotChargeTotal = anOrderHeadEntity.LotChargeTotal,
-                CertChargeTotal = anOrderHeadEntity.CertChargeTotal,
                 SubTotal = anOrderHeadEntity.SubTotal,
-                ShipChargeId = anOrderHeadEntity.ShipChargeId,
-                HandlingChargeId = anOrderHeadEntity.HandlingChargeId,
-                MiscChargeId = anOrderHeadEntity.MiscChargeId,
                 ExpediteStatus = anOrderHeadEntity.ExpediteStatus
             };
         }
@@ -74,18 +69,15 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.CertCharge = (anOrderHeadEntity.CertCharge != null)? anOrderHeadEntity.CertCharge.ToModel() : null;
             result.CreditAuthByEmployee = (anOrderHeadEntity.CreditAuthByEmpNavigation != null)? anOrderHeadEntity.CreditAuthByEmpNavigation.ToModel() : null;
             result.Customer = (anOrderHeadEntity.Cust != null)? anOrderHeadEntity.Cust.ToModel() : null;
-            result.HandlingCharge = (anOrderHeadEntity.HandlingCharge != null)? anOrderHeadEntity.HandlingCharge.ToModel() : null;
             result.IsInspected = anOrderHeadEntity.IsInspectedNavigation.ToModel(); 
             result.IsMaskingNotify = anOrderHeadEntity.IsMaskingNotifyNavigation.ToModel();
             result.IsPrePrice = anOrderHeadEntity.IsPrePriceNavigation.ToModel();
             result.IsPriceApproval = anOrderHeadEntity.IsPriceApprovalNavigation.ToModel();
             result.JobHoldByEmployee = (anOrderHeadEntity.JobHoldByEmpNavigation != null)? anOrderHeadEntity.JobHoldByEmpNavigation.ToModel() : null;
             result.JobHoldToEmployee = (anOrderHeadEntity.JobHoldToEmpNavigation != null)? anOrderHeadEntity.JobHoldToEmpNavigation.ToModel() : null;
-            result.MiscCharge = (anOrderHeadEntity.MiscCharge != null)? anOrderHeadEntity.MiscCharge.ToModel() : null;
             result.Package = (anOrderHeadEntity.Package != null)? anOrderHeadEntity.Package.ToModel() : null;
             result.PriceStatus = anOrderHeadEntity.PriceStatus.ToModel(); 
             result.QualityStandard = (anOrderHeadEntity.QualStd != null)? anOrderHeadEntity.QualStd.ToModel() : null;
-            result.ShipCharge = (anOrderHeadEntity.ShipCharge != null)? anOrderHeadEntity.ShipCharge.ToModel() : null;
             result.ShipVia = (anOrderHeadEntity.ShipVia != null)? anOrderHeadEntity.ShipVia.ToModel() : null;
             result.Spec = anOrderHeadEntity.Spec.ToHydratedModel(); //Spec will be hydrated because much of the information is needed when an OrderHead is pulled.
             result.OrderComment = (anOrderHeadEntity.OrderComment != null)? anOrderHeadEntity.OrderComment.ToModel() : null; 

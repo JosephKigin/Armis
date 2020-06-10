@@ -11,7 +11,7 @@ namespace Armis.BusinessModels.OrderEntryModels
         public byte OrderLine { get; set; }
         public int Quantity { get; set; }
         public int PartId { get; set; }
-        public short PartRevId { get; set; }
+        public int PartRevId { get; set; }
         public decimal Poprice { get; set; }
         public decimal CalcPrice { get; set; }
         public decimal AssignPrice { get; set; }

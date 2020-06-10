@@ -16,7 +16,7 @@ namespace Armis.Data.DatabaseContext.Entities
             OprThickPrice = new HashSet<OprThickPrice>();
             OrderCommentStatic = new HashSet<OrderCommentStatic>();
             OrderExpedite = new HashSet<OrderExpedite>();
-            PartRevision = new HashSet<PartRevision>();
+            Part = new HashSet<Part>();
             PlateResult = new HashSet<PlateResult>();
             ProcessLoad = new HashSet<ProcessLoad>();
             Session = new HashSet<Session>();
@@ -46,7 +46,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }
         public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual ICollection<OrderExpedite> OrderExpedite { get; set; }
-        public virtual ICollection<PartRevision> PartRevision { get; set; }
+        public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
         public virtual ICollection<ProcessLoad> ProcessLoad { get; set; }
         public virtual ICollection<Session> Session { get; set; }

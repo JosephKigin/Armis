@@ -15,7 +15,7 @@ namespace Armis.DataLogic.ModelExtensions.ARExtensions
                 ChargeId = anAdditionalChargeEntity.ChargeId,
                 Code = anAdditionalChargeEntity.Code,
                 ChargeTypeId = anAdditionalChargeEntity.ChargeTypeId,
-                Amount = anAdditionalChargeEntity.Amount
+                DefaultAmount = anAdditionalChargeEntity.DefaultAmount
             };
         }
 

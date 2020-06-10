@@ -16,7 +16,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 OrderLine = anOrderDetailEntity.OrderLine,
                 Quantity = anOrderDetailEntity.Quantity,
                 PartId = anOrderDetailEntity.PartId,
-                PartRevId = anOrderDetailEntity.PartRevId,
+                PartRevId = anOrderDetailEntity.PartId,
                 Poprice = anOrderDetailEntity.Poprice,
                 CalcPrice = anOrderDetailEntity.CalcPrice,
                 AssignPrice = anOrderDetailEntity.AssignPrice,

@@ -15,7 +15,7 @@ namespace Armis.Data.DatabaseContext.Entities
             OrderHeadCreditAuthByEmpNavigation = new HashSet<OrderHead>();
             OrderHeadJobHoldByEmpNavigation = new HashSet<OrderHead>();
             OrderHeadJobHoldToEmpNavigation = new HashSet<OrderHead>();
-            PartRevision = new HashSet<PartRevision>();
+            Part = new HashSet<Part>();
             PlateResult = new HashSet<PlateResult>();
             ProcessRevision = new HashSet<ProcessRevision>();
             Session = new HashSet<Session>();
@@ -48,7 +48,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<OrderHead> OrderHeadCreditAuthByEmpNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHeadJobHoldByEmpNavigation { get; set; }
         public virtual ICollection<OrderHead> OrderHeadJobHoldToEmpNavigation { get; set; }
-        public virtual ICollection<PartRevision> PartRevision { get; set; }
+        public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
         public virtual ICollection<ProcessRevision> ProcessRevision { get; set; }
         public virtual ICollection<Session> Session { get; set; }

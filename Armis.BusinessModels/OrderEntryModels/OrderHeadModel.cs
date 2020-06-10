@@ -44,12 +44,7 @@ namespace Armis.BusinessModels.OrderEntryModels
         //public byte IsPrePrice { get; set; }
         public int? CreditAuthByEmp { get; set; }
         //public byte IsInspected { get; set; }
-        public decimal LotChargeTotal { get; set; }
-        public decimal CertChargeTotal { get; set; }
         public decimal SubTotal { get; set; }
-        public short? ShipChargeId { get; set; }
-        public short? HandlingChargeId { get; set; }
-        public short? MiscChargeId { get; set; }
         public string ExpediteStatus { get; set; }
 
         public CertificationChargeModel CertCharge { get; set; }
