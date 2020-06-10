@@ -9,6 +9,7 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             BakeResult = new HashSet<BakeResult>();
             Memo = new HashSet<Memo>();
+            OrderAddlCharge = new HashSet<OrderAddlCharge>();
             OrderCommentStatic = new HashSet<OrderCommentStatic>();
             OrderDetail = new HashSet<OrderDetail>();
             OrderDetailComment = new HashSet<OrderDetailComment>();
@@ -50,29 +51,21 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte IsPrePrice { get; set; }
         public int? CreditAuthByEmp { get; set; }
         public byte IsInspected { get; set; }
-        public decimal LotChargeTotal { get; set; }
-        public decimal CertChargeTotal { get; set; }
         public decimal SubTotal { get; set; }
-        public short? ShipChargeId { get; set; }
-        public short? HandlingChargeId { get; set; }
-        public short? MiscChargeId { get; set; }
         public string ExpediteStatus { get; set; }
 
         public virtual CertificationCharge CertCharge { get; set; }
         public virtual Employee CreditAuthByEmpNavigation { get; set; }
         public virtual Customer Cust { get; set; }
-        public virtual AddlCharge HandlingCharge { get; set; }
         public virtual TernaryCode IsInspectedNavigation { get; set; }
         public virtual TernaryCode IsMaskingNotifyNavigation { get; set; }
         public virtual TernaryCode IsPrePriceNavigation { get; set; }
         public virtual TernaryCode IsPriceApprovalNavigation { get; set; }
         public virtual Employee JobHoldByEmpNavigation { get; set; }
         public virtual Employee JobHoldToEmpNavigation { get; set; }
-        public virtual AddlCharge MiscCharge { get; set; }
         public virtual PackageCode Package { get; set; }
         public virtual PriceStatusCode PriceStatus { get; set; }
         public virtual QualityStandard QualStd { get; set; }
-        public virtual AddlCharge ShipCharge { get; set; }
         public virtual ShipViaCode ShipVia { get; set; }
         public virtual SpecProcessAssign Spec { get; set; }
         public virtual OrderComment OrderComment { get; set; }
@@ -80,6 +73,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual OrderShipToOverride OrderShipToOverride { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
+        public virtual ICollection<OrderAddlCharge> OrderAddlCharge { get; set; }
         public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
         public virtual ICollection<OrderDetailComment> OrderDetailComment { get; set; }

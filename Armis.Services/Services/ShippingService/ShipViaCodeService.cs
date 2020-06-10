@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ShippingService
 {
-    public class ShipViaService : IShipViaService
+    public class ShipViaCodeService : IShipViaCodeService
     {
         private ARMISContext Context;
 
-        public ShipViaService(ARMISContext aContext)
+        public ShipViaCodeService(ARMISContext aContext)
         {
             Context = aContext;
         }
 
-        public async Task<IEnumerable<ShipViaModel>> GetAllShipVias()
+        public async Task<IEnumerable<ShipViaCodeModel>> GetAllShipVias()
         {
             var entities = await Context.ShipViaCode.Include(i => i.Carrier).ToListAsync();
 

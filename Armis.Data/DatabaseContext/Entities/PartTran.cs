@@ -6,7 +6,6 @@ namespace Armis.Data.DatabaseContext.Entities
     public partial class PartTran
     {
         public int PartId { get; set; }
-        public short PartRevId { get; set; }
         public int TranSeqNum { get; set; }
         public short TranTypeId { get; set; }
         public int OrderId { get; set; }
@@ -25,7 +24,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual ShopLocation FromLocationNavigation { get; set; }
         public virtual OrderHead Order { get; set; }
-        public virtual PartRevision Part { get; set; }
+        public virtual Part Part { get; set; }
         public virtual PriceCode PriceCode { get; set; }
         public virtual ProcessRevision Process { get; set; }
         public virtual ShopLocation ToLocationNavigation { get; set; }

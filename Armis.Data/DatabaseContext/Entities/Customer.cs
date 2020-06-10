@@ -9,6 +9,7 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             Contact = new HashSet<Contact>();
             CustContNotify = new HashSet<CustContNotify>();
+            CustomerPart = new HashSet<CustomerPart>();
             Driver = new HashSet<Driver>();
             Memo = new HashSet<Memo>();
             OprLoadPrice = new HashSet<OprLoadPrice>();
@@ -71,6 +72,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual CustForm CustForm { get; set; }
         public virtual ICollection<Contact> Contact { get; set; }
         public virtual ICollection<CustContNotify> CustContNotify { get; set; }
+        public virtual ICollection<CustomerPart> CustomerPart { get; set; }
         public virtual ICollection<Driver> Driver { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }

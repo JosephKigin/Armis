@@ -14,15 +14,15 @@ namespace Armis.Api.Controllers.Shipping
     [ApiController]
     public class ShipViaController : ControllerBase
     {
-        public IShipViaService ShipViaService { get; set; }
+        public IShipViaCodeService ShipViaService { get; set; }
 
-        public ShipViaController(IShipViaService aShipViaService)
+        public ShipViaController(IShipViaCodeService aShipViaService)
         {
             ShipViaService = aShipViaService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShipViaModel>>> GetAllShipVias()
+        public async Task<ActionResult<IEnumerable<ShipViaCodeModel>>> GetAllShipVias()
         {
             try
             {

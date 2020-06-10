@@ -9,7 +9,7 @@ namespace Armis.BusinessModels.ARModels
         public short ChargeId { get; set; }
         public string Code { get; set; }
         public short ChargeTypeId { get; set; }
-        public decimal Amount { get; set; }
+        public decimal DefaultAmount { get; set; }
 
         public AdditionalChargeTypeModel ChargeType { get; set; }
     }

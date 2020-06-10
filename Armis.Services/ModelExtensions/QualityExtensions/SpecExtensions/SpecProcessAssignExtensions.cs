@@ -97,7 +97,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Choice5 = (aSpecProcessAssignEntity.SpecChoice3 != null) ? aSpecProcessAssignEntity.SpecChoice3.ToModel() : null,
                 Choice6 = (aSpecProcessAssignEntity.SpecChoice4 != null) ? aSpecProcessAssignEntity.SpecChoice4.ToModel() : null,
                 ProcessRevision = aSpecProcessAssignEntity.Process.ToModel(),
-                Customer = (aSpecProcessAssignEntity.CustomerNavigation != null)? aSpecProcessAssignEntity.CustomerNavigation.ToModel() : null
+                Customer = (aSpecProcessAssignEntity.CustomerNavigation != null)? aSpecProcessAssignEntity.CustomerNavigation.ToModel() : null,
+                SpecificationRevision = (aSpecProcessAssignEntity.Spec != null)? aSpecProcessAssignEntity.Spec.ToModel(): null
             };
         }
 

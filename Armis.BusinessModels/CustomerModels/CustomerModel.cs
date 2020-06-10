@@ -50,7 +50,7 @@ namespace Armis.BusinessModels.Customer
         public CertificationChargeModel CertCharge { get; set; }
         public CreditStatusModel CreditStatus { get; set; }
         public ContactModel DefaultContact { get; set; }
-        public ShipViaModel DefaultShipVia { get; set; }
+        public ShipViaCodeModel DefaultShipVia { get; set; }
         //public PriorityModel Priority { get; set; }
         public EmployeeModel SalesPerson { get; set; }
         //public ShipAccountModel ShipAccount { get; set; }

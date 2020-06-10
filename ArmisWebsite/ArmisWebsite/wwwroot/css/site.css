@@ -103,3 +103,9 @@ body {
     text-align: center;
     background: #fff;
 }
+
+.flex-align-right {
+    flex: 1;
+    text-align: right;
+    white-space: nowrap;
+}

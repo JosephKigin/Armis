@@ -84,7 +84,7 @@ namespace Armis.Api
 
             //Shipping
             services.AddScoped<IShipToService, ShipToService>();
-            services.AddScoped<IShipViaService, ShipViaService>();
+            services.AddScoped<IShipViaCodeService, ShipViaCodeService>();
             services.AddScoped<IPackageCodeService, PackageCodeService>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<ICommentCodeService, CommentCodeService>();
