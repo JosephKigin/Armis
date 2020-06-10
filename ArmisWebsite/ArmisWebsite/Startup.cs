@@ -7,6 +7,8 @@ using ArmisWebsite.DataAccess.Customer;
 using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Employee;
 using ArmisWebsite.DataAccess.Employee.Interfaces;
+using ArmisWebsite.DataAccess.OrderEntry;
+using ArmisWebsite.DataAccess.OrderEntry.Interfaces;
 using ArmisWebsite.DataAccess.Part;
 using ArmisWebsite.DataAccess.Part.Interfaces;
 using ArmisWebsite.DataAccess.Quality;
@@ -42,7 +44,21 @@ namespace ArmisWebsite
 
             services.AddRazorPages();
 
-            //QUALITY
+            //*CUSTOMER*
+            services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
+
+            //*EMPLOYEE*
+            services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
+
+            //*ORDER_ENTRY*
+            services.AddScoped<IOrderHeadDataAccess, OrderHeadDataAccess>();
+
+            //*PART*
+            services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
+            services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
+            services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
+
+            //*QUALITY*
             //Inspection
             services.AddScoped<ITestTypeDataAccess, TestTypeDataAccess>();
             services.AddScoped<ISamplePlanDataAccess, SamplePlanDataAccess>();
@@ -56,17 +72,7 @@ namespace ArmisWebsite
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
 
-            //CUSTOMER
-            services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
-
-            //EMPLOYEE
-            services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
-
-            //PART
-            services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
-            services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
-            services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
-
+            
             services.AddScoped<IPdfGenerator, PdfGenerator>();
         }
 

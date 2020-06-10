@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
 {
-    public static class ShipViaExtensions
+    public static class ShipViaCodeExtensions
     {
-        public static ShipViaModel ToModel(this ShipViaCode aShipViaEntity)
+        public static ShipViaCodeModel ToModel(this ShipViaCode aShipViaEntity)
         {
-            return new ShipViaModel()
+            return new ShipViaCodeModel()
             {
                 ShipViaId = aShipViaEntity.ShipViaId,
                 ShipViaTypeId = aShipViaEntity.ShipViaTypeId,
@@ -20,9 +20,9 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
             };
         }
 
-        public static IEnumerable<ShipViaModel> ToModels(this IEnumerable<ShipViaCode> aShipViaEntities)
+        public static IEnumerable<ShipViaCodeModel> ToModels(this IEnumerable<ShipViaCode> aShipViaEntities)
         {
-            var result = new List<ShipViaModel>();
+            var result = new List<ShipViaCodeModel>();
 
             foreach (var entity in aShipViaEntities)
             {
@@ -32,17 +32,17 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
             return result;
         }
 
-        public static ShipViaModel ToHydratedModel(this ShipViaCode aShipViaEntity)
+        public static ShipViaCodeModel ToHydratedModel(this ShipViaCode aShipViaEntity)
         {
             var result = aShipViaEntity.ToModel();
-            result.CarrierCodeModel = aShipViaEntity.Carrier.ToModel();
+            result.CarrierCode = aShipViaEntity.Carrier.ToModel();
 
             return result;
         }
 
-        public static IEnumerable<ShipViaModel> ToHydratedModels(this IEnumerable<ShipViaCode> aShipViaEntities)
+        public static IEnumerable<ShipViaCodeModel> ToHydratedModels(this IEnumerable<ShipViaCode> aShipViaEntities)
         {
-            var result = new List<ShipViaModel>();
+            var result = new List<ShipViaCodeModel>();
 
             foreach (var entity in aShipViaEntities)
             {

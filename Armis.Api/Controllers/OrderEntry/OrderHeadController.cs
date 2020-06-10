@@ -23,11 +23,41 @@ namespace Armis.Api.Controllers.OrderEntry
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderHead>>> GetAllOrderHeads() //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
+        public async Task<ActionResult<IEnumerable<OrderHeadModel>>> GetAllOrderHeads() //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
         {
             try
             {
                 var data = await OrderHeadService.GetAllOrderHeads();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderHeadModel>>> GetAllHydratedOrderHeads()
+        {
+            try
+            {
+                var data = await OrderHeadService.GetAllHydratedOrderHeads();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{anOrderId:int}")]
+        public async Task<ActionResult<OrderHeadModel>> GetHydratedOrderHead(int anOrderId)
+        {
+            try
+            {
+                var data = await OrderHeadService.GetHydratedOrderHeadById(anOrderId);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

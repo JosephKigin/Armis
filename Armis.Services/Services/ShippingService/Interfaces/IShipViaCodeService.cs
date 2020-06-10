@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Armis.DataLogic.Services.ShippingService.Interfaces
 {
-    public interface IShipViaService
+    public interface IShipViaCodeService
     {
-        Task<IEnumerable<ShipViaModel>> GetAllShipVias();
+        Task<IEnumerable<ShipViaCodeModel>> GetAllShipVias();
     }
 }

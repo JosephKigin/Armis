@@ -22,6 +22,6 @@ namespace Armis.BusinessModels.ShippingModels
         public string PhoneNum { get; set; }
         public string FaxNum { get; set; }
 
-        public ShipViaModel ShipViaCode { get; set; }
+        public ShipViaCodeModel ShipViaCode { get; set; }
     }
 }

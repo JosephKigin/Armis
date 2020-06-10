@@ -9,6 +9,8 @@ namespace Armis.DataLogic.Services.OrderEntryServices.Interfaces
 {
     public interface IOrderHeadService
     {
-        Task<IEnumerable<OrderHead>> GetAllOrderHeads(); //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
+        Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads();
+        Task<IEnumerable<OrderHeadModel>> GetAllHydratedOrderHeads();
+        Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId);
     }
 }
