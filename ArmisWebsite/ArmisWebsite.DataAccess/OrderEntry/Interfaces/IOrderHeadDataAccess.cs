@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.OrderEntry.Interfaces
     public interface IOrderHeadDataAccess
     {
         Task<OrderHeadModel> GetOrderHeadById(int anOrderId);
+        Task<OrderHeadModel> PostOrderHead(OrderHeadModel anOrderHeadModel);
     }
 }

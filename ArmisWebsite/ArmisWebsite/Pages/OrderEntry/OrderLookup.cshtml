@@ -8,7 +8,10 @@
     <h1>Order Lookup</h1>
 
     @if (Model.Message != null)
-    {<text>@Model.Message</text>}
+    {
+        @*Preloaded message.*@
+        <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+    }
 
     <form asp-page-handler="ordernumber" method="get">
         <div class="row">
@@ -76,23 +79,45 @@
             </div>
 
             <div class="col-lg-3 card p-2 mx-2">
-                <div class="card-title text-center"><h5>Order Details</h5></div>
-                <div class="row p-2"><div class="col-lg-6 border-right border-bottom">Part ID</div><div class="col-lg-3 border-right border-bottom">Part Rev</div><div class="col-lg-3 border-bottom">Qty</div></div>
-                @foreach (var orderDetail in Model.OrderHead.OrderDetails)
-                {
-                    <div class="row p-2">
-                        <div class="col-lg-6 border-right border-bottom">@orderDetail.PartId</div><div class="col-lg-3 border-right border-bottom">@orderDetail.PartRevId</div><div class="col-lg-3 border-bottom">@orderDetail.Quantity</div>
-                    </div>
-                }
+                <div class="card-title text-center"><h5>Shipping</h5></div>
+                @Model.OrderHead.ShipVia.Description
+
             </div>
 
             @{ var currentSpecAssignment = Model.OrderHead.Spec; } @*This is just to make it easier to reference the current spec process assign for the order head model.*@
             <div class="col-lg-4 card p-2">
                 <div class="card-title text-center"><h5>Specification Details</h5></div>
                 @currentSpecAssignment.SpecificationRevision.Description
-                
+
             </div>
         </div>
+
+        <div class="card p-2">
+            <div class="card-title text-center"><h5>Order Details</h5></div>
+            <div class="row p-2">
+                @*Titles of the columns*@
+                <div class="col-lg-2 border-right border-bottom"><b>Part ID</b></div>
+                <div class="col-lg-2 border-right border-bottom"><b>Part Rev</b></div>
+                <div class="col-lg-1 border-bottom"><b>Qty</b></div>
+                <div class="col-lg-2 border-right border-bottom">Container</div>
+            </div>
+            @foreach (var orderDetail in Model.OrderHead.OrderDetails)
+            {
+                <div class="row p-2">
+                    <div class="col-lg-2 border-right border-bottom">@orderDetail.PartId</div>
+                    <div class="col-lg-2 border-right border-bottom">@orderDetail.PartRevId</div>
+                    <div class="col-lg-1 border-right border-bottom">@orderDetail.Quantity</div>
+                    @if (orderDetail.OrderLocation != null && orderDetail.OrderLocation.Any()) {<div class="col-lg-2 border-right border-bottom">@orderDetail.OrderLocation.FirstOrDefault().Container.Description</div>}
+                    else { <div class="col-lg-2 border-right border-bottom"></div> }
+                </div>
+            }
+        </div>
+
+        <div class="card p-2">
+            <div class="card-title text-center"><h5>Packaging/Container</h5></div>
+            @Model.OrderHead.Package.Description
+        </div>
+
 
     }
 </div>

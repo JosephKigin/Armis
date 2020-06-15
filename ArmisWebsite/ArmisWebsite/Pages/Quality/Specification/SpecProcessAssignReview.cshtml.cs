@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ArmisWebsite.Pages.Quality.Specification
 {
-    public class SpecProcessAssignListingModel : PageModel
+    public class SpecProcessAssignReviewModel : PageModel
     {
         //Data Access
         public ISpecProcessAssignDataAccess SpecProcessAssignDataAccess { get; set; }
@@ -17,7 +17,7 @@ namespace ArmisWebsite.Pages.Quality.Specification
         //Model Properties
         public IEnumerable<SpecProcessAssignModel> AllSpecProcessAssigns { get; set; }
 
-        public SpecProcessAssignListingModel(ISpecProcessAssignDataAccess aSpecProcessAssignDataAccess)
+        public SpecProcessAssignReviewModel(ISpecProcessAssignDataAccess aSpecProcessAssignDataAccess)
         {
             SpecProcessAssignDataAccess = aSpecProcessAssignDataAccess;
         }
@@ -39,9 +39,8 @@ namespace ArmisWebsite.Pages.Quality.Specification
 
         public async Task SetUpProperties()
         {
-            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllActiveSpecProcessAssigns();
+            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllReviewNeededSpecProcessAssign();
             AllSpecProcessAssigns = tempSpecProcessAssign.ToList();
         }
-
     }
 }

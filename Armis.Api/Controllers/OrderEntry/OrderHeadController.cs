@@ -66,5 +66,20 @@ namespace Armis.Api.Controllers.OrderEntry
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<OrderHeadModel>> PostNewOrderHead(OrderHeadModel anOrderHeadModel)
+        {
+            try
+            {
+                var data = await OrderHeadService.PostOrderHead(anOrderHeadModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

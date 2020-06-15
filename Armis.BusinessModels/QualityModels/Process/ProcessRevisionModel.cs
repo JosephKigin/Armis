@@ -7,6 +7,7 @@ namespace Armis.BusinessModels.QualityModels.Process
     public class ProcessRevisionModel
     {
         public int ProcessId { get; set; }
+        public string ProcessName { get; set; }
         public int ProcessRevId { get; set; }
         public int CreatedByEmp { get; set; }
         public DateTime DateTimeCreated { get; set; }

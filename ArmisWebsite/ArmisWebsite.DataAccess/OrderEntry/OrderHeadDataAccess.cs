@@ -20,7 +20,13 @@ namespace ArmisWebsite.DataAccess.OrderEntry
 
         public async Task<OrderHeadModel> GetOrderHeadById(int anOrderId)
         {
-            return await DataAccessGeneric.HttpGetRequest<OrderHeadModel>(Config["APIAddress"] + "api/OrderHead/GetHydratedOrderHead/" + anOrderId);
+            var result = await DataAccessGeneric.HttpGetRequest<OrderHeadModel>(Config["APIAddress"] + "api/OrderHead/GetHydratedOrderHead/" + anOrderId);
+            return result;
+        }
+
+        public async Task<OrderHeadModel> PostOrderHead(OrderHeadModel anOrderHeadModel)
+        {
+            return await DataAccessGeneric.HttpPostRequest<OrderHeadModel>(Config["APIAddress"] + "api/processes/postprocess", anOrderHeadModel);
         }
     }
 }

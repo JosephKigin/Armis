@@ -22,6 +22,16 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllHydratedSpecProcessAssign");
         }
 
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveSpecProcessAssigns()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllActiveHydratedSpecProcessAssign");
+        }
+
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeededSpecProcessAssign()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllHydratedReviewNeededSpecProcessAssigns");
+        }
+
         public async Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssign)
         {
             return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/PostSpecProcessASsign/", aSpecProcessAssign);

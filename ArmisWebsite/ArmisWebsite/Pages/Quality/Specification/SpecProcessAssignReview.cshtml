@@ -1,10 +1,11 @@
 ﻿@page
-@model ArmisWebsite.Pages.Quality.Specification.SpecProcessAssignListingModel
+@model ArmisWebsite.Pages.Quality.Specification.SpecProcessAssignReviewModel
 @{
-    ViewData["Title"] = "SpecProcessAssignListing";
+    ViewData["Title"] = "SpecProcessAssignReview";
 }
+
 <div class="container-fluid w-75">
-    <h1>Specification-Process Assignment Listing</h1>
+    <h1>Specification-Process Assignment Review</h1>
 
     <div class="input-group my-1">
         @*Search by... Filter needs to be added.*@
@@ -43,8 +44,10 @@
 
                     <div class="card col-lg-3">
                         <b>Details</b>
-                        @if (specProcessAssign.Customer != null) {<p>Customer: @specProcessAssign.Customer.Name</p>}
-                        @if (specProcessAssign.SeriesOption != null) {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
+                        @if (specProcessAssign.Customer != null)
+                        {<p>Customer: @specProcessAssign.Customer.Name</p>}
+                        @if (specProcessAssign.SeriesOption != null)
+                        {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
                         <p>Hardness: @specProcessAssign.HardnessOptionId</p>
 
                         <p>Alloy: @specProcessAssign.AlloyOptionId</p>

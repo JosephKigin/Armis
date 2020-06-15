@@ -1903,15 +1903,11 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Process>(entity =>
             {
-                entity.HasIndex(e => e.Name)
-                    .HasName("UNQ_Process_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.ProcessId).ValueGeneratedNever();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(50)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
             });
 
