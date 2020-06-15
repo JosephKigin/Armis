@@ -51,12 +51,13 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 DefaultShipAccount = aCustomer.DefaultShipAccount,
                 CreditLimit = aCustomer.CreditLimit
             };
+
         }
-        
+
         public static IEnumerable<CustomerModel> ToModels(this IEnumerable<Customer> aCustomers)
         {
             var result = new List<CustomerModel>();
-            
+
             foreach (var customer in aCustomers)
             {
                 result.Add(customer.ToModel());
@@ -69,12 +70,12 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
         {
             var result = aCustomer.ToModel();
 
-            result.CertCharge = (aCustomer.CertCharge != null)? aCustomer.CertCharge.ToModel() : null;
+            result.CertCharge = (aCustomer.CertCharge != null) ? aCustomer.CertCharge.ToModel() : null;
             result.CreditStatus = aCustomer.CredStatus.ToModel();
-            result.DefaultContact = (aCustomer.DefaultContactNumNavigation != null)? aCustomer.DefaultContactNumNavigation.ToModel() : null;
-            result.DefaultShipVia = (aCustomer.DefaultShipVia != null)? aCustomer.DefaultShipVia.ToModel() : null;
-            result.SalesPerson = (aCustomer.SalesPersonNavigation != null)? aCustomer.SalesPersonNavigation.ToModel() : null;
-            result.DefaultShipTo = (aCustomer.ShipTo != null)? aCustomer.ShipTo.ToModel() : null;
+            result.DefaultContact = (aCustomer.DefaultContactNumNavigation != null) ? aCustomer.DefaultContactNumNavigation.ToModel() : null;
+            result.DefaultShipVia = (aCustomer.DefaultShipVia != null) ? aCustomer.DefaultShipVia.ToModel() : null;
+            result.SalesPerson = (aCustomer.SalesPersonNavigation != null) ? aCustomer.SalesPersonNavigation.ToModel() : null;
+            result.DefaultShipTo = (aCustomer.ShipTo != null) ? aCustomer.ShipTo.ToModel() : null;
 
             return result;
         }

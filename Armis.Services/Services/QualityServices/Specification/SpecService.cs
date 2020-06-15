@@ -169,10 +169,9 @@ namespace Armis.DataLogic.Services.QualityServices
         {
             using (var transaction = await context.Database.BeginTransactionAsync())
             {
-                //TODO: Sample Plan data needs to be copied over from the last Revision, but maybe that sample plan will be passed in from the user making a decision on what they want the sample plan to be.
-                var newSpecRevId = await context.SpecificationRevision.Where(i => i.SpecId == aSpecRevModel.SpecId).MaxAsync(i => i.SpecRevId);
-                if (newSpecRevId == 0) { throw new Exception("Could not find previous revision to rev-up from."); }
-                newSpecRevId += 1;
+                var oldSpecRevId = await context.SpecificationRevision.Where(i => i.SpecId == aSpecRevModel.SpecId).MaxAsync(i => i.SpecRevId);
+                if (oldSpecRevId == 0) { throw new Exception("Could not find previous revision to rev-up from."); }
+                short newSpecRevId = (short)(oldSpecRevId + 1);
 
                 var theSpecRevEntity = aSpecRevModel.ToEntity(aSpecRevModel.SpecId, newSpecRevId);
                 var theSubLevelEntities = aSpecRevModel.SubLevels.ToEntities(aSpecRevModel.SpecId, newSpecRevId);
@@ -195,6 +194,18 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 context.UpdateRange(theSubLevelEntities);
 
+                await context.SaveChangesAsync();
+
+                //Any SpecProcessAssign entry using the old spec rev needs to be flagged as inactive AND NeedsReview
+                var specProcessAssignEntities = await context.SpecProcessAssign.Where(i => i.SpecId == aSpecRevModel.SpecId && i.SpecRevId == oldSpecRevId && i.Inactive == false && i.ReviewNeeded == false).ToListAsync();
+
+                foreach (var assign in specProcessAssignEntities)
+                {
+                    assign.Inactive = true;
+                    assign.ReviewNeeded = true;
+                }
+
+                context.UpdateRange(specProcessAssignEntities);
                 await context.SaveChangesAsync();
 
                 await transaction.CommitAsync();

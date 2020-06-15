@@ -12,5 +12,6 @@ namespace Armis.DataLogic.Services.OrderEntryServices.Interfaces
         Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads();
         Task<IEnumerable<OrderHeadModel>> GetAllHydratedOrderHeads();
         Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId);
+        Task<OrderHeadModel> PostOrderHead(OrderHeadModel anOrderHeadModel);
     }
 }

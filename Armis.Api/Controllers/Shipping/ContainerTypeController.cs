@@ -22,7 +22,7 @@ namespace Armis.Api.Controllers.Shipping
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ContainerTypeModel>>> GetAllContainerTypes()
+        public async Task<ActionResult<IEnumerable<ContainerModel>>> GetAllContainerTypes()
         {
             try
             {

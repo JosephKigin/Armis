@@ -83,7 +83,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.OrderComment = (anOrderHeadEntity.OrderComment != null)? anOrderHeadEntity.OrderComment.ToModel() : null; 
             result.OrderExpedite = (anOrderHeadEntity.OrderExpediteOrder != null)? anOrderHeadEntity.OrderExpediteOrder.ToModel() : null;
             result.OrderShipToOverride = (anOrderHeadEntity.OrderShipToOverride != null)? anOrderHeadEntity.OrderShipToOverride.ToModel() : null;
-            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToModels();
+            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToHydratedModels();
 
             return result;
         }
@@ -98,6 +98,45 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             }
 
             return result;
+        }
+
+        public static OrderHead ToEntity(this OrderHeadModel anOrderHeadModel)
+        {
+            return new OrderHead()
+            {
+                CustId = anOrderHeadModel.CustId,
+                Ponum = anOrderHeadModel.Ponum,
+                OrderDate = anOrderHeadModel.OrderDate,
+                DueDate = anOrderHeadModel.DueDate,
+                ShipDate = anOrderHeadModel.ShipDate,
+                ShipTime = anOrderHeadModel.ShipTime,
+                ReqDate = anOrderHeadModel.ReqDate,
+                DoneDate = anOrderHeadModel.DoneDate,
+                TargetDate = anOrderHeadModel.TargetDate,
+                PriceStatusId = anOrderHeadModel.PriceStatusId,
+                IsPriceHold = anOrderHeadModel.IsPriceHold,
+                IsBadJob = anOrderHeadModel.IsBadJob,
+                IsJobHold = anOrderHeadModel.IsJobHold,
+                JobHoldToEmp = anOrderHeadModel.JobHoldToEmp,
+                JobHoldByEmp = anOrderHeadModel.JobHoldByEmp,
+                QualStdId = anOrderHeadModel.QualStdId,
+                CertChargeId = anOrderHeadModel.CertChargeId,
+                LastCompleteRemSentDt = anOrderHeadModel.LastCompleteRemSentDt,
+                SuppressCompNotify = anOrderHeadModel.SuppressCompNotify,
+                IsMaskingNotify = anOrderHeadModel.IsMaskingNotify.TernaryCodeId,
+                PackageId = anOrderHeadModel.PackageId,
+                SpecId = anOrderHeadModel.SpecId,
+                SpecRevId = anOrderHeadModel.SpecRevId,
+                SpecAssignId = anOrderHeadModel.SpecAssignId,
+                ShipViaId = anOrderHeadModel.ShipViaId,
+                IsPriceApproval = anOrderHeadModel.IsPriceApproval.TernaryCodeId,
+                IsReturnAsIs = anOrderHeadModel.IsReturnAsIs,
+                IsPrePrice = anOrderHeadModel.IsPrePrice.TernaryCodeId,
+                CreditAuthByEmp = anOrderHeadModel.CreditAuthByEmp,
+                IsInspected = anOrderHeadModel.IsInspected.TernaryCodeId,
+                SubTotal = anOrderHeadModel.SubTotal,
+                ExpediteStatus = anOrderHeadModel.ExpediteStatus
+            };
         }
     }
 }

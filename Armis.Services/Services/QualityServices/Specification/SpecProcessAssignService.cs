@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.QualityModels.Spec;
 using Armis.Data.DatabaseContext;
+using Armis.DataLogic.ModelExtensions.CustomerExtensions;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.QualityServices
 {
@@ -63,6 +65,45 @@ namespace Armis.DataLogic.Services.QualityServices
             return theSpecProcessAssignEntities.ToHydratedModels();
         }
 
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssign()
+        {
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false)
+                                                                              .IncludeOptimized(i => i.Spec)
+                                                                              .IncludeOptimized(i => i.SpecChoiceNavigation)
+                                                                              .IncludeOptimized(i => i.SpecChoice)
+                                                                              .IncludeOptimized(i => i.SpecChoice1)
+                                                                              .IncludeOptimized(i => i.SpecChoice2)
+                                                                              .IncludeOptimized(i => i.SpecChoice3)
+                                                                              .IncludeOptimized(i => i.SpecChoice4)
+                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.MaskOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.HardnessOptionNavigation)
+                                                                              .IncludeOptimized(i => i.SeriesOptionNavigation)
+                                                                              .IncludeOptimized(i => i.AlloyOptionNavigation)
+                                                                              .IncludeOptimized(i => i.CustomerNavigation)
+                                                                              .IncludeOptimized(i => i.Process)
+                                                                              .ToListAsync();
+
+            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { throw new Exception("No Process-Spec Assignments returned."); }
+
+            var result = theSpecProcessAssignEntities.ToHydratedModels();
+
+            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.
+            foreach (var model in result)
+            {
+                model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                if (model.CustomerId != null)
+                {
+                    var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
+                    model.Customer = tempCust.ToModel();
+                }
+
+            }
+
+            return result;
+        }
+
         public async Task<SpecProcessAssignModel> GetSpecProcessAssign(int aSpecId, short aSpecRevId, short aSpecAssignId)
         {
             var theSpecProcesAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == aSpecAssignId);
@@ -72,13 +113,43 @@ namespace Armis.DataLogic.Services.QualityServices
             return theSpecProcesAssignEntity.ToModel();
         }
 
-        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeeded() //This call needs to be able to return null because there may not be any SpecProcessAssignments to review.
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedReviewNeeded()
         {
-            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.ReviewNeeded == true).ToListAsync();
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.ReviewNeeded == true)
+                                                                              .IncludeOptimized(i => i.Spec)
+                                                                              .IncludeOptimized(i => i.SpecChoiceNavigation)
+                                                                              .IncludeOptimized(i => i.SpecChoice)
+                                                                              .IncludeOptimized(i => i.SpecChoice1)
+                                                                              .IncludeOptimized(i => i.SpecChoice2)
+                                                                              .IncludeOptimized(i => i.SpecChoice3)
+                                                                              .IncludeOptimized(i => i.SpecChoice4)
+                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.MaskOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.HardnessOptionNavigation)
+                                                                              .IncludeOptimized(i => i.SeriesOptionNavigation)
+                                                                              .IncludeOptimized(i => i.AlloyOptionNavigation)
+                                                                              .IncludeOptimized(i => i.CustomerNavigation)
+                                                                              .IncludeOptimized(i => i.Process)
+                                                                              .ToListAsync();
 
-            if(theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
+            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }  //This call needs to be able to return null because there may not be any SpecProcessAssignments to review.
 
-            return theSpecProcessAssignEntities.ToModels();
+            var result = theSpecProcessAssignEntities.ToHydratedModels();
+
+            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.
+            foreach (var model in result)
+            {
+                model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                if (model.CustomerId != null)
+                {
+                    var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
+                    model.Customer = tempCust.ToModel();
+                }
+
+            }
+
+            return result;
         }
 
         public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecRev, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
@@ -99,7 +170,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                                   i.AlloyOption == alloy &&
                                                                                   i.Customer == customer);
 
-            if(entity == null)
+            if (entity == null)
             {
                 return true;
             }
@@ -108,6 +179,5 @@ namespace Armis.DataLogic.Services.QualityServices
                 return false;
             }
         }
-
     }
 }

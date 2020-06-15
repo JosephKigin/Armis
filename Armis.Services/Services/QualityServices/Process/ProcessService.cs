@@ -130,8 +130,8 @@ namespace Armis.DataLogic.Services.QualityServices
             context.ProcessRevision.Add(newRevEntity);
 
             //Update SpecProccessAssignment table
-            //ToDo: Only consider the SPA that have the most recent spec rev.  Rev up sec, update SPA spec revs, maybe for whole family?
-            var specProcAssignEntities = await context.SpecProcessAssign.Where(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId).ToListAsync();
+            //ToDo: Only consider the SPA that have the most recent spec rev.
+            var specProcAssignEntities = await context.SpecProcessAssign.Where(i => i.ProcessId == currentRev.ProcessId && i.ProcessRevId == currentRev.ProcessRevId && i.Inactive == false && i.ReviewNeeded == false).ToListAsync();
             foreach (var assignEntity in specProcAssignEntities)
             {
                 assignEntity.ReviewNeeded = true;

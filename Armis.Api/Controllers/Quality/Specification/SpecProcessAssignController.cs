@@ -47,7 +47,37 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetAllActiveHydratedSpecProcessAssign()
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.GetAllActiveHydratedSpecProcessAssign();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetAllHydratedReviewNeededSpecProcessAssigns()
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.GetAllHydratedReviewNeeded();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

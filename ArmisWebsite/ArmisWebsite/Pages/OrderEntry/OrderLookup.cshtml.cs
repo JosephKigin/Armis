@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.OrderEntryModels;
 using ArmisWebsite.DataAccess.OrderEntry.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -20,7 +21,7 @@ namespace ArmisWebsite.Pages.OrderEntry
         //Front-End
         [BindProperty(SupportsGet = true)]
         public int OrderNumber { get; set; }
-        public string Message { get; set; }
+        public PopUpMessageModel Message { get; set; }
 
         public OrderLookupModel(IOrderHeadDataAccess anOrderHeadDataAccess)
         {
@@ -28,7 +29,7 @@ namespace ArmisWebsite.Pages.OrderEntry
         }
 
         public async Task<ActionResult> OnGet()
-        {            
+        {
             return Page();
         }
 
@@ -45,7 +46,12 @@ namespace ArmisWebsite.Pages.OrderEntry
             {
                 int tempOrderHead = anOrderNumber ?? 0; //Just turns the int? to an int
                 OrderHead = await OrderHeadDataAccess.GetOrderHeadById(tempOrderHead);
-                if(OrderHead == null) { Message = "No Order found"; }
+                if (OrderHead == null)
+                {
+                    Message = new PopUpMessageModel();
+                    Message.Text = "No Order found";
+                    Message.IsMessageGood = false;
+                }
             }
         }
     }

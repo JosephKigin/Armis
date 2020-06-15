@@ -1,4 +1,5 @@
 ﻿using Armis.BusinessModels.ARModels;
+using Armis.BusinessModels.ShopFloorModels.Location;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,5 +22,6 @@ namespace Armis.BusinessModels.OrderEntryModels
         //public PartRevisionModel PartRevision { get; set; } ToDo: this will be usable when more part models have been created. 6/5/2020
         public PriceCodeModel PriceCode { get; set; }
         public OrderDetailCommentModel OrderDetailComment { get; set; }
+        public IEnumerable<OrderLocationModel> OrderLocation { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
             Context = aContext;
         }
 
+        //Get
         public async Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads() //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
         {
             Context.OrderDetail.Load();
@@ -72,15 +73,39 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .Include(i => i.OrderComment)
                                                            .Include(i => i.OrderExpediteOrder)
                                                            .Include(i => i.OrderShipToOverride)
-                                                           .Include(i => i.OrderDetail).FirstOrDefaultAsync();
+                                                           .Include(i => i.OrderDetail).ThenInclude(i => i.OrderLocation)
+                                                           .FirstOrDefaultAsync();
 
+            if (orderHeadEntity == null) { return null; } //throw new Exception("No Order was found"); }
+            
             orderHeadEntity.Spec = await Context.SpecProcessAssign.Where(i => i.SpecId == orderHeadEntity.SpecId && i.SpecRevId == orderHeadEntity.SpecRevId && i.SpecAssignId == orderHeadEntity.SpecAssignId)
                                                                   .Include(i => i.Process)
                                                                   .Include(i => i.Spec).FirstOrDefaultAsync();
 
-            if (orderHeadEntity == null) { return null; } //throw new Exception("No Order was found"); }
+
 
             return orderHeadEntity.ToHydratedModel();
+        }
+
+
+        //Post
+        public async Task<OrderHeadModel> PostOrderHead(OrderHeadModel anOrderHeadModel)
+        {
+            var theOrderHeadId = await Context.OrderHead.MaxAsync(i => i.OrderId) + 1;
+            anOrderHeadModel.OrderId = theOrderHeadId;
+
+            foreach (var orderDetail in anOrderHeadModel.OrderDetails) //Assigns the order id to all the orderDetails
+            {
+                orderDetail.OrderId = theOrderHeadId;
+            }
+
+            Context.Add(anOrderHeadModel.ToEntity());
+
+            Context.AddRange(anOrderHeadModel.OrderDetails.ToEntities());
+
+            await Context.SaveChangesAsync();
+
+            return anOrderHeadModel;
         }
     }
 }
