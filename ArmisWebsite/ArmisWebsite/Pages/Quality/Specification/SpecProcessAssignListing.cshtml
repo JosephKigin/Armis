@@ -8,7 +8,7 @@
 
     <div class="input-group my-1">
         @*Search by... Filter needs to be added.*@
-        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecProcessAssignList(this.value)" />
+        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search By Specificaiton Code..." onkeyup="searchSpecProcessAssignList(this.value)" />
         <span class="input-group-append bg-white border-left-0">
             <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
         </span>
@@ -17,10 +17,10 @@
     <ul id="allAssignsList" class="list-group" style="height:42em; overflow-y:scroll">
         @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
         {
-            <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.Description">
+            <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.SpecCode">
                 Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
                 Rev: <b>@specProcessAssign.ProcessRevId</b>
-                Specification: <b>@specProcessAssign.SpecificationRevision.Description</b>
+                Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
                 Rev: <b>@specProcessAssign.SpecRevId</b>
                 <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
 

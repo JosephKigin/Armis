@@ -33,7 +33,7 @@
                             <tr>
                                 <td>@level.FromQty</td>
                                 <td style="border-right-color:black">
-                                    @if (level.ToQty == int.MaxValue)
+                                    @if (level == samplePlan.SamplePlanLevelModels.LastOrDefault())
                                     {<text>OVER</text> }
                                 else
                                 { <text>@level.ToQty</text>}

@@ -158,34 +158,30 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs()
         {
-            var entities = await context.Process.Include(i => i.ProcessRevision)
-                                                    .ThenInclude(i => i.ProcessStepSeq)
-                                                            .ThenInclude(i => i.Operation)
-                                                                .ThenInclude(i => i.OperGroup)
-                                                     .Include(i => i.ProcessRevision)
-                                                        .ThenInclude(i => i.ProcessStepSeq)
-                                                            .ThenInclude(i => i.Step)
-                                                                .ThenInclude(i => i.StepCategory).ToListAsync();
-            var result = entities.ToHydratedModels();
+            var processEntities = await context.Process.Include(i => i.ProcessRevision).ToListAsync();
+            var stepSeqEntities = await context.ProcessStepSeq.Include(i => i.Step).ThenInclude(i => i.StepCategory).ToListAsync();
+            var operationEntities = await context.Operation.Include(i => i.OperGroup).ToListAsync();
+
+            foreach (var stepSeq in stepSeqEntities)
+            {
+                stepSeq.Operation = operationEntities.FirstOrDefault(i => i.OperationId == stepSeq.OperationId);
+            }
+
+            foreach (var process in processEntities)
+            {
+                foreach (var rev in process.ProcessRevision)
+                {
+                    rev.ProcessStepSeq = stepSeqEntities.Where(i => i.ProcessId == process.ProcessId && i.ProcessRevId == rev.ProcessRevId).ToList();
+                }
+            }
+
+            var result = processEntities.ToHydratedModels();
 
             return result;
         }
 
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
         {
-            //This code won't work until Entity Framework Core 5.0 is release, expected release dat is November 2020.  TODO: Check back with this in November 2020.
-            //var entities = await context.Process.Include(i => i.ProcessRevision.Where(i => i.RevStatusId == 1)) 
-            //                                        .ThenInclude(i => i.ProcessStepSeq)
-            //                                                .ThenInclude(i => i.Operation)
-            //                                                    .ThenInclude(i => i.OperGroup)
-            //                                         .Include(i => i.ProcessRevision)
-            //                                            .ThenInclude(i => i.ProcessStepSeq)
-            //                                                .ThenInclude(i => i.Step)
-            //                                                    .ThenInclude(i => i.StepCategory).ToListAsync();
-            //var result = entities.ToHydratedModels();
-
-            //return result;
-
             var processModels = await GetHydratedProcessRevs();
 
             foreach (var processModel in processModels)

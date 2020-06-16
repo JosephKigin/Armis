@@ -7,6 +7,7 @@ namespace Armis.BusinessModels.QualityModels.Spec
     public class SpecRevModel
     {
         public int SpecId { get; set; }
+        public string SpecCode { get; set; }
         public short InternalRev { get; set; }
         public string Description { get; set; }
         public string ExternalRev { get; set; }

@@ -335,6 +335,7 @@
 
                 @*Right side*@
                 <div class="col-lg-5">
+                    <h5 class="justify-content-center">Processes</h5>
                     <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Process')" />
                     <select id="selectProcessList" class="list-group w-100 border" size="12" asp-for="ProcessId" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
                         @foreach (var process in Model.AllProcessesWithCurrentRev)

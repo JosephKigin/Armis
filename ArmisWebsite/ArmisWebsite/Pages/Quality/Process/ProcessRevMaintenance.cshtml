@@ -50,18 +50,24 @@
 
     @*Modal for selecting a process to work on*@
     <div class="modal fade" id="modalProcessSelect">
-        <div class="modal-dialog modal-lg" style="width:1200%;">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Choose a Process To Edit</h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-7">
-                            <select class="list-group" size="12">
+                        <div class="col-lg-8">
+                            <div class="input-group my-1">
+                                <input id="inputProcessSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchProcessList(this.value)" />
+                                <span class="input-group-append bg-white border-left-0">
+                                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                                </span>
+                            </div>
+                            <select id="selectAllProcesses" class="list-group w-100" size="12">
                                 @foreach (var process in Model.AllProcesses)
                                 {
-                                    <option value="@process.ProcessId" class="list-group-item fa" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
+                                    <option value="@process.ProcessId" class="list-group-item fa" data-process-name="@process.Name" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
                                         @process.ProcessId: @process.Name -
                                         Rev:
                                         @if (process.Revisions != null && process.Revisions.Any())
@@ -69,22 +75,22 @@
                                             @process.Revisions.Last().ProcessRevId
                                             if (process.Revisions.Last().RevStatusId == 2) //2 = UNLOCKED
                                             { <text>&#xf3c1;</text> }
-                                            else
-                                            { <text>&#xf023;</text> }
-                                        }
                                         else
-                                        {
-                                            <text>NONE</text>
-                                        }
+                                        { <text>&#xf023;</text> }
+                                }
+                                else
+                                {
+                                    <text>NONE</text>
+                                }
                                     </option>
                                 }
                             </select>
                             <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
                             <a id="ancProcessSelect" class="btn btn-primary my-2" asp-page="ProcessRevMaintenance" asp-route-aProcessId="@null">Ok</a>
                         </div>
-                        <div class="col-lg-5">
+                        <div class="col-lg-4">
                             <h5 id="modalStepTitle"></h5>
-                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
+                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:29em; overflow-y:scroll;">
                             </ul>
                         </div>
                     </div>
@@ -680,12 +686,18 @@
     String.prototype.replaceAt=function(index, replacement) {
         return this.substr(0, index) + replacement + this.substr(index + replacement.length);
     }
-</script>
 
-@*
-        If this doesnt work, look into making "CurrentOperations" a type of select list and then bind the select to the property?
-    <li class="list-group-item">
-        @Model.CurrentOperations[i].Name
-        <input id="operID-@i" type="number" form="mainForm" asp-for="CurrentOperationIds[i]" value="@Model.CurrentOperations[i].Id" />
-    </li>
-*@
+    function searchProcessList(searchTerm) {
+        var processes = document.getElementById("selectAllProcesses").getElementsByTagName("option");
+        for (var i = 0; i < processes.length; i++) {
+            if (processes[i] != undefined) {
+                if (processes[i].dataset.processName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    processes[i].style.display = "block";
+                }
+                else {
+                    processes[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
