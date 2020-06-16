@@ -93,6 +93,7 @@ namespace Armis.DataLogic.Services.QualityServices
             foreach (var model in result)
             {
                 model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                model.SpecificationRevision.SpecCode = (await Context.Specification.FirstOrDefaultAsync(i => i.SpecId == model.SpecificationRevision.SpecId)).SpecCode;
                 if (model.CustomerId != null)
                 {
                     var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
@@ -150,6 +151,22 @@ namespace Armis.DataLogic.Services.QualityServices
             }
 
             return result;
+        }
+
+        //public async Task<SpecProcessAssignModel> 
+
+        public async Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId)
+        {
+            var specProcessAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == anAssignId);
+
+            if(specProcessAssignEntity == null) { throw new Exception("No Spec-Process Assignment was found"); }
+
+            specProcessAssignEntity.ReviewNeeded = false;
+
+            Context.Update(specProcessAssignEntity);
+            await Context.SaveChangesAsync();
+
+            return specProcessAssignEntity.ToModel();
         }
 
         public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecRev, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)

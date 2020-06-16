@@ -9,6 +9,14 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
     public static class StepSeqExtension
     {
         //To Model
+
+        /// <summary>
+        /// Turns a Process Step Sequence entity into a basic model
+        /// </summary>
+        /// <param name="aStepSeq">Entity</param>
+        /// <param name="aStep">Model</param>
+        /// <param name="anOperation">Model</param>
+        /// <returns>Basic Step Sequence Model</returns>
         public static StepSeqModel ToModel(this ProcessStepSeq aStepSeq, StepModel aStep, OperationModel anOperation) //TODO: unsure if these should default to null or not or not be there at all.
         {
             return new StepSeqModel()

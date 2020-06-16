@@ -36,6 +36,7 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public bool Inactive { get; set; }
+
         public StepModel? PreBakeOption { get; set; }
         public StepModel? PostBakeOption { get; set; }
         public StepModel? MaskOption { get; set; }

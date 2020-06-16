@@ -241,9 +241,8 @@ namespace ArmisWebsite
 
         public async Task SetUpProperties(int aProcessId)
         {
-            var theProcesses = await ProcessDataAccess.GetAllHydratedProcesses();
+            var theProcesses = await ProcessDataAccess.GetHydratedProcessesWithCurrentRev();
             AllProcesses = theProcesses.ToList();
-
             foreach (var process in AllProcesses)
             {
                 process.Revisions.OrderByDescending(i => i.ProcessRevId);
