@@ -153,13 +153,45 @@ namespace Armis.DataLogic.Services.QualityServices
             return result;
         }
 
-        //public async Task<SpecProcessAssignModel> 
+        //TODO: This needs to update the Spec Rev and the Process Rev
+        public async Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel) //This will be the old SpecProcessAssignModel so the AssignId will need to be updated.
+        {
+            using (var transaction = await Context.Database.BeginTransactionAsync())
+            {
+                await RemoveReviewNeeded(aSpecProcessAssignModel.SpecId, aSpecProcessAssignModel.SpecRevId, aSpecProcessAssignModel.SpecAssignId);
+                //TODO: Look at prev. todo and insert logic here
+                var mostRecentSpecRevId = (await Context.SpecificationRevision.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId).OrderByDescending(i => i.SpecRevId).FirstOrDefaultAsync()).SpecRevId;
+                var mostRecentProcessRevId = (await Context.ProcessRevision.Where(i => i.ProcessId == aSpecProcessAssignModel.ProcessId).OrderByDescending(i => i.ProcessRevId).FirstOrDefaultAsync()).ProcessRevId;
+
+                aSpecProcessAssignModel.SpecRevId = mostRecentSpecRevId;
+                aSpecProcessAssignModel.ProcessRevId = mostRecentProcessRevId;
+
+                //Pulls all assignments that have the same specId, specRevId, ProcessId, and ProcessRevId as the assignment being copied.
+                var specProcessAssignFamily = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId &&
+                                                                                   i.SpecRevId == mostRecentSpecRevId &&
+                                                                                   i.ProcessId == aSpecProcessAssignModel.ProcessId &&
+                                                                                   i.ProcessRevId == mostRecentSpecRevId).ToListAsync();
+
+                if (specProcessAssignFamily == null || !specProcessAssignFamily.Any()) { aSpecProcessAssignModel.SpecAssignId = 1; }
+                else
+                {
+                    var lastAssignIdUsed = specProcessAssignFamily.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId;
+                    aSpecProcessAssignModel.SpecAssignId = (lastAssignIdUsed + 1); 
+                }
+
+                Context.SpecProcessAssign.Add(aSpecProcessAssignModel.ToEntity());
+                await Context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return aSpecProcessAssignModel;
+            }
+        }
 
         public async Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId)
         {
             var specProcessAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == anAssignId);
 
-            if(specProcessAssignEntity == null) { throw new Exception("No Spec-Process Assignment was found"); }
+            if (specProcessAssignEntity == null) { throw new Exception("No Spec-Process Assignment was found"); }
 
             specProcessAssignEntity.ReviewNeeded = false;
 

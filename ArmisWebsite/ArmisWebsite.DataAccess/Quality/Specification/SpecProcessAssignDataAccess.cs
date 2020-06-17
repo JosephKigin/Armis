@@ -37,6 +37,17 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
             return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/PostSpecProcessASsign/", aSpecProcessAssign);
         }
 
+        public async Task<SpecProcessAssignModel> RemoveReviedNeeded(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/RemoveReviewNeeded/", aSpecProcessAssignModel);
+        }
+
+        public async Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/CopyAfterReview/", aSpecProcessAssignModel);
+        }
+
+
         public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
         {
             return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/VerifyUniqueChoices/" + specId + "/" + internalSpecId + "/" + choice1 + "/" + choice2 + "/" + choice3 + "/" + choice4 + "/" + choice5 + "/" + choice6 + "/" + preBake + "/" + postBake + "/" + mask + "/" + hardness + "/" + series + "/" + alloy + "/" + customer);

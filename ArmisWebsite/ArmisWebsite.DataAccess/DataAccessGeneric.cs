@@ -16,6 +16,12 @@ namespace ArmisWebsite.DataAccess
          */
 
         //GET
+        /// <summary>
+        /// Basic Get request with one type that defines the type returned.
+        /// </summary>
+        /// <typeparam name="T">Return & parameter type</typeparam>
+        /// <param name="aPath"></param>
+        /// <returns></returns>
         public static async Task<T> HttpGetRequest<T>(string aPath)
         {
             using (var client = new HttpClient())
@@ -26,7 +32,14 @@ namespace ArmisWebsite.DataAccess
             }
         }
 
-        //This is for gets with a different return type than the parameter type being passed in.
+        /// <summary>
+        /// Get with a different return type than the parameter type being passed in.
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <typeparam name="U">Parameter type</typeparam>
+        /// <param name="aPath"></param>
+        /// <param name="aModel"></param>
+        /// <returns></returns>
         public static async Task<T> HttpGetRequest<T, U>(string aPath, U aModel)
         {
             using (var client = new HttpClient())
@@ -41,6 +54,13 @@ namespace ArmisWebsite.DataAccess
         }
 
         //POST
+        /// <summary>
+        /// Post with a return type that is the same as the parameter type.
+        /// </summary>
+        /// <typeparam name="T">Return & parameter type</typeparam>
+        /// <param name="aPath"></param>
+        /// <param name="aModel"></param>
+        /// <returns></returns>
         public static async Task<T> HttpPostRequest<T>(string aPath, T aModel)
         {
             using (var client = new HttpClient())
@@ -57,7 +77,14 @@ namespace ArmisWebsite.DataAccess
             }
         }
 
-        //This is for posts that have a different return type than the parameter type being passed in.
+        /// <summary>
+        /// Post that has a different return type than the parameter type being passed in.
+        /// </summary>
+        /// <typeparam name="T">Return type</typeparam>
+        /// <typeparam name="U">Parameter type</typeparam>
+        /// <param name="aPath"></param>
+        /// <param name="aModel"></param>
+        /// <returns></returns>
         public static async Task<T> HttpPostRequest<T, U>(string aPath, U aModel)
         {
             using (var client = new HttpClient())
@@ -75,6 +102,13 @@ namespace ArmisWebsite.DataAccess
         }
 
         //PUT
+        /// <summary>
+        /// Put request where the return type is the same as the parameter type
+        /// </summary>
+        /// <typeparam name="T">Return & parameter type</typeparam>
+        /// <param name="aPath"></param>
+        /// <param name="aModel"></param>
+        /// <returns></returns>
         public static async Task<T> HttpPutRequest<T>(string aPath, T aModel)
         {
             using (var client = new HttpClient())
@@ -92,6 +126,11 @@ namespace ArmisWebsite.DataAccess
         }
 
         //DELETE
+        /// <summary>
+        /// Delete request where there is no defined type.  The information should be in the aPath parameter, such as an Id.
+        /// </summary>
+        /// <param name="aPath"></param>
+        /// <returns></returns>
         public static async Task<string> HttpDeleteRequest(string aPath)
         {
             using (var client = new HttpClient())

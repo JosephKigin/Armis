@@ -124,5 +124,35 @@ namespace Armis.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<SpecProcessAssignModel>> RemoveReviewNeeded(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.RemoveReviewNeeded(aSpecProcessAssignModel.SpecId, aSpecProcessAssignModel.SpecRevId, aSpecProcessAssignModel.SpecAssignId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SpecProcessAssignModel>> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.CopyAfterReview(aSpecProcessAssignModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

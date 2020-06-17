@@ -4,67 +4,81 @@
     ViewData["Title"] = "SpecProcessAssignReview";
 }
 
-<div class="container-fluid w-75">
-    <h1>Specification-Process Assignment Review</h1>
+    <div class="container-fluid w-75 mb-3">
+        <h1>Specification-Process Assignment Review</h1>
 
+        @if (Model.Message != null)
+        {
+            @*Preloaded message.*@
+            <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+        }
 
-    @if (Model.AllSpecProcessAssigns == null)
-    {
-        <span>No Reviews Needed</span>
-    }
-    else
-    {
-        <div class="input-group my-1">
-            @*Search by... Filter needs to be added.*@
-            <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecProcessAssignList(this.value)" />
-            <span class="input-group-append bg-white border-left-0">
-                <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
-            </span>
-        </div>
-        <ul id="allAssignsList" class="list-group" style="height:42em; overflow-y:scroll">
-            @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
-            {
-                <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.Description">
-                    Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
-                    Rev: <b>@specProcessAssign.ProcessRevId</b>
-                    Specification: <b>@specProcessAssign.SpecificationRevision.Description</b>
-                    Rev: <b>@specProcessAssign.SpecRevId</b>
-                    <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
+        @if (Model.AllSpecProcessAssigns == null)
+        {
+            <span>No Reviews Needed</span>
+        }
+        else
+        {
+            <div class="input-group my-1">
+                @*Search by... Filter needs to be added.*@
+                <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchSpecProcessAssignList(this.value)" />
+                <span class="input-group-append bg-white border-left-0">
+                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                </span>
+            </div>
+            <form method="post">
+                <ul id="allAssignsList" class="list-group border" style="height:42em; overflow-y:scroll">
+                    @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
+                    {
+                        <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.Description">
+                            Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                            Rev: <b>@specProcessAssign.ProcessRevId</b>
+                            Specification: <b>@specProcessAssign.SpecificationRevision.Description</b>
+                            Rev: <b>@specProcessAssign.SpecRevId</b>
+                            <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
 
-                    <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                        <div class="card col-lg-3">
-                            <b>Choices</b>
-                            @if (specProcessAssign.Choice1 != null && specProcessAssign.Choice1.Name != null)
-                            {<p>@specProcessAssign.Choice1.Name</p>}
-                            @if (specProcessAssign.Choice2 != null && specProcessAssign.Choice2.Name != null)
-                            {<p>@specProcessAssign.Choice2.Name</p>}
-                            @if (specProcessAssign.Choice3 != null && specProcessAssign.Choice3.Name != null)
-                            {<p>@specProcessAssign.Choice3.Name</p>}
-                            @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
-                            {<p>@specProcessAssign.Choice4.Name</p>}
-                            @if (specProcessAssign.Choice5 != null && specProcessAssign.Choice5.Name != null)
-                            {<p>@specProcessAssign.Choice5.Name</p>}
-                            @if (specProcessAssign.Choice6 != null && specProcessAssign.Choice6.Name != null)
-                            {<p>@specProcessAssign.Choice6.Name</p>}
-                        </div>
+                            <div class="float-right">
+                                <input type="checkbox" class="form-control-lg" name="SpecProcessAssignmentsToPost" value="@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" />
+                            </div>
 
-                        <div class="card col-lg-3">
-                            <b>Details</b>
-                            <span>Customer:</span>
-                            @if (specProcessAssign.Customer != null)
-                            {<span>@specProcessAssign.Customer.Name</span>}
-                            <span>Series:</span> 
-                            @if (specProcessAssign.SeriesOption != null)
-                            {<span>@specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName]</span>}
-                            <span>Hardness: @specProcessAssign.HardnessOptionId</span>
-                            <span>Alloy: @specProcessAssign.AlloyOptionId</span>
-                        </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    }
-</div>
+                            <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
+                                <div class="card col-lg-3">
+                                    <b>Choices</b>
+                                    @if (specProcessAssign.Choice1 != null && specProcessAssign.Choice1.Name != null)
+                                    {<p>@specProcessAssign.Choice1.Name</p>}
+                                    @if (specProcessAssign.Choice2 != null && specProcessAssign.Choice2.Name != null)
+                                    {<p>@specProcessAssign.Choice2.Name</p>}
+                                    @if (specProcessAssign.Choice3 != null && specProcessAssign.Choice3.Name != null)
+                                    {<p>@specProcessAssign.Choice3.Name</p>}
+                                    @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
+                                    {<p>@specProcessAssign.Choice4.Name</p>}
+                                    @if (specProcessAssign.Choice5 != null && specProcessAssign.Choice5.Name != null)
+                                    {<p>@specProcessAssign.Choice5.Name</p>}
+                                    @if (specProcessAssign.Choice6 != null && specProcessAssign.Choice6.Name != null)
+                                    {<p>@specProcessAssign.Choice6.Name</p>}
+                                </div>
+
+                                <div class="card col-lg-3">
+                                    <b>Details</b>
+                                    <span>Customer:</span>
+                                    @if (specProcessAssign.Customer != null)
+                                    {<span>@specProcessAssign.Customer.Name</span>}
+                                    <span>Series:</span>
+                                    @if (specProcessAssign.SeriesOption != null)
+                                    {<span>@specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName]</span>}
+                                    <span>Hardness: @specProcessAssign.HardnessOptionId</span>
+                                    <span>Alloy: @specProcessAssign.AlloyOptionId</span>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+                <button class="btn btn-lg btn-success float-right my-2" asp-page-handler="Keep">Keep</button>
+                <button class="btn btn-lg btn-danger float-right m-2" asp-page-handler="Remove">Remove</button>
+            </form>
+        }
+    </div>
 <script>
     function searchSpecProcessAssignList(searchTerm) {
         var assigns = document.getElementById("allAssignsList").getElementsByTagName("li");
