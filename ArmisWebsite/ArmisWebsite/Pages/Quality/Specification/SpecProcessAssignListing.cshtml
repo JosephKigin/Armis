@@ -18,10 +18,10 @@
         @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
         {
             <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.SpecCode">
-                Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
-                Rev: <b>@specProcessAssign.ProcessRevId</b>
                 Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
                 Rev: <b>@specProcessAssign.SpecRevId</b>
+                Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                Rev: <b>@specProcessAssign.ProcessRevId</b>
                 <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
 
                 <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
@@ -43,8 +43,10 @@
 
                     <div class="card col-lg-3">
                         <b>Details</b>
-                        @if (specProcessAssign.Customer != null) {<p>Customer: @specProcessAssign.Customer.Name</p>}
-                        @if (specProcessAssign.SeriesOption != null) {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
+                        @if (specProcessAssign.Customer != null)
+                        {<p>Customer: @specProcessAssign.Customer.Name</p>}
+                        @if (specProcessAssign.SeriesOption != null)
+                        {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
                         <p>Hardness: @specProcessAssign.HardnessOptionId</p>
 
                         <p>Alloy: @specProcessAssign.AlloyOptionId</p>

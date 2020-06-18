@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArmisWebsite.Utility
@@ -25,7 +26,9 @@ namespace ArmisWebsite.Utility
         public string GenerateRouterPdf(ProcessModel aProcessModel, ProcessRevisionModel aRevisionModel)
         {
             //TODO: Check thePath later.
-            var thePath = Config["PdfRouterFileLocation"] + aProcessModel.ProcessId + "-" + aRevisionModel.ProcessRevId + "-" + aProcessModel.Name + ".pdf";
+            var theRouterName = Regex.Replace(aProcessModel.Name, @"[^\w\.@-]", "", RegexOptions.None);
+            var thePath = Config["PdfRouterFileLocation"] + aProcessModel.ProcessId + "-" + aRevisionModel.ProcessRevId + "-" + theRouterName + ".pdf";
+
             if (!File.Exists(thePath))
             {
                 FileStream fileStream = new FileStream(thePath, FileMode.Create, FileAccess.Write);

@@ -117,7 +117,6 @@ namespace ArmisWebsite.Pages.Quality.Specification
             {
                 return RedirectToPage("/Error", new { ExMessage = ex.Message });
             }
-            return Page();
         }
 
         public async Task SetUpProperties()
