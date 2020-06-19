@@ -20,14 +20,14 @@
     <ul id="listAllSteps" class="list-group" style="max-height: 42em; overflow:scroll;">
         @foreach (var step in Model.Steps)
         {
-            <li id="@step.StepId" class="list-group-item" data-step-name="@step.StepName">
+            <li id="@step.StepId" class="list-group-item" data-step-name="@step.StepName - @step.StepCategory.Code">
 
-                <h5>@step.StepName [@step.StepId]</h5>
+                <h5>@step.StepId. @step.StepName [@step.StepCategory.Code]</h5>
                 @if (step.SignOffIsRequired == true)
                 {<p class="text-danger">Sign-Off Required</p>}
                 <b>Instructions: </b>@step.Instructions
 
-                <a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a>
+                <a style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a>
             </li>
         }
     </ul>

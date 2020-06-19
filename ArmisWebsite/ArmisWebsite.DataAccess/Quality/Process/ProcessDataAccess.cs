@@ -57,9 +57,14 @@ namespace ArmisWebsite.DataAccess.Quality
         //    return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
         //}
 
-        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
+        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev()
         {
-            return await DataAccessGeneric.HttpGetRequest<IEnumerable<ProcessModel>>(Config["APIAddress"] + "api/Processes/GetHydratedProcessesWithCurrentRev");
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<ProcessModel>>(Config["APIAddress"] + "api/Processes/GetHydratedProcessesWithCurrentLockedRev");
+        }
+
+        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentAnyRev()
+        {
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<ProcessModel>>(Config["APIAddress"] + "api/Processes/GetHydratedProcessesWithCurrentAnyRev");
         }
 
         //UPDATE

@@ -9,5 +9,6 @@ namespace Armis.DataLogic.Services.PartServices.Interfaces
     public interface IMaterialSeriesService
     {
         Task<IEnumerable<MaterialSeriesModel>> GetAllMaterialSeries();
+        Task<MaterialSeriesModel> CreateMaterialSeries(MaterialSeriesModel aMaterialSeriesModel);
     }
 }

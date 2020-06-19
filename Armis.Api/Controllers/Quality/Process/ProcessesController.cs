@@ -57,11 +57,26 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetHydratedProcessesWithCurrentRev()
+        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetHydratedProcessesWithCurrentLockedRev() //This returns the most recent LOCKED rev
         {
             try
             {
-                var data = await ProcessService.GetHydratedProcessesWithCurrentRev();
+                var data = await ProcessService.GetHydratedProcessesWithCurrentLockedRev();
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProcessModel>>> GetHydratedProcessesWithCurrentAnyRev()
+        {
+            try
+            {
+                var data = await ProcessService.GetHydratedProcessesWithCurrentAnyRev();
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -114,7 +129,7 @@ namespace Armis.Api.Controllers
 
                 return BadRequest(ex.Message);
             }
-        }        
+        }
 
         [HttpPost]
         public async Task<ActionResult<ProcessModel>> PostProcess(ProcessModel aProcessModel)

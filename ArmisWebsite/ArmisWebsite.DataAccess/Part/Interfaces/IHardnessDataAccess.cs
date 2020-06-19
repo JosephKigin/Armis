@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.Part.Interfaces
     public interface IHardnessDataAccess
     {
         Task<IEnumerable<HardnessModel>> GetAllHardnesses();
+        Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel);
     }
 }

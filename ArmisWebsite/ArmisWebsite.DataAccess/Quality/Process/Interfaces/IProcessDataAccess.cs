@@ -11,8 +11,8 @@ namespace ArmisWebsite.DataAccess.Quality.Interfaces
     {
         Task<IEnumerable<ProcessModel>> GetAllHydratedProcesses();
         Task<ProcessModel> GetHydratedProcess(int id);
-        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev();
-        //Task<bool> CheckIfNameIsUnique(string aName);
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev();
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentAnyRev();
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
         Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId);
         Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel);

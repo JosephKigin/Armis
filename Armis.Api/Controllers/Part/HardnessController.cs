@@ -50,5 +50,20 @@ namespace Armis.Api.Controllers.Part
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<HardnessModel>> CreateHardness(HardnessModel aHardnessModel)
+        {
+            try
+            {
+                var data = await HardnessService.CreateHardness(aHardnessModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace ArmisWebsite.DataAccess.Quality.Specification.Interfaces
     {
         Task<IEnumerable<SpecProcessAssignModel>> GetAllSpecProcessAssigns();
         Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveSpecProcessAssigns();
+        Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId);
         Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeededSpecProcessAssign();
         Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssign);
         Task<SpecProcessAssignModel> RemoveReviedNeeded(SpecProcessAssignModel aSpecProcessAssignModel);

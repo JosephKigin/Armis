@@ -11,6 +11,7 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
         Task<SpecProcessAssignModel> PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessASsignModel);
         Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedSpecProcessAssign();
         Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssign();
+        Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId);
         Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId);
         Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel);
         Task<SpecProcessAssignModel> GetSpecProcessAssign(int aSpecId, short aSpecRevId, short aSpecAssignId);

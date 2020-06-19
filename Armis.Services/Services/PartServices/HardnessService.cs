@@ -36,5 +36,19 @@ namespace Armis.DataLogic.Services.PartServices
 
             return theHardnessEntity.ToModel();
         }
+
+        public async Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel)
+        {
+            var entityToAdd = aHardnessModel.ToEntity();
+
+            var lastIdUsed = await Context.Hardness.MaxAsync(i => i.HardnessId);
+
+            entityToAdd.HardnessId = (lastIdUsed + 1);
+
+            Context.Hardness.Add(entityToAdd);
+            await Context.SaveChangesAsync();
+
+            return entityToAdd.ToModel();
+        }
     }
 }

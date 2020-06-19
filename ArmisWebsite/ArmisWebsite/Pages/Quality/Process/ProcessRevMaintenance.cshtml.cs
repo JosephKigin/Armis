@@ -241,11 +241,13 @@ namespace ArmisWebsite
 
         public async Task SetUpProperties(int aProcessId)
         {
-            var theProcesses = await ProcessDataAccess.GetHydratedProcessesWithCurrentRev();
+            var theProcesses = await ProcessDataAccess.GetHydratedProcessesWithCurrentAnyRev();
             AllProcesses = theProcesses.ToList();
             foreach (var process in AllProcesses)
             {
                 process.Revisions.OrderByDescending(i => i.ProcessRevId);
+
+                if(process.Name == "Test Process 1") { var TEST = "This is the process I am looking for."; }
             }
 
             var theSteps = await StepDataAccess.GetAllSteps();
@@ -256,7 +258,7 @@ namespace ArmisWebsite
 
             CurrentProcess = new ProcessModel(); //This needs to be created even if there isn't a process being passed in so the front-end doesn't throw a null reference exception when looking for a name.
 
-            CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end does throw a null reference exception when loading the current step list.
+            CurrentRev = new ProcessRevisionModel(); //This also needs to be created right away so the front-end doesn't throw a null reference exception when loading the current step list.
             CurrentRev.StepSeqs = new List<StepSeqModel>();
 
             CurrentStepIds = null;

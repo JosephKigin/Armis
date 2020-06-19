@@ -35,5 +35,20 @@ namespace Armis.Api.Controllers.Part
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<MaterialSeriesModel>> CreateMaterialSeries(MaterialSeriesModel aMaterialSeries)
+        {
+            try
+            {
+                var data = await MaterialSeriesService.CreateMaterialSeries(aMaterialSeries);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

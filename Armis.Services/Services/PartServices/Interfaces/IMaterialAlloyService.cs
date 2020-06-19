@@ -9,5 +9,6 @@ namespace Armis.DataLogic.Services.PartServices.Interfaces
     public interface IMaterialAlloyService
     {
         Task<IEnumerable<MaterialAlloyModel>> GetAllMaterialAlloys();
+        Task<MaterialAlloyModel> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel);
     }
 }

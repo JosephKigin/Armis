@@ -21,5 +21,10 @@ namespace ArmisWebsite.DataAccess.Part
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<HardnessModel>>(Config["APIAddress"] + "api/Hardness/GetAllHardnesses");
         }
+
+        public async Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel)
+        {
+            return await DataAccessGeneric.HttpPostRequest<HardnessModel>(Config["APIAddress"] + "api/Hardness/CreateHardness", aHardnessModel);
+        }
     }
 }
