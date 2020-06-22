@@ -16,11 +16,13 @@
 function updateInputFromSelectModal(inputCategory) {
     var theSelect = document.getElementById("select" + inputCategory + "List");
     theSelected = theSelect.options[theSelect.selectedIndex];
-    var theInput = document.getElementById("input" + inputCategory);
-    theInput.value = theSelected.value;
-    theInput.dataset.id = theSelected.dataset.id;
+    //var theInput = document.getElementById("input" + inputCategory);
+    //theInput.value = theSelected.value;
+    //theInput.dataset.id = theSelected.dataset.id;
 
     document.getElementById("hdn" + inputCategory + "Id").value = theSelected.dataset.id; //Updating the hidden field that is bound to a property on the server-side.
+
+    document.getElementById("label" + inputCategory).innerHTML = theSelected.value;
 }
 
 function udpateSpecIdOnAnchor(newId) {
@@ -34,9 +36,9 @@ function openModalSteps() {
 }
 
 function clearInput(inputCategory) {
-    var theInput = document.getElementById("input" + inputCategory);
-    theInput.value = "";
-    theInput.dataset.id = "";
+    var theLabel = document.getElementById("label" + inputCategory);
+    theLabel.innerHTML = "";
+    //theLabel.dataset.id = "";
     document.getElementById("hdn" + inputCategory + "Id").value = "";
 }
 

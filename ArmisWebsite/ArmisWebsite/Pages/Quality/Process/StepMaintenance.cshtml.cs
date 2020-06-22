@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Armis.BusinessModels.QualityModels.Process;
 using ArmisWebsite.DataAccess.Quality;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
+using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -45,9 +46,7 @@ namespace ArmisWebsite
         public string StepInstructions { get; set; }
 
         [BindProperty]
-        public string Message { get; set; }
-
-        public bool IsMessageGood { get; set; }
+        public PopUpMessageModel Message { get; set; }
 
         public StepMaintenanceModel(IConfiguration aConfig,
                                     IStepDataAccess aStepDataAccess)
@@ -62,10 +61,14 @@ namespace ArmisWebsite
             {
                 await SetUpPage();
 
-                if (aMessage != "") 
-                { 
-                    Message = aMessage;
-                    IsMessageGood = isMessageGood;
+                if (aMessage != "")
+                {
+                    Message = new PopUpMessageModel()
+                    {
+                        Text = aMessage,
+                        IsMessageGood = isMessageGood
+                    };
+
                 }
                 if (aStepId > 0)
                 {
@@ -82,7 +85,7 @@ namespace ArmisWebsite
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly."});  //Todo: Need to implement logging and return a smaller value
+                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: Need to implement logging and return a smaller value
             }
 
         }
@@ -112,7 +115,7 @@ namespace ArmisWebsite
 
                 var theStepId = await StepDataAccess.PostNewStep(Step);
 
-                return RedirectToPage("StepMaintenance", new {aStepId= theStepId.StepId, aMessage = "Step saved successfully", isMessageGood = true });
+                return RedirectToPage("StepMaintenance", new { aStepId = theStepId.StepId, aMessage = "Step saved successfully", isMessageGood = true });
             }
             catch (Exception ex)
             {

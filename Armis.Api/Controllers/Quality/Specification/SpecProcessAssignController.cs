@@ -66,6 +66,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet("{aSpecId}")]
+        public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.GetAllActiveHydratedSpecProcessAssignForSpec(aSpecId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetAllHydratedReviewNeededSpecProcessAssigns()
         {
@@ -116,6 +131,36 @@ namespace Armis.Api.Controllers
             try
             {
                 var data = await SpecProcessAssignService.PostSpecProcessAssign(aSpecProcessAssignModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SpecProcessAssignModel>> RemoveReviewNeeded(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.RemoveReviewNeeded(aSpecProcessAssignModel.SpecId, aSpecProcessAssignModel.SpecRevId, aSpecProcessAssignModel.SpecAssignId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SpecProcessAssignModel>> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.CopyAfterReview(aSpecProcessAssignModel);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

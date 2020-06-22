@@ -1,8 +1,6 @@
 ﻿using Armis.BusinessModels.PartModels;
 using Armis.Data.DatabaseContext.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Armis.DataLogic.ModelExtensions.PartExtensions
 {
@@ -29,6 +27,16 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
             }
 
             return resultingModels;
+        }
+
+        public static MaterialSeries ToEntity(this MaterialSeriesModel aMaterialSeriesModel)
+        {
+            return new MaterialSeries()
+            {
+                ShortName = aMaterialSeriesModel.ShortName,
+                Description = aMaterialSeriesModel.Description,
+                Type = aMaterialSeriesModel.Type
+            };
         }
     }
 }

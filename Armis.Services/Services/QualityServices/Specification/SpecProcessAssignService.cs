@@ -44,32 +44,7 @@ namespace Armis.DataLogic.Services.QualityServices
         public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedSpecProcessAssign()
         {
 
-            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Include(i => i.SpecChoiceNavigation)
-                                                                              .Include(i => i.SpecChoice)
-                                                                              .Include(i => i.SpecChoice1)
-                                                                              .Include(i => i.SpecChoice2)
-                                                                              .Include(i => i.SpecChoice3)
-                                                                              .Include(i => i.SpecChoice4)
-                                                                              .Include(i => i.PreBakeOptionNavigation.StepCategory)
-                                                                              .Include(i => i.PostBakeOptionNavigation.StepCategory)
-                                                                              .Include(i => i.MaskOptionNavigation.StepCategory)
-                                                                              .Include(i => i.HardnessOptionNavigation)
-                                                                              .Include(i => i.SeriesOptionNavigation)
-                                                                              .Include(i => i.AlloyOptionNavigation)
-                                                                              .Include(i => i.CustomerNavigation)
-                                                                              .Include(i => i.Process)
-                                                                              .ToListAsync();
-
-            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { throw new Exception("No Process-Spec Assignments returned."); }
-
-            return theSpecProcessAssignEntities.ToHydratedModels();
-        }
-
-        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssign()
-        {
-            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false)
-                                                                              .IncludeOptimized(i => i.Spec)
-                                                                              .IncludeOptimized(i => i.SpecChoiceNavigation)
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.IncludeOptimized(i => i.SpecChoiceNavigation)
                                                                               .IncludeOptimized(i => i.SpecChoice)
                                                                               .IncludeOptimized(i => i.SpecChoice1)
                                                                               .IncludeOptimized(i => i.SpecChoice2)
@@ -87,9 +62,77 @@ namespace Armis.DataLogic.Services.QualityServices
 
             if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { throw new Exception("No Process-Spec Assignments returned."); }
 
+            return theSpecProcessAssignEntities.ToHydratedModels();
+        }
+
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssign()
+        {
+            await Context.StepCategory.LoadAsync();
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false)
+                                                                              .IncludeOptimized(i => i.Spec)
+                                                                              .IncludeOptimized(i => i.SpecChoiceNavigation)
+                                                                              .IncludeOptimized(i => i.SpecChoice)
+                                                                              .IncludeOptimized(i => i.SpecChoice1)
+                                                                              .IncludeOptimized(i => i.SpecChoice2)
+                                                                              .IncludeOptimized(i => i.SpecChoice3)
+                                                                              .IncludeOptimized(i => i.SpecChoice4)
+                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.MaskOptionNavigation)
+                                                                              .IncludeOptimized(i => i.HardnessOptionNavigation)
+                                                                              .IncludeOptimized(i => i.SeriesOptionNavigation)
+                                                                              .IncludeOptimized(i => i.AlloyOptionNavigation)
+                                                                              .IncludeOptimized(i => i.CustomerNavigation)
+                                                                              .IncludeOptimized(i => i.Process)
+                                                                              .ToListAsync();
+
+            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { throw new Exception("No Process-Spec Assignments returned."); }
+
             var result = theSpecProcessAssignEntities.ToHydratedModels();
 
-            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.
+            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.  This is because of all the addition ThenIncludes that would be necessary to load all the information into one entity variable.
+            foreach (var model in result)
+            {
+                model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                model.SpecificationRevision.SpecCode = (await Context.Specification.FirstOrDefaultAsync(i => i.SpecId == model.SpecificationRevision.SpecId)).SpecCode;
+                if (model.CustomerId != null)
+                {
+                    var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
+                    model.Customer = tempCust.ToModel();
+                }
+
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId)
+        {
+            await Context.StepCategory.LoadAsync();
+            //This will always pull the most recent rev because the most recent will always be the active.
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false && i.SpecId == aSpecId)
+                                                                              .IncludeOptimized(i => i.Spec)
+                                                                              .IncludeOptimized(i => i.SpecChoiceNavigation)
+                                                                              .IncludeOptimized(i => i.SpecChoice)
+                                                                              .IncludeOptimized(i => i.SpecChoice1)
+                                                                              .IncludeOptimized(i => i.SpecChoice2)
+                                                                              .IncludeOptimized(i => i.SpecChoice3)
+                                                                              .IncludeOptimized(i => i.SpecChoice4)
+                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.MaskOptionNavigation)
+                                                                              .IncludeOptimized(i => i.HardnessOptionNavigation)
+                                                                              .IncludeOptimized(i => i.SeriesOptionNavigation)
+                                                                              .IncludeOptimized(i => i.AlloyOptionNavigation)
+                                                                              .IncludeOptimized(i => i.CustomerNavigation)
+                                                                              .IncludeOptimized(i => i.Process)
+                                                                              .ToListAsync();
+
+            if(theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
+
+            var result = theSpecProcessAssignEntities.ToHydratedModels();
+
+            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.  This is because of all the addition ThenIncludes that would be necessary to load all the information into one entity variable. 
             foreach (var model in result)
             {
                 model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
@@ -116,6 +159,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedReviewNeeded()
         {
+            await Context.StepCategory.LoadAsync();
             var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.ReviewNeeded == true)
                                                                               .IncludeOptimized(i => i.Spec)
                                                                               .IncludeOptimized(i => i.SpecChoiceNavigation)
@@ -124,9 +168,9 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                               .IncludeOptimized(i => i.SpecChoice2)
                                                                               .IncludeOptimized(i => i.SpecChoice3)
                                                                               .IncludeOptimized(i => i.SpecChoice4)
-                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation.StepCategory)
-                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation.StepCategory)
-                                                                              .IncludeOptimized(i => i.MaskOptionNavigation.StepCategory)
+                                                                              .IncludeOptimized(i => i.PreBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.PostBakeOptionNavigation)
+                                                                              .IncludeOptimized(i => i.MaskOptionNavigation)
                                                                               .IncludeOptimized(i => i.HardnessOptionNavigation)
                                                                               .IncludeOptimized(i => i.SeriesOptionNavigation)
                                                                               .IncludeOptimized(i => i.AlloyOptionNavigation)
@@ -153,13 +197,44 @@ namespace Armis.DataLogic.Services.QualityServices
             return result;
         }
 
-        //public async Task<SpecProcessAssignModel> 
+        public async Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel) //This will be the old SpecProcessAssignModel so the AssignId will need to be updated.
+        {
+            using (var transaction = await Context.Database.BeginTransactionAsync())
+            {
+                await RemoveReviewNeeded(aSpecProcessAssignModel.SpecId, aSpecProcessAssignModel.SpecRevId, aSpecProcessAssignModel.SpecAssignId);
+                //TODO: Look at prev. todo and insert logic here
+                var mostRecentSpecRevId = (await Context.SpecificationRevision.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId).OrderByDescending(i => i.SpecRevId).FirstOrDefaultAsync()).SpecRevId;
+                var mostRecentProcessRevId = (await Context.ProcessRevision.Where(i => i.ProcessId == aSpecProcessAssignModel.ProcessId).OrderByDescending(i => i.ProcessRevId).FirstOrDefaultAsync()).ProcessRevId;
+
+                aSpecProcessAssignModel.SpecRevId = mostRecentSpecRevId;
+                aSpecProcessAssignModel.ProcessRevId = mostRecentProcessRevId;
+
+                //Pulls all assignments that have the same specId, specRevId, ProcessId, and ProcessRevId as the assignment being copied.
+                var specProcessAssignFamily = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId &&
+                                                                                   i.SpecRevId == mostRecentSpecRevId &&
+                                                                                   i.ProcessId == aSpecProcessAssignModel.ProcessId &&
+                                                                                   i.ProcessRevId == mostRecentSpecRevId).ToListAsync();
+
+                if (specProcessAssignFamily == null || !specProcessAssignFamily.Any()) { aSpecProcessAssignModel.SpecAssignId = 1; }
+                else
+                {
+                    var lastAssignIdUsed = specProcessAssignFamily.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId;
+                    aSpecProcessAssignModel.SpecAssignId = (lastAssignIdUsed + 1); 
+                }
+
+                Context.SpecProcessAssign.Add(aSpecProcessAssignModel.ToEntity());
+                await Context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return aSpecProcessAssignModel;
+            }
+        }
 
         public async Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId)
         {
             var specProcessAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == anAssignId);
 
-            if(specProcessAssignEntity == null) { throw new Exception("No Spec-Process Assignment was found"); }
+            if (specProcessAssignEntity == null) { throw new Exception("No Spec-Process Assignment was found"); }
 
             specProcessAssignEntity.ReviewNeeded = false;
 

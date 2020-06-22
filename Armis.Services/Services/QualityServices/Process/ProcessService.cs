@@ -180,7 +180,7 @@ namespace Armis.DataLogic.Services.QualityServices
             return result;
         }
 
-        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev()
+        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev() //Returns only LOCKED revs
         {
             var processModels = await GetHydratedProcessRevs();
 
@@ -193,6 +193,30 @@ namespace Armis.DataLogic.Services.QualityServices
                     foreach (var rev in processModel.Revisions)
                     {
                         if (rev.RevStatusId != 1)
+                        {
+                            tempRevList.Remove(rev);
+                        }
+                    }
+                    processModel.Revisions = tempRevList;
+                }
+            }
+
+            return processModels;
+        }
+
+        public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentAnyRev() //Returns most recent rev, even if it UNLKOCKED
+        {
+            var processModels = await GetHydratedProcessRevs();
+
+            foreach (var processModel in processModels)
+            {
+                if (processModel.Revisions.Any())
+                {
+                    var maxRevId = processModel.Revisions.Max(i => i.ProcessRevId);
+                    var tempRevList = processModel.Revisions.ToList();
+                    foreach (var rev in processModel.Revisions)
+                    {
+                        if (rev.ProcessRevId != maxRevId)
                         {
                             tempRevList.Remove(rev);
                         }

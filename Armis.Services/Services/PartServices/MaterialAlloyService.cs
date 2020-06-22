@@ -28,5 +28,10 @@ namespace Armis.DataLogic.Services.PartServices
 
             return entities.ToModels();
         }
+
+        public async Task<MaterialAlloyModel> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

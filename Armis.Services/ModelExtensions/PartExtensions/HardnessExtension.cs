@@ -30,5 +30,16 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
 
             return theResultModels;
         }
+
+        public static Hardness ToEntity(this HardnessModel aHardnessModel)
+        {
+            return new Hardness()
+            {
+                Description = aHardnessModel.Description,
+                ShortName = aHardnessModel.ShortName,
+                HardnessMin = aHardnessModel.HardnessMin,
+                HardnessMax = aHardnessModel.HardnessMax
+            };
+        }
     }
 }

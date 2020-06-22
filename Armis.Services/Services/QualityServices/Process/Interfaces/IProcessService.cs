@@ -15,7 +15,8 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
         Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs();
         Task<ProcessRevisionModel> GetHydratedCurrentProcessRev(int aProcessId);
         Task<bool> CheckIfNameIsUnique(string aName);
-        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentRev();
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev(); //Pulls the most current LOCKED rev
+        Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentAnyRev(); //Pulls the most current rev, even if it is UNLOCKED
 
         //CREATE
         Task<ProcessRevisionModel> CreateNewRevForExistingProcess(ProcessRevisionModel newRev);

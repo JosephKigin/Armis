@@ -20,13 +20,12 @@
         <div class="col-lg-6">
             <form method="post">
                 <h3>Create A New Step</h3>
-                @if (Model.Message != "" && Model.Message != null)
+                @if (Model.Message != null)
                 {
-                    if (Model.IsMessageGood)
-                    {<label class="alert alert-success">@Model.Message</label>}
-                else
-                { <label class="alert alert-danger">@Model.Message</label>}
-        }
+                    @*Preloaded message.*@
+                    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+                }
+                
                 <div class="form-group">
                     <label><b>Step Name: </b></label>
                     <input type="text" asp-for="StepName" class="form-control" />
@@ -99,7 +98,7 @@
                 {
                     <li class="list-group-item" id="@step.StepId">
 
-                        <h5>@step.StepName<a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a></h5>
+                        <h5>@step.StepId. @step.StepName [@step.StepCategory.Code]<a class"btn" style="float:right" asp-page="./StepMaintenance" asp-route-aStepId="@step.StepId"><i class="fa fa-copy" data-toggle="tooltip" title="Copy"></i></a></h5>
                         @if (step.SignOffIsRequired == true)
                         {<p class="text-danger">Sign-Off Required</p>}
                         <b>Instructions: </b>

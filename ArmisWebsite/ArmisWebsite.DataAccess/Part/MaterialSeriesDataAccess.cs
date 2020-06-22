@@ -20,5 +20,10 @@ namespace ArmisWebsite.DataAccess.Quality
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<MaterialSeriesModel>>(Config["APIAddress"] + "api/MaterialSeries/GetAllMaterialSeries");
         }
+
+        public async Task<MaterialSeriesModel> CreateMaterialSeries(MaterialSeriesModel aMaterialSeriesModel)
+        {
+            return await DataAccessGeneric.HttpPostRequest<MaterialSeriesModel>(Config["APIAddress"] + "api/MaterialSeries/CreateMaterialSeries", aMaterialSeriesModel);
+        }
     }
 }

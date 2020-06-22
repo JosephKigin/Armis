@@ -10,5 +10,6 @@ namespace Armis.DataLogic.Services.PartServices.Interfaces
     {
         Task<IEnumerable<HardnessModel>> GetAllHarnesses();
         Task<HardnessModel> GetHardness(int aHardnessId);
+        Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel);
     }
 }

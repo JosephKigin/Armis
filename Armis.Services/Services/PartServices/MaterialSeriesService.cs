@@ -28,5 +28,19 @@ namespace Armis.DataLogic.Services.PartServices
 
             return entities.ToModels();
         }
+
+        public async Task<MaterialSeriesModel> CreateMaterialSeries(MaterialSeriesModel aMaterialSeriesModel)
+        {
+            var entityToAdd = aMaterialSeriesModel.ToEntity();
+
+            var lastUsedId = await Context.MaterialSeries.MaxAsync(i => i.SeriesId);
+
+            entityToAdd.SeriesId = (lastUsedId + 1);
+
+            Context.MaterialSeries.Add(entityToAdd);
+            await Context.SaveChangesAsync();
+
+            return entityToAdd.ToModel();
+        }
     }
 }

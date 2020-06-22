@@ -18,7 +18,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
 {
-    public class SpecProcessAssignModel : PageModel
+    public class SpecProcessAssignmentModel : PageModel
     {
         public readonly string _apiAddress;
         public readonly IConfiguration Config;
@@ -44,6 +44,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public List<MaterialAlloyModel> AllMaterialAlloys { get; set; }
         public List<CustomerModel> AllCustomers { get; set; }
         public List<SpecModel> AllSpecifications { get; set; }
+        public List<SpecProcessAssignModel> SpecProcessAssignsForCurrentSpec { get; set; }
 
         public SpecModel CurrentSpec { get; set; } //After a spec is selected by the used, the page will reload and this will be set to the selected spec and the page will be created based on it.
         public SpecRevModel CurrentSpecCurrentRev { get; set; }
@@ -91,7 +92,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public int? CustomerId { get; set; }
 
 
-        public SpecProcessAssignModel(ISpecProcessAssignDataAccess aSpecProcessAssignDataAccess,
+        public SpecProcessAssignmentModel(ISpecProcessAssignDataAccess aSpecProcessAssignDataAccess,
                                       IProcessDataAccess aProcessDataAccess,
                                       ISpecDataAccess aSpecDataAccess,
                                       IStepDataAccess aStepDataAccess,
@@ -215,11 +216,18 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             var tempAllCustomers = await CustomerDataAccess.GetAllCurrentAndProspectCustomers();
             AllCustomers = (tempAllCustomers != null) ? tempAllCustomers.ToList() : new List<CustomerModel>();
 
-            var tempAllProcesses = await ProcessDataAccess.GetHydratedProcessesWithCurrentRev();
+            var tempAllProcesses = await ProcessDataAccess.GetHydratedProcessesWithCurrentLockedRev();
             AllProcessesWithCurrentRev = (tempAllProcesses != null) ? tempAllProcesses.ToList() : new List<ProcessModel>();
 
             var tempAllSpecifications = await SpecificationDataAccess.GetAllHydratedSpecs();
             AllSpecifications = (tempAllSpecifications != null) ? tempAllSpecifications.ToList() : new List<SpecModel>();
+
+            if (CurrentSpec != null)
+            {
+                var spaForSpecResult = await SpecProcessAssignDataAccess.GetAllActiveHydratedSpecProcessAssignForSpec(CurrentSpec.Id);
+                if (spaForSpecResult != null && spaForSpecResult.Any()) 
+                { SpecProcessAssignsForCurrentSpec = spaForSpecResult.ToList(); }
+            }
         }
     }
 }
