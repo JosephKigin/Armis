@@ -388,7 +388,9 @@
                                             <select id="selectProcessList" class="list-group w-100" size="12" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
                                                 @foreach (var process in Model.AllProcessesWithCurrentRev)
                                                 {
+                                                    
                                                     var currentRevId = process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId;
+
                                                     <option value="@process.ProcessId. @process.Name" class="list-group-item fa" data-id="@process.ProcessId" data-current-rev-id="@currentRevId" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
                                                         @process.ProcessId: @process.Name -
                                                         Rev:

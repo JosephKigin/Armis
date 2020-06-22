@@ -23,7 +23,7 @@ namespace Armis.Api.Controllers
             {
                 if (context.Database.CanConnect())
                 {
-                    DatabaseState = "Conntected";
+                    DatabaseState = "Connected";
                 }
                 else
                 {
