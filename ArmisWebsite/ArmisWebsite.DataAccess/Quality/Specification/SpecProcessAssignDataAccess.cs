@@ -49,7 +49,7 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
 
         public async Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel)
         {
-            return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/CopyAfterReview/", aSpecProcessAssignModel);
+            return await DataAccessGeneric.HttpPostRequest<SpecProcessAssignModel>(Config["APIAddress"] + "api/SpecProcessAssign/CopyAfterReview", aSpecProcessAssignModel);
         }
 
 

@@ -186,6 +186,7 @@ namespace Armis.DataLogic.Services.QualityServices
             foreach (var model in result)
             {
                 model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                model.SpecificationRevision.SpecCode = (await Context.Specification.FirstOrDefaultAsync(i => i.SpecId == model.SpecificationRevision.SpecId)).SpecCode;
                 if (model.CustomerId != null)
                 {
                     var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
@@ -202,18 +203,16 @@ namespace Armis.DataLogic.Services.QualityServices
             using (var transaction = await Context.Database.BeginTransactionAsync())
             {
                 await RemoveReviewNeeded(aSpecProcessAssignModel.SpecId, aSpecProcessAssignModel.SpecRevId, aSpecProcessAssignModel.SpecAssignId);
-                //TODO: Look at prev. todo and insert logic here
+
                 var mostRecentSpecRevId = (await Context.SpecificationRevision.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId).OrderByDescending(i => i.SpecRevId).FirstOrDefaultAsync()).SpecRevId;
                 var mostRecentProcessRevId = (await Context.ProcessRevision.Where(i => i.ProcessId == aSpecProcessAssignModel.ProcessId).OrderByDescending(i => i.ProcessRevId).FirstOrDefaultAsync()).ProcessRevId;
 
                 aSpecProcessAssignModel.SpecRevId = mostRecentSpecRevId;
                 aSpecProcessAssignModel.ProcessRevId = mostRecentProcessRevId;
 
-                //Pulls all assignments that have the same specId, specRevId, ProcessId, and ProcessRevId as the assignment being copied.
+                //Pulls all assignments that have the same specId and specRevId (which will be the SPA "Family") as the assignment being copied.
                 var specProcessAssignFamily = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId &&
-                                                                                   i.SpecRevId == mostRecentSpecRevId &&
-                                                                                   i.ProcessId == aSpecProcessAssignModel.ProcessId &&
-                                                                                   i.ProcessRevId == mostRecentSpecRevId).ToListAsync();
+                                                                                   i.SpecRevId == mostRecentSpecRevId).ToListAsync();
 
                 if (specProcessAssignFamily == null || !specProcessAssignFamily.Any()) { aSpecProcessAssignModel.SpecAssignId = 1; }
                 else

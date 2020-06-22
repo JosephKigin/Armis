@@ -44,7 +44,6 @@
                 </div>
             </div>
 
-
             <div col-lg-6>
                 <ul id="listAllHardnesses" class="list-group w-100" style="max-height: 42em; overflow:scroll;">
                     @if (Model.AllMaterialSeries.Any())
@@ -52,7 +51,6 @@
                         @foreach (var series in Model.AllMaterialSeries)
                         {
                             <li class="list-group-item">
-
                                 <h5>@series.SeriesId. @series.ShortName </h5>
                                 <b>Description: </b>@series.Description
                                 <br />
