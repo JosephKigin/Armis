@@ -28,7 +28,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
             processEntity.ProcessId = lastUsedId + 1;
 
-            if(process.Revisions.Count() > 1) { throw new Exception("Cannot save a process and multiple revisions at once"); }
+            if (process.Revisions.Count() > 1) { throw new Exception("Cannot save a process and multiple revisions at once"); }
 
             var theRevision = process.Revisions.FirstOrDefault();
 
@@ -184,22 +184,33 @@ namespace Armis.DataLogic.Services.QualityServices
         {
             var processModels = await GetHydratedProcessRevs();
 
+            var tempProcessModels = processModels.ToList(); //Temp list to change so the main list can be iterated through safely
+
             foreach (var processModel in processModels)
             {
-                if (processModel.Revisions.Any())
+                if (!processModel.Revisions.Any())
+                { tempProcessModels.Remove(processModel); }//Remove the process if it doesn't have any revisions
+                else
                 {
                     var maxRevId = processModel.Revisions.Max(i => i.ProcessRevId);
                     var tempRevList = processModel.Revisions.ToList();
+                    var areAnyRevsLocked = false;
                     foreach (var rev in processModel.Revisions)
                     {
                         if (rev.RevStatusId != 1)
-                        {
-                            tempRevList.Remove(rev);
-                        }
+                        { tempRevList.Remove(rev); }
+                        else
+                        { areAnyRevsLocked = true; }
                     }
-                    processModel.Revisions = tempRevList;
+
+                    if (areAnyRevsLocked)
+                    { tempProcessModels.FirstOrDefault(i => i.ProcessId == processModel.ProcessId).Revisions = tempRevList; }
+                    else
+                    { tempProcessModels.Remove(processModel); }//Remove the process if it doesn't have any locked revisions
                 }
             }
+
+            processModels = tempProcessModels;
 
             return processModels;
         }

@@ -52,11 +52,6 @@ namespace ArmisWebsite.DataAccess.Quality
             return await DataAccessGeneric.HttpGetRequest<ProcessModel>(Config["APIAddress"] + "api/Processes/GetProcess/" + id);
         }
 
-        //public async Task<bool> CheckIfNameIsUnique(string aName) //TODO: Is this even being used anywhere? No it is not...
-        //{
-        //    return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aName);
-        //}
-
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<ProcessModel>>(Config["APIAddress"] + "api/Processes/GetHydratedProcessesWithCurrentLockedRev");
