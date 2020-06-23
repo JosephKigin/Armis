@@ -57,5 +57,15 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
         {
             return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/VerifyUniqueChoices/" + specId + "/" + internalSpecId + "/" + choice1 + "/" + choice2 + "/" + choice3 + "/" + choice4 + "/" + choice5 + "/" + choice6 + "/" + preBake + "/" + postBake + "/" + mask + "/" + hardness + "/" + series + "/" + alloy + "/" + customer);
         }
+
+        public async Task<bool> CheckIfReviewIsNeededForSpecId(int aSpecId)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/CheckIfReviewIsNeededForSpecId/" + aSpecId);
+        }
+
+        public async Task<bool> CheckSpaIsViable(int aSpecId, byte? aChoice1, byte? aChoice2, byte? aChoice3, byte? aChoice4, byte? aChoice5, byte? aChoice6)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/CheckSpaIsViable/" + aSpecId + "/" + aChoice1 + "/" + aChoice2 + "/" + aChoice3 + "/" + aChoice4 + "/" + aChoice5 + "/" + aChoice6);
+        }
     }
 }

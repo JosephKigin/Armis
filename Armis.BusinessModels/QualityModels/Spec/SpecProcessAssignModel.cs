@@ -36,6 +36,9 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public int ProcessId { get; set; }
         public int ProcessRevId { get; set; }
         public bool Inactive { get; set; }
+        public bool IsReviewNeeded { get; set; }
+
+        public bool? IsViable { get; set; } //This will only be used at the review page to check if the spec choices selected for this spec-process assignment are still viable based on the choices available in the spec.
 
         public StepModel? PreBakeOption { get; set; }
         public StepModel? PostBakeOption { get; set; }

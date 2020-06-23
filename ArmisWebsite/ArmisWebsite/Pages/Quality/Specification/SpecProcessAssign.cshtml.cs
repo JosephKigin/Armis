@@ -48,6 +48,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public SpecModel CurrentSpec { get; set; } //After a spec is selected by the used, the page will reload and this will be set to the selected spec and the page will be created based on it.
         public SpecRevModel CurrentSpecCurrentRev { get; set; }
+        public bool IsReviewNeededForCurrentSpec { get; set; }
 
         //Front-End
         public PopUpMessageModel Message { get; set; }
@@ -179,6 +180,12 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 {
                     if (!ModelState.IsValid)
                     {
+                        Message = new PopUpMessageModel()
+                        {
+                            Text = "Process is required",
+                            IsMessageGood = false
+                        };
+
                         await SetUpProperties();
                         return Page();
                     }
@@ -198,6 +205,8 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task SetUpProperties()
         {
+            IsReviewNeededForCurrentSpec = false; 
+
             var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
             AllBakeSteps = (tempAllBakes != null) ? tempAllBakes.ToList() : new List<StepModel>();
 
@@ -227,6 +236,8 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 var spaForSpecResult = await SpecProcessAssignDataAccess.GetAllActiveHydratedSpecProcessAssignForSpec(CurrentSpec.Id);
                 if (spaForSpecResult != null && spaForSpecResult.Any()) 
                 { SpecProcessAssignsForCurrentSpec = spaForSpecResult.ToList(); }
+
+                IsReviewNeededForCurrentSpec = await SpecProcessAssignDataAccess.CheckIfReviewIsNeededForSpecId(CurrentSpec.Id);
             }
         }
     }

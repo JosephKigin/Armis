@@ -16,13 +16,31 @@
             });
         </script>
     }
+
+    @if (Model.IsReviewNeededForCurrentSpec)
+    {
+        <script type="text/javascript">
+            $(window).on('load', function () {
+                this.document.getElementById("isReviewNeededWarningMessage").hidden = false;
+                this.document.getElementById("btnSubmitMainForm").disabled = true;
+            });
+        </script>
+    }
 </head>
 
-<div class="container-fluid w-75">
+<div class="container-fluid w-100">
     <h1>Specification-Process Assignment</h1>
 
     @*Preloaded message.*@
     <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+
+    @*This message will show up if the current spec selected has spec-process assignments that need to be reviewed.*@
+    <div id="isReviewNeededWarningMessage" hidden>
+        <div class="row alert alert-danger">
+            <h5 class="col-lg-10">This Specification has Spec-Process Assignment that needs review</h5> 
+            <a asp-page="/SpecProcessAssignmentReview" class="btn btn-primary col-lg-2">Go To Review</a>
+        </div>
+    </div>
 
     <form method="post" onsubmit="return validate()">
         <div class="row">
@@ -359,17 +377,19 @@
                     </div>
 
                     @*Process Selection Modal Goes here*@
-                    <div class="border border-dark my-5 p-2">
-                        <label>Process: </label>
-                        <br />
-                        <label id="labelProcess" class="font-weight-bold"></label>
-                        <br />
-                        <div class="text-center"><button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalProcessSelect">Search Process</button></div>
+                    <div class="my-5">
+                        <span id="processValidateAlert" class="text-danger align-self-center" hidden>Please select a process</span>
+                        <div id="selectProcessSection" class="border border-dark p-2">
+                            <label>Process: </label>
+                            <br />
+                            <label id="labelProcess" class="font-weight-bold"></label>
+                            <br />
+                            <div class="text-center"><button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalProcessSelect">Search Process</button></div>
 
-                        <input type="hidden" id="hdnProcessId" asp-for="ProcessId" value="" />
-                        <input type="hidden" id="hdnProcessRevId" asp-for="ProcessRevId" />
+                            <input type="hidden" id="hdnProcessId" asp-for="ProcessId" value="" />
+                            <input type="hidden" id="hdnProcessRevId" asp-for="ProcessRevId" />
+                        </div>
                     </div>
-
                     <div class="modal fade" id="modalProcessSelect">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
@@ -388,7 +408,7 @@
                                             <select id="selectProcessList" class="list-group w-100" size="12" onchange="updateProcessRevIdInput(this.options[this.selectedIndex].dataset.currentRevId)">
                                                 @foreach (var process in Model.AllProcessesWithCurrentRev)
                                                 {
-                                                    
+
                                                     var currentRevId = process.Revisions.OrderByDescending(i => i.ProcessRevId).FirstOrDefault().ProcessRevId;
 
                                                     <option value="@process.ProcessId. @process.Name" class="list-group-item fa" data-id="@process.ProcessId" data-current-rev-id="@currentRevId" onmouseup="LoadStepModal(@process.ProcessId, `@process.Name`)">
@@ -423,29 +443,35 @@
                 @*Right side*@
                 <div class="col-lg-5">
                     <h5 class="justify-content-center">Current Spec-Process Assignments</h5>
-                    <ul id="selectProcessList" class="list-group w-100 border" size="12">
+                    <div class="input-group my-1">
+                        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchCurrentSpaList(this.value)" />
+                        <span class="input-group-append bg-white border-left-0">
+                            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                        </span>
+                    </div>
+                    <ul id="spaList" class="list-group w-100 border" style="overflow-y:scroll; height:40em;">
                         @if (Model.SpecProcessAssignsForCurrentSpec != null)
                         {
                             @foreach (var specProcessAssign in Model.SpecProcessAssignsForCurrentSpec)
                             {
-                                <li class="list-group-item" data-spec="@specProcessAssign.SpecificationRevision.SpecCode">
-                                    Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
-                                    Rev: <b>@specProcessAssign.SpecRevId</b>
-                                    Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
-                                    Rev: <b>@specProcessAssign.ProcessRevId</b>
-                                    <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">Assign ID: @specProcessAssign.SpecAssignId</a>
+                                <li class="list-group-item" data-process="@specProcessAssign.ProcessRevision.ProcessName">
+                                    <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
+                                        @specProcessAssign.SpecAssignId.
+                                        Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                                        Rev: <b>@specProcessAssign.ProcessRevId</b>
+                                    </a>
 
                                     <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                                        <b>Choices</b>
-                                       
+                                        Customer: &nbsp;
+                                        @if (specProcessAssign.Customer != null)
+                                        {<b>@specProcessAssign.Customer.Name</b>}
+                                        else { <text>NONE</text>}
                                         <table class="table table-bordered table-striped table-hover">
                                             <tr>
                                                 <th class="text-center" style="border-bottom-color:black">Sublevel 1</th>
                                                 <th class="text-center" style="border-bottom-color:black">Sublevel 2</th>
                                                 <th class="text-center" style="border-bottom-color:black">Sublevel 3</th>
                                                 <th class="text-center" style="border-bottom-color:black">Sublevel 4</th>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 5</th>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 6</th>
                                             </tr>
 
                                             <tr>
@@ -467,17 +493,6 @@
                                                 <td class="text-center">
                                                     @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
                                                     {@specProcessAssign.Choice4.Name}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice5 != null && specProcessAssign.Choice5.Name != null)
-                                                    {@specProcessAssign.Choice5.Name}
-                                                </td>
-
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice6 != null && specProcessAssign.Choice6.Name != null)
-                                                    {@specProcessAssign.Choice6.Name}
                                                 </td>
                                             </tr>
                                         </table>
@@ -536,8 +551,6 @@
                             </li>
                         }
                     </ul>
-
-                    <button type="button" class="btn btn-sm btn-primary float-right my-1" onclick="openModalSteps()">View Steps</button>
                 </div>
             }
         </div>
@@ -546,7 +559,7 @@
             <div class="row">
                 <div class="col-lg-3"><a class="btn btn-lg btn-danger mt-3" href="/Quality/Specification/SpecProcessAssign/"><h4>Reset</h4></a></div> @**@
                 <div class="col-lg-5"></div>
-                <div class="col-lg-4"><button type="submit" class="btn btn-lg btn-primary mt-3 float-right"><h4>Submit</h4></button></div>
+                <div class="col-lg-4"><button id="btnSubmitMainForm" type="submit" class="btn btn-lg btn-primary mt-3 float-right"><h4>Submit</h4></button></div>
             </div>
         }
     </form>
