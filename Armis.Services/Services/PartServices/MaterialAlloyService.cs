@@ -31,7 +31,16 @@ namespace Armis.DataLogic.Services.PartServices
 
         public async Task<MaterialAlloyModel> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel)
         {
-            throw new NotImplementedException();
+            var entityToAdd = aMaterialAlloyModel.ToEntity();
+
+            var lastIdUsed = await Context.MaterialAlloy.MaxAsync(i => i.AlloyId);
+
+            entityToAdd.AlloyId = (lastIdUsed + 1);
+
+            Context.MaterialAlloy.Add(entityToAdd);
+            await Context.SaveChangesAsync();
+
+            return entityToAdd.ToModel();
         }
     }
 }

@@ -35,5 +35,20 @@ namespace Armis.Api.Controllers.Part
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<MaterialAlloyModel>> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel)
+        {
+            try
+            {
+                var data = await MaterialAlloyService.CreateMaterialAlloy(aMaterialAlloyModel);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -29,5 +29,14 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
 
             return resultingModels; 
         }
+
+        public static MaterialAlloy ToEntity(this MaterialAlloyModel aMaterialAlloyModel)
+        {
+            return new MaterialAlloy()
+            {
+                 Description = aMaterialAlloyModel.Description,
+                 SeriesId = aMaterialAlloyModel.SeriesId
+            };
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace ArmisWebsite.DataAccess.Part.Interfaces
     public interface IMaterialAlloyDataAccess
     {
         Task<IEnumerable<MaterialAlloyModel>> GetAllMaterialAlloys();
+        Task<MaterialAlloyModel> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel);
     }
 }
