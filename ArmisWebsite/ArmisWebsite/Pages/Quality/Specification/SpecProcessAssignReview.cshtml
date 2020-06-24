@@ -55,34 +55,41 @@
                             Rev: <b>@spec.ExternalRev</b>
                         </a>
 
-                        @foreach (var specProcessAssign in Model.AllSpecProcessAssigns)
+                        @foreach (var specProcessAssign in allSpasForSpecId)
                         {
-                            <div id="specGroup_@specProcessAssign.SpecId" class="collapse">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
-                                    @specProcessAssign.SpecAssignId.
-                                    Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
-                                    Rev: <b>@specProcessAssign.SpecRevId</b>
-                                    Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
-                                    Rev: <b>@specProcessAssign.ProcessRevId</b>
-                                </a>
+                            <div id="specGroup_@specProcessAssign.SpecId" class="collapse border-bottom my-2">
+                                <div class="row h-50">
+                                    <div class="col-lg-11 h-50">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
+                                            @specProcessAssign.SpecAssignId.
+                                            Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
+                                            Rev: <b>@specProcessAssign.SpecRevId</b>
+                                            Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                                            Rev: <b>@specProcessAssign.ProcessRevId</b>
+                                        </a>
+                                    </div>
+
+                                    @if (specProcessAssign.IsViable == false)
+                                    {
+
+                                        <div class="col-lg-1 h-50">
+                                            <input type="checkbox" name="SpecProcessAssignmentsToPost" value="@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" onchange="toggleKeepBtn(this)" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-lg-1 h-50">
+                                            <input type="checkbox" name="SpecProcessAssignmentsToPost" value="@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" />
+                                        </div>
+                                    }
+                                </div>
 
                                 @if (specProcessAssign.IsViable == false)
                                 {
-                                    <br />
                                     <text>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</text>
                                     <span class="text-danger">Cannot keep, the assignment choices are no longer viable for the spec.</span>
-                                    <div class="float-right">
-                                        <input type="checkbox" class="form-control-lg" name="SpecProcessAssignmentsToPost" value="@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" onchange="toggleKeepBtn(this)" />
-                                    </div>
                                 }
-                                else
-                                {
-                                    <div class="float-right">
-                                        <input type="checkbox" class="form-control-lg" name="SpecProcessAssignmentsToPost" value="@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" />
-                                    </div>
-                                }
-
 
 
                                 <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
