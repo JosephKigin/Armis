@@ -128,7 +128,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                               .IncludeOptimized(i => i.Process)
                                                                               .ToListAsync();
 
-            if(theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
+            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; }
 
             var result = theSpecProcessAssignEntities.ToHydratedModels();
 
@@ -218,8 +218,11 @@ namespace Armis.DataLogic.Services.QualityServices
                 else
                 {
                     var lastAssignIdUsed = specProcessAssignFamily.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId;
-                    aSpecProcessAssignModel.SpecAssignId = (lastAssignIdUsed + 1); 
+                    aSpecProcessAssignModel.SpecAssignId = (lastAssignIdUsed + 1);
                 }
+
+                aSpecProcessAssignModel.Inactive = false;
+                aSpecProcessAssignModel.IsReviewNeeded = false;
 
                 Context.SpecProcessAssign.Add(aSpecProcessAssignModel.ToEntity());
                 await Context.SaveChangesAsync();
@@ -227,6 +230,63 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 return aSpecProcessAssignModel;
             }
+        }
+
+        public async Task<bool> CheckSpaIsViable(int aSpecId, byte? aChoice1, byte? aChoice2, byte? aChoice3, byte? aChoice4, byte? aChoice5, byte? aChoice6)
+        {
+            bool isViable = true;
+
+            var currentRev = await Context.SpecificationRevision.Where(i => i.SpecId == aSpecId).MaxAsync(i => i.SpecRevId);
+
+            if (aChoice1 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 1 && i.ChoiceSeqId == aChoice1)) == null)
+                { isViable = false; }
+            }
+
+            if (aChoice2 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 2 && i.ChoiceSeqId == aChoice2)) == null)
+                { isViable = false; }
+            }
+
+            if (aChoice3 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 3 && i.ChoiceSeqId == aChoice3)) == null)
+                { isViable = false; }
+            }
+
+            if (aChoice4 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 4 && i.ChoiceSeqId == aChoice4)) == null)
+                { isViable = false; }
+            }
+
+            if (aChoice5 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 5 && i.ChoiceSeqId == aChoice5)) == null)
+                { isViable = false; }
+            }
+
+            if (aChoice6 != null)
+            {
+                if ((await Context.SpecChoice.FirstOrDefaultAsync(i => i.SpecId == aSpecId &&
+                                                                       i.SpecRevId == currentRev &&
+                                                                       i.SubLevelSeqId == 6 && i.ChoiceSeqId == aChoice6)) == null)
+                { isViable = false; }
+            }
+
+            return isViable;
         }
 
         public async Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId)
@@ -241,6 +301,21 @@ namespace Armis.DataLogic.Services.QualityServices
             await Context.SaveChangesAsync();
 
             return specProcessAssignEntity.ToModel();
+        }
+
+        public async Task<bool> CheckIfReviewIsNeededForSpecId(int aSpecId)
+        {
+            var spaEntities = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecId).ToListAsync();
+
+            bool isReviewNeeded = false;
+
+            foreach (var spa in spaEntities)
+            {
+                if (spa.ReviewNeeded)
+                { isReviewNeeded = true; }
+            }
+
+            return isReviewNeeded;
         }
 
         public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecRev, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)

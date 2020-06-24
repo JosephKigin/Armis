@@ -96,6 +96,21 @@ namespace Armis.Api.Controllers
             }
         }
 
+        [HttpGet("{aSpecId}")]
+        public async Task<ActionResult<bool>> CheckIfReviewIsNeededForSpecId(int aSpecId)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.CheckIfReviewIsNeededForSpecId(aSpecId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{specId}/{internalSpecId}/{choice1}/{choice2}/{choice3}/{choice4}/{choice5}/{choice6}/{preBake}/{postBake}/{mask}/{hardness}/{series}/{alloy}/{customer}")]
         public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
         {
@@ -116,6 +131,28 @@ namespace Armis.Api.Controllers
                 customer = (customer == 0) ? null : customer;
 
                 var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecId, choice1, choice2, choice3, choice4, choice5, choice6, preBake, postBake, mask, hardness, series, alloy, customer);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{aSpecId}/{aChoice1}/{aChoice2}/{aChoice3}/{aChoice4}/{aChoice5}/{aChoice6}")]
+        public async Task<ActionResult<bool>> CheckSpaIsViable(int aSpecId, byte? aChoice1, byte? aChoice2, byte? aChoice3, byte? aChoice4, byte? aChoice5, byte? aChoice6)
+        {
+            try
+            {
+                aChoice1 = (aChoice1 == 0) ? null : aChoice1;
+                aChoice2 = (aChoice2 == 0) ? null : aChoice2;
+                aChoice3 = (aChoice3 == 0) ? null : aChoice3;
+                aChoice4 = (aChoice4 == 0) ? null : aChoice4;
+                aChoice5 = (aChoice5 == 0) ? null : aChoice5;
+                aChoice6 = (aChoice6 == 0) ? null : aChoice6;
+
+                var data = await SpecProcessAssignService.CheckSpaIsViable(aSpecId, aChoice1, aChoice2, aChoice3, aChoice4, aChoice5, aChoice6);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

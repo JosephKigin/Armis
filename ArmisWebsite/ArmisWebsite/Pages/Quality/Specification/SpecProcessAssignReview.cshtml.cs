@@ -123,6 +123,15 @@ namespace ArmisWebsite.Pages.Quality.Specification
         {
             var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllReviewNeededSpecProcessAssign();
             AllSpecProcessAssigns = (tempSpecProcessAssign != null) ? tempSpecProcessAssign.ToList() : null;
+
+            if (AllSpecProcessAssigns != null)
+            {
+                foreach (var assign in AllSpecProcessAssigns)
+                {
+                    assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, assign.ChoiceOptionId1 ?? 0, assign.ChoiceOptionId2 ?? 0, assign.ChoiceOptionId3 ?? 0, assign.ChoiceOptionId4 ?? 0, assign.ChoiceOptionId5 ?? 0, assign.ChoiceOptionId6 ?? 0);
+                }
+            }
+
         }
     }
 }

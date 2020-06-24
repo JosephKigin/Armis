@@ -39,7 +39,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 CustomerId = aSpecProcessAssignEntity.Customer,
                 ProcessId = aSpecProcessAssignEntity.ProcessId,
                 ProcessRevId = aSpecProcessAssignEntity.ProcessRevId,
-                Inactive = aSpecProcessAssignEntity.Inactive
+                Inactive = aSpecProcessAssignEntity.Inactive,
+                IsReviewNeeded = aSpecProcessAssignEntity.ReviewNeeded
             };
         }
 
@@ -84,6 +85,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ProcessId = aSpecProcessAssignEntity.ProcessId,
                 ProcessRevId = aSpecProcessAssignEntity.ProcessRevId,
                 Inactive = aSpecProcessAssignEntity.Inactive,
+                IsReviewNeeded = aSpecProcessAssignEntity.ReviewNeeded,
                 PreBakeOption = (aSpecProcessAssignEntity.PreBakeOptionNavigation != null) ? aSpecProcessAssignEntity.PreBakeOptionNavigation.ToModel() : null,
                 PostBakeOption = (aSpecProcessAssignEntity.PostBakeOptionNavigation != null) ? aSpecProcessAssignEntity.PostBakeOptionNavigation.ToModel() : null,
                 MaskOption = (aSpecProcessAssignEntity.MaskOptionNavigation != null) ? aSpecProcessAssignEntity.MaskOptionNavigation.ToModel() : null,
@@ -142,7 +144,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 Customer = aSpecProcessAssignModel.CustomerId,
                 ProcessId = aSpecProcessAssignModel.ProcessId,
                 ProcessRevId = aSpecProcessAssignModel.ProcessRevId,
-                Inactive = aSpecProcessAssignModel.Inactive
+                Inactive = aSpecProcessAssignModel.Inactive,
+                ReviewNeeded = aSpecProcessAssignModel.IsReviewNeeded
             };
         }
     }

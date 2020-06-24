@@ -59,18 +59,36 @@ function updateChoiceIdInput(sublevelNum, chkBox) {
     else { document.getElementById("hdnChoiceId" + sublevelNum).value = ""; }
 }
 
+function searchCurrentSpaList(searchTerm) {
+    var SPAs = document.getElementById("spaList").getElementsByTagName("li");
+    for (var i = 0; i < SPAs.length; i++) {
+        if (SPAs[i] != undefined) {
+            if (SPAs[i].dataset.process.toLowerCase().includes(searchTerm.toLowerCase())) {
+                SPAs[i].style.display = "block";
+            }
+            else {
+                SPAs[i].style.display = "none";
+            }
+        }
+    }
+}
+
 function validate() {
     var isValid = true;
 
     //Process Select validation
     var processSelect = document.getElementById("selectProcessList");
+    var processSection = document.getElementById("selectProcessSection");
 
     if (processSelect.selectedIndex == -1) {
-        processSelect.classList.add("border-danger");
+        processSection.classList.remove("border-dark");
+        processSection.classList.add("border-danger");
+        document.getElementById("processValidateAlert").hidden = false;
         isValid = false;
     }
     else {
-        processSelect.classList.remove("border-danger")
+        processSection.classList.remove("border-danger");
+        processSection.classList.add("border-dark");
     }
 
     return isValid;
