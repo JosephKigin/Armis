@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.QualityServices
 {
@@ -144,7 +145,7 @@ namespace Armis.DataLogic.Services.QualityServices
         //Read
         public async Task<IEnumerable<ProcessModel>> GetAllProcesses()
         {
-            var processEntities = await context.Process.Include(i => i.ProcessRevision).ToListAsync();
+            var processEntities = await context.Process.IncludeOptimized(i => i.ProcessRevision).ToListAsync();
 
             var result = new List<ProcessModel>();
 
@@ -158,9 +159,9 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<IEnumerable<ProcessModel>> GetHydratedProcessRevs()
         {
-            var processEntities = await context.Process.Include(i => i.ProcessRevision).ToListAsync();
+            var processEntities = await context.Process.IncludeOptimized(i => i.ProcessRevision).ToListAsync();
             var stepSeqEntities = await context.ProcessStepSeq.Include(i => i.Step).ThenInclude(i => i.StepCategory).ToListAsync();
-            var operationEntities = await context.Operation.Include(i => i.OperGroup).ToListAsync();
+            var operationEntities = await context.Operation.IncludeOptimized(i => i.OperGroup).ToListAsync();
 
             foreach (var stepSeq in stepSeqEntities)
             {

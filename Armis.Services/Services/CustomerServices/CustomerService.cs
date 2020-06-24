@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.CustomerServices
 {
@@ -34,13 +35,13 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<CustomerModel>> GetAllHydratedCustomers()
         {
-            var entities = await context.Customer.Include(i => i.CertCharge)
-                                                 .Include(i => i.CredStatus)
+            var entities = await context.Customer.IncludeOptimized(i => i.CertCharge)
+                                                 .IncludeOptimized(i => i.CredStatus)
                                                  .Include(i => i.DefaultContactNumNavigation).ThenInclude(i => i.Title)
-                                                 .Include(i => i.DefaultShipVia)
-                                                 .Include(i => i.SalesPersonNavigation)
-                                                 .Include(i => i.ShipTo)
-                                                 .Include(i => i.Status)
+                                                 .IncludeOptimized(i => i.DefaultShipVia)
+                                                 .IncludeOptimized(i => i.SalesPersonNavigation)
+                                                 .IncludeOptimized(i => i.ShipTo)
+                                                 .IncludeOptimized(i => i.Status)
                                                  .ToListAsync();
 
             if(entities == null || !entities.Any()) { throw new Exception("No customers were returned"); }

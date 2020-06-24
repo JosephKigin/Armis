@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.QualityServices
 {
@@ -105,7 +106,7 @@ namespace Armis.DataLogic.Services.QualityServices
         public async Task<IEnumerable<SpecSubLevelModel>> GetSpecSubLevels(int aSpecId, short aSpecRevId)
         {
             var entities = await context.SpecSubLevel.Where(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId)
-                                                        .Include(i => i.SpecChoice)
+                                                        .IncludeOptimized(i => i.SpecChoice)
                                                         .ToListAsync();
 
             if (entities == null || !entities.Any()) { return null; }

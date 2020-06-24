@@ -12,7 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-secondary border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/Images/LogoNoTag.jpg" /></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -22,13 +22,50 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-page="/Index"><i class="fa fa-home"></i></a>
+                            <a class="nav-link mr-3" asp-page="/Index"><i class="fa fa-home"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/OrderEntry/OrderEntryIndex">OrderEntry</a>
+                            <a class="nav-link text-light btn btn-info mr-3" asp-page="/OrderEntry/OrderEntryIndex">OrderEntry</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Quality/QualityMenu">Quality</a>
+                            <div class="btn-group">
+                                <a type="button" class="nav-link btn btn-info text-light" asp-page="/Quality/QualityMenu">Quality</a>
+                                <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+                                <div class="dropdown-menu">
+                                    <div class="d-md-flex align-items-start justify-content-start">
+                                        <div>
+                                            <div class="dropdown-header">Process</div>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/ProcessMaintenance">Create Process</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/ProcessRevMaintenance">Process Revision Maintenance</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/ProcessListing">Process List</a>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="dropdown-header">Inspection</div>
+                                            <a class="dropdown-item" asp-page="/Quality/Inspection/SamplePlanEntry">Sample Plan Entry</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Inspection/SamplePlanListing">Sample Plan Listing</a>
+                                        </div>
+                                        <div>
+                                            <div class="dropdown-header">Step</div>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/StepMaintenance">Step Maintenance</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/StepListing">Step List</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Process/OperationMaintenance">Operation Maintenance</a>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="dropdown-header">Part</div>
+                                            <a class="dropdown-item" asp-page="/Part/HardnessEntry">Hardness Entry</a>
+                                            <a class="dropdown-item" asp-page="/Part/MaterialSeriesEntry">Series Entry</a>
+                                            <a class="dropdown-item" asp-page="/Part/MaterialAlloyEntry">Alloy Entry</a>
+                                        </div>
+                                        <div>
+                                            <div class="dropdown-header">Specification</div>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationCreation">Spec Maintanence</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationListing">Spec Listing</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssign">Spec Process Assign</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssignListing">Spec Process Assign Listing</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssignReview">Spec Process Assign Review</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-page="">Accounts Receivable</a>
@@ -42,12 +79,12 @@
         </nav>
     </header>
     @*<div class="container-fluid">*@
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
     @*</div>*@
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-light bg-secondary">
         <div class="container">
             &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" tabindex="-1" asp-page="/Privacy">Privacy</a>
             <div class="ml-5 d-inline-block"><b>DESIGN IS NOT FINAL</b></div>

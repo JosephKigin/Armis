@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.CustomerServices
 {
@@ -31,7 +32,7 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<ContactModel>> GetAllHydratedContactsByCustomer(int customerId)
         {
-            var entities = await Context.Contact.Where(i => i.CustId == customerId).Include(i => i.Title).ToListAsync();
+            var entities = await Context.Contact.Where(i => i.CustId == customerId).IncludeOptimized(i => i.Title).ToListAsync();
 
             if (entities == null || !entities.Any()) { throw new Exception("No Contacts found for that customer"); }
 
