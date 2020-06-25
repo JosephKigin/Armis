@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Armis.DataLogic.Services.OrderEntryServices
 {
@@ -30,57 +31,57 @@ namespace Armis.DataLogic.Services.OrderEntryServices
             return orderHeadEntities.ToModels();
         }
 
-        public async Task<IEnumerable<OrderHeadModel>> GetAllHydratedOrderHeads() //This is a crazy long call... Probably shouldn't use it.
+        public async Task<IEnumerable<OrderHeadModel>> GetAllHydratedOrderHeads()
         {
-            var orderHeadEntities = await Context.OrderHead.Include(i => i.CertCharge)
-                                                           .Include(i => i.CreditAuthByEmpNavigation)
-                                                           .Include(i => i.Cust)
-                                                           .Include(i => i.IsInspectedNavigation)
-                                                           .Include(i => i.IsMaskingNotifyNavigation)
-                                                           .Include(i => i.IsPrePriceNavigation)
-                                                           .Include(i => i.IsPriceApprovalNavigation)
-                                                           .Include(i => i.JobHoldByEmpNavigation)
-                                                           .Include(i => i.JobHoldToEmpNavigation)
-                                                           .Include(i => i.Package)
-                                                           .Include(i => i.PriceStatus)
-                                                           .Include(i => i.QualStd)
-                                                           .Include(i => i.ShipVia)
-                                                           .Include(i => i.Spec)
-                                                           .Include(i => i.OrderComment)
-                                                           .Include(i => i.OrderExpediteOrder)
-                                                           .Include(i => i.OrderShipToOverride)
-                                                           .Include(i => i.OrderDetail).ToListAsync();
+            var orderHeadEntities = await Context.OrderHead.IncludeOptimized(i => i.CertCharge)
+                                                           .IncludeOptimized(i => i.CreditAuthByEmpNavigation)
+                                                           .IncludeOptimized(i => i.Cust)
+                                                           .IncludeOptimized(i => i.IsInspectedNavigation)
+                                                           .IncludeOptimized(i => i.IsMaskingNotifyNavigation)
+                                                           .IncludeOptimized(i => i.IsPrePriceNavigation)
+                                                           .IncludeOptimized(i => i.IsPriceApprovalNavigation)
+                                                           .IncludeOptimized(i => i.JobHoldByEmpNavigation)
+                                                           .IncludeOptimized(i => i.JobHoldToEmpNavigation)
+                                                           .IncludeOptimized(i => i.Package)
+                                                           .IncludeOptimized(i => i.PriceStatus)
+                                                           .IncludeOptimized(i => i.QualStd)
+                                                           .IncludeOptimized(i => i.ShipVia)
+                                                           .IncludeOptimized(i => i.Spec)
+                                                           .IncludeOptimized(i => i.OrderComment)
+                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
+                                                           .IncludeOptimized(i => i.OrderShipToOverride)
+                                                           .IncludeOptimized(i => i.OrderDetail).ToListAsync();
 
             return orderHeadEntities.ToHydratedModels();
         }
 
-        public async Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId) //ToDo: This call can take up to ~700ms at first, then ~80ms.  Maybe consider stripping some of the includes out?
+        public async Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId)
         {
             var orderHeadEntity = await Context.OrderHead.Where(i => i.OrderId == anOrderId)
-                                                           .Include(i => i.CertCharge)
-                                                           .Include(i => i.CreditAuthByEmpNavigation)
-                                                           .Include(i => i.Cust)
-                                                           .Include(i => i.IsInspectedNavigation)
-                                                           .Include(i => i.IsMaskingNotifyNavigation)
-                                                           .Include(i => i.IsPrePriceNavigation)
-                                                           .Include(i => i.IsPriceApprovalNavigation)
-                                                           .Include(i => i.JobHoldByEmpNavigation)
-                                                           .Include(i => i.JobHoldToEmpNavigation)
-                                                           .Include(i => i.Package)
-                                                           .Include(i => i.PriceStatus)
-                                                           .Include(i => i.QualStd)
-                                                           .Include(i => i.ShipVia)
-                                                           .Include(i => i.OrderComment)
-                                                           .Include(i => i.OrderExpediteOrder)
-                                                           .Include(i => i.OrderShipToOverride)
+                                                           .IncludeOptimized(i => i.CertCharge)
+                                                           .IncludeOptimized(i => i.CreditAuthByEmpNavigation)
+                                                           .IncludeOptimized(i => i.Cust)
+                                                           .IncludeOptimized(i => i.IsInspectedNavigation)
+                                                           .IncludeOptimized(i => i.IsMaskingNotifyNavigation)
+                                                           .IncludeOptimized(i => i.IsPrePriceNavigation)
+                                                           .IncludeOptimized(i => i.IsPriceApprovalNavigation)
+                                                           .IncludeOptimized(i => i.JobHoldByEmpNavigation)
+                                                           .IncludeOptimized(i => i.JobHoldToEmpNavigation)
+                                                           .IncludeOptimized(i => i.Package)
+                                                           .IncludeOptimized(i => i.PriceStatus)
+                                                           .IncludeOptimized(i => i.QualStd)
+                                                           .IncludeOptimized(i => i.ShipVia)
+                                                           .IncludeOptimized(i => i.OrderComment)
+                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
+                                                           .IncludeOptimized(i => i.OrderShipToOverride)
                                                            .Include(i => i.OrderDetail).ThenInclude(i => i.OrderLocation)
                                                            .FirstOrDefaultAsync();
 
             if (orderHeadEntity == null) { return null; } //throw new Exception("No Order was found"); }
             
             orderHeadEntity.Spec = await Context.SpecProcessAssign.Where(i => i.SpecId == orderHeadEntity.SpecId && i.SpecRevId == orderHeadEntity.SpecRevId && i.SpecAssignId == orderHeadEntity.SpecAssignId)
-                                                                  .Include(i => i.Process)
-                                                                  .Include(i => i.Spec).FirstOrDefaultAsync();
+                                                                  .IncludeOptimized(i => i.Process)
+                                                                  .IncludeOptimized(i => i.Spec).FirstOrDefaultAsync();
 
 
 
