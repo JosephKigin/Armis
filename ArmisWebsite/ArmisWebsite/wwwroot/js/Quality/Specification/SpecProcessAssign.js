@@ -73,6 +73,16 @@ function searchCurrentSpaList(searchTerm) {
     }
 }
 
+function loadModalDescriptionCard(modalName, description) {
+    var cardToFill = document.getElementById(modalName + "DescriptionModal");
+    cardToFill.innerHTML = ""; //Clear out the card before loading more stuff into it
+
+    var elementToAdd = document.createElement("p");
+    elementToAdd.appendChild(document.createTextNode(description));
+
+    cardToFill.appendChild(elementToAdd);
+}
+
 function validate() {
     var isValid = true;
 

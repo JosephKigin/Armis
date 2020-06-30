@@ -136,6 +136,7 @@ namespace Armis.DataLogic.Services.QualityServices
             foreach (var assignEntity in specProcAssignEntities)
             {
                 assignEntity.ReviewNeeded = true;
+                assignEntity.Inactive = true;
             }
 
             await context.SaveChangesAsync();

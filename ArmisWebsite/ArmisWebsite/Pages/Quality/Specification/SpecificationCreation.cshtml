@@ -434,7 +434,7 @@
             for (var i = 0; i < allAnchorElements.length; i++) {
                 //Ignore all anchors that have either "navbar-brand" or "nav-link text-dark" as class names. These classes are only used in the layout navigation bar in the header.
                 //Also ignore the clear button on the bottom of the page.
-                if (allAnchorElements[i].classList != "nav-link" && allAnchorElements[i].classList != "navbar-brand" && allAnchorElements[i].classList != "nav-link text-dark" && allAnchorElements[i].id != "btnClearPage") { allAnchorElements[i].hidden = true; }
+                if (allAnchorElements[i].classList.inclucdes("nav-link") && allAnchorElements[i].classList != "navbar-brand" && allAnchorElements[i].id != "btnClearPage" && allAnchorElements[i].classList != "dropdown-item" && allAnchorElements[i].classList.includes("dropdown-toggle")) { allAnchorElements[i].hidden = true; }
             }
 
             var allButtonElements = document.body.getElementsByTagName("button");

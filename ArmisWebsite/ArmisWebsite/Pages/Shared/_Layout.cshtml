@@ -12,9 +12,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-secondary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-secondary border-bottom box-shadow sticky-top mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/Images/LogoNoTag.jpg" /></a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/Images/Webp.net-resizeimage.png" /></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -27,35 +27,35 @@
                         <li class="nav-item">
                             <a class="nav-link text-light btn btn-info mr-3" asp-page="/OrderEntry/OrderEntryIndex">OrderEntry</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item dropdown">
                             <div class="btn-group">
-                                <a type="button" class="nav-link btn btn-info text-light" asp-page="/Quality/QualityMenu">Quality</a>
-                                <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+                                <a role="button" class="nav-link btn btn-info text-light" asp-page="/Quality/QualityMenu">Quality</a>
+                                <a role="button" class="text-light btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></a>
                                 <div class="dropdown-menu">
                                     <div class="d-md-flex align-items-start justify-content-start">
                                         <div>
-                                            <div class="dropdown-header">Process</div>
+                                            <div class="dropdown-header text-dark font-weight-bold">Process</div>
                                             <a class="dropdown-item" asp-page="/Quality/Process/ProcessMaintenance">Create Process</a>
                                             <a class="dropdown-item" asp-page="/Quality/Process/ProcessRevMaintenance">Process Revision Maintenance</a>
                                             <a class="dropdown-item" asp-page="/Quality/Process/ProcessListing">Process List</a>
                                             <div class="dropdown-divider"></div>
-                                            <div class="dropdown-header">Inspection</div>
+                                            <div class="dropdown-header text-dark font-weight-bold">Inspection</div>
                                             <a class="dropdown-item" asp-page="/Quality/Inspection/SamplePlanEntry">Sample Plan Entry</a>
                                             <a class="dropdown-item" asp-page="/Quality/Inspection/SamplePlanListing">Sample Plan Listing</a>
                                         </div>
                                         <div>
-                                            <div class="dropdown-header">Step</div>
+                                            <div class="dropdown-header text-dark font-weight-bold">Step</div>
                                             <a class="dropdown-item" asp-page="/Quality/Process/StepMaintenance">Step Maintenance</a>
                                             <a class="dropdown-item" asp-page="/Quality/Process/StepListing">Step List</a>
                                             <a class="dropdown-item" asp-page="/Quality/Process/OperationMaintenance">Operation Maintenance</a>
                                             <div class="dropdown-divider"></div>
-                                            <div class="dropdown-header">Part</div>
+                                            <div class="dropdown-header text-dark font-weight-bold">Part</div>
                                             <a class="dropdown-item" asp-page="/Part/HardnessEntry">Hardness Entry</a>
                                             <a class="dropdown-item" asp-page="/Part/MaterialSeriesEntry">Series Entry</a>
                                             <a class="dropdown-item" asp-page="/Part/MaterialAlloyEntry">Alloy Entry</a>
                                         </div>
                                         <div>
-                                            <div class="dropdown-header">Specification</div>
+                                            <div class="dropdown-header text-dark font-weight-bold">Specification</div>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationCreation">Spec Maintanence</a>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationListing">Spec Listing</a>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssign">Spec Process Assign</a>
