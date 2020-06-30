@@ -37,7 +37,7 @@
     @*This message will show up if the current spec selected has spec-process assignments that need to be reviewed.*@
     <div id="isReviewNeededWarningMessage" hidden>
         <div class="row alert alert-danger">
-            <h5 class="col-lg-10">This Specification has Spec-Process Assignments that need review</h5> 
+            <h5 class="col-lg-10">This Specification has Spec-Process Assignments that need review</h5>
             <a asp-page="SpecProcessAssignReview" class="btn btn-primary col-lg-2">Go To Review</a>
         </div>
     </div>
@@ -108,16 +108,11 @@
                 <div class="col-lg-4">
                     @*Pre-Bake*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Pre-Bake: </label> <label id="labelPreBake"></label>
+                        <label>Pre-Bake: </label> <label id="labelPreBake" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right mb-1" data-toggle="modal" data-target="#modalPreBakeSelect">Find</button>
                         <button type="button" class="btn btn-sm btn-danger float-right  mb-1 mx-1" onclick="clearInput('PreBake')">Clear</button>
 
                         <input type="hidden" id="hdnPreBakeId" asp-for="PreBakeStepId" />
-
-                        @*@if (Model.PreBakeStepId != null)
-                            {<input id="inputPreBake" class="form-control" data-id="@Model.PreBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PreBakeStepId).StepName" readonly /> }
-                            else
-                            { <input id="inputPreBake" class="form-control" data-id="" value="" readonly />}*@
                     </div>
 
                     <div class="modal fade" id="modalPreBakeSelect">
@@ -127,17 +122,28 @@
                                     <h5 class="modal-title">Choose a Pre-Bake</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PreBake')" />
-                                    <select id="selectPreBakeList" class="list-group w-100" size="10">
-                                        @foreach (var bake in Model.AllBakeSteps)
-                                        {
-                                            <option class="list-group-item border-dark" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName" style="white-space:normal">
-                                                @bake.StepId.
-                                                @bake.StepName -
-                                                @bake.Instructions
-                                            </option>
-                                        }
-                                    </select>
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PreBake')" />
+                                            <select id="selectPreBakeList" class="list-group w-100" size="12">
+                                                @foreach (var bake in Model.AllBakeSteps)
+                                                {
+                                                    <option class="list-group-item border-dark" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('preBake', '@bake.Instructions')">
+                                                        @bake.StepId.
+                                                        @bake.StepName
+                                                    </option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <h3>Instructions</h3>
+                                            <div id="preBakeDescriptionModal" class="card p-3">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
                                     <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PreBake')">Ok</button>
                                 </div>
@@ -147,36 +153,41 @@
 
                     @*Post Bake*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Post-Bake:</label><label id="labelPostBake"></label>
+                        <label>Post-Bake:</label><label id="labelPostBake" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalPostBakeSelect">Find</button>
                         <button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('PostBake')">Clear</button>
 
                         <input type="hidden" id="hdnPostBakeId" asp-for="PostBakeStepId" />
-
-                        @*@if (Model.PostBakeStepId != null)
-                            {<input id="inputPostBake" class="form-control" data-id="@Model.PostBakeStepId" value="@Model.AllBakeSteps.FirstOrDefault(i => i.StepId == Model.PostBakeStepId).StepName" readonly /> }
-                            else
-                            { <input id="inputPostBake" class="form-control" data-id="" value="" readonly />}*@
                     </div>
 
                     <div class="modal fade" id="modalPostBakeSelect">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Choose a Post-Bake</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PostBake')" />
-                                    <select id="selectPostBakeList" class="list-group w-100" size="16">
-                                        @foreach (var bake in Model.AllBakeSteps)
-                                        {
-                                            <option class="list-group-item" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName">
-                                                @bake.StepId.
-                                                @bake.StepName -
-                                                @bake.Instructions
-                                            </option>
-                                        }
-                                    </select>
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PostBake')" />
+                                            <select id="selectPostBakeList" class="list-group w-100" size="12">
+                                                @foreach (var bake in Model.AllBakeSteps)
+                                                {
+                                                    <option class="list-group-item border-dark" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('postBake', '@bake.Instructions')">
+                                                        @bake.StepId.
+                                                        @bake.StepName
+                                                    </option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <h3>Instructions</h3>
+                                            <div id="postBakeDescriptionModal" class="card p-3">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
                                     <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PostBake')">Ok</button>
                                 </div>
@@ -186,35 +197,43 @@
 
                     @*Mask*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Mask:</label><label id="labelMask"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
+                        <label>Mask:</label><label id="labelMask" class="font-weight-bold"></label>
+                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button>
+                        <button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
 
                         <input type="hidden" id="hdnMaskId" asp-for="MaskStepId" />
-
-                        @*@if (Model.MaskStepId != null)
-                            {<input id="inputMask" data-id="@Model.MaskStepId" class="form-control" value="@Model.AllMaskSteps.FirstOrDefault(i => i.StepId == Model.MaskStepId).StepName" readonly /> }
-                            else
-                            { <input id="inputMask" data-id="" class="form-control" value="" readonly />}*@
-
                     </div>
 
                     <div class="modal fade" id="modalMaskSelect">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Choose a Mask</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Mask')" />
-                                    <select id="selectMaskList" class="list-group w-100" size="16">
-                                        @foreach (var mask in Model.AllMaskSteps)
-                                        {
-                                            <option class="list-group-item" data-id="@mask.StepId" value="@mask.StepId. @mask.StepName">
-                                                @mask.StepId.
-                                                @mask.StepName
-                                            </option>
-                                        }
-                                    </select>
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Mask')" />
+                                            <select id="selectMaskList" class="list-group w-100" size="12">
+                                                @foreach (var mask in Model.AllMaskSteps)
+                                                {
+                                                    <option class="list-group-item border-dark" data-id="@mask.StepId" value="@mask.StepId. @mask.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('mask', '@mask.Instructions')">
+                                                        @mask.StepId.
+                                                        @mask.StepName
+                                                    </option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <h3>Instructions</h3>
+                                            <div id="maskDescriptionModal" class="card p-3">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
                                     <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
                                     <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Mask')">Ok</button>
                                 </div>
@@ -224,7 +243,7 @@
 
                     @*Hardness*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Hardness:</label> <label id="labelHardness"></label>
+                        <label>Hardness:</label> <label id="labelHardness" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalHardnessSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Hardness')">Clear</button>
 
                         <input type="hidden" id="hdnHardnessId" asp-for="HardnessId" />
@@ -262,7 +281,7 @@
 
                     @*Series*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Series:</label><label id="labelMaterialSeries"></label>
+                        <label>Series:</label><label id="labelMaterialSeries" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialSeriesSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialSeries')">Clear</button>
 
                         <input type="hidden" id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
@@ -301,7 +320,7 @@
 
                     @*Alloy*@
                     <div class="mb-2 border border-dark p-2">
-                        <label>Alloy:</label><label id="labelMaterialAlloy"></label>
+                        <label>Alloy:</label><label id="labelMaterialAlloy" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialAlloySelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialAlloy')">Clear</button>
 
                         <input type="hidden" id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
@@ -340,7 +359,7 @@
 
                     @*Customer*@
                     <div class=" border border-dark p-2">
-                        <label>Customer:</label> <label id="labelCustomer"></label>
+                        <label>Customer:</label> <label id="labelCustomer" class="font-weight-bold"></label>
                         <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalCustomerSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Customer')">Clear</button>
 
                         <input type="hidden" id="hdnCustomerId" asp-for="CustomerId" />
@@ -457,15 +476,11 @@
                                 <li class="list-group-item" data-process="@specProcessAssign.ProcessRevision.ProcessName">
                                     <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
                                         @specProcessAssign.SpecAssignId.
-                                        Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                                        Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
                                         Rev: <b>@specProcessAssign.ProcessRevId</b>
                                     </a>
 
                                     <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                                        Customer: &nbsp;
-                                        @if (specProcessAssign.Customer != null)
-                                        {<b>@specProcessAssign.Customer.Name</b>}
-                                        else { <text>NONE</text>}
                                         <table class="table table-bordered table-striped table-hover">
                                             <tr>
                                                 <th class="text-center" style="border-bottom-color:black">Sublevel 1</th>
@@ -499,12 +514,13 @@
 
                                         <table class="table table-bordered table-striped table-hover">
                                             <tr>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Pre-Bake</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Post-Bake</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Mask</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Hardness</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Series</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:16.6%;">Alloy</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Pre-Bake</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Post-Bake</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Mask</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Hardness</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Series</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Alloy</th>
+                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Customer</th>
                                             </tr>
 
                                             <tr>
@@ -537,6 +553,11 @@
                                                 <td class="text-center">
                                                     @if (specProcessAssign.AlloyOption != null && specProcessAssign.AlloyOption.Description != null)
                                                     {@specProcessAssign.AlloyOption.Description}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    @if (specProcessAssign.Customer != null)
+                                                    {@specProcessAssign.Customer.Name}
                                                 </td>
                                             </tr>
                                         </table>

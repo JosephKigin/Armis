@@ -30,10 +30,13 @@ namespace ArmisWebsite.Pages.Quality.Specification
             SpecProcessAssignDataAccess = aSpecProcessAssignDataAccess;
         }
 
-        public async Task<ActionResult> OnGet()
+        public async Task<ActionResult> OnGet(string aMessage, bool isMessageGood)
         {
             try
             {
+                if (aMessage != null)
+                { Message = new PopUpMessageModel() { Text = aMessage, IsMessageGood = isMessageGood }; }
+
                 await SetUpProperties();
 
                 return Page();
@@ -106,12 +109,11 @@ namespace ArmisWebsite.Pages.Quality.Specification
                         IsMessageGood = true,
                         Text = "Specification-Process Assignments updated with new revisions successfully"
                     };
+
+                    return RedirectToPage("SpecProcessAssignReview", new { aMessage = "Specification-Process Assignments updated with new revisions successfully", isMessageGood = true });
                 }
 
-                await SetUpProperties();
-
-                return Page();
-
+                return RedirectToPage("SpecProcessAssignReview", new { aMessage = "Nothing was selected", isMessageGood = false });
             }
             catch (Exception ex)
             {

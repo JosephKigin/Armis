@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.Pages.Quality.Specification.SpecProcessAssignReviewModel
 @{
     ViewData["Title"] = "SpecProcessAssignReview";
@@ -63,9 +63,7 @@
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
                                             @specProcessAssign.SpecAssignId.
-                                            Specification: <b>@specProcessAssign.SpecificationRevision.SpecCode</b>
-                                            Rev: <b>@specProcessAssign.SpecRevId</b>
-                                            Process: <b>@specProcessAssign.ProcessRevision.ProcessName</b>
+                                            Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
                                             Rev: <b>@specProcessAssign.ProcessRevId</b>
                                         </a>
                                     </div>
@@ -93,13 +91,6 @@
 
 
                                 <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-
-                                    Customer: &nbsp;
-                                    @if (specProcessAssign.Customer != null)
-                                    {<b>@specProcessAssign.Customer.Name</b>}
-                                else
-                                { <text>NONE</text>}
-
                                     <table class="table table-bordered table-striped table-hover">
                                         <tr>
                                             <th class="text-center" style="border-bottom-color:black">Sublevel 1</th>
@@ -133,12 +124,13 @@
 
                                     <table class="table table-bordered table-striped table-hover">
                                         <tr>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Pre-Bake</th>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Post-Bake</th>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Mask</th>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Hardness</th>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Series</th>
-                                            <th class="text-center" style="border-bottom-color:black; width:16.6%;">Alloy</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Pre-Bake</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Post-Bake</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Mask</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Hardness</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Series</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Alloy</th>
+                                            <th class="text-center" style="border-bottom-color:black; width:14.2%;">Customer</th>
                                         </tr>
 
                                         <tr>
@@ -171,6 +163,11 @@
                                             <td class="text-center">
                                                 @if (specProcessAssign.AlloyOption != null && specProcessAssign.AlloyOption.Description != null)
                                                 {@specProcessAssign.AlloyOption.Description}
+                                            </td>
+
+                                            <td class="text-center">
+                                                @if (specProcessAssign.Customer != null)
+                                                {@specProcessAssign.Customer.Name}
                                             </td>
                                         </tr>
                                     </table>
