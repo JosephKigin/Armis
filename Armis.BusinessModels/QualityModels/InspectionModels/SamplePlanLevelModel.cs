@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Armis.BusinessModels.QualityModels.Spec
+namespace Armis.BusinessModels.QualityModels.InspectionModels
 {
     public class SamplePlanLevelModel
     {

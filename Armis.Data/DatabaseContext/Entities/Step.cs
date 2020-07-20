@@ -8,9 +8,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public Step()
         {
             ProcessStepSeq = new HashSet<ProcessStepSeq>();
-            SpecProcessAssignMaskOptionNavigation = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignPostBakeOptionNavigation = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignPreBakeOptionNavigation = new HashSet<SpecProcessAssign>();
+            SpecChoice = new HashSet<SpecChoice>();
         }
 
         public int StepId { get; set; }
@@ -22,8 +20,6 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual StepCategory StepCategory { get; set; }
         public virtual ICollection<ProcessStepSeq> ProcessStepSeq { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignMaskOptionNavigation { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignPostBakeOptionNavigation { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignPreBakeOptionNavigation { get; set; }
+        public virtual ICollection<SpecChoice> SpecChoice { get; set; }
     }
 }

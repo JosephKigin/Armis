@@ -111,26 +111,12 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpGet("{specId}/{internalSpecId}/{choice1}/{choice2}/{choice3}/{choice4}/{choice5}/{choice6}/{preBake}/{postBake}/{mask}/{hardness}/{series}/{alloy}/{customer}")]
-        public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
+        [HttpPost("{specId}/{internalSpecId}/{customer?}")]
+        public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecId, int? customer, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
         {
             try
             {
-                choice1 = (choice1 == 0) ? null : choice1;
-                choice2 = (choice2 == 0) ? null : choice2;
-                choice3 = (choice3 == 0) ? null : choice3;
-                choice4 = (choice4 == 0) ? null : choice4;
-                choice5 = (choice5 == 0) ? null : choice5;
-                choice6 = (choice6 == 0) ? null : choice6;
-                preBake = (preBake == 0) ? null : preBake;
-                postBake = (postBake == 0) ? null : postBake;
-                mask = (mask == 0) ? null : mask;
-                hardness = (hardness == 0) ? null : hardness;
-                series = (series == 0) ? null : series;
-                alloy = (alloy == 0) ? null : alloy;
-                customer = (customer == 0) ? null : customer;
-
-                var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecId, choice1, choice2, choice3, choice4, choice5, choice6, preBake, postBake, mask, hardness, series, alloy, customer);
+                var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecId, customer, anOptionModels);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -140,19 +126,12 @@ namespace Armis.Api.Controllers
             }
         }
 
-        [HttpGet("{aSpecId}/{aChoice1}/{aChoice2}/{aChoice3}/{aChoice4}/{aChoice5}/{aChoice6}")]
-        public async Task<ActionResult<bool>> CheckSpaIsViable(int aSpecId, byte? aChoice1, byte? aChoice2, byte? aChoice3, byte? aChoice4, byte? aChoice5, byte? aChoice6)
+        [HttpPost("{aSpecId}")]
+        public async Task<ActionResult<bool>> CheckSpaIsViable(int aSpecId, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
         {
             try
             {
-                aChoice1 = (aChoice1 == 0) ? null : aChoice1;
-                aChoice2 = (aChoice2 == 0) ? null : aChoice2;
-                aChoice3 = (aChoice3 == 0) ? null : aChoice3;
-                aChoice4 = (aChoice4 == 0) ? null : aChoice4;
-                aChoice5 = (aChoice5 == 0) ? null : aChoice5;
-                aChoice6 = (aChoice6 == 0) ? null : aChoice6;
-
-                var data = await SpecProcessAssignService.CheckSpaIsViable(aSpecId, aChoice1, aChoice2, aChoice3, aChoice4, aChoice5, aChoice6);
+                var data = await SpecProcessAssignService.CheckSpaIsViable(aSpecId, anOptionModels);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
@@ -205,6 +184,12 @@ namespace Armis.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("{aCustomer}")]
+        public ActionResult<int> TestStuff(int aCustomer, [FromBody]int aSpecId)
+        {
+            return Ok(JsonSerializer.Serialize(aCustomer + aSpecId));
         }
     }
 }

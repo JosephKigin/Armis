@@ -1,4 +1,5 @@
-﻿using Armis.BusinessModels.QualityModels.Spec;
+﻿using Armis.BusinessModels.QualityModels.InspectionModels;
+using Armis.BusinessModels.QualityModels.Spec;
 using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;

@@ -20,6 +20,9 @@ namespace ArmisWebsite
         //Data Access
         public IProcessDataAccess ProcessDataAccess { get; set; }
 
+        //Model Data - in this class there is only the ProcessId
+        public int ProcessId { get; set; }
+
         //Front-End
         [BindProperty]
         public string Message { get; set; }
@@ -72,6 +75,7 @@ namespace ArmisWebsite
 
                 var result = await ProcessDataAccess.PostNewProcess(processToAdd);
 
+                ProcessId = result.ProcessId;
                 IsMessageGood = true;
                 Message = "Process saved successfully!";
                 return Page();

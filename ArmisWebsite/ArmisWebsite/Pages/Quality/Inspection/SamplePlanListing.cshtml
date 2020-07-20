@@ -5,49 +5,41 @@
 }
 <div class="container-fluid w-75">
     <h1>Sample Plan Listing</h1>
-    <ul class="list-group" style="height:42em; overflow-y:scroll;">
+
+    @*Search bar*@
+    <div class="input-group my-1">
+        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchSamplePlanList(this.value)" />
+        <span class="input-group-append bg-white border-left-0">
+            <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+        </span>
+    </div>
+
+    <ul id="listSamplePlans" class="list-group" style="height:42em; overflow-y:scroll;">
         @foreach (var samplePlan in Model.AllSamplePlans)
         {
-            <li class="list-group-item">
+            <li class="list-group-item" data-sample-plan-name="@samplePlan.PlanName">
                 <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
                 <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card border border-dark collapse">
-                    <table class="table table-bordered table-striped table-hover">
-                        <tr>
-                            <td class="text-center" style="border-bottom-color:black"><u><b>From</b></u></td>
-                            <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>To</b></u></td>
-                            @if (samplePlan.SamplePlanLevelModels.Any())
-                            {
-                                var testLevelList = samplePlan.SamplePlanLevelModels.ToList();
-                                var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
-
-                                @foreach (var test in firstLevelTests)
-                                {
-                                    <td class="text-center" style="border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Sample</b></u></td>
-                                    <td class="text-center" style="border-right-color:black; border-bottom-color:black"><u><b>@test.InspectionTestType.TestCode Reject</b></u></td>
-                                }
-
-                            }
-                        </tr>
-                        @foreach (var level in samplePlan.SamplePlanLevelModels)
-                        {
-                            <tr>
-                                <td>@level.FromQty</td>
-                                <td style="border-right-color:black">
-                                    @if (level == samplePlan.SamplePlanLevelModels.LastOrDefault())
-                                    {<text>OVER</text> }
-                                else
-                                { <text>@level.ToQty</text>}
-                                </td>
-                                @foreach (var test in level.SamplePlanRejectModels)
-                                {
-                                    <td class="text-center">@test.SampleQty</td>
-                                    <td class="text-center" style="border-right-color:black">@test.RejectAllowQty</td>
-                                }
-                            </tr>
-                        }
-                    </table>
+                    <partial name="/Pages/Quality/Inspection/Partials/SamplePlanTablePartial.cshtml" model="samplePlan" />
                 </div>
             </li>
         }
     </ul>
 </div>
+
+
+<script>
+    function searchSamplePlanList(searchTerm) {
+        var samplePlans = document.getElementById("listSamplePlans").getElementsByTagName("li");
+        for (var i = 0; i < samplePlans.length; i++) {
+            if (samplePlans[i] != undefined) {
+                if (samplePlans[i].dataset.samplePlanName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    samplePlans[i].style.display = "block";
+                }
+                else {
+                    samplePlans[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

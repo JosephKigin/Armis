@@ -10,9 +10,15 @@
     @if (Model.Message != "" && Model.Message != null)
     {
         if (Model.IsMessageGood)
-        {<label class="alert alert-success">@Model.Message</label> }
-    else
-    { <label class="alert alert-danger">@Model.Message</label>}
+        {
+            <div class="alert alert-success col-lg-2">
+                @Model.Message
+                <br />
+                <a class="btn btn-info" asp-page="ProcessRevMaintenance" asp-route-aProcessId="@Model.ProcessId">Go To Rev Maint.</a>
+            </div> 
+            }
+        else
+        { <label class="alert alert-danger">@Model.Message</label>}
 }
     <br />
     @*Process input*@
@@ -21,14 +27,16 @@
             <div class="col-lg-2 mr-1">
                 <h5>Process Name: </h5>
             </div>
-            <div class="col-lg-9">
+            <div class="col-lg-6">
                 <input type="text" asp-for="ProcessName" class="form-control" form="mainForm" />
                 <span asp-validation-for="ProcessName" class="alert-danger"></span>
             </div>
         </div>
     </div>
-    <button class="btn btn-primary m-3" data-toggle="modal" data-target="#modalRevUpComment">Save</button>
-    <a class="btn btn-success" asp-page="ProcessRevMaintenance">Process Revision Maintenance</a>
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <button class="btn btn-primary m-3" data-toggle="modal" data-target="#modalRevUpComment">Save</button>
+    </div>
 </div>
 
 <div class="modal fade" id="modalRevUpComment">

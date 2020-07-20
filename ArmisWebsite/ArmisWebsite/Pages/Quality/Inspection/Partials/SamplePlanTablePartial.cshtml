@@ -1,0 +1,40 @@
+﻿@model Armis.BusinessModels.QualityModels.InspectionModels.SamplePlanModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<table class="table table-bordered table-striped table-hover">
+    <tr>
+        <td class="" style="border-bottom-color:black"><b>From</b></td>
+        <td class="" style="border-right-color:black; border-bottom-color:black"><b>To</b></td>
+        @if (Model.SamplePlanLevelModels.Any())
+        {
+            var testLevelList = Model.SamplePlanLevelModels.ToList();
+            var firstLevelTests = testLevelList[0].SamplePlanRejectModels;
+
+            @foreach (var test in firstLevelTests)
+            {
+                <td class="text-center" style="border-bottom-color:black"><b>@test.InspectionTestType.TestCode Sample</b></td>
+                <td class="text-center" style="border-right-color:black; border-bottom-color:black"><b>@test.InspectionTestType.TestCode Reject</b></td>
+            }
+
+        }
+    </tr>
+    @foreach (var level in Model.SamplePlanLevelModels)
+    {
+        <tr>
+            <td class="p-1">@level.FromQty</td>
+            <td class="p-1" style="border-right-color:black">
+                @if (level == Model.SamplePlanLevelModels.LastOrDefault())
+                {<text>OVER</text> }
+            else
+            { <text>@level.ToQty</text>}
+            </td>
+            @foreach (var test in level.SamplePlanRejectModels)
+            {
+                <td class="text-center p-1">@test.SampleQty</td>
+                <td class="text-center p-1" style="border-right-color:black">@test.RejectAllowQty</td>
+            }
+        </tr>
+    }
+</table>

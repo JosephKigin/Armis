@@ -144,7 +144,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 foreach (var subLevel in theSpecRevModel.SubLevels)
                 {
-                    await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId, subLevel.LevelSeq));
+                    await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId));
                 }
 
                 await context.SaveChangesAsync();
@@ -182,7 +182,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 foreach (var subLevel in aSpecRevModel.SubLevels)
                 {
-                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecRevModel.SpecId, newSpecRevId, subLevel.LevelSeq));
+                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecRevModel.SpecId, newSpecRevId));
                 }
 
                 await context.SaveChangesAsync();

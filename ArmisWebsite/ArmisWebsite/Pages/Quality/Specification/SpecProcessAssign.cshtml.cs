@@ -14,6 +14,7 @@ using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
@@ -147,28 +148,85 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         {
             try
             {
+                var optionModels = new List<SpecProcessAssignOptionModel>();
+
+                if(ChoiceId1 != null)
+                {
+                    optionModels.Add( new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 1, //TODO: Should this be hard-coded to 1?
+                        ChoiceSeqId = (byte)ChoiceId1
+                    });
+                }
+
+                if (ChoiceId2 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 2, //TODO: Should this be hard-coded to 2?
+                        ChoiceSeqId = (byte)ChoiceId2
+                    });
+                }
+
+                if (ChoiceId3 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 3, //TODO: Should this be hard-coded to 3?
+                        ChoiceSeqId = (byte)ChoiceId3
+                    });
+                }
+
+                if (ChoiceId4 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 4, //TODO: Should this be hard-coded to 4?
+                        ChoiceSeqId = (byte)ChoiceId4
+                    });
+                }
+
+                if (ChoiceId5 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 5, //TODO: Should this be hard-coded to 5?
+                        ChoiceSeqId = (byte)ChoiceId5
+                    });
+                }
+                
+                if (ChoiceId6 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 6, //TODO: Should this be hard-coded to 6?
+                        ChoiceSeqId = (byte)ChoiceId6
+                    });
+                }
+
                 var theSpecProcessAssignModel = new Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel()
                 {
                     SpecId = SpecId,
                     SpecRevId = SpecInternalRevId,
-                    ChoiceOptionId1 = ChoiceId1,
-                    ChoiceOptionId2 = ChoiceId2,
-                    ChoiceOptionId3 = ChoiceId3,
-                    ChoiceOptionId4 = ChoiceId4,
-                    ChoiceOptionId5 = ChoiceId5,
-                    ChoiceOptionId6 = ChoiceId6,
-                    PreBakeOptionId = PreBakeStepId,
-                    PostBakeOptionId = PostBakeStepId,
-                    MaskOptionId = MaskStepId,
-                    HardnessOptionId = HardnessId,
-                    SeriesOptionId = MaterialSeriesId,
-                    AlloyOptionId = MaterialAlloyId,
                     CustomerId = CustomerId,
                     ProcessId = ProcessId,
-                    ProcessRevId = ProcessRevId
+                    ProcessRevId = ProcessRevId,
+                    SpecProcessAssignOptionModels = optionModels
                 };
 
-                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, ChoiceId1 ?? 0, ChoiceId2 ?? 0, ChoiceId3 ?? 0, ChoiceId4 ?? 0, ChoiceId5 ?? 0, ChoiceId6 ?? 0, PreBakeStepId ?? 0, PostBakeStepId ?? 0, MaskStepId ?? 0, HardnessId ?? 0, MaterialSeriesId ?? 0, MaterialAlloyId ?? 0, CustomerId ?? 0);
+                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, CustomerId ?? 0, optionModels);
 
                 if (ModelState.IsValid && areChoicesUnique)
                 {

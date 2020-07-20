@@ -1,4 +1,5 @@
-﻿using Armis.BusinessModels.QualityModels.Spec;
+﻿using Armis.BusinessModels.QualityModels.InspectionModels;
+using Armis.BusinessModels.QualityModels.Spec;
 using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;

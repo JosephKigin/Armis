@@ -16,9 +16,6 @@
 function updateInputFromSelectModal(inputCategory) {
     var theSelect = document.getElementById("select" + inputCategory + "List");
     theSelected = theSelect.options[theSelect.selectedIndex];
-    //var theInput = document.getElementById("input" + inputCategory);
-    //theInput.value = theSelected.value;
-    //theInput.dataset.id = theSelected.dataset.id;
 
     document.getElementById("hdn" + inputCategory + "Id").value = theSelected.dataset.id; //Updating the hidden field that is bound to a property on the server-side.
 
@@ -38,7 +35,6 @@ function openModalSteps() {
 function clearInput(inputCategory) {
     var theLabel = document.getElementById("label" + inputCategory);
     theLabel.innerHTML = "";
-    //theLabel.dataset.id = "";
     document.getElementById("hdn" + inputCategory + "Id").value = "";
 }
 
@@ -69,6 +65,21 @@ function searchCurrentSpaList(searchTerm) {
             else {
                 SPAs[i].style.display = "none";
             }
+        }
+    }
+}
+
+function searchProcessList(searchTerm) {
+    var searchTerm = searchTerm.toUpperCase();
+    var processList = document.getElementById("selectProcessList");
+    var processListItems = processList.getElementsByTagName("option");
+
+    for (var i = 0; i < processListItems.length; i++) {
+        if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
+            processListItems[i].style.display = "none";
+        }
+        else {
+            processListItems[i].style.display = "block";
         }
     }
 }

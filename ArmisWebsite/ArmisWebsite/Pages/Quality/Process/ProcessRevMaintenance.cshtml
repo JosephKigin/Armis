@@ -90,7 +90,7 @@
                         </div>
                         <div class="col-lg-4">
                             <h5 id="modalStepTitle"></h5>
-                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:29em; overflow-y:scroll;">
+                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
                             </ul>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    @*Main section that displays information about the current Process and the current Revision.*@
+    @*Left section that displays information about the current Process and the current Revision.*@
     <div class="row">
         <div class="col-lg-4">
             @*Buttons on the top of the screen*@
@@ -229,7 +229,7 @@
             </div>
         </div>
 
-        @*Current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable if the current Rev is unlocked.*@
+        @*Middle section with current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable if the current Rev is unlocked.*@
         <div class="col-lg-4">
             @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
             {
@@ -249,9 +249,11 @@
                             <li class="list-group-item" id="currentStep_@stepSeq.Step.StepId-@Model.InitialStepSeq">
                                 <h5>
                                     @if (Model.CurrentRev.RevStatusId == 2) //2 = UNLOCKED
-                                    {<i class="fa fa-arrows-alt handle"></i>}
-                                    <a data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-up fa-rotate-180"></i></a>
+                                    {<i class="fa fa-arrows-alt handle" style="color:goldenrod"></i>}
+
+                                    <a id="currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down" style="color:#0366d6; transform: translateY(-20%);"></i></a>
                                     <br />
+
                                     @if (Model.CurrentRev.RevStatusId == 2) //2 = UNLOCKED
                                     {
                                         <a class="text-info" id="operationAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@stepSeq.Step.StepName')">
@@ -279,6 +281,23 @@
                                         <p><b>Instructions: </b>@stepSeq.Step.Instructions</p>
                                     </div>
                                 </div>
+
+                                <script>
+                                        //Little script to flip the icon when collapsing/uncollapsing
+                                    $(document).ready(function () {
+                                        $("#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq").on('show.bs.collapse', function () {
+                                            var icon = document.getElementById("currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq").getElementsByTagName("i");
+                                            icon[0].classList = "fa fa-sort-up";
+                                            icon[0].style = "color:#0366d6; transform: translateY(20%);";
+                                        });
+                                        $("#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq").on('hide.bs.collapse', function () {
+                                            var icon = document.getElementById("currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq").getElementsByTagName("i");
+                                            icon[0].classList = "fa fa-sort-down";
+                                            icon[0].style = "color:#0366d6; transform: translateY(-20%);";
+                                        });
+                                    });
+                                </script>
+
                             </li>
                             Model.InitialStepSeq++;
                         }
@@ -508,9 +527,11 @@
                         {
                             <li class="list-group-item" data-step-name="@step.StepName" id="allStep_@step.StepId-0">
                                 <h5 id="allStepHeader-@step.StepId">
-                                    <i class="fa fa-arrows-alt handle"></i>
-                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepId. @step.StepName<i class="fa fa-sort-down"></i></a>
+                                    <i class="fa fa-arrows-alt handle" style="color:goldenrod;"></i>
+
+                                    <a id="allStepCollapseAnchor_@step.StepId" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepId. @step.StepName <i class="fa fa-sort-down" style="color:#0366d6; transform: translateY(-20%);"></i></a>
                                     <br />
+
                                     @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
                                     <a class="text-info" id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
                                 </h5>
@@ -525,6 +546,23 @@
                                         <b>Instructions: </b>@step.Instructions
                                     </div>
                                 </div>
+
+                                <script>
+                                        //Little script to flip the icon when collapsing/uncollapsing
+                                    $(document).ready(function () {
+                                        $("#allStepDetails_@step.StepId-0").on('show.bs.collapse', function () {
+                                            var icon = document.getElementById("allStepCollapseAnchor_@step.StepId").getElementsByTagName("i");
+                                            icon[0].classList = "fa fa-sort-up";
+                                            icon[0].style = "color:#0366d6; transform: translateY(20%);";
+                                        });
+                                        $("#allStepDetails_@step.StepId-0").on('hide.bs.collapse', function () {
+                                            var icon = document.getElementById("allStepCollapseAnchor_@step.StepId").getElementsByTagName("i");
+                                            icon[0].classList = "fa fa-sort-down";
+                                            icon[0].style = "color:#0366d6; transform: translateY(-20%);";
+                                        });
+                                    });
+                                </script>
+
                             </li>
                             allStepCount++;
                         }

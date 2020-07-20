@@ -7,12 +7,8 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public SpecChoice()
         {
-            SpecProcessAssignSpecChoice = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignSpecChoice1 = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignSpecChoice2 = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignSpecChoice3 = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignSpecChoice4 = new HashSet<SpecProcessAssign>();
-            SpecProcessAssignSpecChoiceNavigation = new HashSet<SpecProcessAssign>();
+            InverseSpecChoiceNavigation = new HashSet<SpecChoice>();
+            SpecProcessAssignOption = new HashSet<SpecProcessAssignOption>();
             SpecSubLevel = new HashSet<SpecSubLevel>();
         }
 
@@ -21,14 +17,15 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte SubLevelSeqId { get; set; }
         public byte ChoiceSeqId { get; set; }
         public string Description { get; set; }
+        public int? ReferenceStepId { get; set; }
+        public byte? DependentLevel { get; set; }
+        public byte? OnlyValidForChoice { get; set; }
 
+        public virtual Step ReferenceStep { get; set; }
         public virtual SpecSubLevel S { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice1 { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice2 { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice3 { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoice4 { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssignSpecChoiceNavigation { get; set; }
+        public virtual SpecChoice SpecChoiceNavigation { get; set; }
+        public virtual ICollection<SpecChoice> InverseSpecChoiceNavigation { get; set; }
+        public virtual ICollection<SpecProcessAssignOption> SpecProcessAssignOption { get; set; }
         public virtual ICollection<SpecSubLevel> SpecSubLevel { get; set; }
     }
 }

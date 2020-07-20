@@ -97,6 +97,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<SpecChoice> SpecChoice { get; set; }
         public virtual DbSet<SpecProcessAssign> SpecProcessAssign { get; set; }
         public virtual DbSet<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
+        public virtual DbSet<SpecProcessAssignOption> SpecProcessAssignOption { get; set; }
         public virtual DbSet<SpecSubLevel> SpecSubLevel { get; set; }
         public virtual DbSet<SpecialHandling> SpecialHandling { get; set; }
         public virtual DbSet<Specification> Specification { get; set; }
@@ -2120,7 +2121,7 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.Property(e => e.PlanName)
-                    .HasMaxLength(10)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
             });
 
@@ -2364,11 +2365,21 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.HasOne(d => d.ReferenceStep)
+                    .WithMany(p => p.SpecChoice)
+                    .HasForeignKey(d => d.ReferenceStepId)
+                    .HasConstraintName("FK_SpecChoice_ReferenceStepId_Step_StepId");
+
                 entity.HasOne(d => d.S)
                     .WithMany(p => p.SpecChoice)
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelSeqId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecChoice_SubLevelSeqId_SpecSubLevel_SubLevelSeqId");
+
+                entity.HasOne(d => d.SpecChoiceNavigation)
+                    .WithMany(p => p.InverseSpecChoiceNavigation)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.DependentLevel, d.OnlyValidForChoice })
+                    .HasConstraintName("FK_SpecChoice_OnlyValidForChoice_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecProcessAssign>(entity =>
@@ -2376,52 +2387,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId })
                     .HasName("PK_SpecProcessAssign_SpecId_SpecRevId_SpecAssignId");
 
-                entity.Property(e => e.SubLevelOption1).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.SubLevelOption2).HasDefaultValueSql("((2))");
-
-                entity.Property(e => e.SubLevelOption3).HasDefaultValueSql("((3))");
-
-                entity.Property(e => e.SubLevelOption4).HasDefaultValueSql("((4))");
-
-                entity.Property(e => e.SubLevelOption5).HasDefaultValueSql("((5))");
-
-                entity.Property(e => e.SubLevelOption6).HasDefaultValueSql("((6))");
-
-                entity.HasOne(d => d.AlloyOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.AlloyOption)
-                    .HasConstraintName("FK_SpecProcessAssign_AlloyOption_MaterialAlloy_AlloyId");
-
                 entity.HasOne(d => d.CustomerNavigation)
                     .WithMany(p => p.SpecProcessAssign)
                     .HasForeignKey(d => d.Customer)
                     .HasConstraintName("FK_SpecProcessAssign_Customer_Customer_CustId");
-
-                entity.HasOne(d => d.HardnessOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.HardnessOption)
-                    .HasConstraintName("FK_SpecProcessAssign_HardnessOption_Hardness_HardnessId");
-
-                entity.HasOne(d => d.MaskOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignMaskOptionNavigation)
-                    .HasForeignKey(d => d.MaskOption)
-                    .HasConstraintName("FK_SpecProcessAssign_MaskOption_Step_StepId");
-
-                entity.HasOne(d => d.PostBakeOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignPostBakeOptionNavigation)
-                    .HasForeignKey(d => d.PostBakeOption)
-                    .HasConstraintName("FK_SpecProcessAssign_PostBakeOption_Step_StepId");
-
-                entity.HasOne(d => d.PreBakeOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignPreBakeOptionNavigation)
-                    .HasForeignKey(d => d.PreBakeOption)
-                    .HasConstraintName("FK_SpecProcessAssign_PreBakeOption_Step_StepId");
-
-                entity.HasOne(d => d.SeriesOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.SeriesOption)
-                    .HasConstraintName("FK_SpecProcessAssign_SeriesOption_MaterialSeries_SeriesId");
 
                 entity.HasOne(d => d.Process)
                     .WithMany(p => p.SpecProcessAssign)
@@ -2434,36 +2403,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecProcessAssign_SpecRevId_SpecificationRevision_SpecRevId");
-
-                entity.HasOne(d => d.SpecChoice)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption1, d.ChoiceOption1 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption1_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoiceNavigation)
-                    .WithMany(p => p.SpecProcessAssignSpecChoiceNavigation)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption2, d.ChoiceOption2 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption2_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice1)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice1)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption3, d.ChoiceOption3 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption3_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice2)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice2)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption4, d.ChoiceOption4 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption4_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice3)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice3)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption5, d.ChoiceOption5 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption5_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice4)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice4)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption6, d.ChoiceOption6 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption6_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecProcessAssignHist>(entity =>
@@ -2506,6 +2445,24 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecProcessAssignHist_SpecAssignId_SpecProcessAssign_SpecAssignId");
+            });
+
+            modelBuilder.Entity<SpecProcessAssignOption>(entity =>
+            {
+                entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId, e.SubLevelSeqId, e.ChoiceSeqId })
+                    .HasName("PK_SpecProcessAssignOption_SpecId_SpecRevId_SpecAssignId_SubLevelSeqId_ChoiceSeqId");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.SpecProcessAssignOption)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignOption_SpecAssignId_SpecProcessAssign_SpecAssignId");
+
+                entity.HasOne(d => d.SpecChoice)
+                    .WithMany(p => p.SpecProcessAssignOption)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelSeqId, d.ChoiceSeqId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignOption_ChoiceSeqId_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecSubLevel>(entity =>
@@ -2568,10 +2525,6 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.SpecId)
                     .HasName("PK_Specification_SpecId");
-
-                entity.HasIndex(e => e.SpecCode)
-                    .HasName("UNQ_Specification_SpecCode")
-                    .IsUnique();
 
                 entity.Property(e => e.SpecId).ValueGeneratedNever();
 

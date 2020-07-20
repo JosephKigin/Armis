@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Armis.BusinessModels.QualityModels.InspectionModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

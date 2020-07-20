@@ -17,12 +17,12 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
             Config = aConfig;
         }
 
-        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllSpecProcessAssigns()
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedSpecProcessAssigns()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllHydratedSpecProcessAssign");
         }
 
-        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveSpecProcessAssigns()
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssigns()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllActiveHydratedSpecProcessAssign");
         }
@@ -32,7 +32,7 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllActiveHydratedSpecProcessAssignForSpec/" + aSpecId);
         }
 
-        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllReviewNeededSpecProcessAssign()
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedReviewNeededSpecProcessAssign()
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SpecProcessAssignModel>>(Config["APIAddress"] + "api/SpecProcessAssign/GetAllHydratedReviewNeededSpecProcessAssigns");
         }
@@ -53,9 +53,9 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
         }
 
 
-        public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecId, int? choice1, int? choice2, int? choice3, int? choice4, int? choice5, int? choice6, int? preBake, int? postBake, int? mask, int? hardness, int? series, int? alloy, int? customer)
+        public async Task<bool> VerifyUniqueChoices(int specId, short internalSpecId, int? customer, IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
         {
-            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/VerifyUniqueChoices/" + specId + "/" + internalSpecId + "/" + choice1 + "/" + choice2 + "/" + choice3 + "/" + choice4 + "/" + choice5 + "/" + choice6 + "/" + preBake + "/" + postBake + "/" + mask + "/" + hardness + "/" + series + "/" + alloy + "/" + customer);
+            return await DataAccessGeneric.HttpPostRequest<bool, IEnumerable<SpecProcessAssignOptionModel>>(Config["APIAddress"] + "api/SpecProcessAssign/VerifyUniqueChoices/" + specId + "/" + internalSpecId + "/" + customer, anOptionModels);
         }
 
         public async Task<bool> CheckIfReviewIsNeededForSpecId(int aSpecId)
@@ -63,9 +63,9 @@ namespace ArmisWebsite.DataAccess.Quality.Specification
             return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/CheckIfReviewIsNeededForSpecId/" + aSpecId);
         }
 
-        public async Task<bool> CheckSpaIsViable(int aSpecId, byte? aChoice1, byte? aChoice2, byte? aChoice3, byte? aChoice4, byte? aChoice5, byte? aChoice6)
+        public async Task<bool> CheckSpaIsViable(int aSpecId, IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
         {
-            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SpecProcessAssign/CheckSpaIsViable/" + aSpecId + "/" + aChoice1 + "/" + aChoice2 + "/" + aChoice3 + "/" + aChoice4 + "/" + aChoice5 + "/" + aChoice6);
+            return await DataAccessGeneric.HttpPostRequest<bool, IEnumerable<SpecProcessAssignOptionModel>>(Config["APIAddress"] + "api/SpecProcessAssign/CheckSpaIsViable/" + aSpecId, anOptionModels);
         }
     }
 }

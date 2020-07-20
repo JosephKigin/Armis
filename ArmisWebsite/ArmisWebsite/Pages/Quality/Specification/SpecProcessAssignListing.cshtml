@@ -8,7 +8,7 @@
 
     <div class="input-group my-1">
         @*Search by... Filter needs to be added.*@
-        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search By Specificaiton Code..." onkeyup="searchSpecProcessAssignList(this.value)" />
+        <input id="inputStepSearchFilter" type="text" class="form-control border-right-0" placeholder="Search By Specification Code..." onkeyup="searchSpecProcessAssignList(this.value)" />
         <span class="input-group-append bg-white border-left-0">
             <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
         </span>
@@ -39,8 +39,6 @@
 
                 @foreach (var specProcessAssign in allSpasForSpecId)
                 {
-
-
                     <div id="specGroup_@specProcessAssign.SpecId" class="collapse">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
@@ -48,125 +46,8 @@
                             Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
                             Rev: <b>@specProcessAssign.ProcessRevId</b>
                         </a>
-
                         <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                            <table class="table table-bordered table-striped table-hover">
-                                <tr>
-                                    <th class="text-center" style="border-bottom-color:black">Sublevel 1</th>
-                                    <th class="text-center" style="border-bottom-color:black">Sublevel 2</th>
-                                    <th class="text-center" style="border-bottom-color:black">Sublevel 3</th>
-                                    <th class="text-center" style="border-bottom-color:black">Sublevel 4</th>
-                                </tr>
-
-                                <tr>
-                                    <td class="text-center">
-                                        @if (specProcessAssign.Choice1 != null && specProcessAssign.Choice1.Name != null)
-                                        {@specProcessAssign.Choice1.Name}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.Choice2 != null && specProcessAssign.Choice2.Name != null)
-                                        {@specProcessAssign.Choice2.Name}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.Choice3 != null && specProcessAssign.Choice3.Name != null)
-                                        {@specProcessAssign.Choice3.Name}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
-                                        {@specProcessAssign.Choice4.Name}
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <table class="table table-bordered table-striped table-hover">
-                                <tr>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Pre-Bake</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Post-Bake</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Mask</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Hardness</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Series</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Alloy</th>
-                                    <th class="text-center" style="border-bottom-color:black; width:14.2%;">Customer</th>
-                                </tr>
-
-                                <tr>
-                                    <td class="text-center">
-                                        @if (specProcessAssign.PreBakeOption != null && specProcessAssign.PreBakeOption.StepName != null)
-                                        {@specProcessAssign.PreBakeOption.StepName}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.PostBakeOption != null && specProcessAssign.PostBakeOption.StepName != null)
-                                        {@specProcessAssign.PostBakeOption.StepName}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.MaskOption != null && specProcessAssign.MaskOption.StepName != null)
-                                        {@specProcessAssign.MaskOption.StepName}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.HardnessOption != null && specProcessAssign.HardnessOption.ShortName != null)
-                                        {@specProcessAssign.HardnessOption.ShortName}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.SeriesOption != null && specProcessAssign.SeriesOption.ShortName != null)
-                                        {@specProcessAssign.SeriesOption.ShortName}
-                                    </td>
-
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.AlloyOption != null && specProcessAssign.AlloyOption.Description != null)
-                                        {@specProcessAssign.AlloyOption.Description}
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if (specProcessAssign.Customer != null)
-                                        {@specProcessAssign.Customer.Name}
-                                    </td>
-                                </tr>
-                            </table>
-
-                            @*@if (specProcessAssign.Choice1 != null && specProcessAssign.Choice1.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice1.Name</p>
-                                }
-                                @if (specProcessAssign.Choice2 != null && specProcessAssign.Choice2.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice2.Name</p>
-                                }
-                                @if (specProcessAssign.Choice3 != null && specProcessAssign.Choice3.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice3.Name</p>
-                                }
-                                @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice4.Name</p>
-                                }
-                                @if (specProcessAssign.Choice5 != null && specProcessAssign.Choice5.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice5.Name</p>
-                                }
-                                @if (specProcessAssign.Choice6 != null && specProcessAssign.Choice6.Name != null)
-                                {
-                                    <p>@specProcessAssign.Choice6.Name</p>
-                                }*@
-                            @*</div>*@
-
-                            @*<div class="card col-lg-3">
-                                    <b>Details</b>
-                                    @if (specProcessAssign.Customer != null)
-                                    {<p>Customer: @specProcessAssign.Customer.Name</p>}
-                                    @if (specProcessAssign.SeriesOption != null)
-                                    {<p>Series: @specProcessAssign.SeriesOption.Description [@specProcessAssign.SeriesOption.ShortName] </p>}
-                                    <p>Hardness: @specProcessAssign.HardnessOptionId</p>
-
-                                    <p>Alloy: @specProcessAssign.AlloyOptionId</p>
-                                </div>*@
+                            <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="specProcessAssign" />
                         </div>
                     </div>
                 }

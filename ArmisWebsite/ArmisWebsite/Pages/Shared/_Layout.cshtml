@@ -12,7 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-secondary border-bottom box-shadow sticky-top mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow sticky-top mb-3" style="background-color: #949ca3 !important">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index"><img src="~/Images/Webp.net-resizeimage.png" /></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -56,7 +56,7 @@
                                         </div>
                                         <div>
                                             <div class="dropdown-header text-dark font-weight-bold">Specification</div>
-                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationCreation">Spec Maintanence</a>
+                                            <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationMaintenance">Spec Maintanence</a>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecificationListing">Spec Listing</a>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssign">Spec Process Assign</a>
                                             <a class="dropdown-item" asp-page="/Quality/Specification/SpecProcessAssignListing">Spec Process Assign Listing</a>
@@ -84,7 +84,7 @@
     </main>
     @*</div>*@
 
-    <footer class="border-top footer text-light bg-secondary">
+    <footer class="border-top footer text-light" style="background-color: #949ca3 !important">
         <div class="container">
             &copy; @DateTime.Now.ToString("yyyy") - Armis Website - <a asp-area="" tabindex="-1" asp-page="/Privacy">Privacy</a>
             <div class="ml-5 d-inline-block"><b>DESIGN IS NOT FINAL</b></div>

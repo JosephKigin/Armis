@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Armis.BusinessModels.QualityModels.InspectionModels;
 using Armis.BusinessModels.QualityModels.Spec;
 using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using ArmisWebsite.FrontEndModels;

@@ -5,23 +5,112 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     var currentAmntOfTests = document.getElementById("hdnNumOfTests").value; //This value won't change at all here, so the value is pulled right away.
 
     currentAmntOfLevels.value = parseInt(currentAmntOfLevels.value) + 1;
-    var currentLevel = currentAmntOfLevels.value;
+    var currentLevelAmnt = currentAmntOfLevels.value;
 
-    var newDiv = document.createElement("div");
-    newDiv.id = "numPartsLevel" + currentLevel;
-    newDiv.classList = "row mt-1";
-    newDiv.innerHTML = '<div class="col-lg-1"><a id="ancInsertLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a></div> <div class="col-lg-4"> <input name="inputNumOfPartsFrom' + currentLevel + '" type="number" class="form-control" tabindex="-1" readonly/> </div> <div class="col-lg-1">-</div> <div class="col-lg-4"> <input name="inputNumOfPartsTo' + currentLevel + '" type="number" data-level="' + currentLevel + '" class="form-control" onblur="updateNextFrom(this)" /> </div><div class="col-lg-1"><a id="ancRemoveLine' + currentLevel + '" data-level="' + currentLevel + '" onclick="DeleteLevel(this.dataset.level)"><i class="fa fa-sm fa-minus-circle ml-2" style="color:red"></i></a></div>';
-    sectionNumOfParts.appendChild(newDiv);
+    //Creating each element to be added into the "# of Parts" section
+    //First column
+    var iconAddLevel = document.createElement("i");
+    iconAddLevel.classList = "fa fa-sm fa-plus-circle";
+    iconAddLevel.style.color = "green";
+
+    var ancAddLevel = document.createElement("a");
+    ancAddLevel.id = "ancInsertLine" + currentLevelAmnt;
+    ancAddLevel.dataset.level = currentLevelAmnt;
+    ancAddLevel.setAttribute("onclick", "AddLevel(this.dataset.level)");
+    ancAddLevel.appendChild(iconAddLevel);
+
+    var divFirstCol = document.createElement("div");
+    divFirstCol.classList = "col-lg-1";
+    divFirstCol.appendChild(document.createElement("br"));
+    divFirstCol.appendChild(ancAddLevel)
+
+    //Second column
+    var inputFrom = document.createElement("input");
+    inputFrom.name = "inputNumOfPartsFrom" + currentLevelAmnt;
+    inputFrom.type = "number";
+    inputFrom.classList = "form-control";
+    inputFrom.tabIndex = "-1";
+    inputFrom.readOnly = true;
+
+    var divSecondCol = document.createElement("div");
+    divSecondCol.classList = "col-lg-4";
+    divSecondCol.appendChild(inputFrom);
+
+    //Third column
+    var divThirdCol = document.createElement("div");
+    divThirdCol.classList = "col-lg-1";
+    divThirdCol.innerHTML = "-";
+
+    //Fourth column
+    var inputTo = document.createElement("input");
+    inputTo.name = "inputNumOfPartsTo" + currentLevelAmnt;
+    inputTo.type = "number";
+    inputTo.dataset.level = currentLevelAmnt;
+    inputTo.classList = "form-control";
+    inputTo.setAttribute("onblur", "updateNextFrom(this)");
+
+
+    var divFourthCol = document.createElement("div");
+    divFourthCol.classList = "col-lg-4";
+    divFourthCol.appendChild(inputTo);
+
+    //Fifth column
+    var iconDelete = document.createElement("i");
+    iconDelete.classList = "fa fa-sm fa-minus-circle ml-2";
+    iconDelete.style.color = "red";
+
+    var ancDelete = document.createElement("a");
+    ancDelete.id = "ancRemoveLine" + currentLevelAmnt;
+    ancDelete.dataset.level = currentLevelAmnt;
+    ancDelete.setAttribute("onclick", "DeleteLevel(this.dataset.level)");
+    ancDelete.appendChild(iconDelete);
+
+    var divFifthCol = document.createElement("div");
+    divFifthCol.classList = "col-lg-1";
+    divFifthCol.appendChild(ancDelete);
+
+    //Put all of the columns into a row div
+    var divRow = document.createElement("div");
+    divRow.id = "numPartsLevel" + currentLevelAmnt;
+    divRow.classList = "row mt-1";
+    divRow.appendChild(divFirstCol);
+    divRow.appendChild(divSecondCol);
+    divRow.appendChild(divThirdCol);
+    divRow.appendChild(divFourthCol);
+    divRow.appendChild(divFifthCol);
+
+    //Add the row to the section on the page
+    sectionNumOfParts.appendChild(divRow);
 
     //!This starts at 1, not 0!  This was done to keep consistant with the amount of tests, which is not 0 based.
     //Adds a new level to each test.
     for (var i = 1; i <= currentAmntOfTests; i++) {
         var sectionTestType = document.getElementById("testType" + i);
-        var newDiv = document.createElement("div");
-        newDiv.id = "numSampleReject" + i + "-" + currentLevel;
-        newDiv.classList = "row mt-1";
-        newDiv.innerHTML = '<input name="inputSampleNum' + i + '-' + currentLevel + '" type="number" class="form-control col-lg-5 mr-3" placeholder="Sample" /> <input name="inputRejectNum' + i + '-' + currentLevel + '" type="number" class="form-control col-lg-5" placeholder="Reject" />';
-        sectionTestType.appendChild(newDiv);
+
+        //Create inputs to insert into divTestRow
+        var inputSampleNum = document.createElement("input");
+        inputSampleNum.name = "inputSampleNum" + i + "-" + currentLevelAmnt;
+        inputSampleNum.type = "number";
+        inputSampleNum.classList = "form-control col-lg-5 mr-3";
+        inputSampleNum.placeholder = "Sample";
+
+        var inputRejectNum = document.createElement("input");
+        inputRejectNum.name = "inputRejectNum" + i + "-" + currentLevelAmnt;
+        inputRejectNum.type = "number";
+        inputRejectNum.classList = "form-control col-lg-5";
+        inputRejectNum.placeholder = "Reject";
+
+
+        var divTestRow = document.createElement("div");
+        divTestRow.id = "numSampleReject" + i + "-" + currentLevelAmnt;
+        divTestRow.classList = "row mt-1";
+        divTestRow.style.height = '48px';
+        divTestRow.clientHeight = divRow.clientHeight;
+        divTestRow.appendChild(inputSampleNum);
+        divTestRow.appendChild(inputRejectNum);
+
+        //Add divTestRow to the test section
+        sectionTestType.appendChild(divTestRow);
     }
 
     //This will iterate through the inputs starting at the bottom and stopping at the input number after levelNum sent in.  It will iterate backwards because the bottom inputs will be empty so it won't overwrite any values.
@@ -45,14 +134,14 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     $("input[name ^= 'inputNumOfPartsTo']").prop("placeholder", "");
 
     //Make the last to value disabled and give it the placeholder "Over" to indicate that it is the last level and the last value is anything over what was specified.
-    $("input[name = 'inputNumOfPartsTo" + currentLevel + "']").prop("disabled", true);
-    $("input[name = 'inputNumOfPartsTo" + currentLevel + "']").prop("placeholder", "OVER");
+    $("input[name = 'inputNumOfPartsTo" + currentLevelAmnt + "']").prop("disabled", true);
+    $("input[name = 'inputNumOfPartsTo" + currentLevelAmnt + "']").prop("placeholder", "OVER");
 
     //Unhide all anchors.
     $("a").prop("hidden", false);
 
     //Hide the delete anchor on the last element.
-    $("a[id = 'ancRemoveLine" + currentLevel + "']").prop("hidden", true);
+    $("a[id = 'ancRemoveLine" + currentLevelAmnt + "']").prop("hidden", true);
 }
 
 function AddTest() {
@@ -63,21 +152,60 @@ function AddTest() {
         currentAmntOfTests.value = parseInt(currentAmntOfTests.value) + 1;
         var currentTestAmnt = currentAmntOfTests.value;
 
-        var newTestType = document.createElement("div");
-        newTestType.id = "testType" + currentTestAmnt;
-        newTestType.classList = "col-lg mr-3";
-        newTestType.innerHTML = '<div class="row"> <select name="selectTestType' + currentTestAmnt + '" class="form-control col-lg-11" >' + document.getElementById("selectTestTypePlaceholder").innerHTML + '</select> </div> <div class="row"> <div class="col-lg-5">Spl</div > <div class="col-lg-5">Rej</div> </div >';
+        //Create select, inputs, and divs to go into divTestType - the new test section being added
+        var selectTestType = document.createElement("select");
+        selectTestType.name = "selectTestType" + currentTestAmnt;
+        selectTestType.classList = "form-control col-lg-11";
+        selectTestType.innerHTML = document.getElementById("selectTestTypePlaceholder").innerHTML; //Adds the static options from a hidden select on the page
 
-        sectionTestTypes.appendChild(newTestType);
+        var divSelectRow = document.createElement("div");
+        divSelectRow.classList = "row"
+        divSelectRow.appendChild(selectTestType);
+
+        var divSplLabel = document.createElement("div");
+        divSplLabel.classList = "col-lg-5 p-0";
+        divSplLabel.innerHTML = "Spl";
+
+        var divRejLabel = document.createElement("div");
+        divRejLabel.classList = "col-lg-5";
+        divRejLabel.innerHTML = "Rej";
+
+        var divLabelRow = document.createElement("div");
+        divLabelRow.classList = "row";
+        divLabelRow.appendChild(divSplLabel);
+        divLabelRow.appendChild(divRejLabel);
+
+        var divTestType = document.createElement("div");
+        divTestType.id = "testType" + currentTestAmnt;
+        divTestType.classList = "col-lg mr-3";
+        divTestType.appendChild(divSelectRow);
+        divTestType.appendChild(divLabelRow);
+
+        sectionTestTypes.appendChild(divTestType);
 
         var sectionCurrentTest = document.getElementById("testType" + currentTestAmnt);  //Grabs the test section that was just added
 
         //!This starts at 1, not 0!  This was done to keep consistant with the amount of tests, which is not 0 based.
         for (var i = 1; i <= currentAmntOfLevels; i++) {
+            var inputSampleNum = document.createElement("input");
+            inputSampleNum.name = "inputSampleNum" + currentTestAmnt + "-" + i;
+            inputSampleNum.type = "number";
+            inputSampleNum.classList = "form-control col-lg-5 mr-3";
+            inputSampleNum.placeholder = "Sample";
+
+            var inputRejectNum = document.createElement("input");
+            inputRejectNum.name = "inputRejectNum" + currentTestAmnt + "-" + i;
+            inputRejectNum.type = "number";
+            inputRejectNum.classList = "form-control col-lg-5";
+            inputRejectNum.placeholder = "Reject";
+
             var newTestLevel = document.createElement("div");
             newTestLevel.id = "numSampleReject" + currentTestAmnt + "-" + i;
             newTestLevel.classList = "row mt-1";
-            newTestLevel.innerHTML = '<input name="inputSampleNum' + currentTestAmnt + '-' + i + '" type="number" class="form-control col-lg-5 mr-3" placeholder="Sample" /> <input name="inputRejectNum' + currentTestAmnt + '-' + i + '" type="number" class="form-control col-lg-5" placeholder="Reject" />';
+            newTestLevel.style.height = "48px";
+            newTestLevel.appendChild(inputSampleNum);
+            newTestLevel.appendChild(inputRejectNum);
+
             sectionCurrentTest.appendChild(newTestLevel);
         }
     }
