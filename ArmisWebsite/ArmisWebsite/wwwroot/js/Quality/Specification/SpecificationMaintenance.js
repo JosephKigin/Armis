@@ -73,8 +73,8 @@
         stepDiv.appendChild(stepInput);
 
         var hdnStepIdInput = document.createElement("input");
+        hdnStepIdInput.id = "hdnStepId" + cardNumber + "-" + count;
         hdnStepIdInput.type = "hidden";
-        hdnStepIdInput.Id = "hdnStepId" + cardNumber + "-" + count;
         hdnStepIdInput.name = "ChoiceList" + cardNumber + "[" + count + "].ReferenceStepId";
         stepDiv.appendChild(hdnStepIdInput);
 
@@ -220,6 +220,20 @@ function OpenStepModal(aCardNum, aChoiceNum) {
     }
 }
 
+//Updates sublevel choices with step selected from step modal
+function UpdateChoiceStep() {
+    var sublevel = document.getElementById("hdnModalStepSublevelToUpdate").value;
+    var choice = document.getElementById("hdnModalStepChoiceToUpdate").value;
+
+    var slctAllSteps = document.getElementById("slctAllSteps");
+    var option = slctAllSteps.options[slctAllSteps.selectedIndex];
+
+    document.getElementById("hdnStepId" + sublevel + "-" + choice).value = option.value;
+    document.getElementById("inputStepOutput" + sublevel + "-" + choice).value = option.text;
+
+    $("#modalSteps").modal("hide");
+}
+
 //Creates a modal, wipes out the dependency modal placeholder div, adds newly created modal into that div, and then opens the modal
 function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublevel and choice to update with what is selected.
     var divCardInBody = document.createElement("div");
@@ -249,22 +263,25 @@ function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublev
 
         var choiceCount = document.getElementById("choiceCount" + i).value;
         for (var j = 0; j < choiceCount; j++) {//Choices start at 0 to keep indexing correct for model binding
-            var liChoice = document.createElement("li");
+            if (document.getElementById("inputChoice" + i + "-" + j).value != "") { //If the choice doesn't have text, then it cannot be selected.
+                var liChoice = document.createElement("li");
 
-            liChoice.innerHTML = document.getElementById("inputChoice" + i + "-" + j).value;
+                liChoice.innerHTML = document.getElementById("inputChoice" + i + "-" + j).value;
 
-            var chkboxChoice = document.createElement("input");
-            chkboxChoice.type = "checkbox";
-            chkboxChoice.id = "chkboxDependentModalChoice" + i + "-" + j;
-            chkboxChoice.classList = "ml-1"
-            chkboxChoice.dataset.sublevelNumber = i;
-            chkboxChoice.dataset.sublevelName = hSublevelTitle.innerHTML;
-            chkboxChoice.dataset.choiceNumber = j;
-            chkboxChoice.dataset.choiceName = liChoice.innerHTML;
-            chkboxChoice.setAttribute("onclick", "ToggleDependencyModalCheckBoxes(this)");
-            liChoice.appendChild(chkboxChoice);
+                var chkboxChoice = document.createElement("input");
+                chkboxChoice.type = "checkbox";
+                chkboxChoice.id = "chkboxDependentModalChoice" + i + "-" + j;
+                chkboxChoice.classList = "ml-1"
+                chkboxChoice.dataset.sublevelNumber = i;
+                chkboxChoice.dataset.sublevelName = hSublevelTitle.innerHTML;
+                chkboxChoice.dataset.choiceNumber = j;
+                chkboxChoice.dataset.choiceName = liChoice.innerHTML;
+                chkboxChoice.setAttribute("onclick", "ToggleDependencyModalCheckBoxes(this)");
+                liChoice.appendChild(chkboxChoice);
 
-            ulChoices.appendChild(liChoice);
+                ulChoices.appendChild(liChoice);
+            }
+
         }
 
         divSublevelSection.appendChild(ulChoices);
@@ -277,10 +294,12 @@ function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublev
     divModalBody.appendChild(divCardInBody);
 
     var submitButton = document.createElement("button");
+    submitButton.id = "btnSubmitDependencyModal";
     submitButton.type = "button";
     submitButton.innerHTML = "Ok";
     submitButton.classList = "btn btn-primary float-right mt-1 mr-3";
     submitButton.setAttribute("onclick", "UpdateDependencyFromModal()");
+    submitButton.disabled = true;
     divModalBody.appendChild(submitButton);
 
     var divModalHeader = document.createElement("div");  //Header and title of modal
@@ -318,6 +337,14 @@ function ToggleDependencyModalCheckBoxes(aCheckBox) {
         if (allCheckBoxes[i] != aCheckBox) {
             allCheckBoxes[i].checked = false;
         }
+        else {
+            if (aCheckBox.checked) {
+                document.getElementById("btnSubmitDependencyModal").disabled = false;
+            }
+            else {
+                document.getElementById("btnSubmitDependencyModal").disabled = false;
+            }
+        }
     }
 }
 
@@ -328,7 +355,7 @@ function UpdateDependencyFromModal() {
     var theSelectedDependency;
     //Find selected checkbox
     var allDependencyModalCheckBoxes = document.getElementById("dependencyModal").getElementsByTagName("input");
-    console.log(allDependencyModalCheckBoxes.length);
+    console.log(allDependencyModalCheckBoxes);
     for (var i = 0; i < allDependencyModalCheckBoxes.length; i++) {
         if (allDependencyModalCheckBoxes[i].checked) {
             theSelectedDependency = allDependencyModalCheckBoxes[i];
@@ -356,24 +383,61 @@ function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
     for (var i = 0; i < remainingChoiceDivGroups.length; i++) {
         remainingChoiceDivGroups[i].id = "divChoiceNameGroup" + aCardNumber + "-" + i;
 
-        var divChoiceItems = remainingChoiceDivGroups[i].children;
-        for (var j = 0; j < divChoiceItems.length; j++) {
-            if (divChoiceItems[j].nodeName == "INPUT") { //This is checking for the main choice name.
-                if (divChoiceItems[j].type == "text") {
-                    divChoiceItems[j].id = "inputChoice" + aCardNumber + "-" + i;
-                    divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]";
-                    divChoiceItems[j].dataset.choiceNumber = i;
-                }
-                else if (divChoiceItems[j].type == "checkbox") { //The default checkbox
-                    divChoiceItems[j].id = "chkDefaultChoice" + aCardNumber + "-" + i;
-                    divChoiceItems[j].value = i;
-                }
-            }
-            else {
-                divChoiceItems[j].id = "iconChoiceDelete" + aCardNumber + "-" + i;
-                divChoiceItems[j].dataset.choice = i;
-            }
-        }
+        var divChoiceCols = remainingChoiceDivGroups[i].children; //There will be 3 cols: check box + name, step button and step, and dependent + dependent name
+
+        var divChoiceName = divChoiceCols[0]; //Check box and choice name input need to be updated
+        var divStep = divChoiceCols[1]; //Steps button, step name input, and hidden step id input need to be updated
+        var divDependent = divChoiceCols[2]; //Dependent button, dependent name button, hidden dependent sublevel id, hidden dependent choice id, and the delete choice anchor at the end of the line
+
+        var divChoiceInputs = divChoiceName.getElementsByTagName("input");
+        //0. checkbox
+        divChoiceInputs[0].id = "chkDefaultChoice" + aCardNumber + "-" + i;
+        //1. choice name input
+        divChoiceInputs[1].id = "inputChoice" + aCardNumber + "-" + i;
+        divChoiceInputs[1].name = "ChoiceList" + aCardNumber + "[" + i + "].Description";
+
+        var divStepElements = divStep.children;
+        //0. Button
+        divStepElements[0].data.choiceNumber = i;
+        //1. Step name input
+        divStepElements[1].id = "inputStepOutput" + aCardNumber + "-" + i;
+        //2. Hidden step id input
+        divStepElements[2].id = "hdnStepId" + aCardNumber + "-" + i;
+        divStepElements[2].name = "ChoiceList" + aCardNumber + "[" + i + "].ReferenceStepId";
+
+        var divDependentElements = divDependent.children;
+        //0. Dependent button
+        divDependentElements[0].dataset.choiceNumber = i;
+        //1. Dependent display input
+        divDependentElements[1].id = "inputDependentOutput" + aCardNumber + "-" + i;
+        //2. Dependent sublevel id hidden input
+        divDependentElements[2].id = "hdnDependentSublevel" + aCardNumber + "-" + i;
+        divDependentElements[2].name = "ChoiceList" + aCardNumber + "[" + i + "].DependentSubLevelId";
+        //3. Dependent choice id hidden input
+        divDependentElements[3].id = "hdnDependentChoice" + aCardNumber + "-" + i;
+        divDependentElements[3].name = "ChoiceList" + aCardNumber + "[" + i + "].OnlyValidForChoiceId";
+        //4. Delete anchor 
+        divDependentElements[4].id = "iconChoiceDelete" + aCardNumber + "-" + i;
+        divDependentElements[4].dataset.choice = i;
+
+
+        //for (var j = 0; j < divChoiceItems.length; j++) {
+        //    if (divChoiceItems[j].nodeName == "INPUT") { //This is checking for the main choice name.
+        //        if (divChoiceItems[j].type == "text") {
+        //            divChoiceItems[j].id = "inputChoice" + aCardNumber + "-" + i;
+        //            divChoiceItems[j].name = "ChoiceNames" + aCardNumber + "[" + i + "]";
+        //            divChoiceItems[j].dataset.choiceNumber = i;
+        //        }
+        //        else if (divChoiceItems[j].type == "checkbox") { //The default checkbox
+        //            divChoiceItems[j].id = "chkDefaultChoice" + aCardNumber + "-" + i;
+        //            divChoiceItems[j].value = i;
+        //        }
+        //    }
+        //    else {
+        //        divChoiceItems[j].id = "iconChoiceDelete" + aCardNumber + "-" + i;
+        //        divChoiceItems[j].dataset.choice = i;
+        //    }
+        //}
 
     }
 }
