@@ -342,7 +342,7 @@ function ToggleDependencyModalCheckBoxes(aCheckBox) {
                 document.getElementById("btnSubmitDependencyModal").disabled = false;
             }
             else {
-                document.getElementById("btnSubmitDependencyModal").disabled = false;
+                document.getElementById("btnSubmitDependencyModal").disabled = true;
             }
         }
     }
@@ -444,6 +444,7 @@ function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
 
 function validateMainPage() {
     var isValid = true;
+    //Top section
     var theSpecCodeInput = document.getElementById("inputSpecCode");
     var theSpecRev = document.getElementById("inputNewExternalRev");
     var theSpecDescription = document.getElementById("textAreaSpecDescription");
@@ -497,7 +498,7 @@ function validateChoiceCard(aChoiceCard) {
     //Iterating through the inputs
     for (var i = 0; i < cardInputs.length; i++) {
         //Finds the sublevel name input
-        if (cardInputs[i].id.startsWith("SubLevelName")) {
+        if (cardInputs[i].id.startsWith("inputSublevelName")) {
             if (cardInputs[i].value != undefined && cardInputs[i].value.trim() != "") { isSubLevelNameFilled = true; }
             else { isSubLevelNameFilled = false; }
         }
@@ -526,6 +527,8 @@ function validateChoiceCard(aChoiceCard) {
         aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
         return false;
     }
+
+    console.log();
 }
 
 function searchSpecList(searchInput) {
@@ -566,6 +569,60 @@ function updateSamplePlanInputs() {
         if (theRadios[i].checked) {
             document.getElementById("hdnSamplePlanId").value = theRadios[i].value;
             document.getElementById("inputSamplePlanName").value = theRadios[i].dataset.planName;
+        }
+    }
+}
+
+//Next two functions are for setting up the page.
+function UpdateDefaultChoiceSpanOnPageLoad() {
+    for (var i = 0; i < 6; i++) { //Go through each of the 6 cards
+        var divChoiceSectionItems = document.getElementById("choiceInputPlaceholder" + (i + 1)).children;
+
+        for (var s = 0; s < divChoiceSectionItems.length; s++) { //Go through each row of choice name divs that contains the choice name input, isDault checkbox, and the icon to delete
+            var divChoiceRowItems = divChoiceSectionItems[s].children;
+
+            for (var r = 0; r < divChoiceRowItems.length; r++) {
+                if (divChoiceRowItems[r].type == "text") {
+                    ToggleCheckBoxDisabled(divChoiceRowItems[r], (i + 1));
+                }
+            }
+        }
+
+    }
+}
+
+function DisablePage() {
+    var allInputElements = document.body.getElementsByTagName("input");
+    for (var i = 0; i < allInputElements.length; i++) {
+        //Ignore the Rev-Up button (which is actually an input of type button) getting disabled.
+        //Also ignore Find Spec button, and spec search input.
+        if (allInputElements[i].id != "inputBtnRevUp" && allInputElements[i].id != "btnFindSpec" && allInputElements[i].id != "hdnCurrentSpecId" && allInputElements[i].id != "inputSpecSearch") { allInputElements[i].disabled = true; }
+    }
+
+    var allAnchorElements = document.body.getElementsByTagName("a");
+    for (var i = 0; i < allAnchorElements.length; i++) {
+        //Ignore all anchors that have either "navbar-brand" or "nav-link text-dark" as class names. These classes are only used in the layout navigation bar in the header.
+        //Also ignore the clear button on the bottom of the page
+        if (!allAnchorElements[i].className.includes("nav-link") && !allAnchorElements[i].className.includes("navbar-brand") && !allAnchorElements[i].className.includes("dropdown-item") && !allAnchorElements[i].className.includes("dropdown-toggle")) { allAnchorElements[i].hidden = true; }
+    }
+
+    var allButtonElements = document.body.getElementsByTagName("button");
+    for (var i = 0; i < allButtonElements.length; i++) {
+        //Ignore the select button in the modal for finding a spec
+        if (allButtonElements[i].id != "btnSelectSpec") {
+            if (allButtonElements[i].id.startsWith("btnAddChoice")) {
+                allButtonElements[i].hidden = true;
+            }
+            else {
+                allButtonElements[i].disabled = true;
+            }
+        }
+    }
+
+    var allSelectElements = document.body.getElementsByTagName("select");
+    for (var i = 0; i < allSelectElements.length; i++) {
+        if (allSelectElements[i].id.startsWith("slctStepCategory")) {
+            allSelectElements[i].disabled = true;
         }
     }
 }

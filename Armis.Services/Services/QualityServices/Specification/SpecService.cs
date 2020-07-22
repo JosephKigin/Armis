@@ -116,6 +116,8 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<SpecModel> GetHydratedCurrentRevForSpec(int aSpecId)
         {
+            await context.Step.LoadAsync();
+            await context.StepCategory.LoadAsync();
             var specEntity = await context.Specification.FirstOrDefaultAsync(i => i.SpecId == aSpecId);
             specEntity.SpecificationRevision.Add(await context.SpecificationRevision.Where(i => i.SpecId == aSpecId)
                                                                                         .Include(i => i.SpecSubLevel)

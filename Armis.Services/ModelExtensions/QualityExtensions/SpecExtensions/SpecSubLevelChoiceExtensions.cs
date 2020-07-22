@@ -38,7 +38,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
         {
             var result = aSpecChoiceEntity.ToModel();
 
-            result.ReferenceStep = (result.ReferenceStep != null)? aSpecChoiceEntity.ReferenceStep.ToModel() : null;
+            result.ReferenceStep = (aSpecChoiceEntity.ReferenceStep != null)? aSpecChoiceEntity.ReferenceStep.ToModel() : null;
 
             return result;
         }
@@ -64,7 +64,10 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ChoiceSeqId = aChoiceModel.ChoiceSeqId,
                 SpecRevId = anInternalRevId,
                 Description = aChoiceModel.Description,
-                SubLevelSeqId = aChoiceModel.SubLevelSeqId
+                SubLevelSeqId = aChoiceModel.SubLevelSeqId,
+                DependentLevel  = aChoiceModel.DependentSubLevelId,
+                OnlyValidForChoice = aChoiceModel.OnlyValidForChoiceId,
+                ReferenceStepId = aChoiceModel.ReferenceStepId
             };
         }
 
