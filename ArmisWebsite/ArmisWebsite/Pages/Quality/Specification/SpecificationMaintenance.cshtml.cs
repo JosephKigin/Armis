@@ -301,7 +301,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 {
                     aChoiceList[i].ChoiceSeqId = (byte)(i + 1);
                     aChoiceList[i].SubLevelSeqId = aSubLevelSeq;
-                    aChoiceList[i].OnlyValidForChoiceId++; //The database is 1 based while the page is 0 based for choice Ids to help with 0 based lists.
+                    //aChoiceList[i].OnlyValidForChoiceId; //The database is 1 based while the page is 0 based for choice Ids to help with 0 based lists.
                 }
                 theSubLevel.Choices = aChoiceList;
             }

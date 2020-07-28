@@ -125,7 +125,7 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<SpecProcessAssignModel> GetSpecProcessAssign(int aSpecId, short aSpecRevId, short aSpecAssignId)
         {
-            var theSpecProcesAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == aSpecAssignId); 
+            var theSpecProcesAssignEntity = await Context.SpecProcessAssign.FirstOrDefaultAsync(i => i.SpecId == aSpecId && i.SpecRevId == aSpecRevId && i.SpecAssignId == aSpecAssignId);
 
             if (theSpecProcesAssignEntity == null) { throw new Exception("No Spec Process Assignment was found."); }
 
@@ -181,7 +181,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                                    i.SpecRevId == mostRecentSpecRevId).ToListAsync();
 
                 if (specProcessAssignFamily == null || !specProcessAssignFamily.Any()) //There aren't any previous assigns for this spec/spec rev
-                { 
+                {
                     aSpecProcessAssignModel.SpecAssignId = 1;
                     foreach (var option in aSpecProcessAssignModel.SpecProcessAssignOptionModels) //Update options for options
                     { option.SpecAssignId = 1; }
@@ -190,8 +190,11 @@ namespace Armis.DataLogic.Services.QualityServices
                 {
                     var lastAssignIdUsed = specProcessAssignFamily.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId;
                     aSpecProcessAssignModel.SpecAssignId = (lastAssignIdUsed + 1);
-                    foreach (var option in aSpecProcessAssignModel.SpecProcessAssignOptionModels) //Update options for options
-                    { option.SpecAssignId = (lastAssignIdUsed + 1); }
+                    if (aSpecProcessAssignModel.SpecProcessAssignOptionModels != null)
+                    {
+                        foreach (var option in aSpecProcessAssignModel.SpecProcessAssignOptionModels) //Update options for options
+                        { option.SpecAssignId = (lastAssignIdUsed + 1); }
+                    }
                 }
 
                 aSpecProcessAssignModel.Inactive = false;

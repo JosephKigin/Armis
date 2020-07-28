@@ -50,12 +50,18 @@
 
 
             <div class="col-lg-6">
-                <ul id="listAllHardnesses" class="list-group w-100" style="max-height: 42em; overflow:scroll;">
+                <div class="input-group my-1">
+                    <input id="inputHardnessSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchHardnessList(this.value)" />
+                    <span class="input-group-append bg-white border-left-0">
+                        <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                    </span>
+                </div>
+                <ul id="ulHardnessesList" class="list-group w-100" style="max-height: 42em; overflow:scroll;">
                     @if (Model.AllHardnesses.Any())
                     {
                         @foreach (var hardness in Model.AllHardnesses)
                         {
-                            <li class="list-group-item">
+                            <li class="list-group-item" data-hardness-name="@hardness.ShortName">
 
                                 <h5>@hardness.HardnessId. @hardness.ShortName </h5>
                                 <b>Description: </b>@hardness.Description
@@ -76,3 +82,18 @@
         </div>
     </form>
 </div>
+<script>
+    function searchHardnessList(searchTerm) {
+        var hardnesses = document.getElementById("ulHardnessesList").getElementsByTagName("li");
+        for (var i = 0; i < hardnesses.length; i++) {
+            if (hardnesses[i] != undefined) {
+                if (hardnesses[i].dataset.hardnessName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    hardnesses[i].style.display = "block";
+                }
+                else {
+                    hardnesses[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

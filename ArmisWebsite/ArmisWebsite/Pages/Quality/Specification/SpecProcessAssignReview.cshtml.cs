@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.QualityModels.Spec;
+using Armis.Data.DatabaseContext.Entities;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
@@ -130,7 +131,11 @@ namespace ArmisWebsite.Pages.Quality.Specification
             {
                 foreach (var assign in AllSpecProcessAssigns) //Checking if the assignment is still viable.  If it is not, then the user cannot "Keep" the assignment.
                 {
-                    assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, assign.SpecProcessAssignOptionModels);
+                    if (assign.SpecProcessAssignOptionModels == null)
+                    { assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, new List<SpecProcessAssignOptionModel>()); }
+                    else
+                    { assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, assign.SpecProcessAssignOptionModels); }
+                    
                 }
             }
 

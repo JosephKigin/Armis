@@ -20,7 +20,7 @@ namespace ArmisWebsite.Pages.Part
 
         //Models
         public List<MaterialSeriesModel> AllMaterialSeries { get; set; }
-
+        public List<MaterialAlloyModel> AllMaterialAlloys { get; set; }
 
         //Front-End
         [BindProperty]
@@ -84,6 +84,8 @@ namespace ArmisWebsite.Pages.Part
         public async Task SetUpProperties()
         {
             AllMaterialSeries = (await MaterialSeriesDataAccess.GetAllMaterialSeries()).ToList();
+
+            AllMaterialAlloys = (await MaterialAlloyDataAccess.GetAllMaterialAlloys()).ToList();
         }
     }
 }

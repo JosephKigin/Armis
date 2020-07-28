@@ -45,12 +45,18 @@
             </div>
 
             <div class="col-lg-6">
-                <ul id="listAllHardnesses" class="list-group w-100" style="max-height: 42em; overflow:scroll;">
+                <div class="input-group my-1">
+                    <input type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchSeriesList(this.value)" />
+                    <span class="input-group-append bg-white border-left-0">
+                        <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                    </span>
+                </div>
+                <ul id="ulSeriesList" class="list-group w-100" style="max-height: 42em; overflow:scroll;">
                     @if (Model.AllMaterialSeries.Any())
                     {
                         @foreach (var series in Model.AllMaterialSeries)
                         {
-                            <li class="list-group-item">
+                            <li class="list-group-item" data-series-name="@series.ShortName">
                                 <h5>@series.SeriesId. @series.ShortName </h5>
                                 <b>Description: </b>@series.Description
                                 <br />
@@ -61,7 +67,7 @@
                     else
                     {
                         <li class="list-group-item">
-                            No Hardnesses found
+                            No Series found
                         </li>
                     }
 
@@ -70,3 +76,19 @@
         </div>
     </form>
 </div>
+
+<script>
+    function searchSeriesList(searchTerm) {
+        var series = document.getElementById("ulSeriesList").getElementsByTagName("li");
+        for (var i = 0; i < series.length; i++) {
+            if (series[i] != undefined) {
+                if (series[i].dataset.seriesName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    series[i].style.display = "block";
+                }
+                else {
+                    series[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

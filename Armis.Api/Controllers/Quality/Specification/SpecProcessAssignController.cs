@@ -127,7 +127,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpPost("{aSpecId}")]
-        public async Task<ActionResult<bool>> CheckSpaIsViable(int aSpecId, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
+        public async Task<ActionResult<bool>> CheckSpaIsViable(int aSpecId, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels = null)
         {
             try
             {
@@ -184,12 +184,6 @@ namespace Armis.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        [HttpPost("{aCustomer}")]
-        public ActionResult<int> TestStuff(int aCustomer, [FromBody]int aSpecId)
-        {
-            return Ok(JsonSerializer.Serialize(aCustomer + aSpecId));
         }
     }
 }

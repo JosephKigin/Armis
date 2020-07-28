@@ -5,7 +5,7 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     var currentAmntOfTests = document.getElementById("hdnNumOfTests").value; //This value won't change at all here, so the value is pulled right away.
 
     currentAmntOfLevels.value = parseInt(currentAmntOfLevels.value) + 1;
-    var currentLevelAmnt = currentAmntOfLevels.value;
+    var currentLevelAmnt = parseInt(currentAmntOfLevels.value);
 
     //Creating each element to be added into the "# of Parts" section
     //First column
@@ -114,19 +114,32 @@ function AddLevel(levelNum) { //levelNum will be the level before the one being 
     }
 
     //This will iterate through the inputs starting at the bottom and stopping at the input number after levelNum sent in.  It will iterate backwards because the bottom inputs will be empty so it won't overwrite any values.
-    for (var i = currentAmntOfLevels.value; i > (levelNum); i--) {
+    for (var i = currentLevelAmnt; i > (levelNum); i--) {
 
+        //Popping the To & From values up
         document.getElementsByName("inputNumOfPartsFrom" + i)[0].value = document.getElementsByName("inputNumOfPartsFrom" + (i - 1))[0].value;
         document.getElementsByName("inputNumOfPartsTo" + i)[0].value = document.getElementsByName("inputNumOfPartsTo" + (i - 1))[0].value;
 
         if (i == parseInt(levelNum) + 1) {
+            //Clearing out the values from the line the user added
             document.getElementsByName("inputNumOfPartsFrom" + i)[0].value = "";
             document.getElementsByName("inputNumOfPartsTo" + i)[0].value = "";
+        }
+
+        //Popping all the values from all the tests down from where the line was added
+        for (var t = 1; t <= currentAmntOfTests; t++) {
+            document.getElementsByName("inputSampleNum" + t + "-" + i)[0].value = document.getElementsByName("inputSampleNum" + t + "-" + (i - 1))[0].value;
+            document.getElementsByName("inputRejectNum" + t + "-" + i)[0].value = document.getElementsByName("inputRejectNum" + t + "-" + (i - 1))[0].value;
+
+            if (i == parseInt(levelNum) + 1) {
+                //Clearing test values from the line the user added
+                document.getElementsByName("inputSampleNum" + t + "-" + i)[0].value = "";
+                document.getElementsByName("inputRejectNum" + t + "-" + i)[0].value = "";
+            }
         }
     }
 
     //Updating the from value of the newly inserted level
-    if ($('input[name = "inputNumOfPartsTo' + levelNum + '"]')[0] == undefined) { console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY") }
     updateNextFrom($('input[name = "inputNumOfPartsTo' + levelNum + '"]')[0]);
 
     //Undo any of the disables or placeholder changes that the next couple lines after this does.

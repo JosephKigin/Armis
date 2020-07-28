@@ -191,16 +191,16 @@ function ApplyRevUpStatus() { //This sets the rev-up status to true and activate
 }
 
 //Opens the step modal and updates the hidden fields for what sublevel and choice should be updated from the step modal.
-function OpenStepModal(aCardNum, aChoiceNum) {
-    var filterCategory = document.getElementById("slctStepCategory" + aCardNum).value;
+function OpenStepModal(aCardNumber, aChoiceNum) {
+    var filterCategory = document.getElementById("slctStepCategory" + aCardNumber).value;
 
     if (filterCategory == "") {
-        document.getElementById("spanStepCategoryWarning" + aCardNum).hidden = false;
+        document.getElementById("spanStepCategoryWarning" + aCardNumber).hidden = false;
     }
     else {
-        document.getElementById("spanStepCategoryWarning" + aCardNum).hidden = true;
+        document.getElementById("spanStepCategoryWarning" + aCardNumber).hidden = true;
 
-        document.getElementById("hdnModalStepSublevelToUpdate").value = aCardNum;
+        document.getElementById("hdnModalStepSublevelToUpdate").value = aCardNumber;
         document.getElementById("hdnModalStepChoiceToUpdate").value = aChoiceNum;
 
         var stepList = document.getElementById("slctAllSteps");
@@ -229,20 +229,20 @@ function UpdateChoiceStep() {
     var option = slctAllSteps.options[slctAllSteps.selectedIndex];
 
     document.getElementById("hdnStepId" + sublevel + "-" + choice).value = option.value;
-    document.getElementById("inputStepOutput" + sublevel + "-" + choice).value = option.text;
+    document.getElementById("inputStepOutput" + sublevel + "-" + choice).value = option.dataset.stepName;
 
     $("#modalSteps").modal("hide");
 }
 
 //Creates a modal, wipes out the dependency modal placeholder div, adds newly created modal into that div, and then opens the modal
-function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublevel and choice to update with what is selected.
+function BuildDependentModal(aCardNumber, aChoiceNum) { //Parameters are the sublevel and choice to update with what is selected.
     var divCardInBody = document.createElement("div");
     divCardInBody.classList = "card p-3";
 
     var hdnDependentSublevel = document.createElement("input"); ///Hidden inputs to hold the values of the sublevel and choice the dependency is being applied to
     hdnDependentSublevel.id = "hdnDependencyModalSublevel"; //The sublevel to update
     hdnDependentSublevel.type = "hidden";
-    hdnDependentSublevel.value = aCardNum;
+    hdnDependentSublevel.value = aCardNumber;
     divCardInBody.appendChild(hdnDependentSublevel);
     var hdnDependentChoice = document.createElement("input");
     hdnDependentChoice.id = "hdnDependencyModalChoice"; //The choice to update.
@@ -250,7 +250,7 @@ function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublev
     hdnDependentChoice.value = aChoiceNum;
     divCardInBody.appendChild(hdnDependentChoice);
 
-    var amntOfSublevel = aCardNum - 1; //The amount of sublevels above the one sent in.  EX: Sublevel 3 can be dependent on 2 & 1.
+    var amntOfSublevel = aCardNumber - 1; //The amount of sublevels above the one sent in.  EX: Sublevel 3 can be dependent on 2 & 1.
 
     for (var i = 1; i <= amntOfSublevel; i++) { //Sublevels start at 1
         var divSublevelSection = document.createElement("div");
@@ -274,7 +274,7 @@ function BuildDependentModal(aCardNum, aChoiceNum) { //Parameters are the sublev
                 chkboxChoice.classList = "ml-1"
                 chkboxChoice.dataset.sublevelNumber = i;
                 chkboxChoice.dataset.sublevelName = hSublevelTitle.innerHTML;
-                chkboxChoice.dataset.choiceNumber = j;
+                chkboxChoice.dataset.choiceNumber = (j + 1); //This is the value that will make it to the model where the choices start at 1; j starts at 0.
                 chkboxChoice.dataset.choiceName = liChoice.innerHTML;
                 chkboxChoice.setAttribute("onclick", "ToggleDependencyModalCheckBoxes(this)");
                 liChoice.appendChild(chkboxChoice);
@@ -603,7 +603,7 @@ function DisablePage() {
     for (var i = 0; i < allAnchorElements.length; i++) {
         //Ignore all anchors that have either "navbar-brand" or "nav-link text-dark" as class names. These classes are only used in the layout navigation bar in the header.
         //Also ignore the clear button on the bottom of the page
-        if (!allAnchorElements[i].className.includes("nav-link") && !allAnchorElements[i].className.includes("navbar-brand") && !allAnchorElements[i].className.includes("dropdown-item") && !allAnchorElements[i].className.includes("dropdown-toggle")) { allAnchorElements[i].hidden = true; }
+        if (!allAnchorElements[i].className.includes("nav-link") && !allAnchorElements[i].className.includes("navbar-brand") && !allAnchorElements[i].className.includes("dropdown-item") && !allAnchorElements[i].className.includes("dropdown-toggle") && allAnchorElements[i].id != "btnClearPage") { allAnchorElements[i].hidden = true; }
     }
 
     var allButtonElements = document.body.getElementsByTagName("button");
@@ -623,6 +623,16 @@ function DisablePage() {
     for (var i = 0; i < allSelectElements.length; i++) {
         if (allSelectElements[i].id.startsWith("slctStepCategory")) {
             allSelectElements[i].disabled = true;
+        }
+    }
+}
+
+function UpdateStepCategorySelect(aCardNumber, aCategoryId) {
+    var categoryOptions = document.getElementById("slctStepCategory" + aCardNumber).getElementsByTagName("option");
+
+    for (var i = 0; i < categoryOptions.length; i++) {
+        if (categoryOptions[i].value == aCategoryId) {
+            categoryOptions[i].selected = true;
         }
     }
 }

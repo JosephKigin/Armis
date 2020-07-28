@@ -167,7 +167,7 @@
                         <select id="slctAllSteps" class="list-group" size="12" style="height:42em; overflow-y:scroll;">
                             @foreach (var step in Model.AllSteps)
                             {
-                                <option class="list-group-item" value="@step.StepId" data-category="@step.StepCategory.Id">
+                                <option class="list-group-item" value="@step.StepId" data-step-name="@step.StepName" data-category="@step.StepCategory.Id">
                                     @step.StepId: @step.StepName - @step.Instructions
                                 </option>
                             }
@@ -205,7 +205,12 @@
                 <span id="spanStepCategoryWarning1" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText1" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText1 = "(No default selected)";}
+                @if (Model.DefaultChoice1 != null) { defaultText1 = "(" + Model.ChoiceList1.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice1).Description + " is default)"; }
+                <span id="spanDefaultText1" class="text-muted">@defaultText1</span>
+            </label>
             <div id="choiceInputPlaceholder1" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList1 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -233,7 +238,11 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(1, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList1[i].ReferenceStep != null)
-                                {<input id="inputStepOutput1-@i" class="form-control w-75" value="@Model.ChoiceList1[i].ReferenceStep.StepName" disabled /> }
+                                {
+                                    <input id="inputStepOutput1-@i" class="form-control w-75" value="@Model.ChoiceList1[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(1, @Model.ChoiceList1[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput1-@i" class="form-control w-75" value="" disabled />}
 
@@ -249,7 +258,7 @@
                                     var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList1[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList1[i].OnlyValidForChoiceId);
 
-                                    <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
+                                    <input id="inputDependentOutput1-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
                                 }
                                 else
                                 { <input id="inputDependentOutput1-@i" class="form-control" value="" style="width: 65%" disabled />}
@@ -295,7 +304,12 @@
                 <span id="spanStepCategoryWarning2" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText2" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText2 = "(No default selected)";}
+                @if (Model.DefaultChoice2 != null) { defaultText2 = "(" + Model.ChoiceList2.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice2).Description + " is default)"; }
+                <span id="spanDefaultText2" class="text-muted">@defaultText2</span>
+            </label>
             <div id="choiceInputPlaceholder2" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList2 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -323,7 +337,11 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(2, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList2[i].ReferenceStep != null)
-                                {<input id="inputStepOutput2-@i" class="form-control w-75" value="@Model.ChoiceList2[i].ReferenceStep.StepName" disabled /> }
+                                {
+                                    <input id="inputStepOutput2-@i" class="form-control w-75" value="@Model.ChoiceList2[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(2, @Model.ChoiceList2[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput2-@i" class="form-control w-75" value="" disabled />}
 
@@ -339,7 +357,7 @@
                                     var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList2[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList2[i].OnlyValidForChoiceId);
 
-                                    <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
+                                    <input id="inputDependentOutput2-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
                                 }
                                 else
                                 { <input id="inputDependentOutput2-@i" class="form-control" value="" style="width: 65%" disabled />}
@@ -383,7 +401,12 @@
                 <span id="spanStepCategoryWarning3" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText3" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText3 = "(No default selected)";}
+                @if (Model.DefaultChoice3 != null) { defaultText3 = "(" + Model.ChoiceList3.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice3).Description + " is default)"; }
+                <span id="spanDefaultText3" class="text-muted">@defaultText3</span>
+            </label>
             <div id="choiceInputPlaceholder3" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList3 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -411,7 +434,11 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(3, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList3[i].ReferenceStep != null)
-                                {<input id="inputStepOutput3-@i" class="form-control w-75" value="@Model.ChoiceList3[i].ReferenceStep.StepName" disabled /> }
+                                {
+                                    <input id="inputStepOutput3-@i" class="form-control w-75" value="@Model.ChoiceList3[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(3, @Model.ChoiceList3[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput3-@i" class="form-control w-75" value="" disabled />}
 
@@ -424,7 +451,7 @@
 
                                 @if (Model.ChoiceList3[i].DependentSubLevelId != null)
                                 {
-                                    var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList3[i].DependentSubLevelId);
+                                    var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.OrderByDescending(r => r.InternalRev).FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList3[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList3[i].OnlyValidForChoiceId);
 
                                     <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
@@ -471,7 +498,12 @@
                 <span id="spanStepCategoryWarning4" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText4" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText4 = "(No default selected)";}
+                @if (Model.DefaultChoice4 != null) { defaultText4 = "(" + Model.ChoiceList4.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice4).Description + " is default)"; }
+                <span id="spanDefaultText4" class="text-muted">@defaultText4</span>
+            </label>
             <div id="choiceInputPlaceholder4" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList4 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -499,7 +531,11 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(4, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList4[i].ReferenceStep != null)
-                                {<input id="inputStepOutput4-@i" class="form-control w-75" value="@Model.ChoiceList4[i].ReferenceStep.StepName" disabled /> }
+                                {
+                                    <input id="inputStepOutput4-@i" class="form-control w-75" value="@Model.ChoiceList4[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(4, @Model.ChoiceList4[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput4-@i" class="form-control w-75" value="" disabled />}
 
@@ -515,7 +551,7 @@
                                     var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList4[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList4[i].OnlyValidForChoiceId);
 
-                                    <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
+                                    <input id="inputDependentOutput4-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
                                 }
                                 else
                                 { <input id="inputDependentOutput4-@i" class="form-control" value="" style="width: 65%" disabled />}
@@ -559,7 +595,12 @@
                 <span id="spanStepCategoryWarning5" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText5" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText5 = "(No default selected)";}
+                @if (Model.DefaultChoice5 != null) { defaultText5 = "(" + Model.ChoiceList5.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice5).Description + " is default)"; }
+                <span id="spanDefaultText5" class="text-muted">@defaultText5</span>
+            </label>
             <div id="choiceInputPlaceholder5" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList5 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -587,7 +628,11 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(5, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList5[i].ReferenceStep != null)
-                                {<input id="inputStepOutput5-@i" class="form-control w-75" value="@Model.ChoiceList5[i].ReferenceStep.StepName" disabled /> }
+                                {
+                                    <input id="inputStepOutput5-@i" class="form-control w-75" value="@Model.ChoiceList5[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(5, @Model.ChoiceList5[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput5-@i" class="form-control w-75" value="" disabled />}
 
@@ -603,7 +648,7 @@
                                     var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList5[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList5[i].OnlyValidForChoiceId);
 
-                                    <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />}
+                                    <input id="inputDependentOutput5-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />}
                                 else
                                 { <input id="inputDependentOutput5-@i" class="form-control" value="" style="width: 65%" disabled />}
 
@@ -646,7 +691,12 @@
                 <span id="spanStepCategoryWarning6" class="text-danger ml-1" hidden>Please select a step category before searching for a step.</span>
             </div>
 
-            <label><b>Choice </b><span id="spanDefaultText6" class="text-muted"> (No default selected)</span></label>
+            <label>
+                <b>Choice </b>
+                @{string defaultText6 = "(No default selected)";}
+                @if (Model.DefaultChoice6 != null) { defaultText6 = "(" + Model.ChoiceList6.FirstOrDefault(i => i.ChoiceSeqId == Model.DefaultChoice6).Description + " is default)"; }
+                <span id="spanDefaultText6" class="text-muted">@defaultText6</span>
+            </label>
             <div id="choiceInputPlaceholder6" class="card p-1">
                 @if (Model.CurrentSpecId != 0 && Model.ChoiceList6 != null)@*If a spec was passed in to get reved-up, CurrentSpecId != 0*@
                 {
@@ -674,7 +724,10 @@
                                 <button type="button" class="btn btn-primary mr-1" data-choice-number="@i" onclick="OpenStepModal(6, this.dataset.choiceNumber)">Step</button>
 
                                 @if (Model.ChoiceList6[i].ReferenceStep != null)
-                                {<input id="inputStepOutput6-@i" class="form-control w-75" value="@Model.ChoiceList6[i].ReferenceStep.StepName" disabled /> }
+                                {<input id="inputStepOutput6-@i" class="form-control w-75" value="@Model.ChoiceList6[i].ReferenceStep.StepName" disabled />
+                                    @*Little script to update the step category select to be set to the step category of the steps assigned to these choices*@
+                                    <script> UpdateStepCategorySelect(6, @Model.ChoiceList6[i].ReferenceStep.StepCategory.Id); </script>
+                                }
                                 else
                                 { <input id="inputStepOutput6-@i" class="form-control w-75" value="" disabled />}
 
@@ -690,7 +743,7 @@
                                     var dependentSublevel = Model.AllSpecModels.FirstOrDefault(s => s.Id == Model.CurrentSpecId).SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(l => l.LevelSeq == Model.ChoiceList6[i].DependentSubLevelId);
                                     var dependentChoice = dependentSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == Model.ChoiceList6[i].OnlyValidForChoiceId);
 
-                                    <input id="inputDependentOutput3-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
+                                    <input id="inputDependentOutput6-@i" class="form-control" value="@dependentSublevel.Name - @dependentChoice.Description" style="width:65%" disabled />
                                 }
                                 else
                                 { <input id="inputDependentOutput6-@i" class="form-control" value="" style="width: 65%" disabled />}

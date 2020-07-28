@@ -85,18 +85,27 @@
 
         <div class="col-lg-6">
             <h3>All Operations</h3>
-            <ul class="list-group border-secondary border" style="max-height: 42em; overflow:scroll; overflow-x:hidden;">
+            <div class="input-group my-1">
+                <input id="inputOperationSearchFilter" type="text" class="form-control border-right-0" placeholder="Search..." onkeyup="searchOperationList(this.value)" />
+                <span class="input-group-append bg-white border-left-0">
+                    <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
+                </span>
+            </div>
+            <ul id="ulOperationsList" class="list-group border-secondary border" style="max-height: 40em; overflow:scroll; overflow-x:hidden;">
                 @foreach (var operation in Model.AllOperations)
                 {
-                    <li class="list-group-item" id="@operation.Id">
+                    <li class="list-group-item" id="@operation.Id" data-operation-name="@operation.Name">
                         <h6>@operation.Name [@operation.Code]</h6>
-                        <p>Due Days: @operation.DefaultDueDays</p>
-                        @if (operation.ThicknessIsRequired)
-                        {<p class="text-danger">Thickness is required.</p>}
+                        <p>
+                            Due Days: @operation.DefaultDueDays
+                            @if (operation.ThicknessIsRequired)
+                            {<span class="text-danger"> Thickness is required.</span>}
 
-                        <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
-                    </li>
-                }
+                            <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
+                    </p>
+
+                </li>
+            }
             </ul>
         </div>
     </div>
@@ -112,5 +121,19 @@
         document.getElementById("currentOperationGroupId").value = theSelectedOption.id;
 
         $("#operGroupsModal").modal("hide");
+    }
+
+    function searchOperationList(searchTerm) {
+        var operations = document.getElementById("ulOperationsList").getElementsByTagName("li");
+        for (var i = 0; i < operations.length; i++) {
+            if (operations[i] != undefined) {
+                if (operations[i].dataset.operationName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    operations[i].style.display = "block";
+                }
+                else {
+                    operations[i].style.display = "none";
+                }
+            }
+        }
     }
 </script>

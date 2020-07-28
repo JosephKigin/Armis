@@ -26,25 +26,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         //Data Access
         public ISpecProcessAssignDataAccess SpecProcessAssignDataAccess { get; set; }
         public IProcessDataAccess ProcessDataAccess { get; set; }
-        public IStepDataAccess StepDataAccess { get; set; }
         public ICustomerDataAccess CustomerDataAccess { get; set; }
-        public IHardnessDataAccess HardnessDataAccess { get; set; }
-        public IMaterialSeriesDataAccess MaterialSeriesDataAccess { get; set; }
-        public IMaterialAlloyDataAccess MaterialAlloyDataAccess { get; set; }
         public ISpecDataAccess SpecificationDataAccess { get; set; }
 
         //Models
         //Middle section of page
         public List<ProcessModel> AllProcessesWithCurrentRev { get; set; }
-
-        //Right section of page
-        public List<StepModel> AllBakeSteps { get; set; } //This will be for both Pre-Bake and Post-Bake
-        public List<StepModel> AllMaskSteps { get; set; }
-        public List<HardnessModel> AllHardnesses { get; set; }
-        public List<MaterialSeriesModel> AllMaterialSeries { get; set; }
-        public List<MaterialAlloyModel> AllMaterialAlloys { get; set; }
         public List<CustomerModel> AllCustomers { get; set; }
         public List<SpecModel> AllSpecifications { get; set; }
+
+        //Right section of page
         public List<SpecProcessAssignModel> SpecProcessAssignsForCurrentSpec { get; set; }
 
         public SpecModel CurrentSpec { get; set; } //After a spec is selected by the used, the page will reload and this will be set to the selected spec and the page will be created based on it.
@@ -107,11 +98,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             SpecProcessAssignDataAccess = aSpecProcessAssignDataAccess;
             ProcessDataAccess = aProcessDataAccess;
             SpecificationDataAccess = aSpecDataAccess;
-            StepDataAccess = aStepDataAccess;
             CustomerDataAccess = aCustomerDataAccess;
-            HardnessDataAccess = aHardnessDataAccess;
-            MaterialSeriesDataAccess = aMaterialSeriesDataAccess;
-            MaterialAlloyDataAccess = aMaterialAlloyDataAccess;
             Config = aConfig;
             _apiAddress = aConfig["APIAddress"];
         }
@@ -263,22 +250,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task SetUpProperties()
         {
-            IsReviewNeededForCurrentSpec = false; 
-
-            var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
-            AllBakeSteps = (tempAllBakes != null) ? tempAllBakes.ToList() : new List<StepModel>();
-
-            var tempAllMasks = await StepDataAccess.GetAllStepsByCategory("mask");
-            AllMaskSteps = (tempAllMasks != null) ? tempAllMasks.ToList() : new List<StepModel>();
-
-            var tempAllHardnesses = await HardnessDataAccess.GetAllHardnesses();
-            AllHardnesses = (tempAllHardnesses != null) ? tempAllHardnesses.ToList() : new List<HardnessModel>();
-
-            var tempAllSeries = await MaterialSeriesDataAccess.GetAllMaterialSeries();
-            AllMaterialSeries = (tempAllSeries != null) ? tempAllSeries.ToList() : new List<MaterialSeriesModel>();
-
-            var tempAllAlloys = await MaterialAlloyDataAccess.GetAllMaterialAlloys();
-            AllMaterialAlloys = (tempAllAlloys != null) ? tempAllAlloys.ToList() : new List<MaterialAlloyModel>();
+            IsReviewNeededForCurrentSpec = false;
 
             var tempAllCustomers = await CustomerDataAccess.GetAllCurrentAndProspectCustomers();
             AllCustomers = (tempAllCustomers != null) ? tempAllCustomers.ToList() : new List<CustomerModel>();
