@@ -28,7 +28,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal? BasePrice { get; set; }
         public decimal? MinLotCharge { get; set; }
         public int? PartsPerLoad { get; set; }
-        public int? MaskPcsPerHour { get; set; }
+        public decimal? MaskPcsPerHour { get; set; }
         public bool? NotifyWhenMasking { get; set; }
         public int? Alloy { get; set; }
         public int? SeriesId { get; set; }

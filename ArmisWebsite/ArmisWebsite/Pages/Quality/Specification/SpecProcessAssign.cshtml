@@ -88,6 +88,7 @@
                             <div class="border border-light p-1">
                                 <h5>@sublevel.Name</h5>
                                 @if (sublevel.IsRequired) { <i class="text-danger">Required</i>}
+                                @if(sublevel.DefaultChoice != null) { <i>(@sublevel.Choices.FirstOrDefault(i => i.ChoiceSeqId == sublevel.DefaultChoice).Description is default)</i>}
                                 <ul style="list-style-type:none;">
                                     @foreach (var choice in sublevel.Choices)
                                     {
@@ -96,7 +97,7 @@
                                             @if (choice.ReferenceStepId != null || choice.DependentSubLevelId != null || choice.OnlyValidForChoiceId != null)
                                             {
                                                 <a href="#collapseChoiceInformation_@choice.SubLevelSeqId-@choice.ChoiceSeqId" data-toggle="collapse">@choice.Description</a>
-                                                @if(sublevel.DefaultChoice == choice.ChoiceSeqId) { <i class="fas fa-sm fa-star"></i>}
+                                                
                                                 <input id="chkbox_@sublevel.LevelSeq-@choice.ChoiceSeqId" type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeqId" data-sublevel="@sublevel.LevelSeq" data-choice="@choice.ChoiceSeqId" data-dependent-sublevel="" data-dependent-choice="" onchange="updateChoiceIdInput(this)" />
                                                 @*if the choice has dependencies, the following logic will get the names of the depended sublevel and choice to display*@
                                                 @if (choice.DependentSubLevelId != null)
@@ -132,7 +133,6 @@
                                             else
                                             {
                                                 <text>@choice.Description</text>
-                                                @if(sublevel.DefaultChoice == choice.ChoiceSeqId) { <i class="fas fa-sm fa-star"></i>}
                                                 <input id="chkbox_@sublevel.LevelSeq-@choice.ChoiceSeqId" type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeqId" data-sublevel="@sublevel.LevelSeq" data-choice="@choice.ChoiceSeqId" data-dependent-sublevel="" data-dependent-choice="" onchange="updateChoiceIdInput(this)" />
                                             }
                                         </li>

@@ -118,9 +118,7 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
-                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
-                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
+                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
             }
         }
 
@@ -1689,8 +1687,10 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.ExternalRev)
                     .IsRequired()
-                    .HasMaxLength(5)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
+
+                entity.Property(e => e.MaskPcsPerHour).HasColumnType("decimal(9, 4)");
 
                 entity.Property(e => e.MinLotCharge).HasColumnType("decimal(9, 4)");
 

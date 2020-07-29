@@ -17,6 +17,8 @@ using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Specification;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
+using ArmisWebsite.DataAccess.Shipping;
+using ArmisWebsite.DataAccess.Shipping.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -47,21 +49,26 @@ namespace ArmisWebsite
             //*CUSTOMER*
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
 
+
             //*EMPLOYEE*
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
 
+
             //*ORDER_ENTRY*
             services.AddScoped<IOrderHeadDataAccess, OrderHeadDataAccess>();
+
 
             //*PART*
             services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
 
+
             //*QUALITY*
             //Inspection
             services.AddScoped<ITestTypeDataAccess, TestTypeDataAccess>();
             services.AddScoped<ISamplePlanDataAccess, SamplePlanDataAccess>();
+            services.AddScoped<IQualityStandardDataAccess, QualityStandardDataAccess>();
 
             //Process
             services.AddScoped<IStepDataAccess, StepDataAccess>();
@@ -72,7 +79,12 @@ namespace ArmisWebsite
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
 
-            
+
+            //*SHIPPING*
+            services.AddScoped<IShipViaCodeDataAccess, ShipViaCodeDataAccess>();
+
+
+            //*TOOLS*
             services.AddScoped<IPdfGenerator, PdfGenerator>();
         }
 

@@ -1,7 +1,6 @@
 ﻿using Armis.BusinessModels.Customer;
 using Armis.BusinessModels.PartModels;
 using Armis.BusinessModels.QualityModels.Process;
-using Armis.Data.DatabaseContext.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -74,8 +74,9 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.OrderComment)
                                                            .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
-                                                           .Include(i => i.OrderDetail).ThenInclude(i => i.OrderLocation)
                                                            .FirstOrDefaultAsync();
+
+            orderHeadEntity.OrderDetail = await Context.OrderDetail.Where(i => i.OrderId == orderHeadEntity.OrderId).Include(i => i.OrderLocation).ToListAsync();
 
             if (orderHeadEntity == null) { return null; } //throw new Exception("No Order was found"); }
             

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.QualityModels.Spec;
-using Armis.Data.DatabaseContext.Entities;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;

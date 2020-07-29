@@ -10,5 +10,6 @@ namespace ArmisWebsite.DataAccess.OrderEntry.Interfaces
     {
         Task<OrderHeadModel> GetOrderHeadById(int anOrderId);
         Task<OrderHeadModel> PostOrderHead(OrderHeadModel anOrderHeadModel);
+        //Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId);
     }
 }

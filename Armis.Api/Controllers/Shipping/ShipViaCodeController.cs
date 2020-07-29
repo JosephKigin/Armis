@@ -12,11 +12,11 @@ namespace Armis.Api.Controllers.Shipping
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ShipViaController : ControllerBase
+    public class ShipViaCodeController : ControllerBase
     {
         public IShipViaCodeService ShipViaService { get; set; }
 
-        public ShipViaController(IShipViaCodeService aShipViaService)
+        public ShipViaCodeController(IShipViaCodeService aShipViaService)
         {
             ShipViaService = aShipViaService;
         }

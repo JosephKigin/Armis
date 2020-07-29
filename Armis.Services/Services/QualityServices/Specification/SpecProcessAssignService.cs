@@ -31,7 +31,7 @@ namespace Armis.DataLogic.Services.QualityServices
             int theNewSpecAssignId;
             var theCurrenSpecProcessAssigns = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecProcessAssignModel.SpecId && i.SpecRevId == aSpecProcessAssignModel.SpecRevId).ToListAsync();
             if (theCurrenSpecProcessAssigns != null && theCurrenSpecProcessAssigns.Any()) { theNewSpecAssignId = (theCurrenSpecProcessAssigns.OrderByDescending(i => i.SpecAssignId).FirstOrDefault().SpecAssignId) + 1; }
-            else { theNewSpecAssignId = 1; }
+            else { theNewSpecAssignId = 2; } //Spec assign needs to start at 2 because 1 is saved as default TODO: spec assign 1 was not created by the time the website got here!!!  THIS ELSE SHOULD NEVER HAPPEN!!!!!!!!!!!!!!!!
             aSpecProcessAssignModel.SpecAssignId = theNewSpecAssignId;
             var theSpecProcessAssignEntity = aSpecProcessAssignModel.ToEntity();
 
@@ -95,6 +95,7 @@ namespace Armis.DataLogic.Services.QualityServices
             await Context.SpecChoice.LoadAsync();
             await Context.SpecSubLevel.LoadAsync();
             await Context.Step.Where(i => i.StepCategoryId == 1 || i.StepCategoryId == 2).LoadAsync(); //1 is BAKE, 2 is MASK
+            await Context.StepCategory.LoadAsync();
             //This will always pull the most recent rev because the most recent will always be the active.
             var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false && i.SpecId == aSpecId)
                                                                               .IncludeOptimized(i => i.Spec)
