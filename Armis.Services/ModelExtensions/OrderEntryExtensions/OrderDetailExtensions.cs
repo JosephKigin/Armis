@@ -1,6 +1,7 @@
 ﻿using Armis.BusinessModels.OrderEntryModels;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.ARExtensions;
+using Armis.DataLogic.ModelExtensions.PartExtensions;
 using Armis.DataLogic.ModelExtensions.ShopFloorExtensions.Location;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.OrderLocation = (anOrderDetailEntity.OrderLocation != null) ? anOrderDetailEntity.OrderLocation.ToHydratedModels() : null;
             result.PriceCode = (anOrderDetailEntity.PriceCode != null) ? anOrderDetailEntity.PriceCode.ToModel() : null;
             result.OrderDetailComment = anOrderDetailEntity.OrderDetailComment?.ToModel();
+            result.Part = anOrderDetailEntity.Part.ToModel();
 
             return result;
         }

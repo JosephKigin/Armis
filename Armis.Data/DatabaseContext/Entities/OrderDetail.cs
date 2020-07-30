@@ -13,7 +13,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public int OrderId { get; set; }
         public byte OrderLine { get; set; }
         public int Quantity { get; set; }
-        public int PartId { get; set; }
+        public int? PartId { get; set; }
+        public string Description { get; set; }
         public decimal Poprice { get; set; }
         public decimal CalcPrice { get; set; }
         public decimal AssignPrice { get; set; }

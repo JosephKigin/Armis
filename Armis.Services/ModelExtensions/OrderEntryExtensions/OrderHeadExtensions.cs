@@ -83,7 +83,8 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.OrderComment = (anOrderHeadEntity.OrderComment != null)? anOrderHeadEntity.OrderComment.ToModel() : null; 
             result.OrderExpedite = (anOrderHeadEntity.OrderExpediteOrder != null)? anOrderHeadEntity.OrderExpediteOrder.ToModel() : null;
             result.OrderShipToOverride = (anOrderHeadEntity.OrderShipToOverride != null)? anOrderHeadEntity.OrderShipToOverride.ToModel() : null;
-            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToHydratedModels();
+            result.OrderReceiveds = anOrderHeadEntity.OrderReceived.ToHydratedModels(); //Just a basic ToModel, no hydrated
+            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToHydratedModels(); //Just a basic ToModel, no hydrated
 
             return result;
         }

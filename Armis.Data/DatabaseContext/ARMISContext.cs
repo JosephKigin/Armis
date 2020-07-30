@@ -118,7 +118,9 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
+                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
+                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
+                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
             }
         }
 
@@ -1301,6 +1303,11 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.CalcPrice).HasColumnType("decimal(19, 6)");
 
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.LotCharge).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.Poprice)
@@ -1316,7 +1323,6 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.Part)
                     .WithMany(p => p.OrderDetail)
                     .HasForeignKey(d => d.PartId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_PartId_Part_PartId");
 
                 entity.HasOne(d => d.PriceCode)
@@ -1678,7 +1684,7 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(100)
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Dimensions)

@@ -63,6 +63,7 @@ namespace Armis.DataLogic.Services.QualityServices
             await Context.SpecSubLevel.LoadAsync();
             await Context.SpecChoice.LoadAsync();
             await Context.Step.Where(i => i.StepCategoryId == 1 || i.StepCategoryId == 2).LoadAsync(); //1 is BAKE, 2 is MASK
+            await Context.StepCategory.LoadAsync();
             var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.Inactive == false)
                                                                               .IncludeOptimized(i => i.Spec)
                                                                               .IncludeOptimized(i => i.CustomerNavigation)
