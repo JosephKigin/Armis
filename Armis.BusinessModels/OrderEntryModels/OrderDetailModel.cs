@@ -12,13 +12,14 @@ namespace Armis.BusinessModels.OrderEntryModels
         public int OrderId { get; set; }
         public byte OrderLine { get; set; }
         public int Quantity { get; set; }
-        public int PartId { get; set; }
-        public int PartRevId { get; set; }
+        public int? PartId { get; set; }
+        public int? PartRevId { get; set; }
         public decimal Poprice { get; set; }
         public decimal CalcPrice { get; set; }
         public decimal AssignPrice { get; set; }
         public byte PriceCodeId { get; set; }
         public decimal LotCharge { get; set; }
+        public string Description { get; set; }
 
         public PartModel Part { get; set; }
         public PriceCodeModel PriceCode { get; set; }

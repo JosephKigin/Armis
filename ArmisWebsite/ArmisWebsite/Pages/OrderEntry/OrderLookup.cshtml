@@ -4,7 +4,7 @@
     ViewData["Title"] = "OrderLookup";
 }
 
-<div class="container-fluid w-75">
+<div class="container-fluid w-100 px-5">
     <h1>Order Lookup</h1>
 
     @if (Model.Message != null)
@@ -24,109 +24,252 @@
     {
         <div class="row mt-2">
             <div class="col-lg-4"></div>
-            <div class="col-lg-4 card p-2">
-                <div class="card-title text-center"><h5>Order # @Model.OrderHead.OrderId</h5></div>
-                <div class="row border-bottom mb-2"><span class="col-lg-6">Customer</span> <span class="col-lg-6 flex-align-right">@Model.OrderHead.Customer.Name</span></div>
-                <div class="row border-bottom mb-2"><span class="col-lg-6">PO Number</span> <span class="col-lg-6 flex-align-right">@Model.OrderHead.Ponum</span></div>
-            </div>
+
             <div class="col-lg-4"></div>
         </div>
 
         <div class="row my-2">
-            <div class="col-lg-2 card p-2">
-                <div class="card-title text-center"><h5>Dates</h5></div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Order Date</span>
-                    <span class="col-lg-6 flex-align-right">@Model.OrderHead.OrderDate.Date.ToShortDateString()</span>
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Due Date</span>
-                    @if (Model.OrderHead.DueDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DueDate.Value.Date.ToShortDateString()</span>}
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Ship Date</span>
-                    @if (Model.OrderHead.ShipDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.ShipDate.Value.Date.ToShortDateString()</span>}
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Ship Time</span>
-                    <span class="col-lg-6 flex-align-right">@Model.OrderHead.ShipTime</span>
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Requested Date</span>
-                    @if (Model.OrderHead.ReqDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.ReqDate.Value.Date.ToShortDateString()</span>}
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Done Date</span>
-                    @if (Model.OrderHead.DoneDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DoneDate.Value.Date.ToShortDateString()</span>}
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Done Time</span> <span class="col-lg-6 flex-align-right">@Model.OrderHead.DoneTime</span>
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Target Date</span>
-                    @if (Model.OrderHead.TargetDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.TargetDate.Value.Date.ToShortDateString()</span>}
-                </div>
-                <div class="row border-bottom mb-2">
-                    <span class="col-lg-6">Due Date</span>
-                    @if (Model.OrderHead.DueDate != null)
-                    {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DueDate.Value.Date.ToShortDateString()</span>}
-                </div>
-            </div>
-
-            <div class="col-lg-3 p-2 mx-2">
-                <div class="card">
-                    <div class="card-title text-center"><h5>Shipping</h5></div>
-                    @Model.OrderHead.ShipVia.Description
-                </div>
-                <div class="card mt-2">
-                    <div class="card-title text-center"><h5>Container</h5></div>
-                    @foreach (var orderRcvds in Model.OrderHead.OrderReceiveds)
-                    {
-                        <p>@orderRcvds.ReceivedContainer.Description</p>
-                    }
-                </div>
-            </div>
-
-            @{ var currentSpecAssignment = Model.OrderHead.Spec; } @*This is just to make it easier to reference the current spec process assign for the order head model.*@
-            <div class="col-lg-6">
+            <div class="col-lg-3">
                 <div class="card p-2">
-                    <div class="card-title text-center"><h5>Specification Details</h5></div>
-                    @currentSpecAssignment.SpecificationRevision.Description
-                    <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="@currentSpecAssignment" />
+                    <div class="card-title text-center">
+                        <h5>Order # @Model.OrderHead.OrderId</h5>
+                        @if (Model.OrderHead.IsPriceHold)
+                        {<span class="text-danger"><i> Price hold </i></span>}
+                        @*The next if is a big chunk of logic just to figure out if a - should be there or not.*@
+                        @if (Model.OrderHead.IsPriceHold && Model.OrderHead.IsBadJob || Model.OrderHead.IsPriceHold && Model.OrderHead.IsJobHold && !Model.OrderHead.IsBadJob)
+                        {<span>-</span>}
+                        @if (Model.OrderHead.IsBadJob)
+                        {<span class="text-danger"><i> Bad job </i></span>}
+                        @*The next if is a big chunk of logic just to figure out if a - should be there or not.*@
+                        @if (Model.OrderHead.IsBadJob && Model.OrderHead.IsJobHold)
+                        {<span>-</span>}
+                        @if (Model.OrderHead.IsJobHold)
+                        {<span class="text-danger"><i> Job hold </i></span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">PO Number</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.Ponum</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Expedite Status</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.ExpediteStatus</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Hold To Employee</span><span class="col-lg-6 flex-align-right">
+                            @if (Model.OrderHead.JobHoldToEmployee != null)
+                            {<text>@Model.OrderHead.JobHoldToEmployee.FirstName @Model.OrderHead.JobHoldToEmployee.LastName</text>}
+                        </span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Hold By Employee</span> <span class="col-lg-6 flex-align-right">
+                            @if (Model.OrderHead.JobHoldByEmployee != null)
+                            {<text>@Model.OrderHead.JobHoldByEmployee.FirstName @Model.OrderHead.JobHoldByEmployee.LastName</text>}
+                        </span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Credit Auth By Employee</span> <span class="col-lg-6 flex-align-right">
+                            @if (Model.OrderHead.CreditAuthByEmployee != null)
+                            {<text>@Model.OrderHead.CreditAuthByEmployee.FirstName @Model.OrderHead.CreditAuthByEmployee.LastName</text>}
+                        </span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Price Code</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.PriceStatus.Code</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Pre-Priced</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.IsPrePrice.Code</span>
+                    </div>
+                    <div class="row">
+                        <span class="col-lg-6">Sub Total</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.SubTotal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card p-2">
+                    <div class="card-title text-center">
+                        <h5>Customer Info</h5>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-4">Customer</span>
+                        <span class="col-lg-8 flex-align-right">@Model.OrderHead.Customer.Name</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-4">Address</span>
+                        <span class="col-lg-8 flex-align-right">
+                            123 Street Ave.<br />
+                            City, ST 12345
+                        </span>
+                    </div>
+                </div>
+                <div class="card p-2 mt-2">
+                    <div class="card-title text-center"><h5>Details</h5></div>
+                    <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#modalSPA">Spec-Process Assign</button>
+                    <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#modalOrderComments">Order Comments</button>
+                </div>
+                @{ var currentSpecAssignment = Model.OrderHead.Spec; } @*This is just to make it easier to reference the current spec process assign for the order head model.*@
+                <div class="modal fade" id="modalSPA">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Spec-Process Assignment</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p>Specification: <b>@currentSpecAssignment.SpecificationRevision.Description</b></p>
+                                <p>Process: <b>@currentSpecAssignment.ProcessRevision.ProcessName</b></p>
+                                <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="@currentSpecAssignment" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modalOrderComments">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Order Comments</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p><b>@Model.OrderHead.</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card p-1">
+                    <div class="card-title text-center"><h5>Dates</h5></div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Order Date</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.OrderDate.Date.ToShortDateString()</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Due Date</span>
+                        @if (Model.OrderHead.DueDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DueDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Ship Date</span>
+                        @if (Model.OrderHead.ShipDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.ShipDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Ship Time</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.ShipTime</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Requested Date</span>
+                        @if (Model.OrderHead.ReqDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.ReqDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Done Date</span>
+                        @if (Model.OrderHead.DoneDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DoneDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Done Time</span> <span class="col-lg-6 flex-align-right">@Model.OrderHead.DoneTime</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Target Date</span>
+                        @if (Model.OrderHead.TargetDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.TargetDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                    <div class="row">
+                        <span class="col-lg-6">Due Date</span>
+                        @if (Model.OrderHead.DueDate != null)
+                        {<span class="col-lg-6 flex-align-right">@Model.OrderHead.DueDate.Value.Date.ToShortDateString()</span>}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card p-1">
+                    <div class="card-title text-center">
+                        <h5>Shipping</h5>
+                        @if (Model.OrderHead.IsReturnAsIs)
+                        {<span class="text-danger"><i>Return as is</i></span>}
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Ship Via</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.ShipVia.Description</span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Container - Qty</span>
+                        <span class="col-lg-6 flex-align-right">
+                            @foreach (var orderRcvds in Model.OrderHead.OrderReceiveds)
+                            {
+                                @orderRcvds.ReceivedContainer.Description <text> - </text> @orderRcvds.ReceivedContainerQty<br />
+                            }
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="col-lg-6">Packaging</span>
+                        <span class="col-lg-6 flex-align-right">@Model.OrderHead.Package.Description</span>
+                    </div>
+                </div>
+                <div class="card p-2 my-2">
+                    <div class="card-title text-center"><h5>Quality</h5></div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Quality Standard</span>
+                        <span class="col-lg-6 flex-align-right">
+                            @if (Model.OrderHead.QualityStandard != null)
+                            {<text>@Model.OrderHead.QualityStandard.QualStdCode</text>}
+                        </span>
+                    </div>
+                    <div class="row border-bottom mb-2">
+                        <span class="col-lg-6">Cert Charge</span>
+                        <span class="col-lg-6 flex-align-right">*CHECK QLTY STD*</span>
+                    </div>
+                    <div class="row">
+                        <span class="col-lg-6">Is Inspected</span>
+                        <span class="col-lg-6 flex-align-right">
+                            @Model.OrderHead.IsInspected.Code
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="row mb-2">
-            <div class="col-lg-6 card">
+            <div class="col-lg-12 card">
                 <div class="card-title text-center"><h5>Order Details</h5></div>
                 <div class="row p-2">
                     @*Titles of the columns*@
-                    <div class="col-lg-2 border-right border-bottom"><b>Part ID</b></div>
-                    <div class="col-lg-2 border-right border-bottom"><b>Qty</b></div>
-                    <div class="col-lg-4 border-right border-bottom"><b>Name</b></div>
+                    <div class="col-lg-2 border-right border-bottom"><b>Name</b></div>
+                    <div class="col-lg-3 border-right border-bottom"><b>Description</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>Revision</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>Qty</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>PO Price</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>Calc Price</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>Assign Price</b></div>
+                    <div class="col-lg-1 border-right border-bottom"><b>Lot Charge</b></div>
+                    <div class="col-lg-1 border-bottom"><b>Price Code</b></div>
                 </div>
                 @foreach (var orderDetail in Model.OrderHead.OrderDetails)
                 {
                     <div class="row p-2">
-                        <div class="col-lg-2 border-right border-bottom">@orderDetail.PartId</div>
-                        <div class="col-lg-2 border-right border-bottom">@orderDetail.Quantity</div>
-                        <div class="col-lg-4 border-right border-bottom">@orderDetail.Part.PartName</div>
+                        <div class="col-lg-2 border-right border-bottom">
+                            @if (orderDetail.Part != null)
+                            {<text>@orderDetail.Part.PartName</text>}
+                        </div>
+                        <div class="col-lg-3 border-right border-bottom">@orderDetail.Description</div>
+                        <div class="col-lg-1 border-right border-bottom">
+                            @if (orderDetail.Part != null)
+                            {<text>@orderDetail.Part.ExternalRev</text>}
+                        </div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.Quantity</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.Poprice</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.CalcPrice</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.AssignPrice</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.LotCharge</div>
+                        <div class="col-lg-1 border-bottom"><p data-toggle="tooltip" data-placement="right" title="@orderDetail.PriceCode.Description">@orderDetail.PriceCode.LongCode</p></div>
                     </div>
                 }
             </div>
         </div>
-
-        <div class="row card p-2">
-            <div class="card-title text-center"><h5>Packaging/Container</h5></div>
-            @Model.OrderHead.Package.Description
-        </div>
-
-
     }
 </div>

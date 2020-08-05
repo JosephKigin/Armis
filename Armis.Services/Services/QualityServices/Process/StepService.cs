@@ -4,6 +4,7 @@ using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Armis.DataLogic.Services.QualityServices
     {
         private ARMISContext Context;
 
-        public StepService(ARMISContext aContext)
+        public StepService(ARMISContext aContext, ILogger<StepService> aLogger)
         {
             Context = aContext;
         }

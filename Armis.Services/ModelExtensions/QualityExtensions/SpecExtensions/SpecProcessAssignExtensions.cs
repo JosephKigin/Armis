@@ -52,7 +52,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 ProcessRevId = aSpecProcessAssignEntity.ProcessRevId,
                 Inactive = aSpecProcessAssignEntity.Inactive,
                 IsReviewNeeded = aSpecProcessAssignEntity.ReviewNeeded,
-                ProcessRevision = (aSpecProcessAssignEntity.Process != null) ? aSpecProcessAssignEntity.Process.ToModel() : null,
+                ProcessRevision = (aSpecProcessAssignEntity.Process != null) ? aSpecProcessAssignEntity.Process.ToModel(aSpecProcessAssignEntity.Process.Process.Name) : null,
                 Customer = (aSpecProcessAssignEntity.CustomerNavigation != null) ? aSpecProcessAssignEntity.CustomerNavigation.ToModel() : null,
                 SpecificationRevision = (aSpecProcessAssignEntity.Spec != null) ? aSpecProcessAssignEntity.Spec.ToHydratedModel() : null,
                 SpecProcessAssignOptionModels = (aSpecProcessAssignEntity.SpecProcessAssignOption != null && aSpecProcessAssignEntity.SpecProcessAssignOption.Any()) ? aSpecProcessAssignEntity.SpecProcessAssignOption.ToHydratedModels().ToList() : null

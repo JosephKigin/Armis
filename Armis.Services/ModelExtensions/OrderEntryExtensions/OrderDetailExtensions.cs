@@ -24,7 +24,8 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 CalcPrice = anOrderDetailEntity.CalcPrice,
                 AssignPrice = anOrderDetailEntity.AssignPrice,
                 PriceCodeId = anOrderDetailEntity.PriceCodeId,
-                LotCharge = anOrderDetailEntity.LotCharge
+                LotCharge = anOrderDetailEntity.LotCharge,
+                Description = anOrderDetailEntity.Description
             };
         }
         public static IEnumerable<OrderDetailModel> ToModels(this IEnumerable<OrderDetail> anOrderDetailEntities)
@@ -46,7 +47,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.OrderLocation = (anOrderDetailEntity.OrderLocation != null) ? anOrderDetailEntity.OrderLocation.ToHydratedModels() : null;
             result.PriceCode = (anOrderDetailEntity.PriceCode != null) ? anOrderDetailEntity.PriceCode.ToModel() : null;
             result.OrderDetailComment = anOrderDetailEntity.OrderDetailComment?.ToModel();
-            result.Part = anOrderDetailEntity.Part.ToModel();
+            result.Part = (anOrderDetailEntity.Part != null) ? anOrderDetailEntity.Part.ToModel() : null;
 
             return result;
         }

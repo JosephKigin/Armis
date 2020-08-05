@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace ArmisWebsite
 {
@@ -102,7 +103,10 @@ namespace ArmisWebsite
                 app.UseHsts();
             }
 
+            app.UseSerilogRequestLogging();
+
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();

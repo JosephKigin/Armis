@@ -40,14 +40,16 @@
                 @foreach (var specProcessAssign in allSpasForSpecId)
                 {
                     <div id="specGroup_@specProcessAssign.SpecId" class="collapse">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
-                            @specProcessAssign.SpecAssignId.
-                            Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
-                            Rev: <b>@specProcessAssign.ProcessRevId</b>
-                        </a>
-                        <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                            <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="specProcessAssign" />
+                        <div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
+                                @specProcessAssign.SpecAssignId.
+                                Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
+                                Rev: <b>@specProcessAssign.ProcessRevId</b>
+                            </a>
+                            <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
+                                <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="specProcessAssign" />
+                            </div>
                         </div>
                     </div>
                 }
