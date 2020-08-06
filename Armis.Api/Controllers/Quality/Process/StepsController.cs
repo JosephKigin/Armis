@@ -37,12 +37,11 @@ namespace Armis.Api.Controllers
             try
             {
                 var data = await StepService.GetAll();
-                var error = int.Parse("hello!");
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch(Exception ex)
             {
-                _logger.LogError("StepsController.GetAllSteps() Not able to pull all steps. Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetAllSteps() Not able to get all steps. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -58,7 +57,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("StepsController.GetAllSteps() Not able to pull all step categories. Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetAllStepCategories() Not able to get all step categories. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -74,7 +73,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("StepsController.GetStepCategoryById() Not able to pull all step category for id {categoryId}. Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetStepCategoryById(short id) Not able to get step category for id {categoryId}. | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -91,7 +90,7 @@ namespace Armis.Api.Controllers
             }
             catch(Exception ex)
             {
-                _logger.LogError("StepsController.GetStepById() Not able to pull step for id {stepId}. Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetStepById(int id) Not able to get step for id {stepId}. | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
             }
         }
@@ -108,7 +107,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("StepsController.GetStepByName() Not able to pull step for name {stepName}. Message: {exMessage} | StackTrace: {stackTrace}", stepName, ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetStepByName(string stepName) Not able to get step for name {stepName}. | Message: {exMessage} | StackTrace: {stackTrace}", stepName, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -124,7 +123,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("StepsController.GetAllStepsByCategory() Not able to pull step category for nanme {stepCategoryName}. Message: {exMessage} | StackTrace: {stackTrace}", stepCategoryName, ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.GetAllStepsByCategory(string stepCategoryName) Not able to get step category for nanme {stepCategoryName}. | Message: {exMessage} | StackTrace: {stackTrace}", stepCategoryName, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -143,10 +142,9 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("StepsController.PostStep() Not able to pull step for id {stepId}. Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
+                _logger.LogError("StepsController.PostStep(StepModel aStep) Not able to create step {step}. | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aStep), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
     }
 }
-//TODO: Clean up the logging for this page.  

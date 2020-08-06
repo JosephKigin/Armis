@@ -8,6 +8,7 @@ using Armis.BusinessModels.QualityModels.Spec;
 using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Quality.Inspection
 {
@@ -15,10 +16,13 @@ namespace Armis.Api.Controllers.Quality.Inspection
     [ApiController]
     public class InspectTestTypeController : ControllerBase
     {
+        private readonly ILogger<InspectTestTypeController> _logger;
+
         public IInspectTestTypeService InspectTestTypeService { get; set; }
 
-        public InspectTestTypeController(IInspectTestTypeService anInspectTestTypeService)
+        public InspectTestTypeController(IInspectTestTypeService anInspectTestTypeService, ILogger<InspectTestTypeController> aLogger)
         {
+            _logger = aLogger;
             InspectTestTypeService = anInspectTestTypeService;
         }
 
@@ -33,6 +37,7 @@ namespace Armis.Api.Controllers.Quality.Inspection
             }
             catch (Exception ex)
             {
+                _logger.LogError("InspectTestTypeController.GetAllTestTypes() Not able to get all test types. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -48,6 +53,7 @@ namespace Armis.Api.Controllers.Quality.Inspection
             }
             catch (Exception ex)
             {
+                _logger.LogError("InspectTestTypeController.CreateInspectionTestType(InspectTestTypeModel anInspectTestTypeModel) Not able to create inspection test type {inspectTestType}. | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(anInspectTestTypeModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

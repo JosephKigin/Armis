@@ -7,6 +7,7 @@ using Armis.BusinessModels.QualityModels.InspectionModels;
 using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Quality.Inspection
 {
@@ -14,11 +15,14 @@ namespace Armis.Api.Controllers.Quality.Inspection
     [ApiController]
     public class QualityStandardController : ControllerBase
     {
+        private readonly ILogger<QualityStandardController> _logger;
+
         public IQualityStandardService QualityStandardService { get; set; }
 
-        public QualityStandardController(IQualityStandardService aQualityStandardService)
+        public QualityStandardController(IQualityStandardService aQualityStandardService, ILogger<QualityStandardController> aLogger)
         {
             QualityStandardService = aQualityStandardService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +36,7 @@ namespace Armis.Api.Controllers.Quality.Inspection
             }
             catch (Exception ex)
             {
+                _logger.LogError("QualityStandardController.GetAllQualityStandards() Not able to get all quality standards. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

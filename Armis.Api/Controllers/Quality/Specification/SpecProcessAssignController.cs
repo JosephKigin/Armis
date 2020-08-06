@@ -7,6 +7,8 @@ using Armis.BusinessModels.QualityModels.Spec;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Armis.Data.DatabaseContext.Entities;
 
 namespace Armis.Api.Controllers
 {
@@ -14,11 +16,14 @@ namespace Armis.Api.Controllers
     [ApiController]
     public class SpecProcessAssignController : ControllerBase
     {
+        private readonly ILogger<SpecProcessAssignController> _logger;
+
         public ISpecProcessAssignService SpecProcessAssignService { get; set; }
 
-        public SpecProcessAssignController(ISpecProcessAssignService aSpecProcessAssignService)
+        public SpecProcessAssignController(ISpecProcessAssignService aSpecProcessAssignService, ILogger<SpecProcessAssignController> aLogger)
         {
             SpecProcessAssignService = aSpecProcessAssignService;
+            _logger = aLogger;
         }
 
         [HttpGet("{aSpecId}/{aSpecRevId}/{aSpecAssignId}")]
@@ -32,6 +37,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.GetSpecProcessAssign(int aSpecId, short aSpecRevId, short aSpecAssignId) Not able to get spec process assign. SpecId ({specId}) RevId({revId}) AssignId({assignId}) | Message: {exMessage} | StackTrace: {stackTrace}", aSpecId, aSpecRevId, aSpecAssignId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,6 +53,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.GetAllHydratedSpecProcessAssign() Not able to get all hydrated spec process assigns. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -62,6 +69,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.GetAllActiveHydratedSpecProcessAssign() Not able to get all active hydrated spec process assigns. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -77,6 +85,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId) Not able to get all active hydrated spec process assigns. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -92,6 +101,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.GetAllHydratedReviewNeededSpecProcessAssigns() Not able to get all hydrated review needed spec process assigns. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -107,21 +117,23 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.CheckIfReviewIsNeededForSpecId(int aSpecId) Not able to check if review is needed spec process assign for spec ID ({specId}).  | Message: {exMessage} | StackTrace: {stackTrace}", aSpecId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("{specId}/{internalSpecId}/{customer?}")]
-        public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecId, int? customer, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
+        public async Task<ActionResult<bool>> VerifyUniqueChoices(int specId, short internalSpecRevId, int? customer, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels)
         {
             try
             {
-                var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecId, customer, anOptionModels);
+                var data = await SpecProcessAssignService.VerifyUniqueChoices(specId, internalSpecRevId, customer, anOptionModels);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.VerifyUniqueChoices(int specId, short internalSpecId, int? customer, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels) Not able to verify unique choices for spec ID ({specId}) rev ID ({revId}) customer ({cusomter}) SPA option model ({optionModel}).  | Message: {exMessage} | StackTrace: {stackTrace}", specId, internalSpecRevId, JsonSerializer.Serialize(anOptionModels), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -137,6 +149,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.CheckSpaIsViable(int aSpecId, [FromBody]IEnumerable<SpecProcessAssignOptionModel> anOptionModels = null) Not able to check if SPA is viable. Spec ID ({specId}) Option Models ({optionModels})  | Message: {exMessage} | StackTrace: {stackTrace}", aSpecId, JsonSerializer.Serialize(anOptionModels), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -152,6 +165,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.PostSpecProcessAssign(SpecProcessAssignModel aSpecProcessAssignModel) Not able to create spec process assign ({spa}).  | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aSpecProcessAssignModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -167,6 +181,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.RemoveReviewNeeded(SpecProcessAssignModel aSpecProcessAssignModel) Not able to remove review needed for spec process assign ({spa}).  | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aSpecProcessAssignModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -182,6 +197,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("SpecProcessAssignController.CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel) Not able to copy after review needed for spec process assign ({spa}).  | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aSpecProcessAssignModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
