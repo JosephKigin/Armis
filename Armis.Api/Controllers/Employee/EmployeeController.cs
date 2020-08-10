@@ -7,6 +7,7 @@ using Armis.BusinessModels.EmployeeModels;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers
 {
@@ -14,10 +15,14 @@ namespace Armis.Api.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
+        private readonly ILogger<EmployeeController> _logger;
+
         public IEmployeeService EmployeeService { get; set; }
-        public EmployeeController(IEmployeeService anEmpService)
+
+        public EmployeeController(IEmployeeService anEmpService, ILogger<EmployeeController> aLogger)
         {
             EmployeeService = anEmpService;
+            _logger = aLogger;
         }
 
         [HttpGet("{id}")]
@@ -31,6 +36,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("ContactController.GetEmployeeById(int id) Not able to get employee for ID ({employeeId}). | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -46,6 +52,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("ContactController.CheckIfEmployeeNumberExists(int id) Not able to check if employee exists for ID ({employeeId}). | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

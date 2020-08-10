@@ -57,8 +57,8 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGetAsync(int aStepId = 0, string aMessage = "", bool isMessageGood = false)
         {
-            try
-            {
+            //try
+            //{
                 await SetUpPage();
 
                 if (aMessage != "")
@@ -81,12 +81,13 @@ namespace ArmisWebsite
                     HelpMessage = "This is a copy of a step.  You may edit the step details and save it back as a new step.";
                 }
 
+            throw new Exception("Test break | " + HttpContext.TraceIdentifier);
                 return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: Need to implement logging and return a smaller value
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: Need to implement logging and return a smaller value
+            //}
 
         }
 

@@ -21,7 +21,7 @@ namespace Armis.Api.Controllers.Customer
         public BillToController(IBillToService aBillToService, ILogger<BillToController> aLogger)
         {
             BillToService = aBillToService;
-
+            _logger = aLogger;
         }
 
         [HttpGet("{customerId}")]
@@ -35,7 +35,7 @@ namespace Armis.Api.Controllers.Customer
             }
             catch (Exception ex)
             {
-                _logger.LogError("BillToController.GetAllBillToByCustId(int customerId) Not able to pull BillTo for customer with id {customerId}. Message: {exMessage} | StackTrace: {stackTrace}", customerId, ex.Message, ex.StackTrace);
+                _logger.LogError("BillToController.GetAllBillToByCustId(int customerId) Not able to pull BillTo for customer with id {customerId}. | Message: {exMessage} | StackTrace: {stackTrace}", customerId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

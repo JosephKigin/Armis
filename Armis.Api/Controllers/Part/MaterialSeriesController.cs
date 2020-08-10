@@ -7,6 +7,7 @@ using Armis.BusinessModels.PartModels;
 using Armis.DataLogic.Services.PartServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Part
 {
@@ -14,11 +15,14 @@ namespace Armis.Api.Controllers.Part
     [ApiController]
     public class MaterialSeriesController : ControllerBase
     {
+        private readonly ILogger<MaterialSeriesController> _logger;
+
         public IMaterialSeriesService MaterialSeriesService { get; set; }
 
-        public MaterialSeriesController(IMaterialSeriesService aMaterialSeriesService)
+        public MaterialSeriesController(IMaterialSeriesService aMaterialSeriesService, ILogger<MaterialSeriesController> aLogger)
         {
             MaterialSeriesService = aMaterialSeriesService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +36,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("MaterialSeriesController.GetAllMaterialSeries() Not able to get all material series. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,6 +52,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("MaterialSeriesController.CreateMaterialSeries(MaterialSeriesModel aMaterialSeries) Not able to create material series ({materialSeriesModel}). | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aMaterialSeries), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

@@ -8,6 +8,7 @@ using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.OrderEntryServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.OrderEntry
 {
@@ -15,11 +16,14 @@ namespace Armis.Api.Controllers.OrderEntry
     [ApiController]
     public class OrderHeadController : ControllerBase
     {
+        private readonly ILogger<OrderHeadController> _logger;
+
         public IOrderHeadService OrderHeadService { get; set; }
 
-        public OrderHeadController(IOrderHeadService anOrderHeadService)
+        public OrderHeadController(IOrderHeadService anOrderHeadService, ILogger<OrderHeadController> aLogger)
         {
             OrderHeadService = anOrderHeadService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -33,6 +37,7 @@ namespace Armis.Api.Controllers.OrderEntry
             }
             catch (Exception ex)
             {
+                _logger.LogError("OrderHeadController.GetAllOrderHeads() Not able to get all order heads. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -48,6 +53,7 @@ namespace Armis.Api.Controllers.OrderEntry
             }
             catch (Exception ex)
             {
+                _logger.LogError("OrderHeadController.GetAllHydratedOrderHeads() Not able to get all hydrated order heads. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -63,6 +69,7 @@ namespace Armis.Api.Controllers.OrderEntry
             }
             catch (Exception ex)
             {
+                _logger.LogError("OrderHeadController.GetHydratedOrderHead(int anOrderId) Not able to get hydrated order head for order ID ({orderId}). | Message: {exMessage} | StackTrace: {stackTrace}", anOrderId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -78,6 +85,7 @@ namespace Armis.Api.Controllers.OrderEntry
             }
             catch (Exception ex)
             {
+                _logger.LogError("OrderHeadController.PostNewOrderHead(OrderHeadModel anOrderHeadModel) Not able to create order head ({orderHeadModel}). | Message: {exMessage} | StackTrace: {stackTrace}", anOrderHeadModel, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

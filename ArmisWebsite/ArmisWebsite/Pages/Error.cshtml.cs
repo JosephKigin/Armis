@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -13,6 +15,8 @@ namespace ArmisWebsite.Pages
     public class ErrorModel : PageModel
     {
         public string RequestId { get; set; }
+        public string ApiRoute { get; set; }
+        public string ApiStatus { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -29,6 +33,8 @@ namespace ArmisWebsite.Pages
         public void OnGet(string stack)
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+            _logger.LogError(RequestId);
         }
     }
 }

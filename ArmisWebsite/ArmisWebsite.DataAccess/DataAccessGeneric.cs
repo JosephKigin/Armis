@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -22,9 +23,9 @@ namespace ArmisWebsite.DataAccess
         /// <typeparam name="T">Return & parameter type</typeparam>
         /// <param name="aPath"></param>
         /// <returns></returns>
-        public static async Task<T> HttpGetRequest<T>(string aPath)
+        public static async Task<T> HttpGetRequest<T>(string aPath, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 var response = await client.GetAsync(aPath);
                 if (!response.IsSuccessStatusCode) { throw new Exception(response.ReasonPhrase + ": " + await response.Content.ReadAsStringAsync()); }
@@ -40,7 +41,7 @@ namespace ArmisWebsite.DataAccess
         /// <param name="aPath"></param>
         /// <param name="aModel"></param>
         /// <returns></returns>
-        public static async Task<T> HttpGetRequest<T, U>(string aPath, U aModel)
+        public static async Task<T> HttpGetRequest<T, U>(string aPath, U aModel, HttpContext anHttpContext)
         {
             using (var client = new HttpClient())
             {
@@ -61,7 +62,7 @@ namespace ArmisWebsite.DataAccess
         /// <param name="aPath"></param>
         /// <param name="aModel"></param>
         /// <returns></returns>
-        public static async Task<T> HttpPostRequest<T>(string aPath, T aModel)
+        public static async Task<T> HttpPostRequest<T>(string aPath, T aModel, HttpContext anHttpContext)
         {
             using (var client = new HttpClient())
             {
@@ -85,7 +86,7 @@ namespace ArmisWebsite.DataAccess
         /// <param name="aPath"></param>
         /// <param name="aModel"></param>
         /// <returns></returns>
-        public static async Task<T> HttpPostRequest<T, U>(string aPath, U aModel)
+        public static async Task<T> HttpPostRequest<T, U>(string aPath, U aModel, HttpContext anHttpContext)
         {
             using (var client = new HttpClient())
             {
@@ -109,7 +110,7 @@ namespace ArmisWebsite.DataAccess
         /// <param name="aPath"></param>
         /// <param name="aModel"></param>
         /// <returns></returns>
-        public static async Task<T> HttpPutRequest<T>(string aPath, T aModel)
+        public static async Task<T> HttpPutRequest<T>(string aPath, T aModel, HttpContext anHttpContext)
         {
             using (var client = new HttpClient())
             {
@@ -131,7 +132,7 @@ namespace ArmisWebsite.DataAccess
         /// </summary>
         /// <param name="aPath"></param>
         /// <returns></returns>
-        public static async Task<string> HttpDeleteRequest(string aPath)
+        public static async Task<string> HttpDeleteRequest(string aPath, HttpContext anHttpContext)
         {
             using (var client = new HttpClient())
             {
