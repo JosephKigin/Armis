@@ -32,6 +32,7 @@ namespace ArmisWebsite.DataAccess
 
                 throw ex;
             }
+
             return response;
         }
     }

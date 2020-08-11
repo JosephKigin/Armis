@@ -13,7 +13,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
             return new OperationModel()
             {
                 Name = anOperation.Name,
-                OperShortName = anOperation.OperationCd,
+                OperShortName = anOperation.OperShortName,
                 Id = anOperation.OperationId,
                 Group = anOperation.OperGroup.ToModel(),
                 DefaultDueDays = anOperation.DefaultDueDays,
@@ -38,7 +38,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
             return new Operation()
             {
                 OperationId = anOperationModel.Id,
-                OperationCd = anOperationModel.OperShortName,
+                OperShortName = anOperationModel.OperShortName,
                 Name = anOperationModel.Name,
                 DefaultDueDays = anOperationModel.DefaultDueDays,
                 ThicknessIsRequired = anOperationModel.ThicknessIsRequired,

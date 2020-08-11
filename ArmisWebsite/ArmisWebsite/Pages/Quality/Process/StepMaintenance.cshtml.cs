@@ -118,7 +118,9 @@ namespace ArmisWebsite
 
         private async Task SetUpPage()
         {
-            var TESTcheckHttpContext = HttpContext.TraceIdentifier;
+            throw new Exception("Test");
+
+            
             var theSteps = await StepDataAccess.GetAllSteps();
             AllSteps = theSteps.OrderBy(i => i.StepId).ToList();
 

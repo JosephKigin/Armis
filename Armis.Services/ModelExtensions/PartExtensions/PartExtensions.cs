@@ -21,7 +21,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
                 Dimensions = aPartEntity.Dimensions,
                 RackId = aPartEntity.RackId,
                 SurfaceArea = aPartEntity.SurfaceArea,
-                SurfaceAreaUoM = aPartEntity.SauoM,
+                SurfaceAreaUoM = aPartEntity.SurfaceAreaUoM.ToString(),
                 PieceWeight = aPartEntity.PieceWeight,
                 StandardDeptId = aPartEntity.StandardDept,
                 Bake = aPartEntity.Bake,
@@ -30,8 +30,8 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
                 PartsPerLoad = aPartEntity.PartsPerLoad,
                 MaskPcsPerHour = aPartEntity.MaskPcsPerHour,
                 NotifyWhenMasking = aPartEntity.NotifyWhenMasking,
-                MaterialAlloyId = aPartEntity.Alloy,
-                MaterialSeriesId = aPartEntity.SeriesId,
+                MaterialAlloyId = aPartEntity.MaterialAlloyId,
+                MaterialSeriesId = aPartEntity.MaterialSeriesId,
                 CreatedByEmpId = aPartEntity.CreatedByEmp,
                 DateCreated = aPartEntity.DateCreated,
                 TimeCreated = aPartEntity.TimeCreated
@@ -53,9 +53,9 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
         public static PartModel ToHydratedModel(this Part aPartEntity)
         {
             var result = aPartEntity.ToModel();
-            result.Alloy = aPartEntity.AlloyNavigation.ToModel();
+            result.Alloy = aPartEntity.MaterialAlloy.ToModel();
             result.CreatedByEmp = aPartEntity.CreatedByEmpNavigation.ToModel();
-            result.Series = aPartEntity.Series.ToModel();
+            result.Series = aPartEntity.MaterialSeries.ToModel();
             //result.StandardDept = aPartEntity.StandardDept.ToModel(); TODO: Standard Dept doesn't have extensions yet
 
             return result;

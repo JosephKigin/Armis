@@ -12,9 +12,9 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
         {
             return new MaterialAlloyModel()
             {
-                MaterialAlloyId = anAlloyEntyity.AlloyId,
+                MaterialAlloyId = anAlloyEntyity.MaterialAlloyId,
                 Description = anAlloyEntyity.Description,
-                MaterialSeriesId = anAlloyEntyity.SeriesId ?? 0
+                MaterialSeriesId = anAlloyEntyity.MaterialSeriesId ?? 0
             };
         }
 
@@ -35,7 +35,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
             return new MaterialAlloy()
             {
                  Description = aMaterialAlloyModel.Description,
-                 SeriesId = aMaterialAlloyModel.MaterialSeriesId
+                 MaterialSeriesId = aMaterialAlloyModel.MaterialSeriesId
             };
         }
     }

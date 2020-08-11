@@ -10,7 +10,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
         {
             return new MaterialSeriesModel()
             {
-                MaterialSeriesId = aSeriesEntity.SeriesId,
+                MaterialSeriesId = aSeriesEntity.MaterialSeriesId,
                 Description = aSeriesEntity.Description,
                 ShortName = aSeriesEntity.ShortName,
                 Type = aSeriesEntity.Type

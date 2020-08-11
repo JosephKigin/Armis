@@ -58,7 +58,7 @@ namespace Armis.DataLogic.Services.QualityServices
             var theOperationToUpdate = await context.Operation.FirstOrDefaultAsync(i => i.OperationId == anOperationModel.Id);
 
             theOperationToUpdate.Name = anOperationModel.Name;
-            theOperationToUpdate.OperationCd = anOperationModel.OperShortName;
+            theOperationToUpdate.OperShortName = anOperationModel.OperShortName;
             theOperationToUpdate.DefaultDueDays = anOperationModel.DefaultDueDays;
             theOperationToUpdate.ThicknessIsRequired = anOperationModel.ThicknessIsRequired;
             theOperationToUpdate.OperGroup = await context.OperationGroup.FirstOrDefaultAsync(i => i.OperGroupId == anOperationModel.Group.Id);
