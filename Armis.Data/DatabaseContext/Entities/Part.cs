@@ -21,7 +21,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Dimensions { get; set; }
         public int? RackId { get; set; }
         public decimal? SurfaceArea { get; set; }
-        public string SauoM { get; set; }
+        public int? SurfaceAreaUoM { get; set; }
         public decimal? PieceWeight { get; set; }
         public short? StandardDept { get; set; }
         public string Bake { get; set; }
@@ -30,16 +30,17 @@ namespace Armis.Data.DatabaseContext.Entities
         public int? PartsPerLoad { get; set; }
         public decimal? MaskPcsPerHour { get; set; }
         public bool? NotifyWhenMasking { get; set; }
-        public int? Alloy { get; set; }
-        public int? SeriesId { get; set; }
+        public int? MaterialAlloyId { get; set; }
+        public int? MaterialSeriesId { get; set; }
         public int CreatedByEmp { get; set; }
         public DateTime DateCreated { get; set; }
         public TimeSpan TimeCreated { get; set; }
 
-        public virtual MaterialAlloy AlloyNavigation { get; set; }
         public virtual Employee CreatedByEmpNavigation { get; set; }
-        public virtual MaterialSeries Series { get; set; }
+        public virtual MaterialAlloy MaterialAlloy { get; set; }
+        public virtual MaterialSeries MaterialSeries { get; set; }
         public virtual Department StandardDeptNavigation { get; set; }
+        public virtual UnitOfMeasure SurfaceAreaUoMNavigation { get; set; }
         public virtual PartComment PartComment { get; set; }
         public virtual ICollection<CustomerPart> CustomerPart { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }

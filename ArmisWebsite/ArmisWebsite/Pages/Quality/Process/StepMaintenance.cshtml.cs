@@ -118,11 +118,13 @@ namespace ArmisWebsite
 
         private async Task SetUpPage()
         {
+            var TESTcheckHttpContext = HttpContext.TraceIdentifier;
             var theSteps = await StepDataAccess.GetAllSteps();
             AllSteps = theSteps.OrderBy(i => i.StepId).ToList();
 
             var theStepCategories = await StepDataAccess.GetAllStepCategoryies();
             StepCategories = theStepCategories.ToList();
+
         }
     }
 }

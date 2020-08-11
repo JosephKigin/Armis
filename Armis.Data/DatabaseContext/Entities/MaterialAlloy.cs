@@ -12,11 +12,11 @@ namespace Armis.Data.DatabaseContext.Entities
             Rack = new HashSet<Rack>();
         }
 
-        public int AlloyId { get; set; }
+        public int MaterialAlloyId { get; set; }
         public string Description { get; set; }
-        public int? SeriesId { get; set; }
+        public int? MaterialSeriesId { get; set; }
 
-        public virtual MaterialSeries Series { get; set; }
+        public virtual MaterialSeries MaterialSeries { get; set; }
         public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
         public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<Rack> Rack { get; set; }

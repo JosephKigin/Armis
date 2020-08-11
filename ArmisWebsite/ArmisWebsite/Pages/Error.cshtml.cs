@@ -32,9 +32,7 @@ namespace ArmisWebsite.Pages
 
         public void OnGet(string stack)
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-
-            _logger.LogError(RequestId);
+            RequestId = HttpContext.TraceIdentifier;//Activity.Current?.Id ?? HttpContext.TraceIdentifier; <----- This was originally here. Activity is used with application insights locally or in azure.
         }
     }
 }

@@ -37,7 +37,6 @@ namespace Armis.Api.Controllers
             try
             {
                 var data = await StepService.GetAll();
-                throw new Exception("Test break from API");
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch(Exception ex)

@@ -79,7 +79,7 @@ namespace ArmisWebsite
                     var theCurrentOperation = new OperationModel()
                     {
                         Name = CurrentOperationName,
-                        Code = CurrentOperationCode,
+                        OperShortName = CurrentOperationCode,
                         DefaultDueDays = CurrentOperationDefaultDueDays,
                         ThicknessIsRequired = CurrentOperationThicknessReq,
                         Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
@@ -138,7 +138,7 @@ namespace ArmisWebsite
                     var theCurrentOperation = AllOperations.FirstOrDefault(i => i.Id == anOperationId);
                     CurrentOperationId = theCurrentOperation.Id;
                     CurrentOperationName = theCurrentOperation.Name;
-                    CurrentOperationCode = theCurrentOperation.Code;
+                    CurrentOperationCode = theCurrentOperation.OperShortName;
                     CurrentOperationDefaultDueDays = theCurrentOperation.DefaultDueDays;
                     CurrentOperationThicknessReq = theCurrentOperation.ThicknessIsRequired;
                     CurrentOperationGroupId = theCurrentOperation.Group.Id;

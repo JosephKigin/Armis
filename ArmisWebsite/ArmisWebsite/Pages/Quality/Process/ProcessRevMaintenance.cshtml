@@ -258,13 +258,13 @@
                                         @if (Model.CurrentRev.RevStatusId == 2) //2 = UNLOCKED
                                         {
                                             <a class="text-info" id="operationAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" onclick="openOperationModal(this, '@stepSeq.Step.StepName')">
-                                                [@stepSeq.Operation.Code]
+                                                [@stepSeq.Operation.OperShortName]
                                                 <i class="far fa-object-group"></i>
                                             </a>
                                         }
                                         else
                                         {
-                                            <text>[@stepSeq.Operation.Code]</text>
+                                            <text>[@stepSeq.Operation.OperShortName]</text>
                                         }
                                         @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
                                     </h5>
@@ -318,7 +318,7 @@
                                     <select id="selectAllOperations" class="list-group w-100" size="16">
                                         @foreach (var operation in Model.AllOperations)
                                         {
-                                            <option id="@operation.Id" data-oper-code="@operation.Code" class="list-group-item">
+                                            <option id="@operation.Id" data-oper-code="@operation.OperShortName" class="list-group-item">
                                                 @operation.Name
                                             </option>
                                         }

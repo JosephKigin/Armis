@@ -7,7 +7,7 @@ namespace Armis.BusinessModels.QualityModels.Process
     public class OperationModel
     {
         public int Id { get; set; }
-        public string Code { get; set; }
+        public string OperShortName { get; set; }
         public string Name { get; set; }
         public OperationGroupModel Group { get; set; }
         public short? DefaultDueDays { get; set; }

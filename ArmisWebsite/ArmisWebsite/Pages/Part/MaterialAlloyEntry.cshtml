@@ -31,7 +31,7 @@
                         <option disabled selected> -- Select a series -- </option>
                         @foreach (var series in Model.AllMaterialSeries)
                         {
-                            <option value="@series.SeriesId">@series.ShortName</option>
+                            <option value="@series.MaterialSeriesId">@series.ShortName</option>
                         }
                     </select>
                 </div>
@@ -57,9 +57,9 @@
                     {
                         @foreach (var alloy in Model.AllMaterialAlloys)
                         {
-                            var theSeries = Model.AllMaterialSeries.FirstOrDefault(i => i.SeriesId == alloy.SeriesId);
+                            var theSeries = Model.AllMaterialSeries.FirstOrDefault(i => i.MaterialSeriesId == alloy.MaterialSeriesId);
                             <li class="list-group-item" data-alloy-name="@alloy.Description">
-                                <h5>@alloy.AlloyId. @theSeries.ShortName </h5>
+                                <h5>@alloy.MaterialAlloyId. @theSeries.ShortName </h5>
                                 <b>Description: </b>@alloy.Description
                                 <br />
                                 <b>Type: </b>@theSeries.Type

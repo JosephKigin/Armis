@@ -16,7 +16,7 @@ namespace Armis.BusinessModels.PartModels
         public string Dimensions { get; set; }
         public int? RackId { get; set; }
         public decimal? SurfaceArea { get; set; }
-        public string SauoM { get; set; }
+        public string SurfaceAreaUoM { get; set; }
         public decimal? PieceWeight { get; set; }
         public short? StandardDeptId { get; set; }
         public string Bake { get; set; }
@@ -25,8 +25,8 @@ namespace Armis.BusinessModels.PartModels
         public int? PartsPerLoad { get; set; }
         public decimal? MaskPcsPerHour { get; set; }
         public bool? NotifyWhenMasking { get; set; }
-        public int? AlloyId { get; set; }
-        public int? SeriesId { get; set; }
+        public int? MaterialAlloyId { get; set; }
+        public int? MaterialSeriesId { get; set; }
         public int CreatedByEmpId { get; set; }
         public DateTime DateCreated { get; set; }
         public TimeSpan TimeCreated { get; set; }

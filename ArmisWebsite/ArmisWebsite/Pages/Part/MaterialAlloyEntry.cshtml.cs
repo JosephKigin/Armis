@@ -55,7 +55,7 @@ namespace ArmisWebsite.Pages.Part
                     var alloyToAdd = new MaterialAlloyModel()
                     {
                         Description = Description,
-                        SeriesId = SeriesId
+                        MaterialSeriesId = SeriesId
                     };
 
                     var result = await MaterialAlloyDataAccess.CreateMaterialAlloy(alloyToAdd); //Not sure what to do with the result.  It will just be the alloy passed in but with an updated alloyId.
