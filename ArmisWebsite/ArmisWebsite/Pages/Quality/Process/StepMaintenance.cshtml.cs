@@ -57,38 +57,29 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGetAsync(int aStepId = 0, string aMessage = "", bool isMessageGood = false)
         {
-            //try
-            //{
-                await SetUpPage();
+            await SetUpPage();
 
-                if (aMessage != "")
+            if (aMessage != "")
+            {
+                Message = new PopUpMessageModel()
                 {
-                    Message = new PopUpMessageModel()
-                    {
-                        Text = aMessage,
-                        IsMessageGood = isMessageGood
-                    };
+                    Text = aMessage,
+                    IsMessageGood = isMessageGood
+                };
 
-                }
-                if (aStepId > 0)
-                {
-                    Step = await StepDataAccess.GetStepById(aStepId);
+            }
+            if (aStepId > 0)
+            {
+                Step = await StepDataAccess.GetStepById(aStepId);
 
-                    StepCategoryId = Step.StepCategory.Id;
-                    StepName = Step.StepName;
-                    StepInstructions = Step.Instructions;
+                StepCategoryId = Step.StepCategory.Id;
+                StepName = Step.StepName;
+                StepInstructions = Step.Instructions;
 
-                    HelpMessage = "This is a copy of a step.  You may edit the step details and save it back as a new step.";
-                }
+                HelpMessage = "This is a copy of a step.  You may edit the step details and save it back as a new step.";
+            }
 
-            throw new Exception("Test break | " + HttpContext.TraceIdentifier);
-                return Page();
-            //}
-            //catch (Exception ex)
-            //{
-            //    return RedirectToPage("/Error", new { exMessage = "Could not set up page properly." });  //Todo: Need to implement logging and return a smaller value
-            //}
-
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
