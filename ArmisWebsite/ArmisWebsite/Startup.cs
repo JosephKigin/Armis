@@ -106,8 +106,6 @@ namespace ArmisWebsite
                 app.UseHsts();
             //}
 
-            app.UseSerilogRequestLogging();
-
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();

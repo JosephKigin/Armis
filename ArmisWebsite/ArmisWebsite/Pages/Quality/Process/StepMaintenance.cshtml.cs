@@ -117,10 +117,7 @@ namespace ArmisWebsite
         }
 
         private async Task SetUpPage()
-        {
-            throw new Exception("Test");
-
-            
+        {            
             var theSteps = await StepDataAccess.GetAllSteps();
             AllSteps = theSteps.OrderBy(i => i.StepId).ToList();
 

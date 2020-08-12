@@ -69,6 +69,7 @@ namespace Armis.Test
 
                     theSpecSubChoiceList.Add(new SpecSubLevelChoiceModel()
                     {
+                        SubLevelSeqId = Convert.ToByte(i + 1),
                         ChoiceSeqId = Convert.ToByte(j + 1),
                         Description = "choice " + (i + 1).ToString() + " - " + (j + 1).ToString()
                     });
