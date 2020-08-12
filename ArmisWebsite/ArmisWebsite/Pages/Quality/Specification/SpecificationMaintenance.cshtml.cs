@@ -10,18 +10,23 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
 using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using ArmisWebsite.FrontEndModels;
+using Armis.BusinessModels.QualityModels.InspectionModels;
+using Armis.BusinessModels.QualityModels.Process;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
 {
-    public class SpecificationCreationModel : PageModel
+    public class SpecificationMaintenanceModel : PageModel
     {
         //Data Access
         public ISpecDataAccess SpecDataAccess { get; set; }
         public ISamplePlanDataAccess SamplePlanDataAccess { get; set; }
+        public IStepDataAccess StepDataAccess { get; set; }
 
         //Data Models 
         public List<SpecModel> AllSpecModels { get; set; }
         public List<SamplePlanModel> AllSamplePlans { get; set; }
+        public List<StepModel> AllSteps { get; set; }
+        public List<StepCategoryModel> AllStepCategories { get; set; }
 
         //Front-End Models
         public PopUpMessageModel Message { get; set; }
@@ -43,7 +48,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public string SubLevelName1 { get; set; }
         [BindProperty]
         [Required]
-        public List<string> ChoiceNames1 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList1 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq1 { get; set; }
         [BindProperty]
@@ -53,7 +58,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SubLevelName2 { get; set; }
         [BindProperty]
-        public List<string> ChoiceNames2 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList2 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq2 { get; set; }
         [BindProperty]
@@ -63,7 +68,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SubLevelName3 { get; set; }
         [BindProperty]
-        public List<string> ChoiceNames3 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList3 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq3 { get; set; }
         [BindProperty]
@@ -73,7 +78,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SubLevelName4 { get; set; }
         [BindProperty]
-        public List<string> ChoiceNames4 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList4 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq4 { get; set; }
         [BindProperty]
@@ -83,7 +88,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SubLevelName5 { get; set; }
         [BindProperty]
-        public List<string> ChoiceNames5 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList5 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq5 { get; set; }
         [BindProperty]
@@ -93,20 +98,20 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         [BindProperty]
         public string SubLevelName6 { get; set; }
         [BindProperty]
-        public List<string> ChoiceNames6 { get; set; }
+        public List<SpecSubLevelChoiceModel> ChoiceList6 { get; set; }
         [BindProperty]
         public bool IsSubLevelReq6 { get; set; }
         [BindProperty]
         public byte? DefaultChoice6 { get; set; }
 
-        //Radio button for Sample Plan
         [BindProperty]
         public int? SamplePlanId { get; set; }
 
-        public SpecificationCreationModel(ISpecDataAccess aSpecDataAccess, ISamplePlanDataAccess aSamplePlanDataAccess)
+        public SpecificationMaintenanceModel(ISpecDataAccess aSpecDataAccess, ISamplePlanDataAccess aSamplePlanDataAccess, IStepDataAccess aStepDataAccess)
         {
             SpecDataAccess = aSpecDataAccess;
             SamplePlanDataAccess = aSamplePlanDataAccess;
+            StepDataAccess = aStepDataAccess;
         }
 
         public async Task<IActionResult> OnGet(int? aSpecId, string aMessage = null)
@@ -123,7 +128,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 {
                     if (CurrentSpecId == 0)
                     {
-                        //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. 
+                        //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. This is needed otherwise it will complain that (int != int?).
                         CurrentSpecId = aSpecId ?? 0;
                     }
 
@@ -177,42 +182,42 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 if (SubLevelName1 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName1, ChoiceNames1, IsSubLevelReq1, DefaultChoice1));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName1, ChoiceList1, IsSubLevelReq1, DefaultChoice1));
                 }
 
                 //Sublevel 2
                 if (SubLevelName2 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName2, ChoiceNames2, IsSubLevelReq2, DefaultChoice2));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName2, ChoiceList2, IsSubLevelReq2, DefaultChoice2));
                 }
 
                 //Sublevel 3
                 if (SubLevelName3 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName3, ChoiceNames3, IsSubLevelReq3, DefaultChoice3));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName3, ChoiceList3, IsSubLevelReq3, DefaultChoice3));
                 }
 
                 //Sublevel 4
                 if (SubLevelName4 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName4, ChoiceNames4, IsSubLevelReq4, DefaultChoice4));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName4, ChoiceList4, IsSubLevelReq4, DefaultChoice4));
                 }
 
                 //Sublevel 5
                 if (SubLevelName5 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName5, ChoiceNames5, IsSubLevelReq5, DefaultChoice5));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName5, ChoiceList5, IsSubLevelReq5, DefaultChoice5));
                 }
 
                 //Sublevel 6
                 if (SubLevelName6 != null)
                 {
                     subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName6, ChoiceNames6, IsSubLevelReq6, DefaultChoice6));
+                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName6, ChoiceList6, IsSubLevelReq6, DefaultChoice6));
                 }
 
 
@@ -256,6 +261,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 SpecCode = theCurrentSpec.Code;
                 SpecDescription = theCurrentSpecRev.Description;
                 ExternalRev = theCurrentSpecRev.ExternalRev;
+                SamplePlanId = theCurrentSpecRev.SamplePlanId;
 
                 theCurrentSpecRev.SubLevels.OrderBy(i => i.LevelSeq);
 
@@ -270,10 +276,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
             var tempAllSamplePlanModels = await SamplePlanDataAccess.GetAllHydratedSamplePlans();
             AllSamplePlans = tempAllSamplePlanModels.ToList();
+
+            var tempAllStepModels = await StepDataAccess.GetAllSteps();
+            AllSteps = tempAllStepModels.ToList();
+
+            var tempAllStepCategoryModels = await StepDataAccess.GetAllStepCategoryies();
+            AllStepCategories = tempAllStepCategoryModels.ToList();
         }
 
-        //This method loads up some models to be added into a spec.  This is used in the default OnPost so far.
-        public SpecSubLevelModel BuildSubLevelFromPage(byte aSubLevelSeq, string aSubLevelName, List<string> aChoiceNamesList, bool anIsSubLevelReq, byte? aDefaultChoice)
+        //This method loads up some models to be added into a spec.  This is used in the default OnPost.
+        public SpecSubLevelModel BuildSubLevelFromPage(byte aSubLevelSeq, string aSubLevelName, List<SpecSubLevelChoiceModel> aChoiceList, bool anIsSubLevelReq, byte? aDefaultChoice)
         {
             var theSubLevel = new SpecSubLevelModel()
             {
@@ -283,24 +295,15 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                 DefaultChoice = aDefaultChoice
             };
 
-            if (aChoiceNamesList != null && aChoiceNamesList.Any())
+            if (aChoiceList != null && aChoiceList.Any())
             {
-                var theChoices = new List<SpecSubLevelChoiceModel>();
-
-                for (byte i = 0; i < aChoiceNamesList.Count; i++)
+                for (byte i = 0; i < aChoiceList.Count; i++) //Goes through each choice for the sublevel and assigns the choice a choice seq id and the sublevel id
                 {
-                    //if (aChoiceNamesList[i] != null)
-                    //{
-                    theChoices.Add(new SpecSubLevelChoiceModel()
-                    {
-                        ChoiceSeq = Convert.ToByte(i + 1),
-                        Name = aChoiceNamesList[i]
-                    });
-                    //}
-
+                    aChoiceList[i].ChoiceSeqId = (byte)(i + 1);
+                    aChoiceList[i].SubLevelSeqId = aSubLevelSeq;
+                    //aChoiceList[i].OnlyValidForChoiceId; //The database is 1 based while the page is 0 based for choice Ids to help with 0 based lists.
                 }
-
-                theSubLevel.Choices = theChoices;
+                theSubLevel.Choices = aChoiceList;
             }
 
             return theSubLevel;
@@ -315,55 +318,55 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     SubLevelName1 = aSubLevel.Name;
                     IsSubLevelReq1 = aSubLevel.IsRequired;
                     DefaultChoice1 = aSubLevel.DefaultChoice;
-                    ChoiceNames1 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList1 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames1.Add(choice.Name);
+                        ChoiceList1.Add(choice);
                     }
                     break;
                 case 2:
                     SubLevelName2 = aSubLevel.Name;
                     IsSubLevelReq2 = aSubLevel.IsRequired;
                     DefaultChoice2 = aSubLevel.DefaultChoice;
-                    ChoiceNames2 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList2 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames2.Add(choice.Name);
+                        ChoiceList2.Add(choice);
                     }
                     break;
                 case 3:
                     SubLevelName3 = aSubLevel.Name;
                     IsSubLevelReq3 = aSubLevel.IsRequired;
                     DefaultChoice3 = aSubLevel.DefaultChoice;
-                    ChoiceNames3 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList3 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames3.Add(choice.Name);
+                        ChoiceList3.Add(choice);
                     }
                     break;
                 case 4:
                     SubLevelName4 = aSubLevel.Name;
                     IsSubLevelReq4 = aSubLevel.IsRequired;
                     DefaultChoice4 = aSubLevel.DefaultChoice;
-                    ChoiceNames4 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList4 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames4.Add(choice.Name);
+                        ChoiceList4.Add(choice);
                     }
                     break;
                 case 5:
                     SubLevelName5 = aSubLevel.Name;
                     IsSubLevelReq5 = aSubLevel.IsRequired;
                     DefaultChoice5 = aSubLevel.DefaultChoice;
-                    ChoiceNames5 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList5 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames5.Add(choice.Name);
+                        ChoiceList5.Add(choice);
                     }
                     break;
 
@@ -371,11 +374,11 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
                     SubLevelName6 = aSubLevel.Name;
                     IsSubLevelReq6 = aSubLevel.IsRequired;
                     DefaultChoice6 = aSubLevel.DefaultChoice;
-                    ChoiceNames6 = new List<string>();
-                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeq);
+                    ChoiceList6 = new List<SpecSubLevelChoiceModel>();
+                    aSubLevel.Choices.OrderBy(i => i.ChoiceSeqId);
                     foreach (var choice in aSubLevel.Choices)
                     {
-                        ChoiceNames6.Add(choice.Name);
+                        ChoiceList6.Add(choice);
                     }
                     break;
                 default:

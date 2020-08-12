@@ -7,6 +7,7 @@ using Armis.BusinessModels.CustomerModels;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Customer
 {
@@ -14,11 +15,13 @@ namespace Armis.Api.Controllers.Customer
     [ApiController]
     public class BillToController : ControllerBase
     {
+        private readonly ILogger<BillToController> _logger;
         public IBillToService BillToService { get; set; }
 
-        public BillToController(IBillToService aBillToService)
+        public BillToController(IBillToService aBillToService, ILogger<BillToController> aLogger)
         {
             BillToService = aBillToService;
+            _logger = aLogger;
         }
 
         [HttpGet("{customerId}")]
@@ -32,6 +35,7 @@ namespace Armis.Api.Controllers.Customer
             }
             catch (Exception ex)
             {
+                _logger.LogError("BillToController.GetAllBillToByCustId(int customerId) Not able to pull BillTo for customer with id {customerId}. | Message: {exMessage} | StackTrace: {stackTrace}", customerId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

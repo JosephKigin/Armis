@@ -19,7 +19,16 @@
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Customer</div>
-                    <div class="col-lg-9"> <input class="form-control" placeholder="Autosuggest" /> </div>
+                    <div class="col-lg-9">
+                        <input id="inputCustomer" list="datalistCustomers" type="search" class="form-control" placeholder="Autosuggest" />
+
+                        <datalist id="datalistCustomers">
+                            @foreach (var customer in Model.Customers)
+                            {
+                                <option value="@customer.Name"/>
+                            }
+                        </datalist>
+                    </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Bill To</div>
@@ -69,7 +78,14 @@
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Ship Via</div>
-                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                    <div class="col-lg-8">
+                        <select class="form-control">
+                            @foreach (var shipVia in Model.ShipViaCodes)
+                            {
+                                <option>@shipVia.Code</option>
+                            }
+                        </select>
+                    </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Bill Ship</div>
@@ -277,7 +293,13 @@
                         <h6>Quality Std:</h6>
                     </div>
                     <div class="col-lg-4">
-                        <select class="form-control"><option selected="selected">Very good?</option></select>
+                        <select class="form-control">
+                            @foreach (var qualityStd in Model.QualityStandards)
+                            {
+                                <option>@qualityStd.QualStdCode</option>
+                            }
+
+                        </select>
                     </div>
                 </div>
                 <div class="row mb-3">

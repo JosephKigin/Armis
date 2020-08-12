@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Z.EntityFramework.Plus;
@@ -116,6 +117,8 @@ namespace Armis.DataLogic.Services.QualityServices
 
         public async Task<SpecModel> GetHydratedCurrentRevForSpec(int aSpecId)
         {
+            await context.Step.LoadAsync();
+            await context.StepCategory.LoadAsync();
             var specEntity = await context.Specification.FirstOrDefaultAsync(i => i.SpecId == aSpecId);
             specEntity.SpecificationRevision.Add(await context.SpecificationRevision.Where(i => i.SpecId == aSpecId)
                                                                                         .Include(i => i.SpecSubLevel)
@@ -144,16 +147,35 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 foreach (var subLevel in theSpecRevModel.SubLevels)
                 {
-                    await context.AddRangeAsync(subLevel.Choices.ToEntities(theNewSpecId, theNewRevId, subLevel.LevelSeq));
+                    var choicesToAdd = subLevel.Choices.ToEntities(theNewSpecId, theNewRevId).ToList();
+                    foreach (var choice in choicesToAdd)
+                    {
+                        choice.OnlyValidForChoice = null;
+                    }
+                    await context.AddRangeAsync(choicesToAdd); //Problem is here and it happens immediatly!!! <--- TODO?
                 }
 
                 await context.SaveChangesAsync();
 
+                //Updating entities with dependents
+                foreach (var subLevel in theSpecRevModel.SubLevels)
+                {
+                    var originalChoices = subLevel.Choices.ToList();
+                    var choicesToUpdate = await context.SpecChoice.Where(i => i.SpecId == theNewSpecId && i.SpecRevId == theNewRevId && i.SubLevelSeqId == subLevel.LevelSeq).ToListAsync();
+                    foreach (var choice in choicesToUpdate)
+                    {
+                        choice.OnlyValidForChoice = originalChoices.FirstOrDefault(i => i.ChoiceSeqId == choice.ChoiceSeqId).OnlyValidForChoiceId;
+                    }
+
+                    context.UpdateRange(choicesToUpdate);
+                    await context.SaveChangesAsync();
+                }
+
+
                 //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
                 foreach (var subLevel in theSubLevelEntities)
                 {
-                    var theDefualtChoice = theSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
-                    subLevel.DefaultChoice = (theDefualtChoice != 0)? theDefualtChoice : null; //If there isn't a default choice, it will get sent in as 0.  On the database side, it needs to be null.
+                    subLevel.DefaultChoice = theSpecRevModel.SubLevels.FirstOrDefault(i => i.LevelSeq == subLevel.SubLevelSeqId).DefaultChoice;
                 }
 
                 context.UpdateRange(theSubLevelEntities);
@@ -180,12 +202,33 @@ namespace Armis.DataLogic.Services.QualityServices
                 await context.SpecificationRevision.AddAsync(theSpecRevEntity);
                 await context.SpecSubLevel.AddRangeAsync(theSubLevelEntities);
 
+                //Dependency needs to be null and then updated after the save changes. 
                 foreach (var subLevel in aSpecRevModel.SubLevels)
                 {
-                    await context.AddRangeAsync(subLevel.Choices.ToEntities(aSpecRevModel.SpecId, newSpecRevId, subLevel.LevelSeq));
+                    var choicesToAdd = subLevel.Choices.ToEntities(aSpecRevModel.SpecId, newSpecRevId).ToList();
+                    foreach (var choice in choicesToAdd)
+                    {
+                        choice.OnlyValidForChoice = null;
+                    }
+                    await context.AddRangeAsync(choicesToAdd); //Problem is here and it happens immediatly!!! <--- TODO?
                 }
 
                 await context.SaveChangesAsync();
+
+                //Updating entities with dependents
+                foreach (var subLevel in aSpecRevModel.SubLevels)
+                {
+                    var originalChoices = subLevel.Choices.ToList();
+                    var choicesToUpdate = await context.SpecChoice.Where(i => i.SpecId == aSpecRevModel.SpecId && i.SpecRevId == theSpecRevEntity.SpecRevId && i.SubLevelSeqId == subLevel.LevelSeq).ToListAsync();
+                    foreach (var choice in choicesToUpdate)
+                    {
+                        choice.OnlyValidForChoice = originalChoices.FirstOrDefault(i => i.ChoiceSeqId == choice.ChoiceSeqId).OnlyValidForChoiceId;
+                    }
+
+                    context.UpdateRange(choicesToUpdate);
+                await context.SaveChangesAsync();
+                }
+
 
                 //Default choice in the subLevel has to be null when saving the data for the first time to prevent an issue with circular dependency.  They must be updated after the first save.
                 foreach (var subLevel in theSubLevelEntities)

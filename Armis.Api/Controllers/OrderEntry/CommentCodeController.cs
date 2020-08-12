@@ -7,6 +7,7 @@ using Armis.BusinessModels.OrderEntryModels;
 using Armis.DataLogic.Services.OrderEntryServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.OrderEntry
 {
@@ -14,11 +15,14 @@ namespace Armis.Api.Controllers.OrderEntry
     [ApiController]
     public class CommentCodeController : ControllerBase
     {
+        private readonly ILogger<CommentCodeController> _logger;
+
         public ICommentCodeService CommentCodeService { get; set; }
 
-        public CommentCodeController(ICommentCodeService aCommentCodeService)
+        public CommentCodeController(ICommentCodeService aCommentCodeService, ILogger<CommentCodeController> aLogger)
         {
             CommentCodeService = aCommentCodeService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +36,7 @@ namespace Armis.Api.Controllers.OrderEntry
             }
             catch (Exception ex)
             {
+                _logger.LogError("CommentCodeController.GetAllCommentCodes() Not able to get all comment codes. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

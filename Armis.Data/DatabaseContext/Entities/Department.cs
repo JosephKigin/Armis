@@ -11,9 +11,6 @@ namespace Armis.Data.DatabaseContext.Entities
             DeptOperation = new HashSet<DeptOperation>();
             DeptSpec = new HashSet<DeptSpec>();
             Memo = new HashSet<Memo>();
-            OprLoadPrice = new HashSet<OprLoadPrice>();
-            OprMaterialPrice = new HashSet<OprMaterialPrice>();
-            OprThickPrice = new HashSet<OprThickPrice>();
             OrderCommentStatic = new HashSet<OrderCommentStatic>();
             OrderExpedite = new HashSet<OrderExpedite>();
             Part = new HashSet<Part>();
@@ -41,9 +38,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<DeptOperation> DeptOperation { get; set; }
         public virtual ICollection<DeptSpec> DeptSpec { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
-        public virtual ICollection<OprLoadPrice> OprLoadPrice { get; set; }
-        public virtual ICollection<OprMaterialPrice> OprMaterialPrice { get; set; }
-        public virtual ICollection<OprThickPrice> OprThickPrice { get; set; }
         public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual ICollection<OrderExpedite> OrderExpedite { get; set; }
         public virtual ICollection<Part> Part { get; set; }

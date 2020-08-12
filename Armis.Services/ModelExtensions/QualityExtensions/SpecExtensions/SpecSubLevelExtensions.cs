@@ -28,7 +28,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions
                 LevelSeq = aSpecSubLevel.SubLevelSeqId,
                 DefaultChoice = aSpecSubLevel.DefaultChoice,
 
-                Choices = aSpecSubLevel.SpecChoice.ToModels()
+                Choices = aSpecSubLevel.SpecChoice.ToHydratedModels()
             };
         }
 

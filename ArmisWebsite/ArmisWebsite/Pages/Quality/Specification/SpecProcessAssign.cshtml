@@ -72,32 +72,83 @@
                 </div>
                 @if (Model.CurrentSpec != null)
                 {
-                    <br />
-                    <label>Spec Code</label>
-                    <input class="form-control mb-2" value="@Model.CurrentSpec.Code" readonly />
-                    <label>Spec Rev</label>
-                    <input class="form-control mb-2" value="@Model.CurrentSpecCurrentRev.ExternalRev" readonly />
+                    <div class="card p-2 my-2">
+                        <label>Spec Code</label>
+                        <input class="form-control mb-2" value="@Model.CurrentSpec.Code" readonly />
+                        <label>Spec Rev</label>
+                        <input class="form-control mb-2" value="@Model.CurrentSpecCurrentRev.ExternalRev" readonly />
 
-                    <input type="hidden" asp-for="SpecId" />
-                    <input type="hidden" asp-for="SpecInternalRevId" />
+                        <input type="hidden" asp-for="SpecId" />
+                        <input type="hidden" asp-for="SpecInternalRevId" />
+                    </div>
 
-                    <div class="card p-2">
+                    <div id="divSublevelSection" class="card p-2">
                         @foreach (var sublevel in Model.CurrentSpecCurrentRev.SubLevels)
                         {
                             <div class="border border-light p-1">
                                 <h5>@sublevel.Name</h5>
-                                @foreach (var choice in sublevel.Choices)
-                                {
-                                    <div><input type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeq" onchange="updateChoiceIdInput(@sublevel.LevelSeq, this)" /> @choice.Name</div>
-                                }
+                                @if (sublevel.IsRequired) { <i class="text-danger">Required</i>}
+                                @if(sublevel.DefaultChoice != null) { <i>(@sublevel.Choices.FirstOrDefault(i => i.ChoiceSeqId == sublevel.DefaultChoice).Description is default)</i>}
+                                <ul style="list-style-type:none;">
+                                    @foreach (var choice in sublevel.Choices)
+                                    {
+                                        <li>
+                                            @*If the choice has a step, then it will be an anchor that opens a collapse div containing the step and dependency information*@
+                                            @if (choice.ReferenceStepId != null || choice.DependentSubLevelId != null || choice.OnlyValidForChoiceId != null)
+                                            {
+                                                <a href="#collapseChoiceInformation_@choice.SubLevelSeqId-@choice.ChoiceSeqId" data-toggle="collapse">@choice.Description</a>
+                                                
+                                                <input id="chkbox_@sublevel.LevelSeq-@choice.ChoiceSeqId" type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeqId" data-sublevel="@sublevel.LevelSeq" data-choice="@choice.ChoiceSeqId" data-dependent-sublevel="" data-dependent-choice="" onchange="updateChoiceIdInput(this)" />
+                                                @*if the choice has dependencies, the following logic will get the names of the depended sublevel and choice to display*@
+                                                @if (choice.DependentSubLevelId != null)
+                                                {
+                                                    var dependedSublevel = Model.CurrentSpec.SpecRevModels.FirstOrDefault().SubLevels.FirstOrDefault(sl => sl.LevelSeq == choice.DependentSubLevelId);
+                                                    <span id="spanDependencyText_@sublevel.LevelSeq-@choice.ChoiceSeqId" class="text-danger">
+                                                        <i>Dependent on @dependedSublevel.Name</i>
+
+                                                        @if (choice.OnlyValidForChoiceId != null)
+                                                        {
+                                                            var dependedChoice = dependedSublevel.Choices.FirstOrDefault(c => c.ChoiceSeqId == choice.OnlyValidForChoiceId);
+                                                            <i>- @dependedChoice.Description</i>
+
+                                                            <script>
+                                                                document.getElementById("chkbox_@sublevel.LevelSeq-@choice.ChoiceSeqId").disabled = true;
+                                                                var dependentCheckBox = document.getElementById("chkbox_" + @choice.SubLevelSeqId + "-" + @choice.ChoiceSeqId); //Grabbing the checkbox just created
+                                                                dependentCheckBox.dataset.dependentSublevel = @dependedSublevel.LevelSeq;
+                                                                dependentCheckBox.dataset.dependentChoice = @dependedChoice.ChoiceSeqId;
+                                                            </script>
+                                                        }
+                                                    </span>
+                                                }
+                                                <div id="collapseChoiceInformation_@choice.SubLevelSeqId-@choice.ChoiceSeqId" class="collapse">
+                                                    @if (choice.ReferenceStepId != null)
+                                                    {
+                                                        <div class="card p-1">
+                                                            <h6>@choice.ReferenceStep.StepName</h6>
+                                                            @choice.ReferenceStep.Instructions
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <text>@choice.Description</text>
+                                                <input id="chkbox_@sublevel.LevelSeq-@choice.ChoiceSeqId" type="checkbox" name="@sublevel.Name" value="@choice.ChoiceSeqId" data-sublevel="@sublevel.LevelSeq" data-choice="@choice.ChoiceSeqId" data-dependent-sublevel="" data-dependent-choice="" onchange="updateChoiceIdInput(this)" />
+                                            }
+                                        </li>
+                                    }
+                                </ul>
                             </div>
                         }
-                        <input type="hidden" id="hdnChoiceId1" asp-for="ChoiceId1" />
-                        <input type="hidden" id="hdnChoiceId2" asp-for="ChoiceId2" />
-                        <input type="hidden" id="hdnChoiceId3" asp-for="ChoiceId3" />
-                        <input type="hidden" id="hdnChoiceId4" asp-for="ChoiceId4" />
-                        <input type="hidden" id="hdnChoiceId5" asp-for="ChoiceId5" />
-                        <input type="hidden" id="hdnChoiceId6" asp-for="ChoiceId6" />
+                        @* data-has-been-set="0" is for the javascript.  See javascript comment in function updateChoiceIdInput() for more details.
+                            The classes are used in the javascript to easily pull all of these fields, they are not used for CSS.
+                        *@
+                        <input type="hidden" id="hdnChoiceId1" class="hiddenChoiceInput" asp-for="ChoiceId1" data-has-been-set="0" />
+                        <input type="hidden" id="hdnChoiceId2" class="hiddenChoiceInput" asp-for="ChoiceId2" data-has-been-set="0" />
+                        <input type="hidden" id="hdnChoiceId3" class="hiddenChoiceInput" asp-for="ChoiceId3" data-has-been-set="0" />
+                        <input type="hidden" id="hdnChoiceId4" class="hiddenChoiceInput" asp-for="ChoiceId4" data-has-been-set="0" />
+                        <input type="hidden" id="hdnChoiceId5" class="hiddenChoiceInput" asp-for="ChoiceId5" data-has-been-set="0" />
+                        <input type="hidden" id="hdnChoiceId6" class="hiddenChoiceInput" asp-for="ChoiceId6" data-has-been-set="0" />
                     </div>
                 }
 
@@ -105,258 +156,7 @@
             @if (Model.CurrentSpec != null)
             {
                 @*Middle*@
-                <div class="col-lg-4">
-                    @*Pre-Bake*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Pre-Bake: </label> <label id="labelPreBake" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right mb-1" data-toggle="modal" data-target="#modalPreBakeSelect">Find</button>
-                        <button type="button" class="btn btn-sm btn-danger float-right  mb-1 mx-1" onclick="clearInput('PreBake')">Clear</button>
-
-                        <input type="hidden" id="hdnPreBakeId" asp-for="PreBakeStepId" />
-                    </div>
-
-                    <div class="modal fade" id="modalPreBakeSelect">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Pre-Bake</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PreBake')" />
-                                            <select id="selectPreBakeList" class="list-group w-100" size="12">
-                                                @foreach (var bake in Model.AllBakeSteps)
-                                                {
-                                                    <option class="list-group-item border-dark" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('preBake', '@bake.Instructions')">
-                                                        @bake.StepId.
-                                                        @bake.StepName
-                                                    </option>
-                                                }
-                                            </select>
-                                        </div>
-
-                                        <div class="col-lg-4">
-                                            <h3>Instructions</h3>
-                                            <div id="preBakeDescriptionModal" class="card p-3">
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PreBake')">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Post Bake*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Post-Bake:</label><label id="labelPostBake" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalPostBakeSelect">Find</button>
-                        <button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('PostBake')">Clear</button>
-
-                        <input type="hidden" id="hdnPostBakeId" asp-for="PostBakeStepId" />
-                    </div>
-
-                    <div class="modal fade" id="modalPostBakeSelect">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Post-Bake</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'PostBake')" />
-                                            <select id="selectPostBakeList" class="list-group w-100" size="12">
-                                                @foreach (var bake in Model.AllBakeSteps)
-                                                {
-                                                    <option class="list-group-item border-dark" data-id="@bake.StepId" value="@bake.StepId. @bake.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('postBake', '@bake.Instructions')">
-                                                        @bake.StepId.
-                                                        @bake.StepName
-                                                    </option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <h3>Instructions</h3>
-                                            <div id="postBakeDescriptionModal" class="card p-3">
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('PostBake')">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Mask*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Mask:</label><label id="labelMask" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaskSelect">Find</button>
-                        <button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Mask')">Clear</button>
-
-                        <input type="hidden" id="hdnMaskId" asp-for="MaskStepId" />
-                    </div>
-
-                    <div class="modal fade" id="modalMaskSelect">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Mask</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-lg-8">
-                                            <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Mask')" />
-                                            <select id="selectMaskList" class="list-group w-100" size="12">
-                                                @foreach (var mask in Model.AllMaskSteps)
-                                                {
-                                                    <option class="list-group-item border-dark" data-id="@mask.StepId" value="@mask.StepId. @mask.StepName" style="white-space:normal" onmouseup="loadModalDescriptionCard('mask', '@mask.Instructions')">
-                                                        @mask.StepId.
-                                                        @mask.StepName
-                                                    </option>
-                                                }
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <h3>Instructions</h3>
-                                            <div id="maskDescriptionModal" class="card p-3">
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Mask')">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Hardness*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Hardness:</label> <label id="labelHardness" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalHardnessSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('Hardness')">Clear</button>
-
-                        <input type="hidden" id="hdnHardnessId" asp-for="HardnessId" />
-
-                        @*@if (Model.HardnessId != null)
-                            {<input id="inputHardness" class="form-control" data-id="@Model.HardnessId" value="@Model.AllHardnesses.FirstOrDefault(i => i.HardnessId == Model.HardnessId).ShortName" readonly /> }
-                            else
-                            { <input id="inputHardness" data-id="" class="form-control" value="" readonly />}*@
-                    </div>
-
-                    <div class="modal fade" id="modalHardnessSelect">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Hardness</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'Hardness')" />
-                                    <select id="selectHardnessList" class="list-group w-100" size="16">
-                                        @foreach (var hardness in Model.AllHardnesses)
-                                        {
-                                            <option class="list-group-item" data-id="@hardness.HardnessId" value="@hardness.HardnessId. @hardness.ShortName">
-                                                @hardness.HardnessId.
-                                                @hardness.ShortName -
-                                                @hardness.Description
-                                            </option>
-                                        }
-                                    </select>
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('Hardness')">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Series*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Series:</label><label id="labelMaterialSeries" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialSeriesSelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialSeries')">Clear</button>
-
-                        <input type="hidden" id="hdnMaterialSeriesId" asp-for="MaterialSeriesId" />
-
-                        @*@if (Model.MaterialSeriesId != null)
-                            {<input id="inputMaterialSeries" class="form-control" data-id="@Model.MaterialSeriesId" value="@Model.AllMaterialSeries.FirstOrDefault(i => i.SeriesId == Model.MaterialSeriesId).Description" readonly /> }
-                            else
-                            { <input id="inputMaterialSeries" data-id="" class="form-control" value="" readonly />}*@
-
-                    </div>
-
-                    <div class="modal fade" id="modalMaterialSeriesSelect">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Material Series</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'MaterialSeries')" />
-                                    <select id="selectMaterialSeriesList" class="list-group w-100" size="16">
-                                        @foreach (var series in Model.AllMaterialSeries)
-                                        {
-                                            <option class="list-group-item" data-id="@series.SeriesId" value="@series.SeriesId. @series.Description">
-                                                @series.SeriesId.
-                                                @series.ShortName -
-                                                @series.Description
-                                            </option>
-                                        }
-                                    </select>
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('MaterialSeries')">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @*Alloy*@
-                    <div class="mb-2 border border-dark p-2">
-                        <label>Alloy:</label><label id="labelMaterialAlloy" class="font-weight-bold"></label>
-                        <button type="button" class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#modalMaterialAlloySelect">Find</button><button type="button" class="btn btn-sm btn-danger float-right mb-1 mx-1" onclick="clearInput('MaterialAlloy')">Clear</button>
-
-                        <input type="hidden" id="hdnMaterialAlloyId" asp-for="MaterialAlloyId" />
-
-                        @*@if (Model.MaterialAlloyId != null)
-                            {<input id="inputMaterialAlloy" class="form-control" data-id="@Model.MaterialAlloyId" value="@Model.AllMaterialAlloys.FirstOrDefault(i => i.AlloyId == Model.MaterialAlloyId).Description" readonly /> }
-                            else
-                            { <input id="inputMaterialAlloy" class="form-control" data-id="" readonly />}*@
-
-                    </div>
-
-                    <div class="modal fade" id="modalMaterialAlloySelect">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Material Series</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <input class="form-control mb-1" placeholder="Search..." onkeyup="searchSelectList(this.value, 'MaterialAlloy')" />
-                                    <select id="selectMaterialAlloyList" class="list-group w-100" size="16">
-                                        @foreach (var alloy in Model.AllMaterialAlloys)
-                                        {
-                                            <option class="list-group-item" data-id="@alloy.AlloyId" value="@alloy.SeriesId. @alloy.Description">
-                                                @alloy.SeriesId.
-                                                @alloy.Description
-                                            </option>
-                                        }
-                                    </select>
-                                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel" />
-                                    <button type="button" class="btn btn-primary my-2" data-dismiss="modal" onclick="updateInputFromSelectModal('MaterialAlloy')">Ok</button>
-                                </div>
-                            </div>7
-                        </div>
-                    </div>
-
-
+                <div class="col-lg-4 card h-100 py-3">
                     @*Customer*@
                     <div class=" border border-dark p-2">
                         <label>Customer:</label> <label id="labelCustomer" class="font-weight-bold"></label>
@@ -396,7 +196,7 @@
                     </div>
 
                     @*Process Selection Modal Goes here*@
-                    <div class="my-5">
+                    <div class="mt-5">
                         <span id="processValidateAlert" class="text-danger align-self-center" hidden>Please select a process</span>
                         <div id="selectProcessSection" class="border border-dark p-2">
                             <label>Process: </label>
@@ -413,7 +213,7 @@
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Choose a Process To Edit</h5>
+                                    <h5 class="modal-title">Choose a Process</h5>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -449,7 +249,7 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <h5 id="modalStepTitle"></h5>
-                                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:29em; overflow-y:scroll;">
+                                            <ul id="modalStepPlaceholder" class="list-group" style="max-height:32em; overflow-y:scroll;">
                                             </ul>
                                         </div>
                                     </div>
@@ -468,7 +268,7 @@
                             <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                         </span>
                     </div>
-                    <ul id="spaList" class="list-group w-100 border" style="overflow-y:scroll; height:40em;">
+                    <ul id="spaList" class="list-group w-100 border" style="overflow-y:scroll; max-height:40em;">
                         @if (Model.SpecProcessAssignsForCurrentSpec != null)
                         {
                             @foreach (var specProcessAssign in Model.SpecProcessAssignsForCurrentSpec)
@@ -481,86 +281,7 @@
                                     </a>
 
                                     <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
-                                        <table class="table table-bordered table-striped table-hover">
-                                            <tr>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 1</th>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 2</th>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 3</th>
-                                                <th class="text-center" style="border-bottom-color:black">Sublevel 4</th>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice1 != null && specProcessAssign.Choice1.Name != null)
-                                                    {@specProcessAssign.Choice1.Name}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice2 != null && specProcessAssign.Choice2.Name != null)
-                                                    {@specProcessAssign.Choice2.Name}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice3 != null && specProcessAssign.Choice3.Name != null)
-                                                    {@specProcessAssign.Choice3.Name}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Choice4 != null && specProcessAssign.Choice4.Name != null)
-                                                    {@specProcessAssign.Choice4.Name}
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                        <table class="table table-bordered table-striped table-hover">
-                                            <tr>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Pre-Bake</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Post-Bake</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Mask</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Hardness</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Series</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Alloy</th>
-                                                <th class="text-center" style="border-bottom-color:black; width:14.2%;">Customer</th>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.PreBakeOption != null && specProcessAssign.PreBakeOption.StepName != null)
-                                                    {@specProcessAssign.PreBakeOption.StepName}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.PostBakeOption != null && specProcessAssign.PostBakeOption.StepName != null)
-                                                    {@specProcessAssign.PostBakeOption.StepName}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.MaskOption != null && specProcessAssign.MaskOption.StepName != null)
-                                                    {@specProcessAssign.MaskOption.StepName}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.HardnessOption != null && specProcessAssign.HardnessOption.ShortName != null)
-                                                    {@specProcessAssign.HardnessOption.ShortName}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.SeriesOption != null && specProcessAssign.SeriesOption.ShortName != null)
-                                                    {@specProcessAssign.SeriesOption.ShortName}
-                                                </td>
-
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.AlloyOption != null && specProcessAssign.AlloyOption.Description != null)
-                                                    {@specProcessAssign.AlloyOption.Description}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if (specProcessAssign.Customer != null)
-                                                    {@specProcessAssign.Customer.Name}
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <partial name="/Pages/Quality/Specification/Partials/SpecProcessAssignTablePartial.cshtml" model="specProcessAssign" />
                                     </div>
                                 </li>
                             }

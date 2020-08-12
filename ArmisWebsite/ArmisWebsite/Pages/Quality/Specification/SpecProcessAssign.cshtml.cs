@@ -14,6 +14,7 @@ using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Configuration;
 
 namespace ArmisWebsite.Pages.ProcessMaintenance
@@ -25,25 +26,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         //Data Access
         public ISpecProcessAssignDataAccess SpecProcessAssignDataAccess { get; set; }
         public IProcessDataAccess ProcessDataAccess { get; set; }
-        public IStepDataAccess StepDataAccess { get; set; }
         public ICustomerDataAccess CustomerDataAccess { get; set; }
-        public IHardnessDataAccess HardnessDataAccess { get; set; }
-        public IMaterialSeriesDataAccess MaterialSeriesDataAccess { get; set; }
-        public IMaterialAlloyDataAccess MaterialAlloyDataAccess { get; set; }
         public ISpecDataAccess SpecificationDataAccess { get; set; }
 
         //Models
         //Middle section of page
         public List<ProcessModel> AllProcessesWithCurrentRev { get; set; }
-
-        //Right section of page
-        public List<StepModel> AllBakeSteps { get; set; } //This will be for both Pre-Bake and Post-Bake
-        public List<StepModel> AllMaskSteps { get; set; }
-        public List<HardnessModel> AllHardnesses { get; set; }
-        public List<MaterialSeriesModel> AllMaterialSeries { get; set; }
-        public List<MaterialAlloyModel> AllMaterialAlloys { get; set; }
         public List<CustomerModel> AllCustomers { get; set; }
         public List<SpecModel> AllSpecifications { get; set; }
+
+        //Right section of page
         public List<SpecProcessAssignModel> SpecProcessAssignsForCurrentSpec { get; set; }
 
         public SpecModel CurrentSpec { get; set; } //After a spec is selected by the used, the page will reload and this will be set to the selected spec and the page will be created based on it.
@@ -106,11 +98,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             SpecProcessAssignDataAccess = aSpecProcessAssignDataAccess;
             ProcessDataAccess = aProcessDataAccess;
             SpecificationDataAccess = aSpecDataAccess;
-            StepDataAccess = aStepDataAccess;
             CustomerDataAccess = aCustomerDataAccess;
-            HardnessDataAccess = aHardnessDataAccess;
-            MaterialSeriesDataAccess = aMaterialSeriesDataAccess;
-            MaterialAlloyDataAccess = aMaterialAlloyDataAccess;
             Config = aConfig;
             _apiAddress = aConfig["APIAddress"];
         }
@@ -147,28 +135,85 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         {
             try
             {
+                var optionModels = new List<SpecProcessAssignOptionModel>();
+
+                if(ChoiceId1 != null)
+                {
+                    optionModels.Add( new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 1, //TODO: Should this be hard-coded to 1?
+                        ChoiceSeqId = (byte)ChoiceId1
+                    });
+                }
+
+                if (ChoiceId2 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 2, //TODO: Should this be hard-coded to 2?
+                        ChoiceSeqId = (byte)ChoiceId2
+                    });
+                }
+
+                if (ChoiceId3 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 3, //TODO: Should this be hard-coded to 3?
+                        ChoiceSeqId = (byte)ChoiceId3
+                    });
+                }
+
+                if (ChoiceId4 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 4, //TODO: Should this be hard-coded to 4?
+                        ChoiceSeqId = (byte)ChoiceId4
+                    });
+                }
+
+                if (ChoiceId5 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 5, //TODO: Should this be hard-coded to 5?
+                        ChoiceSeqId = (byte)ChoiceId5
+                    });
+                }
+                
+                if (ChoiceId6 != null)
+                {
+                    optionModels.Add(new SpecProcessAssignOptionModel()
+                    {
+                        SpecId = SpecId,
+                        SpecRevId = SpecInternalRevId,
+                        SubLevelSeqId = 6, //TODO: Should this be hard-coded to 6?
+                        ChoiceSeqId = (byte)ChoiceId6
+                    });
+                }
+
                 var theSpecProcessAssignModel = new Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel()
                 {
                     SpecId = SpecId,
                     SpecRevId = SpecInternalRevId,
-                    ChoiceOptionId1 = ChoiceId1,
-                    ChoiceOptionId2 = ChoiceId2,
-                    ChoiceOptionId3 = ChoiceId3,
-                    ChoiceOptionId4 = ChoiceId4,
-                    ChoiceOptionId5 = ChoiceId5,
-                    ChoiceOptionId6 = ChoiceId6,
-                    PreBakeOptionId = PreBakeStepId,
-                    PostBakeOptionId = PostBakeStepId,
-                    MaskOptionId = MaskStepId,
-                    HardnessOptionId = HardnessId,
-                    SeriesOptionId = MaterialSeriesId,
-                    AlloyOptionId = MaterialAlloyId,
                     CustomerId = CustomerId,
                     ProcessId = ProcessId,
-                    ProcessRevId = ProcessRevId
+                    ProcessRevId = ProcessRevId,
+                    SpecProcessAssignOptionModels = optionModels
                 };
 
-                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, ChoiceId1 ?? 0, ChoiceId2 ?? 0, ChoiceId3 ?? 0, ChoiceId4 ?? 0, ChoiceId5 ?? 0, ChoiceId6 ?? 0, PreBakeStepId ?? 0, PostBakeStepId ?? 0, MaskStepId ?? 0, HardnessId ?? 0, MaterialSeriesId ?? 0, MaterialAlloyId ?? 0, CustomerId ?? 0);
+                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, CustomerId ?? 0, optionModels);
 
                 if (ModelState.IsValid && areChoicesUnique)
                 {
@@ -205,22 +250,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task SetUpProperties()
         {
-            IsReviewNeededForCurrentSpec = false; 
-
-            var tempAllBakes = await StepDataAccess.GetAllStepsByCategory("bake");
-            AllBakeSteps = (tempAllBakes != null) ? tempAllBakes.ToList() : new List<StepModel>();
-
-            var tempAllMasks = await StepDataAccess.GetAllStepsByCategory("mask");
-            AllMaskSteps = (tempAllMasks != null) ? tempAllMasks.ToList() : new List<StepModel>();
-
-            var tempAllHardnesses = await HardnessDataAccess.GetAllHardnesses();
-            AllHardnesses = (tempAllHardnesses != null) ? tempAllHardnesses.ToList() : new List<HardnessModel>();
-
-            var tempAllSeries = await MaterialSeriesDataAccess.GetAllMaterialSeries();
-            AllMaterialSeries = (tempAllSeries != null) ? tempAllSeries.ToList() : new List<MaterialSeriesModel>();
-
-            var tempAllAlloys = await MaterialAlloyDataAccess.GetAllMaterialAlloys();
-            AllMaterialAlloys = (tempAllAlloys != null) ? tempAllAlloys.ToList() : new List<MaterialAlloyModel>();
+            IsReviewNeededForCurrentSpec = false;
 
             var tempAllCustomers = await CustomerDataAccess.GetAllCurrentAndProspectCustomers();
             AllCustomers = (tempAllCustomers != null) ? tempAllCustomers.ToList() : new List<CustomerModel>();

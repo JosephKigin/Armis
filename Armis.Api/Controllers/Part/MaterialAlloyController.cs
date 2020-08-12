@@ -7,6 +7,7 @@ using Armis.BusinessModels.PartModels;
 using Armis.DataLogic.Services.PartServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Part
 {
@@ -14,11 +15,14 @@ namespace Armis.Api.Controllers.Part
     [ApiController]
     public class MaterialAlloyController : ControllerBase
     {
+        private readonly ILogger<MaterialAlloyController> _logger;
+
         public IMaterialAlloyService MaterialAlloyService { get; set; }
 
-        public MaterialAlloyController(IMaterialAlloyService aMaterialAlloyService)
+        public MaterialAlloyController(IMaterialAlloyService aMaterialAlloyService, ILogger<MaterialAlloyController> aLogger)
         {
             MaterialAlloyService = aMaterialAlloyService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +36,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("MaterialAlloyController.GetAllMaterialAlloys() Not able to get all material alloys. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,6 +52,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("MaterialAlloyController.CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel) Not able to create material alloy ({materialAlloyModel}). | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aMaterialAlloyModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

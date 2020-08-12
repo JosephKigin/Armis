@@ -57,6 +57,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
 
         public async Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId)
         {
+            await Context.TernaryCode.LoadAsync();
             var orderHeadEntity = await Context.OrderHead.Where(i => i.OrderId == anOrderId)
                                                            .IncludeOptimized(i => i.CertCharge)
                                                            .IncludeOptimized(i => i.CreditAuthByEmpNavigation)
@@ -74,16 +75,20 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.OrderComment)
                                                            .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
-                                                           .Include(i => i.OrderDetail).ThenInclude(i => i.OrderLocation)
                                                            .FirstOrDefaultAsync();
 
             if (orderHeadEntity == null) { return null; } //throw new Exception("No Order was found"); }
-            
+
+            orderHeadEntity.OrderDetail = await Context.OrderDetail.Where(i => i.OrderId == orderHeadEntity.OrderId).Include(i => i.OrderLocation).Include(i => i.Part).Include(i => i.PriceCode).ToListAsync();
+
+            orderHeadEntity.OrderReceived = await Context.OrderReceived.Where(i => i.OrderId == orderHeadEntity.OrderId).Include(i => i.ReceivedContainer).ToListAsync();
+
             orderHeadEntity.Spec = await Context.SpecProcessAssign.Where(i => i.SpecId == orderHeadEntity.SpecId && i.SpecRevId == orderHeadEntity.SpecRevId && i.SpecAssignId == orderHeadEntity.SpecAssignId)
-                                                                  .IncludeOptimized(i => i.Process)
-                                                                  .IncludeOptimized(i => i.Spec).FirstOrDefaultAsync();
+                                                                  .Include(i => i.Process).ThenInclude(i => i.Process)
+                                                                  .Include(i => i.Spec).ThenInclude(i=>i.SpecSubLevel).FirstOrDefaultAsync();
 
-
+            orderHeadEntity.Spec.SpecProcessAssignOption = await Context.SpecProcessAssignOption.Where(i => i.SpecId == orderHeadEntity.Spec.SpecId && i.SpecRevId == orderHeadEntity.SpecRevId && i.SpecAssignId == orderHeadEntity.Spec.SpecAssignId)
+                                                                                                .IncludeOptimized(i => i.SpecChoice).ToListAsync();
 
             return orderHeadEntity.ToHydratedModel();
         }

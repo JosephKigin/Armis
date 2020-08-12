@@ -9,16 +9,14 @@ namespace Armis.Data.DatabaseContext.Entities
         {
             MaterialAlloy = new HashSet<MaterialAlloy>();
             Part = new HashSet<Part>();
-            SpecProcessAssign = new HashSet<SpecProcessAssign>();
         }
 
-        public int SeriesId { get; set; }
+        public int MaterialSeriesId { get; set; }
         public string ShortName { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
 
         public virtual ICollection<MaterialAlloy> MaterialAlloy { get; set; }
         public virtual ICollection<Part> Part { get; set; }
-        public virtual ICollection<SpecProcessAssign> SpecProcessAssign { get; set; }
     }
 }

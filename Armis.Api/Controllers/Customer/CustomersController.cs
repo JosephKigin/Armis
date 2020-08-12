@@ -10,6 +10,7 @@ using Armis.Data.DatabaseContext;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Armis.BusinessModels.Customer;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers
 {
@@ -17,13 +18,14 @@ namespace Armis.Api.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ARMISContext _context;
+        private readonly ILogger<CustomersController> _logger;
+
         public ICustomerService CustomerService { get; set; }
 
-        public CustomersController(ARMISContext aContext, ICustomerService aCustomerService)
+        public CustomersController(ICustomerService aCustomerService, ILogger<CustomersController> aLogger)
         {
-            _context = aContext;
             CustomerService = aCustomerService;
+            _logger = aLogger;
         }
 
         // GET: api/Customers
@@ -38,6 +40,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("CustomersController.GetCustomers() Not able to get all customers. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -53,6 +56,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("CustomersController.GetAllHydratedCustomers() Not able to get all customers. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -68,6 +72,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("CustomersController.GetAllCurrentAndProspectCustomers() Not able to get all current and prospect customers. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

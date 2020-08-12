@@ -7,40 +7,45 @@
     <h1>Quality Menu</h1>
 
     <div class="row">
-        <div class="col-lg card mx-3 ">
-            <h5>Process</h5>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessMaintenance">Create Process</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessRevMaintenance">Process Revision Maintenance</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessListing">Process List</a>
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-5 card mx-3 ">
+                    <h5>Process <i class="fas fa-clipboard-list"></i></h5>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessMaintenance">Create Process</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessRevMaintenance">Process Revision Maintenance</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/ProcessListing">Process List</a>
+                </div>
+                <div class="col-lg-5 card">
+                    <h5>Step <i class="fas fa-shoe-prints"></i></h5>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/StepMaintenance">Step Maintenance</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/StepListing">Step List</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Process/OperationMaintenance">Operation Maintenance</a>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-5 card mx-3 mt-3">
+                    <h5>Inspection <i class="fas fa-microscope"></i></h5>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Inspection/SamplePlanEntry">Sample Plan Entry</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="Inspection/SamplePlanListing">Sample Plan Listing</a>
+                </div>
+                <div class="col-lg-5 card mt-3">
+                    <h5>Part Info <i class="fas fa-shapes"></i></h5>
+                    <a class="btn btn-primary p-3 m-3" asp-page="/Part/HardnessEntry">Hardness Entry</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="/Part/MaterialSeriesEntry">Series Entry</a>
+                    <a class="btn btn-primary p-3 m-3" asp-page="/Part/MaterialAlloyEntry">Alloy Entry</a>
+                </div>
+                <div class="col-lg mx-3 mt-1">
+                </div>
+            </div>
         </div>
-        <div class="col-lg card">
-            <h5>Step</h5>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/StepMaintenance">Step Maintenance</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/StepListing">Step List</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="Process/OperationMaintenance">Operation Maintenance</a>
-        </div>
-        <div class="col-lg card mx-3">
-            <h5>Specification</h5>
-            <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecificationCreation">Spec Maintanence</a>
+        <div class="col-lg-3 card">
+            <h5>Specification <i class="fas fa-scroll"></i></h5>
+            <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecificationMaintenance">Spec Maintanence</a>
             <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecificationListing">Spec Listing</a>
             <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecProcessAssign">Spec Process Assign</a>
             <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecProcessAssignListing">Spec Process Assign Listing</a>
             <a class="btn btn-primary p-3 m-3" asp-page="Specification/SpecProcessAssignReview">Spec Process Assign Review</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg card mx-3 mt-1">
-            <h5>Inspection</h5>
-            <a class="btn btn-primary p-3 m-3" asp-page="Inspection/SamplePlanEntry">Sample Plan Entry</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="Inspection/SamplePlanListing">Sample Plan Listing</a>
-        </div>
-        <div class="col-lg card mt-1">
-            <h5>Part Info</h5>
-            <a class="btn btn-primary p-3 m-3" asp-page="/Part/HardnessEntry">Hardness Entry</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="/Part/MaterialSeriesEntry">Series Entry</a>
-            <a class="btn btn-primary p-3 m-3" asp-page="/Part/MaterialAlloyEntry">Alloy Entry</a>
-        </div>
-        <div class="col-lg mx-3 mt-1">
         </div>
     </div>
 </div>

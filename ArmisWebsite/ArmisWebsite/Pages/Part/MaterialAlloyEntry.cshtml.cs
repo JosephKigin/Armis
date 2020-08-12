@@ -20,7 +20,7 @@ namespace ArmisWebsite.Pages.Part
 
         //Models
         public List<MaterialSeriesModel> AllMaterialSeries { get; set; }
-
+        public List<MaterialAlloyModel> AllMaterialAlloys { get; set; }
 
         //Front-End
         [BindProperty]
@@ -55,7 +55,7 @@ namespace ArmisWebsite.Pages.Part
                     var alloyToAdd = new MaterialAlloyModel()
                     {
                         Description = Description,
-                        SeriesId = SeriesId
+                        MaterialSeriesId = SeriesId
                     };
 
                     var result = await MaterialAlloyDataAccess.CreateMaterialAlloy(alloyToAdd); //Not sure what to do with the result.  It will just be the alloy passed in but with an updated alloyId.
@@ -84,6 +84,8 @@ namespace ArmisWebsite.Pages.Part
         public async Task SetUpProperties()
         {
             AllMaterialSeries = (await MaterialSeriesDataAccess.GetAllMaterialSeries()).ToList();
+
+            AllMaterialAlloys = (await MaterialAlloyDataAccess.GetAllMaterialAlloys()).ToList();
         }
     }
 }

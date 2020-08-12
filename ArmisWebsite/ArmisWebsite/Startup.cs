@@ -17,14 +17,19 @@ using ArmisWebsite.DataAccess.Quality.Inspection.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Interfaces;
 using ArmisWebsite.DataAccess.Quality.Specification;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
+using ArmisWebsite.DataAccess.Shipping;
+using ArmisWebsite.DataAccess.Shipping.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace ArmisWebsite
 {
@@ -40,28 +45,34 @@ namespace ArmisWebsite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddRazorPages();
+
+            //*HTTPContext*
+            services.AddHttpContextAccessor();
 
             //*CUSTOMER*
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
 
+
             //*EMPLOYEE*
             services.AddScoped<IEmployeeDataAccess, EmployeeDataAccess>();
 
+
             //*ORDER_ENTRY*
             services.AddScoped<IOrderHeadDataAccess, OrderHeadDataAccess>();
+
 
             //*PART*
             services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
 
+
             //*QUALITY*
             //Inspection
             services.AddScoped<ITestTypeDataAccess, TestTypeDataAccess>();
             services.AddScoped<ISamplePlanDataAccess, SamplePlanDataAccess>();
+            services.AddScoped<IQualityStandardDataAccess, QualityStandardDataAccess>();
 
             //Process
             services.AddScoped<IStepDataAccess, StepDataAccess>();
@@ -72,25 +83,31 @@ namespace ArmisWebsite
             services.AddScoped<ISpecDataAccess, SpecDataAccess>();
             services.AddScoped<ISpecProcessAssignDataAccess, SpecProcessAssignDataAccess>();
 
-            
+
+            //*SHIPPING*
+            services.AddScoped<IShipViaCodeDataAccess, ShipViaCodeDataAccess>();
+
+
+            //*TOOLS*
             services.AddScoped<IPdfGenerator, PdfGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+            //}
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();

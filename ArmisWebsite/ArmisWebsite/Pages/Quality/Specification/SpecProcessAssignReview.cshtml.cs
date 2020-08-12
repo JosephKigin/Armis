@@ -123,14 +123,18 @@ namespace ArmisWebsite.Pages.Quality.Specification
 
         public async Task SetUpProperties()
         {
-            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllReviewNeededSpecProcessAssign();
+            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllHydratedReviewNeededSpecProcessAssign();
             AllSpecProcessAssigns = (tempSpecProcessAssign != null) ? tempSpecProcessAssign.ToList() : null;
 
             if (AllSpecProcessAssigns != null)
             {
-                foreach (var assign in AllSpecProcessAssigns)
+                foreach (var assign in AllSpecProcessAssigns) //Checking if the assignment is still viable.  If it is not, then the user cannot "Keep" the assignment.
                 {
-                    assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, assign.ChoiceOptionId1 ?? 0, assign.ChoiceOptionId2 ?? 0, assign.ChoiceOptionId3 ?? 0, assign.ChoiceOptionId4 ?? 0, assign.ChoiceOptionId5 ?? 0, assign.ChoiceOptionId6 ?? 0);
+                    if (assign.SpecProcessAssignOptionModels == null)
+                    { assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, new List<SpecProcessAssignOptionModel>()); }
+                    else
+                    { assign.IsViable = await SpecProcessAssignDataAccess.CheckSpaIsViable(assign.SpecId, assign.SpecProcessAssignOptionModels); }
+                    
                 }
             }
 

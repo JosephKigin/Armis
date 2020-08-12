@@ -7,6 +7,7 @@ using Armis.BusinessModels.QualityModels.Process;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers
 {
@@ -14,11 +15,14 @@ namespace Armis.Api.Controllers
     [ApiController]
     public class OperationController : ControllerBase
     {
+        private readonly ILogger<OperationController> _logger;
+
         public IOperationService OperationService { get; set; }
 
-        public OperationController(IOperationService anOperationService)
+        public OperationController(IOperationService anOperationService, ILogger<OperationController> aLogger)
         {
             OperationService = anOperationService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +36,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("OperationController.GetAllOperations() Not able to get all operations. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,6 +52,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("OperationController.GetAllOperationGroups() Not able to get all operation groups. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -62,7 +68,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError("OperationController.CreateOperation(OperationModel anOperationModel) Not able to create operation ({operation}). | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(anOperationModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -78,7 +84,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError("OperationController.UpdateOperation(OperationModel anOperationModel) Not able to update operation {operation}. | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(anOperationModel), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

@@ -71,5 +71,6 @@ namespace Armis.BusinessModels.OrderEntryModels
         public OrderShipToOverrideModel OrderShipToOverride { get; set; }
 
         public IEnumerable<OrderDetailModel> OrderDetails { get; set; } //Each part, or "line", on the order
+        public IEnumerable<OrderReceivedModel> OrderReceiveds { get; set; }
     }
 }

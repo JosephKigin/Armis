@@ -39,7 +39,7 @@ namespace ArmisWebsite.Pages.Quality.Specification
 
         public async Task SetUpProperties()
         {
-            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllActiveSpecProcessAssigns();
+            var tempSpecProcessAssign = await SpecProcessAssignDataAccess.GetAllActiveHydratedSpecProcessAssigns();
             AllSpecProcessAssigns = tempSpecProcessAssign.ToList();
         }
 

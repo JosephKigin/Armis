@@ -39,7 +39,6 @@
         for (var i = 0; i < steps.length; i++) {
             if (steps[i] != undefined) {
                 if (steps[i].dataset.stepName.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    console.log(steps[i].dataset.stepName.toLowerCase() + " : " + searchTerm);
                     steps[i].style.display = "block";
                 }
                 else {

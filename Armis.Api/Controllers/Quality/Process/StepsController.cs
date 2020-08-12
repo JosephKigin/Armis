@@ -11,22 +11,23 @@ using Armis.DataLogic.Services.QualityServices;
 using Armis.BusinessModels.QualityModels.Process;
 using System.Text.Json;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class StepsController : ControllerBase
-    {
-        private readonly ARMISContext _context;
+    { 
+        private readonly ILogger<StepsController> _logger;
 
         public IStepService StepService { get; set; }
 
 
-        public StepsController(ARMISContext context, IStepService aStepService)
+        public StepsController(IStepService aStepService, ILogger<StepsController> aLogger)
         {
-            _context = context;
             StepService = aStepService;
+            _logger = aLogger;
         }
 
         // GET: api/Steps
@@ -36,11 +37,11 @@ namespace Armis.Api.Controllers
             try
             {
                 var data = await StepService.GetAll();
-
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch(Exception ex)
             {
+                _logger.LogError("StepsController.GetAllSteps() Not able to get all steps. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -56,6 +57,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("StepsController.GetAllStepCategories() Not able to get all step categories. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -71,6 +73,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("StepsController.GetStepCategoryById(short id) Not able to get step category for id {categoryId}. | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -87,6 +90,7 @@ namespace Armis.Api.Controllers
             }
             catch(Exception ex)
             {
+                _logger.LogError("StepsController.GetStepById(int id) Not able to get step for id {stepId}. | Message: {exMessage} | StackTrace: {stackTrace}", id, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message + "\r\n" + ex.StackTrace);
             }
         }
@@ -103,6 +107,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("StepsController.GetStepByName(string stepName) Not able to get step for name {stepName}. | Message: {exMessage} | StackTrace: {stackTrace}", stepName, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -118,6 +123,7 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("StepsController.GetAllStepsByCategory(string stepCategoryName) Not able to get step category for nanme {stepCategoryName}. | Message: {exMessage} | StackTrace: {stackTrace}", stepCategoryName, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -136,29 +142,9 @@ namespace Armis.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("StepsController.PostStep(StepModel aStep) Not able to create step {step}. | Message: {exMessage} | StackTrace: {stackTrace}", JsonSerializer.Serialize(aStep), ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
-        }
-
-        // DELETE: api/Steps/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Step>> DeleteStep(int id)
-        {
-            var step = await _context.Step.FindAsync(id);
-            if (step == null)
-            {
-                return NotFound();
-            }
-
-            _context.Step.Remove(step);
-            await _context.SaveChangesAsync();
-
-            return step;
-        }
-
-        private bool StepExists(int id)
-        {
-            return _context.Step.Any(e => e.StepId == id);
         }
     }
 }

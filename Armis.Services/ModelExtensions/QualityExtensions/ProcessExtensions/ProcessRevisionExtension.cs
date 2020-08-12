@@ -8,7 +8,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
 {
     public static class ProcessRevisionExtension
     {
-        public static ProcessRevisionModel ToModel(this ProcessRevision aProcessRev) 
+        public static ProcessRevisionModel ToModel(this ProcessRevision aProcessRev, string aProcessName = null) 
         {
             return new ProcessRevisionModel()
             {
@@ -17,7 +17,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 Comments = aProcessRev.Comments,
                 ProcessId = aProcessRev.ProcessId,
                 ProcessRevId = aProcessRev.ProcessRevId,
-                RevStatusId = aProcessRev.RevStatusId
+                RevStatusId = aProcessRev.RevStatusId,
+                ProcessName = aProcessName
             };
         }
 

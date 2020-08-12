@@ -33,9 +33,9 @@ namespace Armis.DataLogic.Services.PartServices
         {
             var entityToAdd = aMaterialAlloyModel.ToEntity();
 
-            var lastIdUsed = await Context.MaterialAlloy.MaxAsync(i => i.AlloyId);
+            var lastIdUsed = await Context.MaterialAlloy.MaxAsync(i => i.MaterialAlloyId);
 
-            entityToAdd.AlloyId = (lastIdUsed + 1);
+            entityToAdd.MaterialAlloyId = (lastIdUsed + 1);
 
             Context.MaterialAlloy.Add(entityToAdd);
             await Context.SaveChangesAsync();

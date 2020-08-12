@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Armis.BusinessModels.PartModels;
+using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.Services.PartServices.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Armis.Api.Controllers.Part
 {
@@ -14,11 +16,14 @@ namespace Armis.Api.Controllers.Part
     [ApiController]
     public class HardnessController : ControllerBase
     {
+        private readonly ILogger<HardnessController> _logger;
+
         public IHardnessService HardnessService { get; set; }
 
-        public HardnessController(IHardnessService aHardnessService)
+        public HardnessController(IHardnessService aHardnessService, ILogger<HardnessController> aLogger)
         {
             HardnessService = aHardnessService;
+            _logger = aLogger;
         }
 
         [HttpGet]
@@ -32,6 +37,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("HardnessController.GetAllHardnesses() Not able to get all hardnesses. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,6 +53,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("HardnessController.GetHardness() Not able to get hardness for ID ({hardnessId}). | Message: {exMessage} | StackTrace: {stackTrace}", aHardnessId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }
@@ -62,6 +69,7 @@ namespace Armis.Api.Controllers.Part
             }
             catch (Exception ex)
             {
+                _logger.LogError("HardnessController.CreateHardness(HardnessModel aHardnessModel) Not able to create hardness ({hardnessModel}). | Message: {exMessage} | StackTrace: {stackTrace}", aHardnessModel, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

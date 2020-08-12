@@ -1,0 +1,52 @@
+﻿
+@model Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    Model.SpecProcessAssignOptionModels = (Model.SpecProcessAssignOptionModels != null) ? Model.SpecProcessAssignOptionModels.OrderBy(i => i.SubLevelSeqId).ToList() : null;
+
+    var subLevels = Model.SpecificationRevision.SubLevels.OrderBy(i => i.LevelSeq).ToList();
+
+}
+
+@if (subLevels != null && subLevels.Any())
+{
+    <div class="table-responsive" style="margin: 0 auto;">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr class="h-50">
+                    <th class="text-center" style="border-bottom-color:black; width:120px;">
+                        @subLevels.Take(1).ToList().FirstOrDefault().Name
+                    </th>
+                    @foreach (var sublevel in subLevels.Skip(1))
+                    {
+                        <th class="text-center" style="border-bottom-color:black; width:120px;">
+                            @sublevel.Name
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="h-50">
+                    @if (Model.SpecProcessAssignOptionModels != null)
+                    {
+                        <td class="text-center">
+                            @if (Model.SpecProcessAssignOptionModels[0].SubLevelSeqId == subLevels[0].LevelSeq)
+                            {<text>@Model.SpecProcessAssignOptionModels[0].SpecChoice.Description</text>}
+                        </td>
+                        @foreach (var sublevel in subLevels.Skip(1))
+                        {
+                            <td class="text-center">
+                                @{ var currentOptionForSublvl = Model.SpecProcessAssignOptionModels.FirstOrDefault(i => i.SubLevelSeqId == sublevel.LevelSeq); }
+                                @if (currentOptionForSublvl != null)
+                                {<text>@currentOptionForSublvl.SpecChoice.Description</text>}
+                            </td>
+                        }
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

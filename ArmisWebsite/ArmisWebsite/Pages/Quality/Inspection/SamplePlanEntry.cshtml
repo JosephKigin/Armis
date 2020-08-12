@@ -23,7 +23,7 @@
     </div>
 
     @*Hidden inputs to keep track of the pages state.*@
-    <input id="hdnNumOfLevels" type="number" value="1" asp-for="AmountOfLevels" form="mainForm" hidden /> @*How many levels there are on the page.*@
+    <input id="hdnNumOfLevels" type="number" value="1" asp-for="AmountOfLevels" form="mainForm" hidden/> @*How many levels there are on the page.*@
     <input id="hdnNumOfTests" type="number" value="1" asp-for="AmountOfTests" form="mainForm" hidden />
 
     @*This will load the test type options available to be pulled when the test type select lists are loaded dynamically*@
@@ -35,10 +35,11 @@
             <div class="row">
                 @*From - To level values*@
                 <div id="sectionNumOfParts" class="col-lg-4 text-center">
-                    <div style="margin-bottom:2.55em"><h4># of Parts</h4></div> @*The margin is to make sure the two different tables line up.*@
+                    <div style="margin-bottom:2.4em"><h4># of Parts</h4></div> @*The margin is to make sure the two different tables line up.*@
                     <div id="numPartsLevel1" class="row mt-1">
                         <div class="col-lg-1">
-                            <a id="ancInsertLine1" data-level="1" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a>
+                            <br />
+                            <a id="ancInsertLine1" class="" data-level="1" onclick="AddLevel(this.dataset.level)"><i class="fa fa-sm fa-plus-circle" style="color:green"></i></a>
                         </div>
                         <div class="col-lg-4"> <input name="inputNumOfPartsFrom1" type="number" class="form-control" value="1" tabindex="-1" readonly /> </div>
                         <div class="col-lg-1">-</div>
@@ -57,10 +58,10 @@
                                     <select class="form-control col-lg-11" name="selectTestType1" asp-items="Model.AllTestTypeSelectItems"></select>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-5">Spl</div>
+                                    <div class="col-lg-5 p-0">Spl</div>
                                     <div class="col-lg-5">Rej</div>
                                 </div>
-                                <div id="numSampleReject1-1" class="row mt-1">
+                                <div id="numSampleReject1-1" class="row mt-1" style="height:48px;">
                                     @*1-1: first number is test number, second number is level.*@
                                     <input name="inputSampleNum1-1" type="number" class="form-control col-lg-5 mr-3" placeholder="Sample" /> <input name="inputRejectNum1-1" type="number" class="form-control col-lg-5" placeholder="Reject" />
                                 </div>

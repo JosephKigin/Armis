@@ -97,6 +97,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<SpecChoice> SpecChoice { get; set; }
         public virtual DbSet<SpecProcessAssign> SpecProcessAssign { get; set; }
         public virtual DbSet<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
+        public virtual DbSet<SpecProcessAssignOption> SpecProcessAssignOption { get; set; }
         public virtual DbSet<SpecSubLevel> SpecSubLevel { get; set; }
         public virtual DbSet<SpecialHandling> SpecialHandling { get; set; }
         public virtual DbSet<Specification> Specification { get; set; }
@@ -111,6 +112,7 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<Terms> Terms { get; set; }
         public virtual DbSet<TernaryCode> TernaryCode { get; set; }
         public virtual DbSet<TranType> TranType { get; set; }
+        public virtual DbSet<UnitOfMeasure> UnitOfMeasure { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -748,10 +750,6 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Department>(entity =>
             {
-                entity.HasIndex(e => e.Name)
-                    .HasName("UNQ_Department_Name")
-                    .IsUnique();
-
                 entity.Property(e => e.DepartmentId).ValueGeneratedNever();
 
                 entity.Property(e => e.HelperBurRate).HasColumnType("decimal(9, 4)");
@@ -989,28 +987,22 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<MaterialAlloy>(entity =>
             {
-                entity.HasKey(e => e.AlloyId)
-                    .HasName("PK_MaterialAlloy_AlloyId");
-
-                entity.Property(e => e.AlloyId).ValueGeneratedNever();
+                entity.Property(e => e.MaterialAlloyId).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Series)
+                entity.HasOne(d => d.MaterialSeries)
                     .WithMany(p => p.MaterialAlloy)
-                    .HasForeignKey(d => d.SeriesId)
-                    .HasConstraintName("FK_MaterialAlloy_SeriesId_MaterialSeries_SeriesId");
+                    .HasForeignKey(d => d.MaterialSeriesId)
+                    .HasConstraintName("FK_MaterialAlloy_MaterialSeriesId_MaterialSeries_MaterialSeriesId");
             });
 
             modelBuilder.Entity<MaterialSeries>(entity =>
             {
-                entity.HasKey(e => e.SeriesId)
-                    .HasName("PK_MaterialSeries_SeriesId");
-
-                entity.Property(e => e.SeriesId).ValueGeneratedNever();
+                entity.Property(e => e.MaterialSeriesId).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
                     .IsRequired()
@@ -1083,8 +1075,8 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Operation>(entity =>
             {
-                entity.HasIndex(e => e.OperationCd)
-                    .HasName("UNQ_Operation_OperationCd")
+                entity.HasIndex(e => e.OperShortName)
+                    .HasName("UNQ_Operation_OperShortName")
                     .IsUnique();
 
                 entity.Property(e => e.OperationId).ValueGeneratedNever();
@@ -1094,7 +1086,7 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(40)
                     .IsUnicode(false);
 
-                entity.Property(e => e.OperationCd)
+                entity.Property(e => e.OperShortName)
                     .IsRequired()
                     .HasMaxLength(8)
                     .IsUnicode(false);
@@ -1121,15 +1113,14 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<OprLoadPrice>(entity =>
             {
-                entity.Property(e => e.OprLoadPriceId).ValueGeneratedNever();
-
-                entity.Property(e => e.Lbprice)
-                    .HasColumnName("LBPrice")
-                    .HasColumnType("decimal(19, 6)");
+                entity.HasKey(e => new { e.OperationId, e.DepartmentId, e.LoadTypeId, e.CustSeq })
+                    .HasName("PK_OprLoadPrice_OperationId_DepartmentId_LoadTypeId_CustSeq");
 
                 entity.Property(e => e.MinLotCharge).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.MinPiecePrice).HasColumnType("decimal(19, 6)");
+
+                entity.Property(e => e.PricePerUoM).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.UnitPrice).HasColumnType("decimal(19, 6)");
 
@@ -1138,79 +1129,81 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.CustId)
                     .HasConstraintName("FK_OprLoadPrice_CustId_Customer_CustId");
 
-                entity.HasOne(d => d.Department)
-                    .WithMany(p => p.OprLoadPrice)
-                    .HasForeignKey(d => d.DepartmentId)
-                    .HasConstraintName("FK_OprLoadPrice_DepartmentId_Department_DepartmentId");
-
                 entity.HasOne(d => d.LoadType)
                     .WithMany(p => p.OprLoadPrice)
                     .HasForeignKey(d => d.LoadTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OprLoadPrice_LoadTypeId_LoadTypeCode_LoadTypeId");
 
-                entity.HasOne(d => d.Operation)
+                entity.HasOne(d => d.PriceUoMNavigation)
                     .WithMany(p => p.OprLoadPrice)
-                    .HasForeignKey(d => d.OperationId)
-                    .HasConstraintName("FK_OprLoadPrice_OperationId_Operation_OperationId");
+                    .HasForeignKey(d => d.PriceUoM)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OprLoadPrice_PriceUoM_UnitOfMeasure_UoMId");
+
+                entity.HasOne(d => d.DeptOperation)
+                    .WithMany(p => p.OprLoadPrice)
+                    .HasForeignKey(d => new { d.DepartmentId, d.OperationId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OprLoadPrice_OperationId_DeptOperation_OperationId");
             });
 
             modelBuilder.Entity<OprMaterialPrice>(entity =>
             {
-                entity.Property(e => e.OprMaterialPriceId).ValueGeneratedNever();
+                entity.HasKey(e => new { e.OperationId, e.DepartmentId, e.MaterialAlloyId, e.CustSeq })
+                    .HasName("PK_OprMaterialPrice_OperationId_DepartmentId_MaterialAlloyId_CustSeq");
 
-                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 6)");
+                entity.Property(e => e.MinLotIncrease).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 6)");
+                entity.Property(e => e.PercentIncrease).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.OprMaterialPrice)
                     .HasForeignKey(d => d.CustId)
                     .HasConstraintName("FK_OprMaterialPrice_CustId_Customer_CustId");
 
-                entity.HasOne(d => d.Department)
+                entity.HasOne(d => d.MaterialAlloy)
                     .WithMany(p => p.OprMaterialPrice)
-                    .HasForeignKey(d => d.DepartmentId)
-                    .HasConstraintName("FK_OprMaterialPrice_DepartmentId_Department_DepartmentId");
+                    .HasForeignKey(d => d.MaterialAlloyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OprMaterialPrice_MaterialAlloyId_MaterialAlloy_MaterialAlloyId");
 
-                entity.HasOne(d => d.Material)
+                entity.HasOne(d => d.DeptOperation)
                     .WithMany(p => p.OprMaterialPrice)
-                    .HasForeignKey(d => d.MaterialId)
-                    .HasConstraintName("FK_OprMaterialPrice_MaterialId_MaterialAlloy_AlloyId");
-
-                entity.HasOne(d => d.Operation)
-                    .WithMany(p => p.OprMaterialPrice)
-                    .HasForeignKey(d => d.OperationId)
-                    .HasConstraintName("FK_OprMaterialPrice_OperationId_Operation_OperationId");
+                    .HasForeignKey(d => new { d.DepartmentId, d.OperationId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OprMaterialPrice_OperationId_DeptOperation_OperationId");
             });
 
             modelBuilder.Entity<OprThickPrice>(entity =>
             {
-                entity.Property(e => e.OprThickPriceId).ValueGeneratedNever();
+                entity.HasKey(e => new { e.OperationId, e.DepartmentId, e.CustSeq })
+                    .HasName("PK_OprThickPrice_OperationId_DepartmentId_CustSeq");
 
-                entity.Property(e => e.MinLotInc).HasColumnType("decimal(19, 6)");
+                entity.Property(e => e.CustSeq).HasColumnType("decimal(19, 6)");
+
+                entity.Property(e => e.MaxThickness).HasColumnType("decimal(9, 8)");
+
+                entity.Property(e => e.MinLotIncrease).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.MinPiecePriceInc).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.MinThickness).HasColumnType("decimal(19, 6)");
+                entity.Property(e => e.MinThickness).HasColumnType("decimal(9, 8)");
 
-                entity.Property(e => e.PercInc).HasColumnType("decimal(19, 6)");
+                entity.Property(e => e.PercentIncrease).HasColumnType("decimal(19, 6)");
 
                 entity.HasOne(d => d.Cust)
                     .WithMany(p => p.OprThickPrice)
                     .HasForeignKey(d => d.CustId)
                     .HasConstraintName("FK_OprThickPrice_CustId_Customer_CustId");
 
-                entity.HasOne(d => d.Department)
+                entity.HasOne(d => d.DeptOperation)
                     .WithMany(p => p.OprThickPrice)
-                    .HasForeignKey(d => d.DepartmentId)
-                    .HasConstraintName("FK_OprThickPrice_DepartmentId_Department_DepartmentId");
-
-                entity.HasOne(d => d.Operation)
-                    .WithMany(p => p.OprThickPrice)
-                    .HasForeignKey(d => d.OperationId)
-                    .HasConstraintName("FK_OprThickPrice_OperationId_Operation_OperationId");
+                    .HasForeignKey(d => new { d.DepartmentId, d.OperationId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OprThickPrice_OperationId_DeptOperation_OperationId");
             });
 
             modelBuilder.Entity<OrderAddlCharge>(entity =>
@@ -1302,6 +1295,11 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.CalcPrice).HasColumnType("decimal(19, 6)");
 
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.LotCharge).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.Poprice)
@@ -1317,7 +1315,6 @@ namespace Armis.Data.DatabaseContext
                 entity.HasOne(d => d.Part)
                     .WithMany(p => p.OrderDetail)
                     .HasForeignKey(d => d.PartId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_PartId_Part_PartId");
 
                 entity.HasOne(d => d.PriceCode)
@@ -1679,7 +1676,7 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(100)
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Dimensions)
@@ -1688,8 +1685,10 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.ExternalRev)
                     .IsRequired()
-                    .HasMaxLength(5)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
+
+                entity.Property(e => e.MaskPcsPerHour).HasColumnType("decimal(9, 4)");
 
                 entity.Property(e => e.MinLotCharge).HasColumnType("decimal(9, 4)");
 
@@ -1700,19 +1699,9 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.PieceWeight).HasColumnType("decimal(19, 6)");
 
-                entity.Property(e => e.SauoM)
-                    .HasColumnName("SAUoM")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.SurfaceArea).HasColumnType("decimal(19, 6)");
 
                 entity.Property(e => e.TimeCreated).HasColumnType("time(0)");
-
-                entity.HasOne(d => d.AlloyNavigation)
-                    .WithMany(p => p.Part)
-                    .HasForeignKey(d => d.Alloy)
-                    .HasConstraintName("FK_Part_Alloy_MaterialAlloy_AlloyId");
 
                 entity.HasOne(d => d.CreatedByEmpNavigation)
                     .WithMany(p => p.Part)
@@ -1720,15 +1709,25 @@ namespace Armis.Data.DatabaseContext
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Part_CreatedByEmp_Employee_EmpId");
 
-                entity.HasOne(d => d.Series)
+                entity.HasOne(d => d.MaterialAlloy)
                     .WithMany(p => p.Part)
-                    .HasForeignKey(d => d.SeriesId)
-                    .HasConstraintName("FK_Part_SeriesId_MaterialSeries_SeriesId");
+                    .HasForeignKey(d => d.MaterialAlloyId)
+                    .HasConstraintName("FK_Part_MaterialAlloyId_MaterialAlloy_MaterialAlloyId");
+
+                entity.HasOne(d => d.MaterialSeries)
+                    .WithMany(p => p.Part)
+                    .HasForeignKey(d => d.MaterialSeriesId)
+                    .HasConstraintName("FK_Part_MaterialSeriesId_MaterialSeries_MaterialSeriesId");
 
                 entity.HasOne(d => d.StandardDeptNavigation)
                     .WithMany(p => p.Part)
                     .HasForeignKey(d => d.StandardDept)
                     .HasConstraintName("FK_Part_StandardDept_Department_DepartmentId");
+
+                entity.HasOne(d => d.SurfaceAreaUoMNavigation)
+                    .WithMany(p => p.Part)
+                    .HasForeignKey(d => d.SurfaceAreaUoM)
+                    .HasConstraintName("FK_Part_SurfaceAreaUoM_UnitOfMeasure_UoMId");
             });
 
             modelBuilder.Entity<PartComment>(entity =>
@@ -2046,10 +2045,10 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.AreaId)
                     .HasConstraintName("FK_Rack_AreaId_Area_AreaId");
 
-                entity.HasOne(d => d.MaterialCdNavigation)
+                entity.HasOne(d => d.MaterialAlloy)
                     .WithMany(p => p.Rack)
-                    .HasForeignKey(d => d.MaterialCd)
-                    .HasConstraintName("FK_Rack_MaterialCd_MaterialAlloy_AlloyId");
+                    .HasForeignKey(d => d.MaterialAlloyId)
+                    .HasConstraintName("FK_Rack_MaterialAlloyId_MaterialAlloy_MaterialAlloyId");
             });
 
             modelBuilder.Entity<RemarkCode>(entity =>
@@ -2120,7 +2119,7 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.Property(e => e.PlanName)
-                    .HasMaxLength(10)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
             });
 
@@ -2364,11 +2363,21 @@ namespace Armis.Data.DatabaseContext
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.HasOne(d => d.ReferenceStep)
+                    .WithMany(p => p.SpecChoice)
+                    .HasForeignKey(d => d.ReferenceStepId)
+                    .HasConstraintName("FK_SpecChoice_ReferenceStepId_Step_StepId");
+
                 entity.HasOne(d => d.S)
                     .WithMany(p => p.SpecChoice)
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelSeqId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecChoice_SubLevelSeqId_SpecSubLevel_SubLevelSeqId");
+
+                entity.HasOne(d => d.SpecChoiceNavigation)
+                    .WithMany(p => p.InverseSpecChoiceNavigation)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.DependentLevel, d.OnlyValidForChoice })
+                    .HasConstraintName("FK_SpecChoice_OnlyValidForChoice_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecProcessAssign>(entity =>
@@ -2376,52 +2385,10 @@ namespace Armis.Data.DatabaseContext
                 entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId })
                     .HasName("PK_SpecProcessAssign_SpecId_SpecRevId_SpecAssignId");
 
-                entity.Property(e => e.SubLevelOption1).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.SubLevelOption2).HasDefaultValueSql("((2))");
-
-                entity.Property(e => e.SubLevelOption3).HasDefaultValueSql("((3))");
-
-                entity.Property(e => e.SubLevelOption4).HasDefaultValueSql("((4))");
-
-                entity.Property(e => e.SubLevelOption5).HasDefaultValueSql("((5))");
-
-                entity.Property(e => e.SubLevelOption6).HasDefaultValueSql("((6))");
-
-                entity.HasOne(d => d.AlloyOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.AlloyOption)
-                    .HasConstraintName("FK_SpecProcessAssign_AlloyOption_MaterialAlloy_AlloyId");
-
                 entity.HasOne(d => d.CustomerNavigation)
                     .WithMany(p => p.SpecProcessAssign)
                     .HasForeignKey(d => d.Customer)
                     .HasConstraintName("FK_SpecProcessAssign_Customer_Customer_CustId");
-
-                entity.HasOne(d => d.HardnessOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.HardnessOption)
-                    .HasConstraintName("FK_SpecProcessAssign_HardnessOption_Hardness_HardnessId");
-
-                entity.HasOne(d => d.MaskOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignMaskOptionNavigation)
-                    .HasForeignKey(d => d.MaskOption)
-                    .HasConstraintName("FK_SpecProcessAssign_MaskOption_Step_StepId");
-
-                entity.HasOne(d => d.PostBakeOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignPostBakeOptionNavigation)
-                    .HasForeignKey(d => d.PostBakeOption)
-                    .HasConstraintName("FK_SpecProcessAssign_PostBakeOption_Step_StepId");
-
-                entity.HasOne(d => d.PreBakeOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssignPreBakeOptionNavigation)
-                    .HasForeignKey(d => d.PreBakeOption)
-                    .HasConstraintName("FK_SpecProcessAssign_PreBakeOption_Step_StepId");
-
-                entity.HasOne(d => d.SeriesOptionNavigation)
-                    .WithMany(p => p.SpecProcessAssign)
-                    .HasForeignKey(d => d.SeriesOption)
-                    .HasConstraintName("FK_SpecProcessAssign_SeriesOption_MaterialSeries_SeriesId");
 
                 entity.HasOne(d => d.Process)
                     .WithMany(p => p.SpecProcessAssign)
@@ -2434,36 +2401,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecProcessAssign_SpecRevId_SpecificationRevision_SpecRevId");
-
-                entity.HasOne(d => d.SpecChoice)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption1, d.ChoiceOption1 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption1_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoiceNavigation)
-                    .WithMany(p => p.SpecProcessAssignSpecChoiceNavigation)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption2, d.ChoiceOption2 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption2_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice1)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice1)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption3, d.ChoiceOption3 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption3_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice2)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice2)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption4, d.ChoiceOption4 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption4_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice3)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice3)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption5, d.ChoiceOption5 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption5_SpecChoice_ChoiceSeqId");
-
-                entity.HasOne(d => d.SpecChoice4)
-                    .WithMany(p => p.SpecProcessAssignSpecChoice4)
-                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelOption6, d.ChoiceOption6 })
-                    .HasConstraintName("FK_SpecProcessAssign_ChoiceOption6_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecProcessAssignHist>(entity =>
@@ -2506,6 +2443,24 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecProcessAssignHist_SpecAssignId_SpecProcessAssign_SpecAssignId");
+            });
+
+            modelBuilder.Entity<SpecProcessAssignOption>(entity =>
+            {
+                entity.HasKey(e => new { e.SpecId, e.SpecRevId, e.SpecAssignId, e.SubLevelSeqId, e.ChoiceSeqId })
+                    .HasName("PK_SpecProcessAssignOption_SpecId_SpecRevId_SpecAssignId_SubLevelSeqId_ChoiceSeqId");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.SpecProcessAssignOption)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SpecAssignId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignOption_SpecAssignId_SpecProcessAssign_SpecAssignId");
+
+                entity.HasOne(d => d.SpecChoice)
+                    .WithMany(p => p.SpecProcessAssignOption)
+                    .HasForeignKey(d => new { d.SpecId, d.SpecRevId, d.SubLevelSeqId, d.ChoiceSeqId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecProcessAssignOption_ChoiceSeqId_SpecChoice_ChoiceSeqId");
             });
 
             modelBuilder.Entity<SpecSubLevel>(entity =>
@@ -2568,10 +2523,6 @@ namespace Armis.Data.DatabaseContext
             {
                 entity.HasKey(e => e.SpecId)
                     .HasName("PK_Specification_SpecId");
-
-                entity.HasIndex(e => e.SpecCode)
-                    .HasName("UNQ_Specification_SpecCode")
-                    .IsUnique();
 
                 entity.Property(e => e.SpecId).ValueGeneratedNever();
 
@@ -2785,6 +2736,26 @@ namespace Armis.Data.DatabaseContext
 
                 entity.Property(e => e.TranCode)
                     .HasMaxLength(8)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<UnitOfMeasure>(entity =>
+            {
+                entity.HasKey(e => e.UoMid)
+                    .HasName("PK_UnitOfMeasure_UoMId");
+
+                entity.Property(e => e.UoMid)
+                    .HasColumnName("UoMId")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Label)
+                    .IsRequired()
+                    .HasMaxLength(5)
                     .IsUnicode(false);
             });
 
