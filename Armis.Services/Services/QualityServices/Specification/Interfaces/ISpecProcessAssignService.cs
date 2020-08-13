@@ -1,4 +1,5 @@
 ﻿using Armis.BusinessModels.QualityModels.Spec;
+using Armis.Data.DatabaseContext.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
         Task<IEnumerable<SpecProcessAssignModel>> GetAllHydratedSpecProcessAssign();
         Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssign();
         Task<IEnumerable<SpecProcessAssignModel>> GetAllActiveHydratedSpecProcessAssignForSpec(int aSpecId);
+        Task<IEnumerable<SpecProcessAssignModel>> GetHydratedHistorySpecProcessAssignsForSpec(int aSpecId);
         Task<SpecProcessAssignModel> RemoveReviewNeeded(int aSpecId, short aSpecRevId, int anAssignId);
         Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel);
         Task<SpecProcessAssignModel> GetSpecProcessAssign(int aSpecId, short aSpecRevId, short aSpecAssignId);

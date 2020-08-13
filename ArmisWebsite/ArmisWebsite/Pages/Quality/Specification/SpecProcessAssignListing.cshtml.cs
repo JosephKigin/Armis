@@ -24,17 +24,9 @@ namespace ArmisWebsite.Pages.Quality.Specification
 
         public async Task<ActionResult> OnGet()
         {
-            try
-            {
-                await SetUpProperties();
+            await SetUpProperties();
 
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
-
+            return Page();
         }
 
         public async Task SetUpProperties()

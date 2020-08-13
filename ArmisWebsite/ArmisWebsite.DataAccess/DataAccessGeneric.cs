@@ -43,7 +43,7 @@ namespace ArmisWebsite.DataAccess
         /// <returns></returns>
         public static async Task<T> HttpGetRequest<T, U>(string aPath, U aModel, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 //StringContent data = new StringContent(, Encoding.UTF8, "application/json");
                 var response = await client.GetAsync(aPath + JsonSerializer.Serialize(aModel));
@@ -62,7 +62,7 @@ namespace ArmisWebsite.DataAccess
         /// <returns></returns>
         public static async Task<T> HttpPostRequest<T>(string aPath, T aModel, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 StringContent data = new StringContent(JsonSerializer.Serialize(aModel), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(aPath, data);
@@ -84,7 +84,7 @@ namespace ArmisWebsite.DataAccess
         /// <returns></returns>
         public static async Task<T> HttpPostRequest<T, U>(string aPath, U aModel, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 StringContent data = new StringContent(JsonSerializer.Serialize(aModel), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(aPath, data);
@@ -106,7 +106,7 @@ namespace ArmisWebsite.DataAccess
         /// <returns></returns>
         public static async Task<T> HttpPutRequest<T>(string aPath, T aModel, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 StringContent data = new StringContent(JsonSerializer.Serialize(aModel), Encoding.UTF8, "application/json");
                 var response = await client.PutAsync(aPath, data);
@@ -126,7 +126,7 @@ namespace ArmisWebsite.DataAccess
         /// <returns></returns>
         public static async Task<string> HttpDeleteRequest(string aPath, HttpContext anHttpContext)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(new BasicHttpMessageHandler(anHttpContext)))
             {
                 var response = await client.DeleteAsync(aPath);
 

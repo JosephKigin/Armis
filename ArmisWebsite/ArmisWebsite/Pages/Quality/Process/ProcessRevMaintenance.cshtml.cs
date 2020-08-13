@@ -85,49 +85,25 @@ namespace ArmisWebsite
         //If an Id is passed in, then the page will load the most current rev for that Id and populate the page based on if that revision is "LOCKED" or "UNLOCKED".
         public async Task<IActionResult> OnGetAsync(int? aProcessId, string aMessage)
         {
-            try
+            if (aProcessId != 0 && aProcessId != null && CurrentProcessId == 0) { CurrentProcessId = aProcessId ?? 0; }
+            Message = new PopUpMessageModel()
             {
-                if (aProcessId != 0 && aProcessId != null && CurrentProcessId == 0) { CurrentProcessId = aProcessId ?? 0; }
-                Message = new PopUpMessageModel()
-                {
-                    Text = aMessage
-                };
-                if (aMessage != null) { Message.IsMessageGood = true; } //Messages from this page will always be good.
+                Text = aMessage
+            };
+            if (aMessage != null) { Message.IsMessageGood = true; } //Messages from this page will always be good.
 
-                await SetUpProperties(CurrentProcessId);
+            await SetUpProperties(CurrentProcessId);
 
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = "Could not set up Process Rev Maintenance page. " + ex.Message });
-            }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostDelete()
         {
-            try
-            {
-                var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new
-                {
-                    ExMessage = "There was a problem deleting that revision. " + ex.Message
-                });
-            }
+            var response = await ProcessDataAccess.DeleteProcessRevision(CurrentProcessId, CurrentRevId);
 
-            try
-            {
-                await SetUpProperties(CurrentProcessId);
+            await SetUpProperties(CurrentProcessId);
 
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = CurrentProcessId, aMessage = "Revision deleted successfully." });
-            }
-            catch (Exception)
-            {
-                return RedirectToPage("/Error", new { ExMessage = "Revision was deleted but could not set up Process Rev Maintenance page." });
-            }
+            return RedirectToPage("ProcessRevMaintenance", new { aProcessId = CurrentProcessId, aMessage = "Revision deleted successfully." });
 
         }
 
@@ -137,106 +113,74 @@ namespace ArmisWebsite
             CurrentRev.CreatedByEmp = EmpNumber;
             CurrentRev.ProcessId = CurrentProcessId;
 
-            try
-            {
-                var result = await ProcessDataAccess.RevUp(CurrentRev);
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "A new revision has been created." });
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while creating a new revision. " + ex.Message });
-            }
-
-
+            var result = await ProcessDataAccess.RevUp(CurrentRev);
+            return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "A new revision has been created." });
         }
 
         public async Task<IActionResult> OnPostSave()
         {
-            try
-            {
-                var theStepSeqList = new List<StepSeqModel>();
+            var theStepSeqList = new List<StepSeqModel>();
 
-                for (int i = 0; i < CurrentStepIds.Count; i++)
+            for (int i = 0; i < CurrentStepIds.Count; i++)
+            {
+                theStepSeqList.Add(new StepSeqModel
                 {
-                    theStepSeqList.Add(new StepSeqModel
-                    {
-                        StepId = CurrentStepIds[i],
-                        OperationId = CurrentOperationIds[i],
-                        Sequence = Convert.ToInt16(i + 1),
-                        ProcessId = CurrentProcessId,
-                        RevisionId = CurrentRevId
-                    });
-                }
-
-                var theReturnRevModel = await ProcessDataAccess.SaveStepSeqToRevision(theStepSeqList);
-
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Process saved successfully." });
+                    StepId = CurrentStepIds[i],
+                    OperationId = CurrentOperationIds[i],
+                    Sequence = Convert.ToInt16(i + 1),
+                    ProcessId = CurrentProcessId,
+                    RevisionId = CurrentRevId
+                });
             }
-            catch (Exception ex)
-            {
 
-                return RedirectToPage("/Error", new { ExMessage = "Could not update revision. " + ex.Message });
-            }
+            var theReturnRevModel = await ProcessDataAccess.SaveStepSeqToRevision(theStepSeqList);
+
+            return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Process saved successfully." });
         }
 
         public async Task<IActionResult> OnPostLock()
         {
-            try
+            var theStepSeqList = new List<StepSeqModel>();
+
+            for (int i = 0; i < CurrentStepIds.Count; i++)
             {
-                var theStepSeqList = new List<StepSeqModel>();
-
-                for (int i = 0; i < CurrentStepIds.Count; i++)
+                theStepSeqList.Add(new StepSeqModel
                 {
-                    theStepSeqList.Add(new StepSeqModel
-                    {
-                        StepId = CurrentStepIds[i],
-                        OperationId = CurrentOperationIds[i],
-                        Sequence = Convert.ToInt16(i + 1),
-                        ProcessId = CurrentProcessId,
-                        RevisionId = CurrentRevId
-                    });
-                }
-
-                var thePassBackModel = new PassBackProcessRevStepSeqModel() 
-                {
+                    StepId = CurrentStepIds[i],
+                    OperationId = CurrentOperationIds[i],
+                    Sequence = Convert.ToInt16(i + 1),
                     ProcessId = CurrentProcessId,
-                    ProcessRevisionId = CurrentRevId,
-                    StepSeqList = theStepSeqList
-                };
-
-                var theReturnRevModel = await ProcessDataAccess.LockRevision(thePassBackModel);
-
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Revision was locked successfully." });
+                    RevisionId = CurrentRevId
+                });
             }
-            catch (Exception ex)
+
+            var thePassBackModel = new PassBackProcessRevStepSeqModel()
             {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while locking the revision. " + ex.Message });
-            }
+                ProcessId = CurrentProcessId,
+                ProcessRevisionId = CurrentRevId,
+                StepSeqList = theStepSeqList
+            };
 
+            var theReturnRevModel = await ProcessDataAccess.LockRevision(thePassBackModel);
+
+            return RedirectToPage("ProcessRevMaintenance", new { aProcessId = theReturnRevModel.ProcessId, aMessage = "Revision was locked successfully." });
         }
 
         public async Task<IActionResult> OnPostCopy()
         {
-            try
-            {
-                CurrentProcess.ProcessId = CurrentProcessId;
-                CurrentProcess.Name = NewProcessName;
-                CurrentRev.Comments = Comment;
-                CurrentRev.CreatedByEmp = EmpNumber;
-                var tempRevList = new List<ProcessRevisionModel>(); //This only exists to add the current rev to and then to be assigned to the currentProcess.revisions becasue its an IEnumerable
-                tempRevList.Add(CurrentRev);
-                CurrentProcess.Revisions = tempRevList;
-                var result = await ProcessDataAccess.CopyToNewProcessFromExisting(CurrentProcess);
+            CurrentProcess.ProcessId = CurrentProcessId;
+            CurrentProcess.Name = NewProcessName;
+            CurrentRev.Comments = Comment;
+            CurrentRev.CreatedByEmp = EmpNumber;
+            var tempRevList = new List<ProcessRevisionModel>(); //This only exists to add the current rev to and then to be assigned to the currentProcess.revisions becasue its an IEnumerable
+            tempRevList.Add(CurrentRev);
+            CurrentProcess.Revisions = tempRevList;
+            var result = await ProcessDataAccess.CopyToNewProcessFromExisting(CurrentProcess);
 
-                ModelState.Remove("CurrentProcessId");
+            ModelState.Remove("CurrentProcessId");
 
-                await SetUpProperties(result.ProcessId);
-                return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "Process was successfully copied." });
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = "Something went wrong while copying the process. " + ex.Message });
-            }
+            await SetUpProperties(result.ProcessId);
+            return RedirectToPage("ProcessRevMaintenance", new { aProcessId = result.ProcessId, aMessage = "Process was successfully copied." });
         }
 
         public async Task SetUpProperties(int aProcessId)
@@ -247,7 +191,7 @@ namespace ArmisWebsite
             {
                 process.Revisions.OrderByDescending(i => i.ProcessRevId);
 
-                if(process.Name == "Test Process 1") { var TEST = "This is the process I am looking for."; }
+                if (process.Name == "Test Process 1") { var TEST = "This is the process I am looking for."; }
             }
 
             var theSteps = await StepDataAccess.GetAllSteps();

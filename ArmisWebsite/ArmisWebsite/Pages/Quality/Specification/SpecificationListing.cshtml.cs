@@ -31,17 +31,9 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<IActionResult> OnGet()
         {
-            try
-            {
-                await SetUpProperties();
+            await SetUpProperties();
 
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
-            ;
+            return Page();
         }
 
         public async Task SetUpProperties()

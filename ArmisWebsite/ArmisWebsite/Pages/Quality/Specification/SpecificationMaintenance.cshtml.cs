@@ -116,137 +116,123 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<IActionResult> OnGet(int? aSpecId, string aMessage = null)
         {
-            try
+            Message = new PopUpMessageModel()
             {
-                Message = new PopUpMessageModel()
-                {
-                    Text = aMessage
-                };
-                if (aMessage != null) { Message.IsMessageGood = true; }
+                Text = aMessage
+            };
+            if (aMessage != null) { Message.IsMessageGood = true; }
 
-                if (aSpecId != 0 && aSpecId != null)
+            if (aSpecId != 0 && aSpecId != null)
+            {
+                if (CurrentSpecId == 0)
                 {
-                    if (CurrentSpecId == 0)
-                    {
-                        //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. This is needed otherwise it will complain that (int != int?).
-                        CurrentSpecId = aSpecId ?? 0;
-                    }
-
+                    //?? is a null checker (null coalescing operator).  So if aSpecId is not null, it will be applied to CurrentSpecId.  If it is null (can't happen becuase if statement) CurrentSpecId = 0. This is needed otherwise it will complain that (int != int?).
+                    CurrentSpecId = aSpecId ?? 0;
                 }
 
-                await SetUpProperties(CurrentSpecId);
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
             }
 
+            await SetUpProperties(CurrentSpecId);
+
+            return Page();
         }
 
         public async Task<ActionResult> OnPost()
         {
             Message = new PopUpMessageModel();
 
-            if (!ModelState.IsValid) //Is this even used?
+            if (!ModelState.IsValid) //ToDo: Is this even used?
             {
                 Message.Text = ModelState.ToString();
                 Message.IsMessageGood = false;
-                
+
                 return Page();
             }
-            try
+
+            var theSpec = new SpecModel()
             {
-                var theSpec = new SpecModel()
-                {
-                    Id = CurrentSpecId,
-                    Code = SpecCode
-                };
+                Id = CurrentSpecId,
+                Code = SpecCode
+            };
 
-                var theSpecRev = new SpecRevModel()
-                {
-                    //Date & Time Modified will be set at the API level.
-                    SpecId = CurrentSpecId,
-                    Description = SpecDescription,
-                    ExternalRev = ExternalRev,
-                    EmployeeNumber = 941,
-                    SamplePlanId = SamplePlanId
-                };
-
-                var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
-
-                byte subLevelSeq = 0;
-
-                //Sublevel 1
-                if (SubLevelName1 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName1, ChoiceList1, IsSubLevelReq1, DefaultChoice1));
-                }
-
-                //Sublevel 2
-                if (SubLevelName2 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName2, ChoiceList2, IsSubLevelReq2, DefaultChoice2));
-                }
-
-                //Sublevel 3
-                if (SubLevelName3 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName3, ChoiceList3, IsSubLevelReq3, DefaultChoice3));
-                }
-
-                //Sublevel 4
-                if (SubLevelName4 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName4, ChoiceList4, IsSubLevelReq4, DefaultChoice4));
-                }
-
-                //Sublevel 5
-                if (SubLevelName5 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName5, ChoiceList5, IsSubLevelReq5, DefaultChoice5));
-                }
-
-                //Sublevel 6
-                if (SubLevelName6 != null)
-                {
-                    subLevelSeq++;
-                    theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName6, ChoiceList6, IsSubLevelReq6, DefaultChoice6));
-                }
-
-
-                theSpecRev.SubLevels = theSubLevelList;
-                var theSpecRevsTempList = new List<SpecRevModel>();
-                theSpecRevsTempList.Add(theSpecRev); //This is just a list of one to hold the rev because Specification Model takes a list of revs, not just one. 
-                theSpec.SpecRevModels = theSpecRevsTempList;
-                var theReturnedSpecId = 0;  //This is the SpecId that will be returned from the DataAccess after creating a new Spec or Reving up a Spec.
-                if (CurrentSpecId == 0) //New Spec
-                {
-                    theReturnedSpecId = await SpecDataAccess.CreateNewHydratedSpec(theSpec);
-                    CurrentSpecId = theReturnedSpecId;
-                    Message.Text = "Spec created successfully.";
-                    Message.IsMessageGood = true;
-                }
-                else if (WasRevUpSelected) //Spec is being Reved-Up.
-                {
-                    theSpec.Id = CurrentSpecId;
-                    theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpecRev);
-                    Message.Text = "Spec reved-up successfully";
-                    Message.IsMessageGood = true;
-                }
-                await SetUpProperties(theReturnedSpecId);
-                return Page();
-            }
-            catch (Exception ex)
+            var theSpecRev = new SpecRevModel()
             {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+                //Date & Time Modified will be set at the API level.
+                SpecId = CurrentSpecId,
+                Description = SpecDescription,
+                ExternalRev = ExternalRev,
+                EmployeeNumber = 941,
+                SamplePlanId = SamplePlanId
+            };
+
+            var theSubLevelList = new List<SpecSubLevelModel>(); //This will be assigned to theSpec.Sublevels at the end.
+
+            byte subLevelSeq = 0;
+
+            //Sublevel 1
+            if (SubLevelName1 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName1, ChoiceList1, IsSubLevelReq1, DefaultChoice1));
             }
+
+            //Sublevel 2
+            if (SubLevelName2 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName2, ChoiceList2, IsSubLevelReq2, DefaultChoice2));
+            }
+
+            //Sublevel 3
+            if (SubLevelName3 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName3, ChoiceList3, IsSubLevelReq3, DefaultChoice3));
+            }
+
+            //Sublevel 4
+            if (SubLevelName4 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName4, ChoiceList4, IsSubLevelReq4, DefaultChoice4));
+            }
+
+            //Sublevel 5
+            if (SubLevelName5 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName5, ChoiceList5, IsSubLevelReq5, DefaultChoice5));
+            }
+
+            //Sublevel 6
+            if (SubLevelName6 != null)
+            {
+                subLevelSeq++;
+                theSubLevelList.Add(BuildSubLevelFromPage(subLevelSeq, SubLevelName6, ChoiceList6, IsSubLevelReq6, DefaultChoice6));
+            }
+
+
+            theSpecRev.SubLevels = theSubLevelList;
+            var theSpecRevsTempList = new List<SpecRevModel>();
+            theSpecRevsTempList.Add(theSpecRev); //This is just a list of one to hold the rev because Specification Model takes a list of revs, not just one. 
+            theSpec.SpecRevModels = theSpecRevsTempList;
+            var theReturnedSpecId = 0;  //This is the SpecId that will be returned from the DataAccess after creating a new Spec or Reving up a Spec.
+            if (CurrentSpecId == 0) //New Spec
+            {
+                theReturnedSpecId = await SpecDataAccess.CreateNewHydratedSpec(theSpec);
+                CurrentSpecId = theReturnedSpecId;
+                Message.Text = "Spec created successfully.";
+                Message.IsMessageGood = true;
+            }
+            else if (WasRevUpSelected) //Spec is being Reved-Up.
+            {
+                theSpec.Id = CurrentSpecId;
+                theReturnedSpecId = await SpecDataAccess.RevUpSpec(theSpecRev);
+                Message.Text = "Spec reved-up successfully";
+                Message.IsMessageGood = true;
+            }
+            await SetUpProperties(theReturnedSpecId);
+            return Page();
         }
 
         //As of now, this will only get hit if a spec id is passed into the page.

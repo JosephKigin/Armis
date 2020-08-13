@@ -26,17 +26,9 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGet()
         {
-            try
-            {
-                var theSteps = await StepDataAccess.GetAllSteps();
-                Steps = theSteps.OrderBy(i => i.StepId).ToList();
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
-
+            var theSteps = await StepDataAccess.GetAllSteps();
+            Steps = theSteps.OrderBy(i => i.StepId).ToList();
+            return Page();
         }
     }
 }

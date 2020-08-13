@@ -55,100 +55,78 @@ namespace ArmisWebsite
             OperationDataAccess = anOperationDataAccess;
         }
 
-        public async Task<ActionResult> OnGet( string aMessage, bool? isMessageGood, int anOperationId = 0)
+        public async Task<ActionResult> OnGet(string aMessage, bool? isMessageGood, int anOperationId = 0)
         {
-            try
-            {
-                await SetUpPageProperties(aMessage, isMessageGood, anOperationId);
+            await SetUpPageProperties(aMessage, isMessageGood, anOperationId);
 
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
+            return Page();
 
         }
 
         public async Task<ActionResult> OnPost()
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var theCurrentOperation = new OperationModel()
                 {
-                    var theCurrentOperation = new OperationModel()
-                    {
-                        Name = CurrentOperationName,
-                        OperShortName = CurrentOperationCode,
-                        DefaultDueDays = CurrentOperationDefaultDueDays,
-                        ThicknessIsRequired = CurrentOperationThicknessReq,
-                        Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
-                    };
+                    Name = CurrentOperationName,
+                    OperShortName = CurrentOperationCode,
+                    DefaultDueDays = CurrentOperationDefaultDueDays,
+                    ThicknessIsRequired = CurrentOperationThicknessReq,
+                    Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
+                };
 
-                    var theReturnMessage = "";
-                    OperationModel result;
+                var theReturnMessage = "";
+                OperationModel result;
 
-                    if (CurrentOperationId == 0) //If the operation ID is 0, then a new operation is to be created
-                    {
-                        result = await OperationDataAccess.CreateOperation(theCurrentOperation);
+                if (CurrentOperationId == 0) //If the operation ID is 0, then a new operation is to be created
+                {
+                    result = await OperationDataAccess.CreateOperation(theCurrentOperation);
 
-                        theReturnMessage = "New operation was created successfully.";
-                    }
-                    else //If the operation Id is not 0, then the operation with the ID selected is to be updated
-                    {
-                        theCurrentOperation.Id = CurrentOperationId;
+                    theReturnMessage = "New operation was created successfully.";
+                }
+                else //If the operation Id is not 0, then the operation with the ID selected is to be updated
+                {
+                    theCurrentOperation.Id = CurrentOperationId;
 
-                        result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
+                    result = await OperationDataAccess.UpdateOperation(theCurrentOperation);
 
-                        theReturnMessage = "The operation was updated successfully.";
-                    }
-
-                    return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aMessage = theReturnMessage, isMessageGood = true });
+                    theReturnMessage = "The operation was updated successfully.";
                 }
 
-                await SetUpPageProperties("Missing fields", false);
-                return Page();
+                return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aMessage = theReturnMessage, isMessageGood = true });
             }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
+
+            await SetUpPageProperties("Missing fields", false);
+            return Page();
 
         }
 
         public async Task SetUpPageProperties(string aMessage, bool? isMessageGood, int anOperationId = 0)
         {
-            try
+            Message = new PopUpMessageModel()
             {
-                Message = new PopUpMessageModel()
-                {
-                    Text = aMessage,
-                    IsMessageGood = isMessageGood
-                };
+                Text = aMessage,
+                IsMessageGood = isMessageGood
+            };
 
-                var theAllOperationsTemp = await OperationDataAccess.GetAllOperations();
-                AllOperations = theAllOperationsTemp.OrderBy(i => i.Name).ToList();
+            var theAllOperationsTemp = await OperationDataAccess.GetAllOperations();
+            AllOperations = theAllOperationsTemp.OrderBy(i => i.Name).ToList();
 
-                var theAllOperationGroupsTemp = await OperationDataAccess.GetAllOperationGroups();
-                AllOperationGroups = theAllOperationGroupsTemp.OrderBy(i => i.Name).ToList();
+            var theAllOperationGroupsTemp = await OperationDataAccess.GetAllOperationGroups();
+            AllOperationGroups = theAllOperationGroupsTemp.OrderBy(i => i.Name).ToList();
 
-                //Writing all the values for the current operation to the bound properties.
-                if (anOperationId != 0)
-                {
-                    var theCurrentOperation = AllOperations.FirstOrDefault(i => i.Id == anOperationId);
-                    CurrentOperationId = theCurrentOperation.Id;
-                    CurrentOperationName = theCurrentOperation.Name;
-                    CurrentOperationCode = theCurrentOperation.OperShortName;
-                    CurrentOperationDefaultDueDays = theCurrentOperation.DefaultDueDays;
-                    CurrentOperationThicknessReq = theCurrentOperation.ThicknessIsRequired;
-                    CurrentOperationGroupId = theCurrentOperation.Group.Id;
-                    CurrentOperationGroupName = theCurrentOperation.Group.Name;
-                }
-            }
-            catch (Exception)
+            //Writing all the values for the current operation to the bound properties.
+            if (anOperationId != 0)
             {
-
-                throw;
+                var theCurrentOperation = AllOperations.FirstOrDefault(i => i.Id == anOperationId);
+                CurrentOperationId = theCurrentOperation.Id;
+                CurrentOperationName = theCurrentOperation.Name;
+                CurrentOperationCode = theCurrentOperation.OperShortName;
+                CurrentOperationDefaultDueDays = theCurrentOperation.DefaultDueDays;
+                CurrentOperationThicknessReq = theCurrentOperation.ThicknessIsRequired;
+                CurrentOperationGroupId = theCurrentOperation.Group.Id;
+                CurrentOperationGroupName = theCurrentOperation.Group.Name;
             }
         }
     }

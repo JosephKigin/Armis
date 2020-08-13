@@ -68,6 +68,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                               .IncludeOptimized(i => i.Spec)
                                                                               .IncludeOptimized(i => i.CustomerNavigation)
                                                                               .IncludeOptimized(i => i.Process)
+                                                                              .IncludeOptimized(i => i.Process.Process)
                                                                               .IncludeOptimized(i => i.SpecProcessAssignOption)
                                                                               .ToListAsync();
 
@@ -102,6 +103,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                               .IncludeOptimized(i => i.Spec)
                                                                               .IncludeOptimized(i => i.CustomerNavigation)
                                                                               .IncludeOptimized(i => i.Process)
+                                                                              .IncludeOptimized(i => i.Process.Process)
                                                                               .IncludeOptimized(i => i.SpecProcessAssignOption)
                                                                               .ToListAsync();
 
@@ -119,7 +121,6 @@ namespace Armis.DataLogic.Services.QualityServices
                     var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
                     model.Customer = tempCust.ToModel();
                 }
-
             }
 
             return result;
@@ -143,6 +144,7 @@ namespace Armis.DataLogic.Services.QualityServices
                                                                               .IncludeOptimized(i => i.Spec)
                                                                               .IncludeOptimized(i => i.CustomerNavigation)
                                                                               .IncludeOptimized(i => i.Process)
+                                                                              .IncludeOptimized(i => i.Process.Process)
                                                                               .IncludeOptimized(i => i.SpecProcessAssignOption)
                                                                               .ToListAsync();
 
@@ -166,6 +168,38 @@ namespace Armis.DataLogic.Services.QualityServices
             return result;
         }
 
+        public async Task<IEnumerable<SpecProcessAssignModel>> GetHydratedHistorySpecProcessAssignsForSpec(int aSpecId)
+        {
+            await Context.SpecChoice.LoadAsync();
+            await Context.SpecSubLevel.LoadAsync();
+            await Context.Step.Where(i => i.StepCategoryId == 1 || i.StepCategoryId == 2).LoadAsync(); //1 is BAKE, 2 is MASK
+            var theSpecProcessAssignEntities = await Context.SpecProcessAssign.Where(i => i.SpecId == aSpecId)
+                                                        .IncludeOptimized(i => i.Spec)
+                                                        .IncludeOptimized(i => i.CustomerNavigation)
+                                                        .IncludeOptimized(i => i.Process)
+                                                        .IncludeOptimized(i => i.Process.Process)
+                                                        .IncludeOptimized(i => i.SpecProcessAssignOption)
+                                                        .ToListAsync();
+
+            if (theSpecProcessAssignEntities == null || !theSpecProcessAssignEntities.Any()) { return null; } //Returns null if there is no history for that spec id.
+
+            var result = theSpecProcessAssignEntities.ToHydratedModels();
+
+            //Process and Customer are not part of the model extension for specProcessAssign.ToModel(), so they are both pulled and loaded into the model here.  This is because of all the addition ThenIncludes that would be necessary to load all the information into one entity variable. 
+            foreach (var model in result)
+            {
+                model.ProcessRevision.ProcessName = (await Context.Process.FirstOrDefaultAsync(i => i.ProcessId == model.ProcessRevision.ProcessId)).Name;
+                model.SpecificationRevision.SpecCode = (await Context.Specification.FirstOrDefaultAsync(i => i.SpecId == model.SpecificationRevision.SpecId)).SpecCode;
+                if (model.CustomerId != null)
+                {
+                    var tempCust = (await Context.Customer.FirstOrDefaultAsync(i => i.CustId == model.CustomerId));
+                    model.Customer = tempCust.ToModel();
+                }
+            }
+
+            return result;
+        }
+
         public async Task<SpecProcessAssignModel> CopyAfterReview(SpecProcessAssignModel aSpecProcessAssignModel) //This will be the old SpecProcessAssignModel so the AssignId will need to be updated.  "Keep" on the front-end
         {
             using (var transaction = await Context.Database.BeginTransactionAsync())
@@ -184,9 +218,9 @@ namespace Armis.DataLogic.Services.QualityServices
 
                 if (specProcessAssignFamily == null || !specProcessAssignFamily.Any()) //There aren't any previous assigns for this spec/spec rev
                 {
-                    aSpecProcessAssignModel.SpecAssignId = 1;
+                    aSpecProcessAssignModel.SpecAssignId = 2;
                     foreach (var option in aSpecProcessAssignModel.SpecProcessAssignOptionModels) //Update options for options
-                    { option.SpecAssignId = 1; }
+                    { option.SpecAssignId = 2; }
                 }
                 else //There are assign Ids already for this spec/spec rev
                 {
@@ -216,13 +250,25 @@ namespace Armis.DataLogic.Services.QualityServices
 
             var currentRev = await Context.SpecificationRevision.Where(i => i.SpecId == aSpecId).MaxAsync(i => i.SpecRevId);
 
-            var currentChocies = await Context.SpecChoice.Where(i => i.SpecId == aSpecId && i.SpecRevId == currentRev).ToListAsync();
+            var currentSubLevels = await Context.SpecSubLevel.Where(i => i.SpecId == aSpecId && i.SpecRevId == currentRev).Include(i => i.SpecChoice).ToListAsync();
 
             foreach (var option in anOptionModels)
             {
-                if (currentChocies.FirstOrDefault(i => i.SubLevelSeqId == option.SubLevelSeqId && i.ChoiceSeqId == option.ChoiceSeqId) == null)
+                foreach (var sublevel in currentSubLevels)
                 {
-                    isViable = false;
+                    if (sublevel.SpecChoice.FirstOrDefault(i => i.SubLevelSeqId == option.SubLevelSeqId && i.ChoiceSeqId == option.ChoiceSeqId) == null) //If the option doesn't exist in the sublevel, then that option is not viable.
+                    {
+                        isViable = false;
+                    }
+
+                    if (sublevel.IsRequired) //If a sublevel is required, then check to make sure there is an option selected for that sublevel. If there isn't, then the options are not viable.
+                    {
+                        if (anOptionModels.FirstOrDefault(i => i.SubLevelSeqId == sublevel.SubLevelSeqId) == null)
+                        {
+                            isViable = false;
+                        }
+                    }
+
                 }
             }
 

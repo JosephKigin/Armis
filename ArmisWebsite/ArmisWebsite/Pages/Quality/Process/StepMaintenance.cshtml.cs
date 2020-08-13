@@ -90,40 +90,31 @@ namespace ArmisWebsite
                 return Page();
             }
 
-            try
+            if (Step == null) { Step = new StepModel(); }
+            Step.Instructions = StepInstructions;
+            Step.SignOffIsRequired = (IsSignOffRequired == 1) ? true : false;
+            Step.StepName = StepName;
+            Step.StepCategory = await StepDataAccess.GetStepCategoryById(StepCategoryId);
+
+            var currentStepsWithSameName = await StepDataAccess.GetStepByName(StepName);
+            if (currentStepsWithSameName != null && currentStepsWithSameName.Any())
             {
-                if (Step == null) { Step = new StepModel(); }
-                Step.Instructions = StepInstructions;
-                Step.SignOffIsRequired = (IsSignOffRequired == 1) ? true : false;
-                Step.StepName = StepName;
-                Step.StepCategory = await StepDataAccess.GetStepCategoryById(StepCategoryId);
-
-                var currentStepsWithSameName = await StepDataAccess.GetStepByName(StepName);
-                if (currentStepsWithSameName != null && currentStepsWithSameName.Any())
-                {
-                    var stepExistsMessage = "A step with that name already exists.";
-                    return RedirectToPage("StepMaintenance", new { aStepId = currentStepsWithSameName[0].StepId, aMessage = stepExistsMessage });
-                }
-
-                var theStepId = await StepDataAccess.PostNewStep(Step);
-
-                return RedirectToPage("StepMaintenance", new { aStepId = theStepId.StepId, aMessage = "Step saved successfully", isMessageGood = true });
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { exMessage = "Could not create step successfully" });  ////Todo: Need to implement logging.
+                var stepExistsMessage = "A step with that name already exists.";
+                return RedirectToPage("StepMaintenance", new { aStepId = currentStepsWithSameName[0].StepId, aMessage = stepExistsMessage });
             }
 
+            var theStepId = await StepDataAccess.PostNewStep(Step);
+
+            return RedirectToPage("StepMaintenance", new { aStepId = theStepId.StepId, aMessage = "Step saved successfully", isMessageGood = true });
         }
 
         private async Task SetUpPage()
-        {            
+        {
             var theSteps = await StepDataAccess.GetAllSteps();
             AllSteps = theSteps.OrderBy(i => i.StepId).ToList();
 
             var theStepCategories = await StepDataAccess.GetAllStepCategoryies();
             StepCategories = theStepCategories.ToList();
-
         }
     }
 }

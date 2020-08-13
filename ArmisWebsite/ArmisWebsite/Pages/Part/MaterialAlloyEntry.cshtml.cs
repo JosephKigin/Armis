@@ -26,7 +26,7 @@ namespace ArmisWebsite.Pages.Part
         [BindProperty]
         [Required, StringLength(50)]
         public string Description { get; set; }
-        
+
         [BindProperty]
         [Required]
         public int SeriesId { get; set; }
@@ -50,29 +50,22 @@ namespace ArmisWebsite.Pages.Part
         {
             if (ModelState.IsValid)
             {
-                try
+                var alloyToAdd = new MaterialAlloyModel()
                 {
-                    var alloyToAdd = new MaterialAlloyModel()
-                    {
-                        Description = Description,
-                        MaterialSeriesId = SeriesId
-                    };
+                    Description = Description,
+                    MaterialSeriesId = SeriesId
+                };
 
-                    var result = await MaterialAlloyDataAccess.CreateMaterialAlloy(alloyToAdd); //Not sure what to do with the result.  It will just be the alloy passed in but with an updated alloyId.
-                    await SetUpProperties();
+                var result = await MaterialAlloyDataAccess.CreateMaterialAlloy(alloyToAdd); //Not sure what to do with the result.  It will just be the alloy passed in but with an updated alloyId.
+                await SetUpProperties();
 
-                    Message = new PopUpMessageModel()
-                    {
-                        Text = "Alloy saved successfully",
-                        IsMessageGood = true
-                    };
-
-                    return Page();
-                }
-                catch (Exception ex)
+                Message = new PopUpMessageModel()
                 {
-                    return RedirectToPage("/Error", new { ExMessage = "Failed to save material alloy" });
-                }
+                    Text = "Alloy saved successfully",
+                    IsMessageGood = true
+                };
+
+                return Page();
             }
             else
             {

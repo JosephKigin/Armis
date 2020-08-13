@@ -17,7 +17,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
         /// <param name="aStep">Model</param>
         /// <param name="anOperation">Model</param>
         /// <returns>Basic Step Sequence Model</returns>
-        public static StepSeqModel ToModel(this ProcessStepSeq aStepSeq, StepModel aStep, OperationModel anOperation) //TODO: unsure if these should default to null or not or not be there at all.
+        public static StepSeqModel ToModel(this ProcessStepSeq aStepSeq) 
         {
             return new StepSeqModel()
             {
@@ -26,8 +26,8 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
                 StepId = aStepSeq.StepId,
                 Sequence = aStepSeq.StepSeq,
                 OperationId = aStepSeq.OperationId,
-                Step = aStep,
-                Operation = anOperation
+                Step = aStepSeq.Step.ToModel(),
+                Operation = aStepSeq.Operation.ToModel()
             };
         }
 

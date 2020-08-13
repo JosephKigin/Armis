@@ -30,17 +30,17 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
         public ISpecDataAccess SpecificationDataAccess { get; set; }
 
         //Models
-        //Middle section of page
         public List<ProcessModel> AllProcessesWithCurrentRev { get; set; }
         public List<CustomerModel> AllCustomers { get; set; }
         public List<SpecModel> AllSpecifications { get; set; }
 
-        //Right section of page
         public List<SpecProcessAssignModel> SpecProcessAssignsForCurrentSpec { get; set; }
 
         public SpecModel CurrentSpec { get; set; } //After a spec is selected by the used, the page will reload and this will be set to the selected spec and the page will be created based on it.
         public SpecRevModel CurrentSpecCurrentRev { get; set; }
         public bool IsReviewNeededForCurrentSpec { get; set; }
+
+        public List<SpecProcessAssignmentModel> HistorySpecProcAssigns { get; set; }
 
         //Front-End
         public PopUpMessageModel Message { get; set; }
@@ -105,146 +105,134 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
 
         public async Task<ActionResult> OnGet(int? aSpecId, string aMessage, bool? isMessageGood)
         {
-            try
-            {
-                Message = new PopUpMessageModel()
-                {
-                    Text = aMessage,
-                    IsMessageGood = isMessageGood
-                };
 
-                if (aSpecId != null)
-                {
-                    int tempSpecId = aSpecId ?? default(int); //Converts the int? to an int.  The part after ?? means that if aSpecId == null, then assign a 0 to tempSpecId, but the if() handles null.
-                    CurrentSpec = await SpecificationDataAccess.GetHydratedCurrentRevOfSpec(tempSpecId);
-                    CurrentSpecCurrentRev = CurrentSpec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault();
-                    SpecId = CurrentSpec.Id;
-                    SpecInternalRevId = CurrentSpecCurrentRev.InternalRev;
-                }
-                await SetUpProperties();
-                return Page();
-            }
-            catch (Exception ex)
+            Message = new PopUpMessageModel()
             {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
+                Text = aMessage,
+                IsMessageGood = isMessageGood
+            };
 
+            if (aSpecId != null)
+            {
+                int tempSpecId = aSpecId ?? default(int); //Converts the int? to an int.  The part after ?? means that if aSpecId == null, then assign a 0 to tempSpecId, but the if() handles null.
+                CurrentSpec = await SpecificationDataAccess.GetHydratedCurrentRevOfSpec(tempSpecId);
+                CurrentSpecCurrentRev = CurrentSpec.SpecRevModels.OrderByDescending(i => i.InternalRev).FirstOrDefault();
+                SpecId = CurrentSpec.Id;
+                SpecInternalRevId = CurrentSpecCurrentRev.InternalRev;
+
+                //ToDo: Get history SPAs for the spec selected.  Populate a history modal or collapsable or something like that
+            }
+            await SetUpProperties();
+            return Page();
         }
 
         public async Task<ActionResult> OnPost()
         {
-            try
+            var optionModels = new List<SpecProcessAssignOptionModel>();
+
+            if (ChoiceId1 != null)
             {
-                var optionModels = new List<SpecProcessAssignOptionModel>();
-
-                if(ChoiceId1 != null)
-                {
-                    optionModels.Add( new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 1, //TODO: Should this be hard-coded to 1?
-                        ChoiceSeqId = (byte)ChoiceId1
-                    });
-                }
-
-                if (ChoiceId2 != null)
-                {
-                    optionModels.Add(new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 2, //TODO: Should this be hard-coded to 2?
-                        ChoiceSeqId = (byte)ChoiceId2
-                    });
-                }
-
-                if (ChoiceId3 != null)
-                {
-                    optionModels.Add(new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 3, //TODO: Should this be hard-coded to 3?
-                        ChoiceSeqId = (byte)ChoiceId3
-                    });
-                }
-
-                if (ChoiceId4 != null)
-                {
-                    optionModels.Add(new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 4, //TODO: Should this be hard-coded to 4?
-                        ChoiceSeqId = (byte)ChoiceId4
-                    });
-                }
-
-                if (ChoiceId5 != null)
-                {
-                    optionModels.Add(new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 5, //TODO: Should this be hard-coded to 5?
-                        ChoiceSeqId = (byte)ChoiceId5
-                    });
-                }
-                
-                if (ChoiceId6 != null)
-                {
-                    optionModels.Add(new SpecProcessAssignOptionModel()
-                    {
-                        SpecId = SpecId,
-                        SpecRevId = SpecInternalRevId,
-                        SubLevelSeqId = 6, //TODO: Should this be hard-coded to 6?
-                        ChoiceSeqId = (byte)ChoiceId6
-                    });
-                }
-
-                var theSpecProcessAssignModel = new Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel()
+                optionModels.Add(new SpecProcessAssignOptionModel()
                 {
                     SpecId = SpecId,
                     SpecRevId = SpecInternalRevId,
-                    CustomerId = CustomerId,
-                    ProcessId = ProcessId,
-                    ProcessRevId = ProcessRevId,
-                    SpecProcessAssignOptionModels = optionModels
-                };
-
-                var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, CustomerId ?? 0, optionModels);
-
-                if (ModelState.IsValid && areChoicesUnique)
-                {
-                    await SpecProcessAssignDataAccess.PostSpecProcessAssign(theSpecProcessAssignModel);
-
-                    return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Specification-Process assignment saved successfully", isMessageGood = true });
-                }
-                else
-                {
-                    if (!ModelState.IsValid)
-                    {
-                        Message = new PopUpMessageModel()
-                        {
-                            Text = "Process is required",
-                            IsMessageGood = false
-                        };
-
-                        await SetUpProperties();
-                        return Page();
-                    }
-                    else if (!areChoicesUnique)
-                    {
-                        return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Another Specificaiton-Process assignment has already been created with those options", isMessageGood = false });
-                    }
-
-                    return RedirectToPage("/Error", new { ExMessage = "An unknown error occured" });
-                }
+                    SubLevelSeqId = 1, //TODO: Should this be hard-coded to 1?
+                    ChoiceSeqId = (byte)ChoiceId1
+                });
             }
-            catch (Exception ex)
+
+            if (ChoiceId2 != null)
             {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
+                optionModels.Add(new SpecProcessAssignOptionModel()
+                {
+                    SpecId = SpecId,
+                    SpecRevId = SpecInternalRevId,
+                    SubLevelSeqId = 2, //TODO: Should this be hard-coded to 2?
+                    ChoiceSeqId = (byte)ChoiceId2
+                });
+            }
+
+            if (ChoiceId3 != null)
+            {
+                optionModels.Add(new SpecProcessAssignOptionModel()
+                {
+                    SpecId = SpecId,
+                    SpecRevId = SpecInternalRevId,
+                    SubLevelSeqId = 3, //TODO: Should this be hard-coded to 3?
+                    ChoiceSeqId = (byte)ChoiceId3
+                });
+            }
+
+            if (ChoiceId4 != null)
+            {
+                optionModels.Add(new SpecProcessAssignOptionModel()
+                {
+                    SpecId = SpecId,
+                    SpecRevId = SpecInternalRevId,
+                    SubLevelSeqId = 4, //TODO: Should this be hard-coded to 4?
+                    ChoiceSeqId = (byte)ChoiceId4
+                });
+            }
+
+            if (ChoiceId5 != null)
+            {
+                optionModels.Add(new SpecProcessAssignOptionModel()
+                {
+                    SpecId = SpecId,
+                    SpecRevId = SpecInternalRevId,
+                    SubLevelSeqId = 5, //TODO: Should this be hard-coded to 5?
+                    ChoiceSeqId = (byte)ChoiceId5
+                });
+            }
+
+            if (ChoiceId6 != null)
+            {
+                optionModels.Add(new SpecProcessAssignOptionModel()
+                {
+                    SpecId = SpecId,
+                    SpecRevId = SpecInternalRevId,
+                    SubLevelSeqId = 6, //TODO: Should this be hard-coded to 6?
+                    ChoiceSeqId = (byte)ChoiceId6
+                });
+            }
+
+            var theSpecProcessAssignModel = new Armis.BusinessModels.QualityModels.Spec.SpecProcessAssignModel()
+            {
+                SpecId = SpecId,
+                SpecRevId = SpecInternalRevId,
+                CustomerId = CustomerId,
+                ProcessId = ProcessId,
+                ProcessRevId = ProcessRevId,
+                SpecProcessAssignOptionModels = optionModels
+            };
+
+            var areChoicesUnique = await SpecProcessAssignDataAccess.VerifyUniqueChoices(SpecId, SpecInternalRevId, CustomerId ?? 0, optionModels);
+
+            if (ModelState.IsValid && areChoicesUnique)
+            {
+                await SpecProcessAssignDataAccess.PostSpecProcessAssign(theSpecProcessAssignModel);
+
+                return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Specification-Process assignment saved successfully", isMessageGood = true });
+            }
+            else
+            {
+                if (!ModelState.IsValid)
+                {
+                    Message = new PopUpMessageModel()
+                    {
+                        Text = "Process is required",
+                        IsMessageGood = false
+                    };
+
+                    await SetUpProperties();
+                    return Page();
+                }
+                else if (!areChoicesUnique)
+                {
+                    return RedirectToPage("/Quality/Specification/SpecProcessAssign", new { aMessage = "Another Specificaiton-Process assignment has already been created with those options", isMessageGood = false });
+                }
+
+                return RedirectToPage("/Error", new { ExMessage = "An unknown error occured" });
             }
         }
 
@@ -264,7 +252,7 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             if (CurrentSpec != null)
             {
                 var spaForSpecResult = await SpecProcessAssignDataAccess.GetAllActiveHydratedSpecProcessAssignForSpec(CurrentSpec.Id);
-                if (spaForSpecResult != null && spaForSpecResult.Any()) 
+                if (spaForSpecResult != null && spaForSpecResult.Any())
                 { SpecProcessAssignsForCurrentSpec = spaForSpecResult.ToList(); }
 
                 IsReviewNeededForCurrentSpec = await SpecProcessAssignDataAccess.CheckIfReviewIsNeededForSpecId(CurrentSpec.Id);
