@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Exceptions;
+using Serilog.Formatting.Compact;
 
 namespace Armis.Api
 {
@@ -23,7 +25,8 @@ namespace Armis.Api
         {
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .MinimumLevel.Information()
+                .Enrich.WithExceptionDetails()
+                .MinimumLevel.Warning()
                 .WriteTo.File(Configuration["LoggingLocation"],
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true)

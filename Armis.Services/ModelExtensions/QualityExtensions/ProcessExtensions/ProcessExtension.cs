@@ -18,7 +18,7 @@ namespace Armis.DataLogic.ModelExtensions.QualityExtensions.ProcessExtensions
 
                 foreach (var stepSeq in rev.ProcessStepSeq)
                 {
-                    var theStepSeqModel = stepSeq.ToModel(stepSeq.Step.ToModel(), stepSeq.Operation.ToModel());
+                    var theStepSeqModel = stepSeq.ToModel();
                     theStepSeqModels.Add(theStepSeqModel);
                 }
 

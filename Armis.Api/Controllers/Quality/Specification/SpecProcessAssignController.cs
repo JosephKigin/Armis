@@ -107,6 +107,23 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet("{aSpecId}")]
+        public async Task<ActionResult<IEnumerable<SpecProcessAssignModel>>> GetHydratedHistorySpecProcessAssignForSpec(int aSpecId)
+        {
+            try
+            {
+                var data = await SpecProcessAssignService.GetHydratedHistorySpecProcessAssignsForSpec(aSpecId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SpecProcessAssignController.GetHydratedHistorySpecProcessAssignForSpec(int aSpecId) Not able to get spec process assign history for spec ID ({specId}).  | Message: {exMessage} | StackTrace: {stackTrace}", aSpecId, ex.Message, ex.StackTrace);
+
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{aSpecId}")]
         public async Task<ActionResult<bool>> CheckIfReviewIsNeededForSpecId(int aSpecId)
         {
             try

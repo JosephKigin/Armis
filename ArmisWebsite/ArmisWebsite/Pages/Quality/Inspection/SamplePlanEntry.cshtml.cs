@@ -68,63 +68,55 @@ namespace ArmisWebsite.Pages.Quality.Inspection
 
         public async Task<IActionResult> OnPost()
         {
-            try
+            var newSamplePlan = new SamplePlanModel()
             {
-                var newSamplePlan = new SamplePlanModel()
-                {
-                    PlanName = SamplePlanName,
-                    Description = SamplePlanDescription
-                };
-                var tempLevelModelList = new List<SamplePlanLevelModel>();
+                PlanName = SamplePlanName,
+                Description = SamplePlanDescription
+            };
+            var tempLevelModelList = new List<SamplePlanLevelModel>();
 
-                for (int i = 1; i <= AmountOfLevels; i++)
+            for (int i = 1; i <= AmountOfLevels; i++)
+            {
+                var fromValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsFrom" + i]);
+                int toValue;
+                if (i == AmountOfLevels) { toValue = int.MaxValue; }
+                else { toValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsTo" + i]); }
+                var newSamplePlanLevel = new SamplePlanLevelModel()
                 {
-                    var fromValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsFrom" + i]);
-                    int toValue;
-                    if(i == AmountOfLevels) { toValue = int.MaxValue; }
-                    else { toValue = int.Parse(HttpContext.Request.Form["inputNumOfPartsTo" + i]); }
-                    var newSamplePlanLevel = new SamplePlanLevelModel()
+                    SamplePlanLevelId = i,
+                    FromQty = fromValue,
+                    ToQty = toValue
+                };
+
+                var tempRejectModelList = new List<SamplePlanRejectModel>();
+
+                for (int j = 1; j <= AmountOfTests; j++)
+                {
+                    var sampleQty = int.Parse(HttpContext.Request.Form["inputSampleNum" + j + "-" + i]);
+                    var rejectQty = int.Parse(HttpContext.Request.Form["inputRejectNum" + j + "-" + i]);
+                    var testTypeId = short.Parse(HttpContext.Request.Form["selectTestType" + j]);
+
+                    var newSamplePlanReject = new SamplePlanRejectModel()
                     {
                         SamplePlanLevelId = i,
-                        FromQty = fromValue,
-                        ToQty = toValue
+                        SampleQty = sampleQty,
+                        RejectAllowQty = rejectQty,
+                        InspectTestTypeId = testTypeId
                     };
 
-                    var tempRejectModelList = new List<SamplePlanRejectModel>();
-
-                    for (int j = 1; j <= AmountOfTests; j++)
-                    {
-                        var sampleQty = int.Parse(HttpContext.Request.Form["inputSampleNum" + j + "-" + i]);
-                        var rejectQty = int.Parse(HttpContext.Request.Form["inputRejectNum" + j + "-" + i]);
-                        var testTypeId = short.Parse(HttpContext.Request.Form["selectTestType" + j]);
-
-                        var newSamplePlanReject = new SamplePlanRejectModel()
-                        {
-                            SamplePlanLevelId = i,
-                            SampleQty = sampleQty,
-                            RejectAllowQty = rejectQty,
-                            InspectTestTypeId = testTypeId
-                        };
-
-                        tempRejectModelList.Add(newSamplePlanReject);
-                    }
-
-                    newSamplePlanLevel.SamplePlanRejectModels = tempRejectModelList;
-
-                    tempLevelModelList.Add(newSamplePlanLevel);
+                    tempRejectModelList.Add(newSamplePlanReject);
                 }
 
-                newSamplePlan.SamplePlanLevelModels = tempLevelModelList;
+                newSamplePlanLevel.SamplePlanRejectModels = tempRejectModelList;
 
-                await SamplePlanDataAccess.CreateNewSamplePlan(newSamplePlan);
-
-                return RedirectToPage("/Quality/Inspection/SamplePlanEntry", new { aMessage = "Sample Plan created successfully", isMessageGood = true });
-
+                tempLevelModelList.Add(newSamplePlanLevel);
             }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
+
+            newSamplePlan.SamplePlanLevelModels = tempLevelModelList;
+
+            await SamplePlanDataAccess.CreateNewSamplePlan(newSamplePlan);
+
+            return RedirectToPage("/Quality/Inspection/SamplePlanEntry", new { aMessage = "Sample Plan created successfully", isMessageGood = true });
 
         }
 

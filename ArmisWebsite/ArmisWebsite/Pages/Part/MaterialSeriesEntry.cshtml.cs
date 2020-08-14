@@ -49,46 +49,38 @@ namespace ArmisWebsite.Pages.Part
 
         public async Task<ActionResult> OnPost()
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var materialSeriesToAdd = new MaterialSeriesModel()
                 {
-                    var materialSeriesToAdd = new MaterialSeriesModel()
-                    {
-                        ShortName = ShortName,
-                        Description = Description,
-                        Type = Type
-                    };
+                    ShortName = ShortName,
+                    Description = Description,
+                    Type = Type
+                };
 
-                    await MaterialSeriesDataAcces.CreateMaterialSeries(materialSeriesToAdd);
+                await MaterialSeriesDataAcces.CreateMaterialSeries(materialSeriesToAdd);
 
-                    Message = new PopUpMessageModel()
-                    {
-                        Text = "Material Series created successfully",
-                        IsMessageGood = true
-                    };
-
-                    await SetUpProperties();
-
-                    return Page();
-                }
-                else
+                Message = new PopUpMessageModel()
                 {
-                    Message = new PopUpMessageModel()
-                    {
-                        Text = "Material Series creation failed",
-                        IsMessageGood = false
-                    };
+                    Text = "Material Series created successfully",
+                    IsMessageGood = true
+                };
 
-                    await SetUpProperties();
+                await SetUpProperties();
 
-                    return Page();
-                }
+                return Page();
             }
-            catch (Exception)
+            else
             {
+                Message = new PopUpMessageModel()
+                {
+                    Text = "Material Series creation failed",
+                    IsMessageGood = false
+                };
 
-                throw;
+                await SetUpProperties();
+
+                return Page();
             }
         }
 

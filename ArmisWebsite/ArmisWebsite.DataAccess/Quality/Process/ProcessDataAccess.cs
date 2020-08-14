@@ -66,8 +66,13 @@ namespace ArmisWebsite.DataAccess.Quality
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<ProcessModel>>(Config["APIAddress"] + "api/Processes/GetHydratedProcessesWithCurrentAnyRev", _httpContextAccessor.HttpContext);
         }
 
-        //UPDATE
-        public async Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel)
+        public async Task<ProcessRevisionModel> GetHydratedCurrentProcessRev(int aProcessId)
+        {
+            return await DataAccessGeneric.HttpGetRequest<ProcessRevisionModel>(Config["APIAddress"] + "api/Processes/GetHydratedProcessRevision/" + aProcessId, _httpContextAccessor.HttpContext);
+        }
+
+    //UPDATE
+    public async Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel)
         {
             return await DataAccessGeneric.HttpPostRequest<ProcessRevisionModel, PassBackProcessRevStepSeqModel>(Config["APIAddress"] + "api/processes/UpdateRevSaveAndLock/", aPassBackModel, _httpContextAccessor.HttpContext);
         }

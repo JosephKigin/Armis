@@ -13,6 +13,7 @@ namespace ArmisWebsite.DataAccess.Quality.Interfaces
         Task<ProcessModel> GetHydratedProcess(int id);
         Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentLockedRev();
         Task<IEnumerable<ProcessModel>> GetHydratedProcessesWithCurrentAnyRev();
+        Task<ProcessRevisionModel> GetHydratedCurrentProcessRev(int aProcessId);
         Task<ProcessModel> PostNewProcess(ProcessModel aProcessModel);
         Task<string> DeleteProcessRevision(int aProcessId, int aProcessRevId);
         Task<ProcessRevisionModel> RevUp(ProcessRevisionModel aProcessRevModel);

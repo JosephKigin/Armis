@@ -18,7 +18,7 @@ namespace Armis.BusinessModels.QualityModels.Spec
         public int ProcessRevId { get; set; }
         public bool Inactive { get; set; }
         public bool IsReviewNeeded { get; set; }
-        public bool? IsViable { get; set; } //This will only be used at the review page to check if the spec choices selected for this spec-process assignment are still viable based on the choices available in the spec.
+        public bool? IsViable { get; set; } //This will only be used at the review page to check if the spec was revved up.  If it was, then the SPA is not viable.
 
         public CustomerModel Customer { get; set; }
         public ProcessRevisionModel ProcessRevision { get; set; }

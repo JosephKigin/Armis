@@ -51,19 +51,11 @@ namespace ArmisWebsite
 
         public async Task<IActionResult> OnGet()
         {
-            try
-            {
-                Message = new PopUpMessageModel(); //This is here to make sure a null reference doesn't happen.
+            Message = new PopUpMessageModel(); //This is here to make sure a null reference doesn't happen.
 
-                await SetUpProperties();
+            await SetUpProperties();
 
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                return RedirectToPage("/Error", new { ExMessage = ex.Message });
-            }
-
+            return Page();
         }
 
         public async Task<IActionResult> OnPostPrint()
