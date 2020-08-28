@@ -111,11 +111,11 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet("{id}")] //This requires a PROCESS id to be sent in.
-        public async Task<ActionResult<ProcessRevisionModel>> GetHydratedProcessRevision(int id)
+        public async Task<ActionResult<ProcessRevisionModel>> GetProcessCurrentHydratedRev(int id)
         {
             try
             {
-                var data = await ProcessService.GetHydratedCurrentProcessRev(id);
+                var data = await ProcessService.GetProcessCurrentHydratedRev(id);
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)

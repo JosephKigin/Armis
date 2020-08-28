@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.Pages.Part.HardnessEntryModel
 @{
     ViewData["Title"] = "HardnessEntry";
@@ -17,34 +17,32 @@
             <div class="col-lg-6">
                 <h5 class="mb-3">Enter New Hardness</h5>
                 <div class="form-inline mb-3 row">
-                    <label class="mr-2 col-lg-4">Short Name: </label>
-                    <input class="form-control col-lg-6" asp-for="ShortName" />
-                </div>
-                <div class="row"><div class="col-lg-4"></div><span class="text-danger" asp-validation-for="ShortName"></span></div>
-                <div class="form-inline mb-3 row">
-                    <label class="mr-2 col-lg-4">Description: </label>
-                    <textarea class="form-control col-lg-6" asp-for="Description"></textarea>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4"></div><span class="text-danger" asp-validation-for="Description"></span>
+                    <label class="col-lg-3">Short Name: </label>
+                    <input class="form-control col-lg-8" asp-for="ShortName" />
+                    <div class="col-lg-3"></div>
+                    <span class="text-danger" asp-validation-for="ShortName"></span>
                 </div>
                 <div class="form-inline mb-3 row">
-                    <label class="mr-2 col-lg-4">Min Hardness: </label>
-                    <input type="number" step="0.000001" class="form-control col-lg-4" asp-for="Min" />
+                    <label class="col-lg-3">Description: </label>
+                    <textarea class="form-control col-lg-8" asp-for="Description"></textarea>
+                    <div class="col-lg-3"></div>
+                    <span class="text-danger" asp-validation-for="Description"></span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4"></div><span class="text-danger" asp-validation-for="Min"></span>
-                </div> 
+                <div class="form-inline mb-3 row">
+                    <label class="col-lg-3">Min Hardness: </label>
+                    <input type="number" step="0.000001"  class="form-control col-lg-8" asp-for="Min" />
+                    <div class="col-lg-3"></div>
+                    <span class="text-danger" asp-validation-for="Min"></span>
+                </div>
                 <div class="form-inline row">
-                    <label class="mr-2 col-lg-4">Max Hardness: </label>
-                    <input type="number" class="form-control col-lg-4" asp-for="Max" />
+                    <label class="col-lg-3">Max Hardness: </label>
+                    <input type="number" step="0.000001" class="form-control col-lg-8" asp-for="Max" />
+                    <div class="col-lg-3"></div>
+                    <span class="text-danger" asp-validation-for="Max"></span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4"></div><span class="text-danger" asp-validation-for="Max"></span>
-                </div>
-                <div class="mr-5 mt-3 float-right">
+                <div class="float-right mt-2 mr-5">
+                    <button type="submit" class="btn btn-success">Create</button>
                     <a type="button" class="btn btn-danger" asp-page="HardnessEntry">Reset</a>
-                    <button type="submit" class="btn btn-primary">Create</button>
                 </div>
             </div>
 

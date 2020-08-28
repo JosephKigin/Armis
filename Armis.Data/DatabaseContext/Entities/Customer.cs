@@ -26,7 +26,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Name { get; set; }
         public byte? PriorityId { get; set; }
         public int? SalesPerson { get; set; }
-        public byte StatusId { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsProspect { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsInspectAll { get; set; }
         public bool? IsPrePriceAll { get; set; }
@@ -64,7 +65,6 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Employee SalesPersonNavigation { get; set; }
         public virtual ShipAccount ShipAccount { get; set; }
         public virtual ShipTo ShipTo { get; set; }
-        public virtual CustomerStatus Status { get; set; }
         public virtual TaxJurisdiction TaxJurisd { get; set; }
         public virtual Terms Terms { get; set; }
         public virtual CustBillTo CustBillTo { get; set; }

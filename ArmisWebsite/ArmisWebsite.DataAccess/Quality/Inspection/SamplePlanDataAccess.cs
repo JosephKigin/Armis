@@ -31,5 +31,9 @@ namespace ArmisWebsite.DataAccess.Quality.Inspection
         {
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<SamplePlanModel>>(Config["APIAddress"] + "api/SamplePlan/GetAllHydratedSamplePlans", _httpContextAccessor.HttpContext);
         }
+        public async Task<bool> CheckIfNameIsUnique(string aName)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/SamplePlan/CheckIfNameIsUnique/" + aName, _httpContextAccessor.HttpContext);
+        }
     }
 }

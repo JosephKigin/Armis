@@ -110,3 +110,16 @@ body {
     text-align: right;
     white-space: nowrap;
 }
+
+.rotate {
+    -moz-transition: all .25s linear;
+    -webkit-transition: all .25s linear;
+    transition: all .25s linear;
+}
+
+    .down {
+        -ms-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }

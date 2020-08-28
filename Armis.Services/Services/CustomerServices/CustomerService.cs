@@ -23,7 +23,7 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<CustomerModel>> GetAllCustomers()
         {
-            var entities = await context.Customer.Include(i => i.Status).ToListAsync();
+            var entities = await context.Customer.ToListAsync();
 
             if(entities == null)
             {
@@ -41,7 +41,7 @@ namespace Armis.DataLogic.Services.CustomerServices
                                                  .IncludeOptimized(i => i.DefaultShipVia)
                                                  .IncludeOptimized(i => i.SalesPersonNavigation)
                                                  .IncludeOptimized(i => i.ShipTo)
-                                                 .IncludeOptimized(i => i.Status)
+                                                 .IncludeOptimized(i => i.CustBillTo)
                                                  .ToListAsync();
 
             if(entities == null || !entities.Any()) { throw new Exception("No customers were returned"); }
@@ -49,16 +49,16 @@ namespace Armis.DataLogic.Services.CustomerServices
             return entities.ToHydratedModels();
         }
 
-        public async Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers()
+        public async Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomersWithBillTo()
         {
-            var entities = await context.Customer.Where(i => i.StatusId == 1 || i.StatusId == 3).ToListAsync();
+            var entities = await context.Customer.Where(i => i.Inactive == false).IncludeOptimized(i => i.CustBillTo).ToListAsync(); //ToDo: Make sure the status codes are still valid
 
             if(entities == null || !entities.Any())
             {
                 throw new NullReferenceException("No customers returned");
             }
 
-            return entities.ToModels();
+            return entities.ToHydratedModels();
         }
     }
 }

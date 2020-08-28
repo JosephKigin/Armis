@@ -62,11 +62,11 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCurrentAndProspectCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerModel>>> GetAllCurrentAndProspectCustomersWithBillTo()
         {
             try
             {
-                var data = await CustomerService.GetAllCurrentAndProspectCustomers();
+                var data = await CustomerService.GetAllCurrentAndProspectCustomersWithBillTo();
 
                 return Ok(JsonSerializer.Serialize(data));
             }

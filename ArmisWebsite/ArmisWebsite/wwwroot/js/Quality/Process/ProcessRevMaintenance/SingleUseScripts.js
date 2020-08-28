@@ -134,3 +134,63 @@ function addToCurrentOperations() {
 
     assignStepSeqNumbers();
 }
+
+function addToCurrentSteps(aStepId) {
+    var allStepListItemClone = document.getElementById("allStep_" + aStepId + "-0").cloneNode(true); //All step list item ids all end with -0 as a placeholder for current steps to update the sequence.
+    console.log(allStepListItemClone);
+    allStepListItemClone.id = allStepListItemClone.id.replace("all", "current");
+    var allStepListItemChildren = allStepListItemClone.childNodes;
+    for (var i = 0; i < allStepListItemChildren.length; i++) {
+        //if the child element has an id, if not then it doesn't need to be changed at all.
+        if (allStepListItemChildren[i].id != undefined) {
+            //if the step comes from the AllStepList, the <a> tag will have an id of "allStepDetails-(stepId)"
+            if (allStepListItemChildren[i].id.startsWith("allStepHeader")) {
+                allStepListItemChildren[i].id = allStepListItemChildren[i].id.replace("all", "current");
+                var theAnchors = allStepListItemChildren[i].getElementsByTagName("a");
+                theAnchors[0].id = theAnchors[0].id.replace("all", "current");
+                theAnchors[0].dataset.target = theAnchors[0].dataset.target.replace("all", "current");//The collapse trigger anchor
+                theAnchors[1].id = theAnchors[1].id.replace("all", ""); //The operation anchor
+                theAnchors[1].innerHTML += "<i class='far fa-object-group'></i>";
+            }
+            //if the step comes from the AllStepList, the collapsable section will have an id of allStepDetails-(stepId)
+            if (allStepListItemChildren[i].id.startsWith("allStepDetails")) {
+                allStepListItemChildren[i].id = allStepListItemChildren[i].id.replace("all", "current");
+            }
+        }
+    }
+
+    //Renaming the input placeholders
+    var inputs = allStepListItemClone.getElementsByTagName("input");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].id = inputs[i].id.replace("all", "current");
+    }
+
+    var newHandle = document.createElement("i");
+    newHandle.classList = "fa fa-arrows-alt handle";
+    newHandle.style = "color:goldenrod";
+
+    //Finds the only h5 element inside the list item, finds the only button inside of that h5, and replaces that button with an icon that will act as a handle in the current steps sortable list
+    var h5ParentOfReplacedButton = allStepListItemClone.getElementsByTagName("h5")[0];
+    h5ParentOfReplacedButton.replaceChild(newHandle, h5ParentOfReplacedButton.getElementsByTagName("button")[0])
+
+    document.getElementById("sortableCurrentSteps").appendChild(allStepListItemClone);
+
+    assignStepSeqNumbers();
+
+    activateRotate();
+}
+
+$(document).ready(function () { activateRotate() }); //Turns the rotate on as soon as the document is loaded.
+
+//This needs to be in a seperate function so that "function addToCurrentSteps(aStepId)" can call it after adding a new element, otherwise that element won't have the rotation activated for it.
+function activateRotate() {
+    //Little script to flip the arrow icon when collapsing/uncollapsing
+    $(".collapse").on('show.bs.collapse', function () {
+        var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+        $(iconElement).toggleClass('down');
+    });
+    $(".collapse").on('hide.bs.collapse', function () {
+        var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+        $(iconElement).toggleClass('down');
+    });
+}

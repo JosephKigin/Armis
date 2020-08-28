@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.CustomerModels;
 using Armis.Data.DatabaseContext.Entities;
+using Armis.DataLogic.ModelExtensions.ShippingExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -48,6 +49,7 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
         {
             var result = aContactEntity.ToModel();
             result.ContactTitle = aContactEntity.Title.ToModel();
+            result.ShipTo = aContactEntity.ShipTo.ToModel();
 
             return result;
         }

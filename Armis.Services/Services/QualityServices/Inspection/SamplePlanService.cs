@@ -67,5 +67,13 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection
 
             return entities.ToHydratedModels();
         }
+
+        public async Task<bool> CheckIfNameIsUnique(string aName)
+        {
+            var entity = await Context.SamplePlanHead.FirstOrDefaultAsync(i => i.PlanName == aName);
+
+            if(entity != null) { return false; }
+            else { return true; }
+        }
     }
 }

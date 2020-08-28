@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Armis.BusinessModels.PartModels;
+using Armis.Data.DatabaseContext.Entities;
 using ArmisWebsite.DataAccess.Part.Interfaces;
 using ArmisWebsite.FrontEndModels;
 using Microsoft.AspNetCore.Mvc;
@@ -30,11 +31,9 @@ namespace ArmisWebsite.Pages.Part
         public string Description { get; set; }
 
         [BindProperty]
-        [Range(0.000001, 9999999999999.999999)]
         public decimal? Min { get; set; }
 
         [BindProperty]
-        [Range(0.000001, 9999999999999.999999)]
         public decimal? Max { get; set; }
 
         public PopUpMessageModel Message { get; set; }
@@ -44,8 +43,17 @@ namespace ArmisWebsite.Pages.Part
             HardnessDataAccess = aHardnessDataAccess;
         }
 
-        public async Task<ActionResult> OnGet()
+        public async Task<ActionResult> OnGet(string aMessage, bool? isMessageGood)
         {
+            if(aMessage != null)
+            {
+                Message = new PopUpMessageModel()
+                {
+                    IsMessageGood = isMessageGood,
+                    Text = aMessage
+                };
+            }
+
             await SetUpProperties();
 
             return Page();
@@ -57,6 +65,19 @@ namespace ArmisWebsite.Pages.Part
             {
                 if (ModelState.IsValid)
                 {
+                    if(!(await HardnessDataAccess.CheckIfNameIsUnique(ShortName)))
+                    {
+                        Message = new PopUpMessageModel()
+                        {
+                            IsMessageGood = false,
+                            Text = "A hardness with that name already exists"
+                        };
+
+                        await SetUpProperties();
+
+                        return Page();
+                    }
+
                     var hardnessToCreate = new HardnessModel()
                     {
                         ShortName = ShortName,
@@ -66,15 +87,8 @@ namespace ArmisWebsite.Pages.Part
                     };
 
                     await HardnessDataAccess.CreateHardness(hardnessToCreate);
-                    Message = new PopUpMessageModel()
-                    {
-                        Text = "Hardness created successfully",
-                        IsMessageGood = true
-                    };
 
-                    await SetUpProperties();
-
-                    return Page();
+                    return RedirectToPage("HardnessEntry", new { aMessage = "Hardness created successfully", isMessageGood = true });
                 }
                 else
                 {

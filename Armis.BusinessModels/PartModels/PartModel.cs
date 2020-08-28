@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.EmployeeModels;
 using Armis.BusinessModels.ShopFloorModels.Department;
+using Armis.BusinessModels.ShopFloorModels.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Armis.BusinessModels.PartModels
         public string Dimensions { get; set; }
         public int? RackId { get; set; }
         public decimal? SurfaceArea { get; set; }
-        public string SurfaceAreaUoM { get; set; }
+        public int? SurfaceAreaUoMId { get; set; }
         public decimal? PieceWeight { get; set; }
         public short? StandardDeptId { get; set; }
         public string Bake { get; set; }
@@ -31,6 +32,8 @@ namespace Armis.BusinessModels.PartModels
         public DateTime DateCreated { get; set; }
         public TimeSpan TimeCreated { get; set; }
 
+        public RackModel Rack { get; set; }
+        public UnitOfMeasureModel SurfaceAreaUnitOfMeasure { get; set; }
         public MaterialAlloyModel Alloy { get; set; }
         public EmployeeModel CreatedByEmp { get; set; }
         public MaterialSeriesModel Series { get; set; }

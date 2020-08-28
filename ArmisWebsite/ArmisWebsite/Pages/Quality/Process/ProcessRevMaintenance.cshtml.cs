@@ -190,8 +190,6 @@ namespace ArmisWebsite
             foreach (var process in AllProcesses)
             {
                 process.Revisions.OrderByDescending(i => i.ProcessRevId);
-
-                if (process.Name == "Test Process 1") { var TEST = "This is the process I am looking for."; }
             }
 
             var theSteps = await StepDataAccess.GetAllSteps();

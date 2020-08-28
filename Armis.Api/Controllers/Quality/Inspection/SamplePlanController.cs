@@ -58,6 +58,22 @@ namespace Armis.Api.Controllers.Quality.Inspection
             }
         }
 
+        [HttpGet("{aName}")]
+        public async Task<ActionResult<bool>> CheckIfNameIsUnique(string aName)
+        {
+            try
+            {
+                var data = await SamplePlanService.CheckIfNameIsUnique(aName);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SamplePlanController.CheckIfNameIsUnique(string aName) Not able to verify name. | Message : {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<SamplePlanModel>> CreateHydratedSamplePlan(SamplePlanModel aSamplePlanModel) //ToDo: Create hydrated? Does that make sense?
         {

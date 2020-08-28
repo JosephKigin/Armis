@@ -12,5 +12,6 @@ namespace Armis.DataLogic.Services.QualityServices.Inspection.Interfaces
         Task<SamplePlanModel> CreateSamplePlan(SamplePlanModel aSamplePlan);
         Task<IEnumerable<SamplePlanModel>> GetAllSamplePlans(); 
         Task<IEnumerable<SamplePlanModel>> GetAllHydratedSamplePlans();
+        Task<bool> CheckIfNameIsUnique(string aName);
     }
 }

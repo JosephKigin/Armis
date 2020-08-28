@@ -16,6 +16,6 @@ namespace Armis.DataLogic.Services.QualityServices.Interfaces
         Task<IEnumerable<SpecModel>> GetAllHydratedSpecsWithOnlyCurrentRev();
         Task<SpecModel> GetHydratedCurrentRevForSpec(int aSpecId);
         Task<int> RevUpSpec(SpecRevModel aSpecModel);
-
+        Task<bool> CheckIfCodeIsUnique(string aSpecCode);
     }
 }

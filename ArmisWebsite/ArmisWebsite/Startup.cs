@@ -19,6 +19,9 @@ using ArmisWebsite.DataAccess.Quality.Specification;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.DataAccess.Shipping;
 using ArmisWebsite.DataAccess.Shipping.Interfaces;
+using ArmisWebsite.DataAccess.ShopFloor;
+using ArmisWebsite.DataAccess.ShopFloor.Department;
+using ArmisWebsite.DataAccess.ShopFloor.Department.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -52,6 +55,7 @@ namespace ArmisWebsite
 
             //*CUSTOMER*
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
+            services.AddScoped<IBillToDataAccess, BillToDataAccess>();
 
 
             //*EMPLOYEE*
@@ -63,9 +67,11 @@ namespace ArmisWebsite
 
 
             //*PART*
+            services.AddScoped<IPartDataAccess, PartDataAccess>();
             services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
+            services.AddScoped<IUoMDataAccess, UoMDataAccess>();
 
 
             //*QUALITY*
@@ -86,7 +92,11 @@ namespace ArmisWebsite
 
             //*SHIPPING*
             services.AddScoped<IShipViaCodeDataAccess, ShipViaCodeDataAccess>();
+            services.AddScoped<IPackageCodeDataAccess, PackageCodeDataAccess>();
+            services.AddScoped<IContainerTypeDataAccess, ContainerTypeDataAccess>();
 
+            //*SHOP_FLOOR*
+            services.AddScoped<IDepartmentDataAccess, DepartmentDataAccess>();
 
             //*TOOLS*
             services.AddScoped<IPdfGenerator, PdfGenerator>();

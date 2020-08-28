@@ -36,7 +36,6 @@ namespace Armis.Data.DatabaseContext
         public virtual DbSet<CustForm> CustForm { get; set; }
         public virtual DbSet<Customer> Customer { get; set; }
         public virtual DbSet<CustomerPart> CustomerPart { get; set; }
-        public virtual DbSet<CustomerStatus> CustomerStatus { get; set; }
         public virtual DbSet<Department> Department { get; set; }
         public virtual DbSet<DeptArea> DeptArea { get; set; }
         public virtual DbSet<DeptOperation> DeptOperation { get; set; }
@@ -119,9 +118,7 @@ namespace Armis.Data.DatabaseContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
-                optionsBuilder.UseSqlServer("Data Source = srv-armis-central.database.windows.net; Initial Catalog = ArmisStage; User Id=armisadmin; Password=8#6C1xLopq@z;");
-                //optionsBuilder.UseSqlServer("Data Source = 10.1.1.14; Initial Catalog = ARMIS; integrated security=True"); *Not needed*
+                optionsBuilder.UseSqlServer("Data Source = .\\SQLEXPRESS; Initial Catalog = ARMIS; integrated security=True");
             }
         }
 
@@ -351,10 +348,6 @@ namespace Armis.Data.DatabaseContext
 
             modelBuilder.Entity<Contact>(entity =>
             {
-                entity.HasIndex(e => e.TitleId)
-                    .HasName("UNQ_Contact_TitleId")
-                    .IsUnique();
-
                 entity.Property(e => e.ContactId).ValueGeneratedNever();
 
                 entity.Property(e => e.Address1)
@@ -412,8 +405,8 @@ namespace Armis.Data.DatabaseContext
                     .HasConstraintName("FK_Contact_CustId_Customer_CustId");
 
                 entity.HasOne(d => d.Title)
-                    .WithOne(p => p.Contact)
-                    .HasForeignKey<Contact>(d => d.TitleId)
+                    .WithMany(p => p.Contact)
+                    .HasForeignKey(d => d.TitleId)
                     .HasConstraintName("FK_Contact_TitleId_ContactTitle_ContactTitleId");
 
                 entity.HasOne(d => d.ShipTo)
@@ -481,6 +474,7 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.CustId).ValueGeneratedNever();
 
                 entity.Property(e => e.Address1)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
@@ -493,10 +487,12 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.Property(e => e.City)
+                    .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Country)
+                    .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
@@ -509,10 +505,12 @@ namespace Armis.Data.DatabaseContext
                     .IsUnicode(false);
 
                 entity.Property(e => e.State)
+                    .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Zip)
+                    .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
@@ -681,12 +679,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.SalesPerson)
                     .HasConstraintName("FK_Customer_SalesPerson_Employee_EmpId");
 
-                entity.HasOne(d => d.Status)
-                    .WithMany(p => p.Customer)
-                    .HasForeignKey(d => d.StatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Customer_StatusId_CustomerStatus_StatusId");
-
                 entity.HasOne(d => d.TaxJurisd)
                     .WithMany(p => p.Customer)
                     .HasForeignKey(d => d.TaxJurisdId)
@@ -726,26 +718,6 @@ namespace Armis.Data.DatabaseContext
                     .HasForeignKey(d => d.PartId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CustomerPart_PartId_Part_PartId");
-            });
-
-            modelBuilder.Entity<CustomerStatus>(entity =>
-            {
-                entity.HasKey(e => e.StatusId)
-                    .HasName("PK_CustomerStatus_StatusId");
-
-                entity.HasIndex(e => e.Code)
-                    .HasName("UNQ_CustomerStatus_Code")
-                    .IsUnique();
-
-                entity.Property(e => e.Code)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Department>(entity =>
@@ -1676,7 +1648,7 @@ namespace Armis.Data.DatabaseContext
                 entity.Property(e => e.DateCreated).HasColumnType("date");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(30)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Dimensions)
@@ -1718,6 +1690,11 @@ namespace Armis.Data.DatabaseContext
                     .WithMany(p => p.Part)
                     .HasForeignKey(d => d.MaterialSeriesId)
                     .HasConstraintName("FK_Part_MaterialSeriesId_MaterialSeries_MaterialSeriesId");
+
+                entity.HasOne(d => d.Rack)
+                    .WithMany(p => p.Part)
+                    .HasForeignKey(d => d.RackId)
+                    .HasConstraintName("FK_Part_RackId_Rack_RackId");
 
                 entity.HasOne(d => d.StandardDeptNavigation)
                     .WithMany(p => p.Part)

@@ -25,7 +25,7 @@ namespace ArmisWebsite
 
         //Front-End
         [BindProperty]
-        public string Message { get; set; }
+        public string Message { get; set; } //ToDo: This is still using the old style of message.  Update w/ Message front-end model
         public bool IsMessageGood { get; set; }
 
         [BindProperty]
@@ -58,6 +58,12 @@ namespace ArmisWebsite
         {
             if (ModelState.IsValid)
             {
+                if (!(await ProcessDataAccess.CheckIfNameIsUnique(ProcessName)))
+                {
+                    IsMessageGood = false;
+                    Message = "A process with that name already exists.";
+                    return Page();
+                }
                 var processToAdd = new ProcessModel()
                 {
                     Name = ProcessName

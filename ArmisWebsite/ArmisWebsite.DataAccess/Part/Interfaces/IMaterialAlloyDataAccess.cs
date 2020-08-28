@@ -10,5 +10,6 @@ namespace ArmisWebsite.DataAccess.Part.Interfaces
     {
         Task<IEnumerable<MaterialAlloyModel>> GetAllMaterialAlloys();
         Task<MaterialAlloyModel> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel);
+        Task<bool> CheckIfDescriptionIsUnique(string anAlloyDescription);
     }
 }

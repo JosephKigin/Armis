@@ -257,7 +257,7 @@ namespace Armis.DataLogic.Services.QualityServices
             return processEntity.ToHydratedModel();
         }
 
-        public async Task<ProcessRevisionModel> GetHydratedCurrentProcessRev(int aProcessId)
+        public async Task<ProcessRevisionModel> GetProcessCurrentHydratedRev(int aProcessId)
         {
             var entity = await context.ProcessRevision.Where(i => i.ProcessId == aProcessId).OrderByDescending(i => i.ProcessRevId)
                                                             .Include(i => i.ProcessStepSeq)

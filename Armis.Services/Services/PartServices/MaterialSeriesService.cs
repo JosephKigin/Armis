@@ -29,6 +29,14 @@ namespace Armis.DataLogic.Services.PartServices
             return entities.ToModels();
         }
 
+        public async Task<bool> CheckIfNameIsUnique(string aSeriesName)
+        {
+            var entity = await Context.MaterialSeries.FirstOrDefaultAsync(i => i.ShortName == aSeriesName);
+
+            if(entity == null) { return true; }
+            else { return false; }
+        }
+
         public async Task<MaterialSeriesModel> CreateMaterialSeries(MaterialSeriesModel aMaterialSeriesModel)
         {
             var entityToAdd = aMaterialSeriesModel.ToEntity();
@@ -42,5 +50,6 @@ namespace Armis.DataLogic.Services.PartServices
 
             return entityToAdd.ToModel();
         }
+
     }
 }

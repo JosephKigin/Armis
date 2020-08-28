@@ -58,6 +58,22 @@ namespace Armis.Api.Controllers.Part
             }
         }
 
+        [HttpGet("{aHardnessName}")]
+        public async Task<ActionResult<bool>> CheckIfNameIsUnique(string aHardnessName)
+        {
+            try
+            {
+                var data = await HardnessService.CheckIsNameIsUnique(aHardnessName);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("HardnessController.CheckIfNameIsUnique(string aHardnessName) Not able to check if hardness name is unique ({hardnessName}). | Message: {exMessage} | StackTrace: {stackTrace}", aHardnessName, ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<HardnessModel>> CreateHardness(HardnessModel aHardnessModel)
         {

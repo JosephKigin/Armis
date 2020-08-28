@@ -23,7 +23,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
         }
 
         //Get
-        public async Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads() //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
+        public async Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads()
         {
             Context.OrderDetail.Load();
             var orderHeadEntities = await Context.OrderHead.ToListAsync();
@@ -92,6 +92,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
 
             return orderHeadEntity.ToHydratedModel();
         }
+
 
 
         //Post

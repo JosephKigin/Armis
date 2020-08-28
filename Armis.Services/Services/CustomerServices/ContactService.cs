@@ -32,9 +32,12 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<ContactModel>> GetAllHydratedContactsByCustomer(int customerId)
         {
-            var entities = await Context.Contact.Where(i => i.CustId == customerId).IncludeOptimized(i => i.Title).ToListAsync();
+            var entities = await Context.Contact.Where(i => i.CustId == customerId)
+                                                .IncludeOptimized(i => i.Title)
+                                                .IncludeOptimized(i => i.ShipTo)
+                                                .ToListAsync();
 
-            if (entities == null || !entities.Any()) { throw new Exception("No Contacts found for that customer"); }
+            if (entities == null || !entities.Any()) { return null; }
 
             return entities.ToHydratedModels();
         }

@@ -12,6 +12,8 @@
         },
 
         onAdd: function (evt) {
+            console.log("You have hit onAdd in CurrentStepsSortable");
+
             //This entire section up to the assignStepSeqNumbers() call is just to make sure the collapsables stay assigned to the correct collapse sections when a step is moved from allSteps to currentSteps.
             evt.item.id = evt.item.id.replace("all", "current");
             var allStepListItemChildren = evt.item.childNodes;

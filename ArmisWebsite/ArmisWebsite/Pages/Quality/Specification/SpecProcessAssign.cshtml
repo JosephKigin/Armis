@@ -277,7 +277,8 @@
                                     <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
                                         @specProcessAssign.SpecAssignId.
                                         Process: <b>@specProcessAssign.ProcessRevision.ProcessId. @specProcessAssign.ProcessRevision.ProcessName</b>
-                                        Rev: <b>@specProcessAssign.ProcessRevId</b>
+                                        Rev: <b>@specProcessAssign.ProcessRevId </b>
+                                        <i class="fa fa-chevron-down rotate"></i>
                                     </a>
 
                                     <div id="specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId" class="row collapse">
@@ -313,7 +314,7 @@
     function LoadStepModal(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true)
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetProcessCurrentHydratedRev/' + aProcessId, true)
             xhr.send();
 
             xhr.onload = function () {
@@ -328,7 +329,7 @@
                         stepItemsHtml +=
 
                             `<li class="list-group-item">
-                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + (i + 1) + ': ' + rev.StepSeqs[i].Step.StepName + `</a>
+                                                <a data-toggle="collapse" href="#stepItem` + i + `">` + (i + 1) + ': ' + rev.StepSeqs[i].Step.StepName + ` <i class="fa fa-chevron-down rotate"></i></a>
                                                 <div id="stepItem` + i + `" class="collapse">
                                                     <div class="card card-body">`+
                             signOffReqHtml +
@@ -344,7 +345,8 @@
 
                 document.getElementById("modalStepPlaceholder").innerHTML = stepItemsHtml;
                 document.getElementById("modalStepTitle").innerHTML = 'Steps for ' + aProcessName.toString();
-                document.getElementById("ancProcessSelect").href = "/Quality/Process/ProcessRevMaintenance/" + aProcessId;
+
+                activateRotate();
             };
         }
     };

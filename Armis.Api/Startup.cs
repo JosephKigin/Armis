@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Armis.Data.DatabaseContext;
 using Armis.DataLogic.Services.CustomerServices;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
@@ -15,15 +11,14 @@ using Armis.DataLogic.Services.QualityServices.Inspection.Interfaces;
 using Armis.DataLogic.Services.QualityServices.Interfaces;
 using Armis.DataLogic.Services.ShippingService;
 using Armis.DataLogic.Services.ShippingService.Interfaces;
+using Armis.DataLogic.Services.ShopFloorServices;
+using Armis.DataLogic.Services.ShopFloorServices.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Armis.Api
@@ -74,9 +69,11 @@ namespace Armis.Api
             services.AddScoped<IOrderHeadService, OrderHeadService>();
 
             //Part
+            services.AddScoped<IPartService, PartService>();
             services.AddScoped<IHardnessService, HardnessService>();
             services.AddScoped<IMaterialSeriesService, MaterialSeriesService>();
             services.AddScoped<IMaterialAlloyService, MaterialAlloyService>();
+            services.AddScoped<IUnitOfMeasureService, UnitOfMeasureService>();
 
             //Process
             services.AddScoped<IStepService, StepService>();
@@ -89,6 +86,9 @@ namespace Armis.Api
             services.AddScoped<IPackageCodeService, PackageCodeService>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<ICommentCodeService, CommentCodeService>();
+
+            //Shop Floor
+            services.AddScoped<IDepartmentService, DepartmentService>();
 
             //Specification
             services.AddScoped<ISpecService, SpecService>();

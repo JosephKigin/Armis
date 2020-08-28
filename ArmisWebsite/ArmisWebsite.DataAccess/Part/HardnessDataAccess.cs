@@ -25,6 +25,11 @@ namespace ArmisWebsite.DataAccess.Part
             return await DataAccessGeneric.HttpGetRequest<IEnumerable<HardnessModel>>(Config["APIAddress"] + "api/Hardness/GetAllHardnesses", _httpContextAccessor.HttpContext);
         }
 
+        public async Task<bool> CheckIfNameIsUnique(string aHardnessName)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Hardness/CheckIfNameIsUnique/" + aHardnessName, _httpContextAccessor.HttpContext);
+        }
+
         public async Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel)
         {
             return await DataAccessGeneric.HttpPostRequest<HardnessModel>(Config["APIAddress"] + "api/Hardness/CreateHardness", aHardnessModel, _httpContextAccessor.HttpContext);

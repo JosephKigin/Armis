@@ -45,8 +45,11 @@ namespace Armis.BusinessModels.Customer
         public int? DefaultContactNum { get; set; }
         public short? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsProspect { get; set; }
 
         //TODO: The properties that are commented out need models created for the type
+        public BillToModel BillTo { get; set; }
         public CertificationChargeModel CertCharge { get; set; }
         public CreditStatusModel CreditStatus { get; set; }
         public ContactModel DefaultContact { get; set; }
@@ -55,7 +58,6 @@ namespace Armis.BusinessModels.Customer
         public EmployeeModel SalesPerson { get; set; }
         //public ShipAccountModel ShipAccount { get; set; }
         public ShipToModel DefaultShipTo { get; set; }
-        public CustomerStatusModel CustomerStatus { get; set; }
         //public TaxJurisdictionModel TaxJurisd { get; set; }
         //public TermsModel Terms { get; set; }
         //public CustCommentModel CustComment { get; set; }

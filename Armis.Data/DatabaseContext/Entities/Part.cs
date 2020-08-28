@@ -39,6 +39,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Employee CreatedByEmpNavigation { get; set; }
         public virtual MaterialAlloy MaterialAlloy { get; set; }
         public virtual MaterialSeries MaterialSeries { get; set; }
+        public virtual Rack Rack { get; set; }
         public virtual Department StandardDeptNavigation { get; set; }
         public virtual UnitOfMeasure SurfaceAreaUoMNavigation { get; set; }
         public virtual PartComment PartComment { get; set; }

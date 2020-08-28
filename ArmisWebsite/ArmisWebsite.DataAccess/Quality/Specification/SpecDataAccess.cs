@@ -51,5 +51,10 @@ namespace ArmisWebsite.DataAccess.Quality
         {
             return await DataAccessGeneric.HttpPostRequest<int, SpecRevModel>(Config["APIAddress"] + "api/Spec/RevUpSpec", aSpecModel, _httpContextAccessor.HttpContext);
         }
+
+        public async Task<bool> CheckIfCodeIsUnique(string aSpecCode)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/spec/CheckIfCodeIsUnique/" + aSpecCode, _httpContextAccessor.HttpContext);
+        }
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Armis.DataLogic.ModelExtensions.ShopFloorExtensions.Location
+namespace Armis.DataLogic.ModelExtensions.ShopFloorExtensions.LocationExtensions
 {
     public static class ShopLocationExtensions
     {

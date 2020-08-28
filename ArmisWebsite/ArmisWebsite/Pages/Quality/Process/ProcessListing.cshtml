@@ -6,6 +6,7 @@
 
 <head>
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/js/Quality/Process/ProcessListing.js"></script>
 </head>
 
 <div class="container-fluid w-75">
@@ -71,26 +72,11 @@
 
 </div>
 <script>
-    function searchProcessList() {
-        var searchTerm = document.getElementById("searchProcesses").value.toUpperCase();
-        var processList = document.getElementById("processList");
-        var processListItems = processList.getElementsByTagName("option");
-
-        for (var i = 0; i < processListItems.length; i++) {
-            if (!processListItems[i].textContent.toUpperCase().includes(searchTerm)) {
-                processListItems[i].style.display = "none";
-            }
-            else {
-                processListItems[i].style.display = "block";
-            }
-        }
-    }
-
     //TODO:This is the same code that is in Process Rev Maintenance. See if this can be put into its own file and pulled into each of these htmls.
     function loadSteps(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true);
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetProcessCurrentHydratedRev/' + aProcessId, true);
             xhr.send();
 
             xhr.onload = function () {
@@ -120,10 +106,15 @@
                             divStepCollapse.classList = "collapse";
                             divStepCollapse.appendChild(divInstructionsCard);
 
+                            var iArrow = document.createElement("i");
+                            iArrow.classList = "fa fa-chevron-down rotate";
+                            iArrow.style = "color:#0366d6;";
+
                             var aStepName = document.createElement("a")
                             aStepName.dataset.toggle = "collapse";
                             aStepName.href = "#stepItem" + i;
-                            aStepName.innerHTML = rev.StepSeqs[i].Step.StepName;
+                            aStepName.innerHTML = rev.StepSeqs[i].Step.StepName + " [" + rev.StepSeqs[i].Operation.OperShortName + "] ";
+                            aStepName.appendChild(iArrow);
 
                             var liStep = document.createElement("li");
                             liStep.classList = "list-group-item";
@@ -147,16 +138,19 @@
                 document.getElementById("stepsPlaceholder").appendChild(liStep);
                 document.getElementById("stepTitle").innerHTML = aProcessName.toString();
 
+                activateRotate(); //Turns on the arrows rotating.  Need to be called every single time to apply it to the newly generated list of steps.
             }
         }
     }
-
-    function togglePrintButton() {
-        document.getElementById("btnPrint").disabled = false;
-    }
-
-    function openPdfInNewTab() {
-        var pdfPath = document.getElementById("pdfPath").innerHTML;
-        window.open(pdfPath);
+    function activateRotate() {
+        //Little script to flip the arrow icon when collapsing/uncollapsing
+        $(".collapse").on('show.bs.collapse', function () {
+            var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+            $(iconElement).toggleClass('down');
+        });
+        $(".collapse").on('hide.bs.collapse', function () {
+            var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+            $(iconElement).toggleClass('down');
+        });
     }
 </script>

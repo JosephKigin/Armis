@@ -11,7 +11,7 @@
     <link href="~/lib/fontawesome-free-5.12.0-web/css/all.min.css" rel="stylesheet" /> @*FontAwesome*@
 </head>
 
-<div class="container-fluid w-75">
+<div class="container-fluid w-100">
     <h1>Process Revision Maintenance</h1>
 
     @*Preloaded message.*@
@@ -102,7 +102,7 @@
 
     @*Left section that displays information about the current Process and the current Revision.*@
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-2">
             @*Buttons on the top of the screen*@
             <a class="btn btn-danger my-1" asp-page="ProcessRevMaintenance" asp-route-aProcessId="@null">Reset</a>
             <button class="btn btn-primary my-1" id="btnFindProcessModal" data-toggle="modal" data-target="#modalProcessSelect">Find Process</button>
@@ -231,7 +231,7 @@
         </div>
 
         @*Middle section with current steps in a sortable list as well as a "trash" list to get rid of steps.  The list will only be sortable if the current Rev is unlocked.*@
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             @if (Model.CurrentProcessId != 0 && Model.CurrentRev.ProcessRevId != 0)
             {
                 var borderColor = "grey";
@@ -253,8 +253,7 @@
                                         @if (Model.CurrentRev.RevStatusId == 2) //2 = UNLOCKED
                                         {<i class="fa fa-arrows-alt handle" style="color:goldenrod"></i>}
 
-                                        <a id="currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.Step.StepName <i class="fa fa-sort-down" style="color:#0366d6; transform: translateY(-20%);"></i></a>
-                                        <br />
+                                        <a id="currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq" class="collapsed" data-toggle="collapse" data-target="#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq">@stepSeq.StepId. @stepSeq.Step.StepName <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i></a>
 
                                         @if (Model.CurrentRev.RevStatusId == 2) //2 = UNLOCKED
                                         {
@@ -267,7 +266,7 @@
                                         {
                                             <text>[@stepSeq.Operation.OperShortName]</text>
                                         }
-                                        @*href=""data-toggle="modal" data-target="#modalOperationSelect"*@
+
                                     </h5>
                                     <input id="currentStepId_@stepSeq.Step.StepId-@Model.InitialStepSeq" form="mainForm" asp-for="CurrentStepIds[Model.InitialStepSeq]" value="@stepSeq.Step.StepId" hidden />
                                     @if (stepSeq.Operation != null)
@@ -283,25 +282,10 @@
                                             <p><b>Instructions: </b>@stepSeq.Step.Instructions</p>
                                         </div>
                                     </div>
-
-                                    @*<script>
-                                            //Little script to flip the icon when collapsing/uncollapsing
-                                        $(document).ready(function () {
-                                            $("#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq").on('show.bs.collapse', function () {
-                                                var icon = document.getElementById("currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq").getElementsByTagName("i");
-                                                console.log(icon);
-                                                icon[0].classList = "fa fa-sort-up";
-                                                icon[0].style = "color:#0366d6; transform: translateY(20%);";
-                                            });
-                                            $("#currentStepDetails_@stepSeq.Step.StepId-@Model.InitialStepSeq").on('hide.bs.collapse', function () {
-                                                var icon = document.getElementById("currentStepCollapseAnchor_@stepSeq.Step.StepId-@Model.InitialStepSeq").getElementsByTagName("i");
-                                                icon[0].classList = "fa fa-sort-down";
-                                                icon[0].style = "color:#0366d6; transform: translateY(-20%);";
-                                            });
-                                        });
-                                        </script>*@
-
                                 </li>
+
+
+
                                 Model.InitialStepSeq++;
                             }
                         </ul>
@@ -376,10 +360,9 @@
                         {
                             <li class="list-group-item" data-step-name="@step.StepName" id="allStep_@step.StepId-0">
                                 <h5 id="allStepHeader-@step.StepId">
-                                    <i class="fa fa-arrows-alt handle" style="color:goldenrod;"></i>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addToCurrentSteps(@step.StepId)"><i class="fa fa-plus-circle" style="color:green;"></i></button>
 
-                                    <a id="allStepCollapseAnchor_@step.StepId-0" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepId. @step.StepName <i class="fa fa-sort-down" style="color:#0366d6; transform: translateY(-20%);"></i></a>
-                                    <br />
+                                    <a id="allStepCollapseAnchor_@step.StepId-0" class="collapsed" data-toggle="collapse" data-target="#allStepDetails_@step.StepId-0">@step.StepId. @step.StepName <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i></a>
 
                                     @*This is just a placehold.  When a step gets moved to current, it will need the "all" taken off of the id and a seq number appended.*@
                                     <a class="text-info" id="alloperationAnchor_@step.StepId-0" onclick="openOperationModal(this, '@step.StepName')"></a>
@@ -395,29 +378,10 @@
                                         <b>Instructions: </b>@step.Instructions
                                     </div>
                                 </div>
-
-                                @*<script>
-                                            //Little script to flip the icon when collapsing/uncollapsing
-                                        $(document).ready(function () {
-                                            $("#allStepDetails_@step.StepId-0").on('show.bs.collapse', function () {
-                                                var icon = document.getElementById("allStepCollapseAnchor_@step.StepId").getElementsByTagName("i");
-                                                icon[0].classList = "fa fa-sort-up";
-                                                icon[0].style = "color:#0366d6; transform: translateY(20%);";
-                                            });
-                                            $("#allStepDetails_@step.StepId-0").on('hide.bs.collapse', function () {
-                                                var icon = document.getElementById("allStepCollapseAnchor_@step.StepId").getElementsByTagName("i");
-                                                icon[0].classList = "fa fa-sort-down";
-                                                icon[0].style = "color:#0366d6; transform: translateY(-20%);";
-                                            });
-                                        });
-                                    </script>*@
-
                             </li>
                             allStepCount++;
                         }
                     </ul>
-
-                    <script type="text/javascript" src="~/js/Quality/Process/ProcessRevMaintenance/SortableAllStepsScript.js"></script>
                 }
             }
 
@@ -430,7 +394,7 @@
     function LoadStepModal(aProcessId, aProcessName) {
         if (aProcessId > 0) {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetHydratedProcessRevision/' + aProcessId, true)
+            xhr.open('GET', '@Model._apiAddress' + 'api/processes/GetProcessCurrentHydratedRev/' + aProcessId, true)
             xhr.send();
 
             xhr.onload = function () {

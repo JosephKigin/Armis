@@ -2,7 +2,7 @@
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.ARExtensions;
 using Armis.DataLogic.ModelExtensions.PartExtensions;
-using Armis.DataLogic.ModelExtensions.ShopFloorExtensions.Location;
+using Armis.DataLogic.ModelExtensions.ShopFloorExtensions.LocationExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;

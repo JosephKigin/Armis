@@ -9,6 +9,7 @@ namespace Armis.DataLogic.Services.PartServices.Interfaces
     public interface IMaterialSeriesService
     {
         Task<IEnumerable<MaterialSeriesModel>> GetAllMaterialSeries();
+        Task<bool> CheckIfNameIsUnique(string aSeriesName);
         Task<MaterialSeriesModel> CreateMaterialSeries(MaterialSeriesModel aMaterialSeriesModel);
     }
 }

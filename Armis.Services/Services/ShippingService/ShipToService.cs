@@ -20,11 +20,11 @@ namespace Armis.DataLogic.Services.ShippingService
             Context = aContext;
         }
 
-        public async Task<IEnumerable<ShipToModel>> GetAllShipToByCust(int aCustomerId)
+        public async Task<IEnumerable<ShipToModel>> GetShipTosByCust(int aCustomerId)
         {
             var entities = await Context.ShipTo.Where(i => i.CustId == aCustomerId).Include(i => i.DefaultShipVia).ThenInclude(i => i.Carrier).ToListAsync();
 
-            if(entities == null || !entities.Any()) { throw new Exception("Could not find any Ship Tos for that customer"); }
+            if(entities == null || !entities.Any()) { return null; }
 
             return entities.ToModels();
         }
