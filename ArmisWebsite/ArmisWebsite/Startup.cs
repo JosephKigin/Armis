@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArmisWebsite.DataAccess;
+using ArmisWebsite.DataAccess.AR;
+using ArmisWebsite.DataAccess.AR.Interfaces;
 using ArmisWebsite.DataAccess.Customer;
 using ArmisWebsite.DataAccess.Customer.Interfaces;
 using ArmisWebsite.DataAccess.Employee;
@@ -19,6 +21,9 @@ using ArmisWebsite.DataAccess.Quality.Specification;
 using ArmisWebsite.DataAccess.Quality.Specification.Interfaces;
 using ArmisWebsite.DataAccess.Shipping;
 using ArmisWebsite.DataAccess.Shipping.Interfaces;
+using ArmisWebsite.DataAccess.ShopFloor;
+using ArmisWebsite.DataAccess.ShopFloor.Department;
+using ArmisWebsite.DataAccess.ShopFloor.Department.Interfaces;
 using ArmisWebsite.Utility;
 using ArmisWebsite.Utility.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -50,8 +55,12 @@ namespace ArmisWebsite
             //*HTTPContext*
             services.AddHttpContextAccessor();
 
+            //*AR*
+            services.AddScoped<ICertificationChargeDataAccess, CertificationChargeDataAccess>();
+
             //*CUSTOMER*
             services.AddScoped<ICustomerDataAccess, CustomerDataAccess>();
+            services.AddScoped<IBillToDataAccess, BillToDataAccess>();
 
 
             //*EMPLOYEE*
@@ -63,16 +72,17 @@ namespace ArmisWebsite
 
 
             //*PART*
+            services.AddScoped<IPartDataAccess, PartDataAccess>();
             services.AddScoped<IHardnessDataAccess, HardnessDataAccess>();
             services.AddScoped<IMaterialAlloyDataAccess, MaterialAlloyDataAccess>();
             services.AddScoped<IMaterialSeriesDataAccess, MaterialSeriesDataAccess>();
+            services.AddScoped<IUoMDataAccess, UoMDataAccess>();
 
 
             //*QUALITY*
             //Inspection
             services.AddScoped<ITestTypeDataAccess, TestTypeDataAccess>();
             services.AddScoped<ISamplePlanDataAccess, SamplePlanDataAccess>();
-            services.AddScoped<IQualityStandardDataAccess, QualityStandardDataAccess>();
 
             //Process
             services.AddScoped<IStepDataAccess, StepDataAccess>();
@@ -86,7 +96,12 @@ namespace ArmisWebsite
 
             //*SHIPPING*
             services.AddScoped<IShipViaCodeDataAccess, ShipViaCodeDataAccess>();
+            services.AddScoped<IPackageCodeDataAccess, PackageCodeDataAccess>();
+            services.AddScoped<IContainerTypeDataAccess, ContainerTypeDataAccess>();
+            services.AddScoped<IOrderReceivedDataAccess, OrderReceivedDataAccess>();
 
+            //*SHOP_FLOOR*
+            services.AddScoped<IDepartmentDataAccess, DepartmentDataAccess>();
 
             //*TOOLS*
             services.AddScoped<IPdfGenerator, PdfGenerator>();

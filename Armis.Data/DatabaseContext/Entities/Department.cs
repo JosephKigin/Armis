@@ -12,7 +12,7 @@ namespace Armis.Data.DatabaseContext.Entities
             DeptSpec = new HashSet<DeptSpec>();
             Memo = new HashSet<Memo>();
             OrderCommentStatic = new HashSet<OrderCommentStatic>();
-            OrderExpedite = new HashSet<OrderExpedite>();
+            OrderHead = new HashSet<OrderHead>();
             Part = new HashSet<Part>();
             PlateResult = new HashSet<PlateResult>();
             ProcessLoad = new HashSet<ProcessLoad>();
@@ -39,7 +39,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual ICollection<DeptSpec> DeptSpec { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
-        public virtual ICollection<OrderExpedite> OrderExpedite { get; set; }
+        public virtual ICollection<OrderHead> OrderHead { get; set; }
         public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }
         public virtual ICollection<ProcessLoad> ProcessLoad { get; set; }

@@ -27,13 +27,13 @@ namespace Armis.BusinessModels.OrderEntryModels
         public bool IsPriceHold { get; set; }
         public bool IsBadJob { get; set; }
         public bool IsJobHold { get; set; }
+        public bool IsNadcap { get; set; }
         public int? JobHoldToEmp { get; set; }
         public int? JobHoldByEmp { get; set; }
-        public short? QualStdId { get; set; }
         public short? CertChargeId { get; set; }
         public DateTime? LastCompleteRemSentDt { get; set; }
         public bool SuppressCompNotify { get; set; }
-        //public byte IsMaskingNotify { get; set; }
+        public byte IsMaskingNotify { get; set; }
         public short? PackageId { get; set; }
         public int SpecId { get; set; }
         public short SpecRevId { get; set; }
@@ -46,14 +46,16 @@ namespace Armis.BusinessModels.OrderEntryModels
         //public byte IsInspected { get; set; }
         public decimal SubTotal { get; set; }
         public string ExpediteStatus { get; set; }
+        public int? ReworkFromOrder { get; set; }
+        public short? ReworkDeptId { get; set; }
 
         public CertificationChargeModel CertCharge { get; set; }
         public EmployeeModel CreditAuthByEmployee { get; set; }
         public CustomerModel Customer { get; set; }
         public AdditionalChargeModel HandlingCharge { get; set; }
         //ToDo: Should these be two properties where one is the data on the order head table and the other is the entry from the TernaryCode table?
-        public TernaryCodeModel IsInspected { get; set; } 
-        public TernaryCodeModel IsMaskingNotify { get; set; }
+        public TernaryCodeModel IsInspected { get; set; }
+        //public TernaryCodeModel IsMaskingNotify { get; set; }
         public TernaryCodeModel IsPrePrice { get; set; }
         public TernaryCodeModel IsPriceApproval { get; set; }
         //End To Do
@@ -62,7 +64,6 @@ namespace Armis.BusinessModels.OrderEntryModels
         public AdditionalChargeModel MiscCharge { get; set; }
         public PackageCodeModel Package { get; set; }
         public PriceStatusCodeModel PriceStatus { get; set; }
-        public QualityStandardModel QualityStandard { get; set; }
         public AdditionalChargeModel ShipCharge { get; set; }
         public ShipViaCodeModel ShipVia { get; set; }
         public SpecProcessAssignModel Spec { get; set; }

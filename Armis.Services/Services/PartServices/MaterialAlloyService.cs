@@ -24,7 +24,7 @@ namespace Armis.DataLogic.Services.PartServices
         {
             var entities = await Context.MaterialAlloy.ToListAsync();
 
-            if(entities == null || !entities.Any()) { throw new Exception("No Material Alloys entities were found."); }
+            if (entities == null || !entities.Any()) { throw new Exception("No Material Alloys entities were found."); }
 
             return entities.ToModels();
         }
@@ -41,6 +41,14 @@ namespace Armis.DataLogic.Services.PartServices
             await Context.SaveChangesAsync();
 
             return entityToAdd.ToModel();
+        }
+
+        public async Task<bool> CheckIfDescriptionIsUnique(string anAlloyDescription)
+        {
+            var entity = await Context.MaterialAlloy.FirstOrDefaultAsync(i => i.Description == anAlloyDescription);
+
+            if(entity == null) { return true; }
+            else { return false; }
         }
     }
 }

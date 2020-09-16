@@ -25,12 +25,12 @@ namespace Armis.Api.Controllers.Shipping
             _logger = aLogger;
         }
 
-        [HttpGet("{customerId}")]
-        public async Task<ActionResult<IEnumerable<ShipToModel>>> GetAllShipToByCust(int aCustomerId)
+        [HttpGet("{aCustomerId}")]
+        public async Task<ActionResult<IEnumerable<ShipToModel>>> GetShipTosByCust(int aCustomerId)
         {
             try
             {
-                var data = await ShipToService.GetAllShipToByCust(aCustomerId);
+                var data = await ShipToService.GetShipTosByCust(aCustomerId);
 
                 return Ok(JsonSerializer.Serialize(data));
             }

@@ -9,8 +9,10 @@ namespace Armis.BusinessModels.QualityModels.Process
         public int Id { get; set; }
         public string OperShortName { get; set; }
         public string Name { get; set; }
-        public OperationGroupModel Group { get; set; }
         public short? DefaultDueDays { get; set; }
         public bool ThicknessIsRequired { get; set; }
+        public int OperationGroupId { get; set; }
+
+        public OperationGroupModel Group { get; set; }
     }
 }

@@ -17,7 +17,8 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
                 ReceivedContainerId = anOrderReceivedEntity.ReceivedContainerId,
                 ReceivedContainerQty = anOrderReceivedEntity.ReceivedContainerQty,
                 ReceivedDate = anOrderReceivedEntity.ReceivedDate,
-                ReceivedTime = anOrderReceivedEntity.ReceivedTime
+                ReceivedTime = anOrderReceivedEntity.ReceivedTime,
+                ReceivedTimeString = (new DateTime(anOrderReceivedEntity.ReceivedTime.Ticks)).ToString("h:mm tt")
             };
         }
 
@@ -51,6 +52,19 @@ namespace Armis.DataLogic.ModelExtensions.ShippingExtensions
             }
 
             return result;
+        }
+
+        public static OrderReceived ToEntity(this OrderReceivedModel anOrderReceivedModel)
+        {
+            return new OrderReceived()
+            {
+                OrderId = anOrderReceivedModel.OrderId,
+                ReceivedNum = anOrderReceivedModel.ReceivedNum,
+                ReceivedContainerId = anOrderReceivedModel.ReceivedContainerId,
+                ReceivedContainerQty = anOrderReceivedModel.ReceivedContainerQty,
+                ReceivedDate = anOrderReceivedModel.ReceivedDate,
+                ReceivedTime = TimeSpan.Parse(anOrderReceivedModel.ReceivedTimeString) //Timespans can not be passed using json, so the time must be passed in as a string and then converted into a TimeSpan
+            };
         }
     }
 }

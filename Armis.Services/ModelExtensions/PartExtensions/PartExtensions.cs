@@ -1,9 +1,12 @@
 ﻿using Armis.BusinessModels.PartModels;
 using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.EmployeeExtensions;
+using Armis.DataLogic.ModelExtensions.ShopFloorExtensions.DepartmentExtensions;
+using Armis.DataLogic.ModelExtensions.ShopFloorExtensions.InventoryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.XPath;
 
 namespace Armis.DataLogic.ModelExtensions.PartExtensions
 {
@@ -21,7 +24,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
                 Dimensions = aPartEntity.Dimensions,
                 RackId = aPartEntity.RackId,
                 SurfaceArea = aPartEntity.SurfaceArea,
-                SurfaceAreaUoM = aPartEntity.SurfaceAreaUoM.ToString(),
+                SurfaceAreaUoMId = aPartEntity.SurfaceAreaUoM,
                 PieceWeight = aPartEntity.PieceWeight,
                 StandardDeptId = aPartEntity.StandardDept,
                 Bake = aPartEntity.Bake,
@@ -34,7 +37,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
                 MaterialSeriesId = aPartEntity.MaterialSeriesId,
                 CreatedByEmpId = aPartEntity.CreatedByEmp,
                 DateCreated = aPartEntity.DateCreated,
-                TimeCreated = aPartEntity.TimeCreated
+                TimeCreated = aPartEntity.TimeCreated                
             };
         }
 
@@ -53,10 +56,12 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
         public static PartModel ToHydratedModel(this Part aPartEntity)
         {
             var result = aPartEntity.ToModel();
-            result.Alloy = aPartEntity.MaterialAlloy.ToModel();
             result.CreatedByEmp = aPartEntity.CreatedByEmpNavigation.ToModel();
-            result.Series = aPartEntity.MaterialSeries.ToModel();
-            //result.StandardDept = aPartEntity.StandardDept.ToModel(); TODO: Standard Dept doesn't have extensions yet
+            result.Alloy = (aPartEntity.MaterialAlloy != null)? aPartEntity.MaterialAlloy.ToModel() : null;
+            result.Series = (aPartEntity.MaterialSeries != null)? aPartEntity.MaterialSeries.ToModel() : null;
+            result.StandardDept = (aPartEntity.StandardDeptNavigation != null)? aPartEntity.StandardDeptNavigation.ToModel() : null;
+            result.SurfaceAreaUnitOfMeasure = (aPartEntity.SurfaceAreaUoMNavigation != null) ? aPartEntity.SurfaceAreaUoMNavigation.ToModel() : null;
+            result.Rack = (aPartEntity.Rack != null) ? aPartEntity.Rack.ToModel() : null;
 
             return result;
         }
@@ -71,6 +76,34 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
             }
 
             return result;
+        }
+
+        public static Part ToEntity(this PartModel aPartModel)
+        {
+            return new Part()
+            {
+                PartName = aPartModel.PartName,
+                Inactive = false,
+                ExternalRev = aPartModel.ExternalRev,
+                Description = aPartModel.Description,
+                Dimensions = aPartModel.Dimensions,
+                RackId = aPartModel.RackId,
+                SurfaceArea = aPartModel.SurfaceArea,
+                SurfaceAreaUoM = aPartModel.SurfaceAreaUoMId,
+                PieceWeight = aPartModel.PieceWeight,
+                StandardDept = aPartModel.StandardDeptId,
+                Bake = aPartModel.Bake,
+                BasePrice = aPartModel.BasePrice,
+                MinLotCharge = aPartModel.MinLotCharge,
+                PartsPerLoad = aPartModel.PartsPerLoad,
+                MaskPcsPerHour = aPartModel.MaskPcsPerHour,
+                NotifyWhenMasking = aPartModel.NotifyWhenMasking,
+                MaterialAlloyId = aPartModel.MaterialAlloyId,
+                MaterialSeriesId = aPartModel.MaterialSeriesId,
+                CreatedByEmp = aPartModel.CreatedByEmpId,
+                DateCreated = DateTime.Now,
+                TimeCreated = DateTime.Now.TimeOfDay
+            };
         }
     }
 }

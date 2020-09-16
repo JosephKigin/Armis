@@ -15,7 +15,7 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 OrderId = anOrderCommentEntity.OrderId,
                 OrderComments = anOrderCommentEntity.OrderComments,
                 InternalComments = anOrderCommentEntity.InternalComments,
-                Raicomments = anOrderCommentEntity.Raicomments,
+                RaiComments = anOrderCommentEntity.Raicomments,
                 CredAuthComments = anOrderCommentEntity.CredAuthComments,
                 VoidComments = anOrderCommentEntity.VoidComments,
                 JobHoldComments = anOrderCommentEntity.JobHoldComments

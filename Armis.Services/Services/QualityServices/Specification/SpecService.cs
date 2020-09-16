@@ -257,5 +257,13 @@ namespace Armis.DataLogic.Services.QualityServices
                 return aSpecRevModel.SpecId;
             }
         }
+
+        public async Task<bool> CheckIfCodeIsUnique(string aSpecCode)
+        {
+            var entity = await context.Specification.FirstOrDefaultAsync(i => i.SpecCode == aSpecCode);
+
+            if(entity == null) { return true; }
+            else { return false; }
+        }
     }
 }

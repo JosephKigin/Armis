@@ -19,7 +19,6 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 Name = aCustomer.Name,
                 SearchName = aCustomer.SearchName,
                 CustId = aCustomer.CustId,
-                StatusId = aCustomer.StatusId,
                 CreatedDate = aCustomer.CreatedDate,
                 PriorityId = aCustomer.PriorityId,
                 SalesPersonId = aCustomer.SalesPerson,
@@ -33,11 +32,11 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 IsChargeHandling = aCustomer.IsChargeHandling,
                 CredStatusId = aCustomer.CredStatusId,
                 LeaveOffCredHoldUntil = aCustomer.LeaveOffCredHoldUntil,
-                CertChargeId = aCustomer.CertChargeId,
+                DefaultCertCharge = aCustomer.DefaultCertCharge,
                 IsKioskValid = aCustomer.IsKioskValid,
                 Source = aCustomer.Source,
                 TermsId = aCustomer.TermsId,
-                IsBillRework = aCustomer.IsBillRework,
+                IsBilledRework = aCustomer.IsBilledRework,
                 IsTmcustomer = aCustomer.IsTmcustomer,
                 SendReminderComp = aCustomer.SendReminderComp,
                 IsBillPartialShipments = aCustomer.IsBillPartialShipments,
@@ -49,7 +48,9 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 DefaultShipViaId = aCustomer.DefaultShipViaId,
                 DefaultContactNum = aCustomer.DefaultContactNum,
                 DefaultShipAccount = aCustomer.DefaultShipAccount,
-                CreditLimit = aCustomer.CreditLimit
+                CreditLimit = aCustomer.CreditLimit,
+                Inactive = aCustomer.Inactive,
+                IsProspect = aCustomer.IsProspect
             };
 
         }
@@ -70,12 +71,13 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
         {
             var result = aCustomer.ToModel();
 
-            result.CertCharge = (aCustomer.CertCharge != null) ? aCustomer.CertCharge.ToModel() : null;
-            result.CreditStatus = aCustomer.CredStatus.ToModel();
+            result.CertCharge = (aCustomer.DefaultCertChargeNavigation != null) ? aCustomer.DefaultCertChargeNavigation.ToModel() : null;
+            result.CreditStatus = (aCustomer.CredStatus != null) ? aCustomer.CredStatus.ToModel() : null;
             result.DefaultContact = (aCustomer.DefaultContactNumNavigation != null) ? aCustomer.DefaultContactNumNavigation.ToModel() : null;
             result.DefaultShipVia = (aCustomer.DefaultShipVia != null) ? aCustomer.DefaultShipVia.ToModel() : null;
             result.SalesPerson = (aCustomer.SalesPersonNavigation != null) ? aCustomer.SalesPersonNavigation.ToModel() : null;
             result.DefaultShipTo = (aCustomer.ShipTo != null) ? aCustomer.ShipTo.ToModel() : null;
+            result.BillTo = (aCustomer.CustBillTo != null) ? aCustomer.CustBillTo.ToModel() : null;
 
             return result;
         }

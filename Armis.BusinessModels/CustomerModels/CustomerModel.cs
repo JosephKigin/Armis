@@ -28,11 +28,9 @@ namespace Armis.BusinessModels.Customer
         public bool? IsChargeHandling { get; set; }
         public byte CredStatusId { get; set; }
         public DateTime? LeaveOffCredHoldUntil { get; set; }
-        public short? CertChargeId { get; set; }
         public bool? IsKioskValid { get; set; }
         public string Source { get; set; }
         public byte? TermsId { get; set; }
-        public bool? IsBillRework { get; set; }
         public bool? IsTmcustomer { get; set; }
         public bool? SendReminderComp { get; set; }
         public bool? IsBillPartialShipments { get; set; }
@@ -45,8 +43,13 @@ namespace Armis.BusinessModels.Customer
         public int? DefaultContactNum { get; set; }
         public short? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsProspect { get; set; }
+        public short? DefaultCertCharge { get; set; }
+        public bool? IsBilledRework { get; set; }
 
         //TODO: The properties that are commented out need models created for the type
+        public BillToModel BillTo { get; set; }
         public CertificationChargeModel CertCharge { get; set; }
         public CreditStatusModel CreditStatus { get; set; }
         public ContactModel DefaultContact { get; set; }
@@ -55,7 +58,6 @@ namespace Armis.BusinessModels.Customer
         public EmployeeModel SalesPerson { get; set; }
         //public ShipAccountModel ShipAccount { get; set; }
         public ShipToModel DefaultShipTo { get; set; }
-        public CustomerStatusModel CustomerStatus { get; set; }
         //public TaxJurisdictionModel TaxJurisd { get; set; }
         //public TermsModel Terms { get; set; }
         //public CustCommentModel CustComment { get; set; }

@@ -22,6 +22,7 @@ namespace Armis.Api.Controllers.Customer
         public ContactController(IContactService aContactService, ILogger<ContactController> aLogger)
         {
             ContactService = aContactService;
+            _logger = aLogger;
         }
 
         [HttpGet("{customerId}")]

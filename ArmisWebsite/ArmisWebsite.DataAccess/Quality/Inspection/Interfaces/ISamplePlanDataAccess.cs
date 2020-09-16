@@ -11,5 +11,6 @@ namespace ArmisWebsite.DataAccess.Quality.Inspection.Interfaces
     {
         Task<SamplePlanModel> CreateNewSamplePlan(SamplePlanModel aSamplePlanModel);
         Task<IEnumerable<SamplePlanModel>> GetAllHydratedSamplePlans();
+        Task<bool> CheckIfNameIsUnique(string aName);
     }
 }

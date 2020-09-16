@@ -12,6 +12,7 @@ namespace Armis.BusinessModels.ShippingModels
         public int ReceivedContainerQty { get; set; }
         public DateTime ReceivedDate { get; set; }
         public TimeSpan ReceivedTime { get; set; }
+        public string ReceivedTimeString { get; set; }
 
         public ContainerModel ReceivedContainer { get; set; }
     }

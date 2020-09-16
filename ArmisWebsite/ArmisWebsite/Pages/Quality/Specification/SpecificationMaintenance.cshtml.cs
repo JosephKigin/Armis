@@ -114,13 +114,16 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             StepDataAccess = aStepDataAccess;
         }
 
-        public async Task<IActionResult> OnGet(int? aSpecId, string aMessage = null)
+        public async Task<IActionResult> OnGet(int? aSpecId, string aMessage = null, bool? isMessageGood = true)
         {
-            Message = new PopUpMessageModel()
+            if (aMessage != null)
             {
-                Text = aMessage
-            };
-            if (aMessage != null) { Message.IsMessageGood = true; }
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage,
+                    IsMessageGood = isMessageGood
+                };
+            }
 
             if (aSpecId != 0 && aSpecId != null)
             {
@@ -145,6 +148,19 @@ namespace ArmisWebsite.Pages.ProcessMaintenance
             {
                 Message.Text = ModelState.ToString();
                 Message.IsMessageGood = false;
+
+                return Page();
+            }
+
+            if (!(await SpecDataAccess.CheckIfCodeIsUnique(SpecCode)) && CurrentSpecId == 0)
+            {
+                Message = new PopUpMessageModel()
+                {
+                    IsMessageGood = false,
+                    Text = "A specification with that code already exists"
+                };
+
+                await SetUpProperties(CurrentSpecId);
 
                 return Page();
             }

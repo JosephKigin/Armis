@@ -15,11 +15,10 @@ namespace Armis.Data.DatabaseContext.Entities
         public int Quantity { get; set; }
         public int? PartId { get; set; }
         public string Description { get; set; }
-        public decimal Poprice { get; set; }
-        public decimal CalcPrice { get; set; }
-        public decimal AssignPrice { get; set; }
+        public decimal CalcUnitPrice { get; set; }
+        public decimal AssignUnitPrice { get; set; }
+        public decimal ExtPrice { get; set; }
         public byte PriceCodeId { get; set; }
-        public decimal LotCharge { get; set; }
 
         public virtual OrderHead Order { get; set; }
         public virtual Part Part { get; set; }

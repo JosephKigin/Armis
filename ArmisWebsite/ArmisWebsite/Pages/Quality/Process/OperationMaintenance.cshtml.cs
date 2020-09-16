@@ -27,11 +27,11 @@ namespace ArmisWebsite
         public int CurrentOperationId { get; set; }
 
         [BindProperty]
-        [Required, Display(Name = "Operation Name")]
+        [Required, Display(Name = "Name")]
         public string CurrentOperationName { get; set; }
 
         [BindProperty]
-        [Required, StringLength(8), Display(Name = "Operation Code")]
+        [Required, StringLength(8), Display(Name = "Code")]
         public string CurrentOperationCode { get; set; }
 
         [BindProperty]
@@ -42,10 +42,7 @@ namespace ArmisWebsite
         public bool CurrentOperationThicknessReq { get; set; }
 
         [BindProperty]
-        [Required, Display(Name = "Operation Group")]
-        public string CurrentOperationGroupName { get; set; }
-
-        [BindProperty]
+        [Required, Display(Name = "Group")]
         public int CurrentOperationGroupId { get; set; }
 
         public PopUpMessageModel Message { get; set; }
@@ -73,7 +70,7 @@ namespace ArmisWebsite
                     OperShortName = CurrentOperationCode,
                     DefaultDueDays = CurrentOperationDefaultDueDays,
                     ThicknessIsRequired = CurrentOperationThicknessReq,
-                    Group = new OperationGroupModel() { Id = CurrentOperationGroupId, Name = CurrentOperationGroupName }
+                    OperationGroupId = CurrentOperationGroupId
                 };
 
                 var theReturnMessage = "";
@@ -97,18 +94,22 @@ namespace ArmisWebsite
                 return RedirectToPage("OperationMaintenance", new { anOperationId = result.Id, aMessage = theReturnMessage, isMessageGood = true });
             }
 
-            await SetUpPageProperties("Missing fields", false);
+            await SetUpPageProperties();
             return Page();
 
         }
 
-        public async Task SetUpPageProperties(string aMessage, bool? isMessageGood, int anOperationId = 0)
+        public async Task SetUpPageProperties(string aMessage = null, bool? isMessageGood = null, int anOperationId = 0)
         {
-            Message = new PopUpMessageModel()
+            if (aMessage != null)
             {
-                Text = aMessage,
-                IsMessageGood = isMessageGood
-            };
+                Message = new PopUpMessageModel()
+                {
+                    Text = aMessage,
+                    IsMessageGood = isMessageGood
+                };
+            }
+
 
             var theAllOperationsTemp = await OperationDataAccess.GetAllOperations();
             AllOperations = theAllOperationsTemp.OrderBy(i => i.Name).ToList();
@@ -126,7 +127,6 @@ namespace ArmisWebsite
                 CurrentOperationDefaultDueDays = theCurrentOperation.DefaultDueDays;
                 CurrentOperationThicknessReq = theCurrentOperation.ThicknessIsRequired;
                 CurrentOperationGroupId = theCurrentOperation.Group.Id;
-                CurrentOperationGroupName = theCurrentOperation.Group.Name;
             }
         }
     }

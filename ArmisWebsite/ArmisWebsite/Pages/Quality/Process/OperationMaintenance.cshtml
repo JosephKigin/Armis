@@ -17,7 +17,8 @@
     <h1>Operation Maintenance</h1>
 
     @*Pop up partial*@
-    <div class="my-2"><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></div>
+    @if (Model.Message != null)
+    {<div class="my-2"><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></div>}
 
     <div class="row">
         <div class="col-lg-6">
@@ -26,61 +27,57 @@
 
                 @if (Model.CurrentOperationId != 0)
                 {
-                    <div class="form-group">
-                        <label><b>Operation ID: </b></label>
-                        <input type="text" asp-for="CurrentOperationId" class="form-control" readonly />
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-3 justify-content-end">Operation ID: </label>
+                        <input type="text" asp-for="CurrentOperationId" class="form-control col-lg-8" readonly />
                     </div>
                 }
-                <div class="form-group">
-                    <label><b>Operation Name: </b></label>
-                    <input type="text" asp-for="CurrentOperationName" class="form-control" />
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Operation Name: </label>
+                    <input type="text" asp-for="CurrentOperationName" class="form-control col-lg-8" />
+                    <div class="col-lg-3"></div>
                     <span class="text-danger" asp-validation-for="CurrentOperationName"></span>
                 </div>
 
-                <div class="form-group">
-                    <label><b>Operation Code: </b></label>
-                    <input type="text" asp-for="CurrentOperationCode" class="form-control" />
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Operation Code: </label>
+                    <input type="text" asp-for="CurrentOperationCode" class="form-control col-lg-8" />
+                    <div class="col-lg-3"></div>
                     <span class="text-danger" asp-validation-for="CurrentOperationCode"></span>
                 </div>
 
-                <div class="form-group">
-                    <label><b>Default Due Days: </b></label>
-                    <input type="number" class="form-control" asp-for="CurrentOperationDefaultDueDays" />
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Default Due Days: </label>
+                    <input type="number" class="form-control col-lg-8" asp-for="CurrentOperationDefaultDueDays" />
+                    <div class="col-lg-3"></div>
                     <span class="text-danger" asp-validation-for="CurrentOperationDefaultDueDays"></span>
                 </div>
 
-                <div class="form-group">
-                    <label><b>Thickness Required?</b></label>
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Thickness Required? </label>
                     <input type="checkbox" asp-for="CurrentOperationThicknessReq" />
                 </div>
 
-                <div class="form-group">
-                    <label><b>Operation Group: </b><input type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#operGroupsModal" value="Find" /> </label>
-                    <input id="currentOperationGroupName" type="text" class="form-control" asp-for="CurrentOperationGroupName" readonly />
-                    <span class="text-danger" asp-validation-for="CurrentOperationGroupName"></span>
-                    <input id="currentOperationGroupId" type="text" asp-for="CurrentOperationGroupId" hidden />
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Operation Group:  </label>
+                    <select id="currentOperationGroupName" class="form-control col-lg-8" onchange="chooseOperationGroup(this)">
+                        <option></option>
+                        @foreach (var operGroup in Model.AllOperationGroups)
+                        {
+                            <option value="@operGroup.Id" class="list-group-item" >
+                                @operGroup.Name
+                            </option>
+                        }
+                    </select>
+                    <div class="col-lg-3"></div>
+                    <span class="text-danger" asp-validation-for="CurrentOperationGroupId"></span>
+                    <input id="currentOperationGroupId" value="" asp-for="CurrentOperationGroupId" hidden/>
                 </div>
-
-                <div id="operGroupsModal" class="modal fade">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <select id="operationGroupSelect" class="list-group w-100" size="12">
-                                    @foreach (var operGroup in Model.AllOperationGroups)
-                                    {
-                                        <option id="@operGroup.Id" value="@operGroup.Name" class="list-group-item" onclick="chooseOperationGroup(this)">
-                                            @operGroup.Name
-                                        </option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                <div class="float-right mt-2 mr-5">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <a class="btn btn-danger my-1" asp-page="./OperationMaintenance" asp-route-anOperationId="">Clear</a>
                 </div>
-                <a class="btn btn-danger my-1" asp-page="./OperationMaintenance" asp-route-anOperationId="">Clear</a>
-                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-
         </div>
 
         <div class="col-lg-6">
@@ -102,10 +99,10 @@
                             {<span class="text-danger"> Thickness is required.</span>}
 
                             <a class"btn" style="float:right" asp-page="./OperationMaintenance" asp-route-anOperationId="@operation.Id"><i class="fa fa-edit" data-toggle="tooltip" title="Edit"></i></a>
-                    </p>
+                        </p>
 
-                </li>
-            }
+                    </li>
+                }
             </ul>
         </div>
     </div>
@@ -116,9 +113,7 @@
 
 <script>
     function chooseOperationGroup(theSelectedOption) {
-        console.log(theSelectedOption.id);
-        document.getElementById("currentOperationGroupName").value = theSelectedOption.value;
-        document.getElementById("currentOperationGroupId").value = theSelectedOption.id;
+        document.getElementById("currentOperationGroupId").value = theSelectedOption.value;
 
         $("#operGroupsModal").modal("hide");
     }
@@ -128,6 +123,20 @@
         for (var i = 0; i < operations.length; i++) {
             if (operations[i] != undefined) {
                 if (operations[i].dataset.operationName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    operations[i].style.display = "block";
+                }
+                else {
+                    operations[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function searchOperationGroupList(searchTerm) {
+        var operations = document.getElementById("operationGroupSelect").getElementsByTagName("option");
+        for (var i = 0; i < operations.length; i++) {
+            if (operations[i] != undefined) {
+                if (operations[i].value.toLowerCase().includes(searchTerm.toLowerCase())) {
                     operations[i].style.display = "block";
                 }
                 else {

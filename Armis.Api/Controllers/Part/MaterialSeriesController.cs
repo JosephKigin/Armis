@@ -41,6 +41,22 @@ namespace Armis.Api.Controllers.Part
             }
         }
 
+        [HttpGet("{aSeriesName}")]
+        public async Task<ActionResult<bool>> CheckIfNameIsUnique(string aSeriesName)
+        {
+            try
+            {
+                var data = await MaterialSeriesService.CheckIfNameIsUnique(aSeriesName);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("MaterialSeriesController.CheckIfNameIsUnique(string aSeriesName) Not able to check if name is unique (aName). | Message: {exMessage} | StackTrace: {stackTrace}", aSeriesName, ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<MaterialSeriesModel>> CreateMaterialSeries(MaterialSeriesModel aMaterialSeries)
         {

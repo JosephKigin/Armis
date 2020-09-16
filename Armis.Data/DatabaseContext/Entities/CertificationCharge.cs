@@ -12,8 +12,8 @@ namespace Armis.Data.DatabaseContext.Entities
         }
 
         public short CertChargeId { get; set; }
-        public decimal? DefaultChargeAmt { get; set; }
-        public decimal? NadcapChargeAmt { get; set; }
+        public decimal DefaultChargeAmt { get; set; }
+        public decimal NadcapChargeAmt { get; set; }
 
         public virtual ICollection<Customer> Customer { get; set; }
         public virtual ICollection<OrderHead> OrderHead { get; set; }

@@ -25,51 +25,34 @@
                     @*Preloaded message.*@
                     <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
                 }
-                
-                <div class="form-group">
-                    <label><b>Step Name: </b></label>
-                    <input type="text" asp-for="StepName" class="form-control" />
-                    <span asp-validation-for="StepName" class="alert-danger"></span>
+
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Step Name: </label>
+                    <input type="text" asp-for="StepName" class="form-control col-lg-8" />
+                    <div class="col-lg-3"></div>
+                    <span asp-validation-for="StepName" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
-                    <label><b>Instructions: </b></label>
-                    <textarea class="form-control" asp-for="StepInstructions" rows="4"></textarea>
-                    <span asp-validation-for="StepInstructions" class="alert-danger"></span>
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Instructions: </label>
+                    <textarea class="form-control col-lg-8" asp-for="StepInstructions" rows="4"></textarea>
+                    <div class="col-lg-3"></div>
+                    <span asp-validation-for="StepInstructions" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
-                    <label><b>Is sign-off required? </b></label>
-                    <select class="form-control" asp-for="IsSignOffRequired">
-                        @if (Model.Step != null)
-                        {
-                            @if (Model.Step.SignOffIsRequired == true)
-                            {
-                                <option></option>
-                                <option value="1" selected>Yes</option>
-                                <option value="2">No</option>
-                            }
-                            else if (Model.Step.SignOffIsRequired == false)
-                            {
-                                <option></option>
-                                <option value="1">Yes</option>
-                                <option value="2" selected>No</option>
-                            }
-
-                        }
-                        else
-                        {
-                            <option></option>
-                            <option value="1">Yes</option>
-                            <option value="2">No</option>
-                        }
-                    </select>
-                    <span asp-validation-for="IsSignOffRequired" class="alert-danger"></span>
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Is sign-off required? </label>
+                    @if (Model.Step != null)
+                    {
+                        @if (Model.Step.SignOffIsRequired == true) { <input type="checkbox" class="form-control" asp-for="IsSignOffRequired" checked /> }
+                        else { <input type="checkbox" class="form-control" asp-for="IsSignOffRequired" /> }
+                    }
+                    else { <input type="checkbox" class="form-control" asp-for="IsSignOffRequired" /> }
                 </div>
 
-                <div class="form-group">
-                    <label><b>Step Category: </b></label>
-                    <select asp-for="StepCategoryId" class="form-control">
+                <div class="form-inline row mt-2">
+                    <label class="col-lg-3 justify-content-end">Step Category: </label>
+                    <select asp-for="StepCategoryId" class="form-control col-lg-8">
                         <option></option>
                         @foreach (var stepCategory in Model.StepCategories)
                         {
@@ -78,10 +61,13 @@
                             </option>
                         }
                     </select>
-                    <span asp-validation-for="StepCategoryId" class="alert-danger"></span>
+                    <div class="col-lg-3"></div>
+                    <span asp-validation-for="StepCategoryId" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a class="btn btn-danger text-light" href="/Quality/Process/StepMaintenance">Reset</a>
+                <div class="float-right mt-2 mr-5">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <a class="btn btn-danger text-light" href="/Quality/Process/StepMaintenance">Reset</a>
+                </div>
             </form>
         </div>
 

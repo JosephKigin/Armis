@@ -37,6 +37,14 @@ namespace Armis.DataLogic.Services.PartServices
             return theHardnessEntity.ToModel();
         }
 
+        public async Task<bool> CheckIsNameIsUnique(string aHardnessName)
+        {
+            var entity = await Context.Hardness.FirstOrDefaultAsync(i => i.ShortName == aHardnessName);
+
+            if(entity == null) { return true; }
+            else { return false; }
+        }
+
         public async Task<HardnessModel> CreateHardness(HardnessModel aHardnessModel)
         {
             var entityToAdd = aHardnessModel.ToEntity();

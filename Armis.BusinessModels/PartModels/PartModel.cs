@@ -1,5 +1,6 @@
 ﻿using Armis.BusinessModels.EmployeeModels;
 using Armis.BusinessModels.ShopFloorModels.Department;
+using Armis.BusinessModels.ShopFloorModels.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Armis.BusinessModels.PartModels
         public string Dimensions { get; set; }
         public int? RackId { get; set; }
         public decimal? SurfaceArea { get; set; }
-        public string SurfaceAreaUoM { get; set; }
+        public int? SurfaceAreaUoMId { get; set; }
         public decimal? PieceWeight { get; set; }
         public short? StandardDeptId { get; set; }
         public string Bake { get; set; }
@@ -28,9 +29,11 @@ namespace Armis.BusinessModels.PartModels
         public int? MaterialAlloyId { get; set; }
         public int? MaterialSeriesId { get; set; }
         public int CreatedByEmpId { get; set; }
-        public DateTime DateCreated { get; set; }
-        public TimeSpan TimeCreated { get; set; }
+        public DateTime? DateCreated { get; set; } //Needs to be null so a model can be passed in to post with a null datetime to be filled in the service
+        public TimeSpan? TimeCreated { get; set; } //See comment above
 
+        public RackModel Rack { get; set; }
+        public UnitOfMeasureModel SurfaceAreaUnitOfMeasure { get; set; }
         public MaterialAlloyModel Alloy { get; set; }
         public EmployeeModel CreatedByEmp { get; set; }
         public MaterialSeriesModel Series { get; set; }

@@ -1,10 +1,26 @@
 ﻿@page
 @model ArmisWebsite.Pages.OrderEntry.OrderEntryIndexModel
 @{
-    ViewData["Title"] = "OrderEntryIndex";
+    ViewData["Title"] = "OrderEntry";
 }
 
-<div class="container-fluid" style="width: 100%; font-size:14px; background-color:#EAF1FA;">
+<head>
+    <script type="text/javascript" src="~/js/OrderEntry/OrderEntryIndex.js"></script>
+</head>
+@*Hidden "workbench" to store elements to be used as needed*@
+<div style="display:none">
+    @*Unit of Measure select*@
+    <select id="selectUoMsTOCOPY" style="box-sizing: border-box; width:100%;">
+        @foreach (var uom in Model.UoMs)
+        {
+            <option value="@uom.UoMid">@uom.Label</option>
+        }
+    </select>
+
+    <datalist id="datalistParts"></datalist>
+</div>
+
+<div class="container-fluid" style="width: 100%; font-size:14px;">
     @*Main info entry*@
     <div class="card">
         <div class="card-header">
@@ -13,35 +29,35 @@
         <div class="row">
             @*First column*@
             <div class="col-lg-3">
-                <div class="row py-3">
-                    <div class="col-lg-3 text-right">Order #</div>
-                    <div class="col-lg-9"> <input class="form-control" placeholder="123456 | No user input" disabled /> </div>
-                </div>
-                <div class="row pb-1">
+                <div class="row pt-3 pb-1">
                     <div class="col-lg-3 text-right">Customer</div>
                     <div class="col-lg-9">
-                        <input id="inputCustomer" list="datalistCustomers" type="search" class="form-control" placeholder="Autosuggest" />
+                        <input id="inputCustomer" list="datalistCustomers" spellcheck="false" type="search" class="form-control" oninput="updateCustomerSelection(this)" />
 
                         <datalist id="datalistCustomers">
                             @foreach (var customer in Model.Customers)
                             {
-                                <option value="@customer.Name"/>
+                                //Placeholder variable for the option with the bill to info.  It needs to be handled outside of the option tag to handle nulls properly.
+                                var optionInnerHtml = (customer.BillTo != null) ? customer.BillTo.Address1 : "";
+                                <option data-cust-id="@customer.CustId" value="@customer.CustId. @customer.Name">@optionInnerHtml</option>
+
                             }
                         </datalist>
+                        <input id="hdnCustomerId" type="number" hidden />
                     </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Bill To</div>
                     <div class="col-lg-9">
-                        <input class="form-control" placeholder="Autosuggest" />
-                        <textarea class="form-control" placeholder="123 Street ave. City, ST 12345" disabled></textarea>
+                        <textarea id="textareaBillTo" class="form-control" readonly></textarea>
                     </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Ship To</div>
                     <div class="col-lg-9">
-                        <input class="form-control" placeholder="Autosuggest" />
-                        <textarea class="form-control" placeholder="123 Street ave. City, ST 12345" disabled></textarea>
+                        <input id="inputShipTo" class="form-control" list="datalistShipTo" spellcheck="false" type="search" oninput="udpateShipToTextArea(this)" />
+                        <datalist id="datalistShipTo"></datalist>
+                        <textarea id="textareaShipTo" class="form-control" disabled></textarea>
                     </div>
                 </div>
             </div>
@@ -50,7 +66,7 @@
             <div class="col-lg-3">
                 <div class="row py-3">
                     <div class="col-lg-3 text-right">PO #</div>
-                    <div class="col-lg-9"> <input class="form-control" placeholder="1A2B3C4D" /> </div>
+                    <div class="col-lg-9"> <input class="form-control" /> </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right"></div>
@@ -58,11 +74,15 @@
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Contact</div>
-                    <div class="col-lg-9"><input class="form-control" placeholder="Autosuggest" /></div>
+                    <div class="col-lg-9">
+                        <input id="inputContact" class="form-control" spellcheck="false" type="search" list="datalistContact" />
+                        <datalist id="datalistContact">
+                        </datalist>
+                    </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-3 text-right">Job/Shipper</div>
-                    <div class="col-lg-9"><input class="form-control" placeholder="????" /></div>
+                    <div class="col-lg-9"><input class="form-control" /></div>
                 </div>
             </div>
 
@@ -70,7 +90,7 @@
             <div class="col-lg-2">
                 <div class="row py-1">
                     <div class="col-lg-4 text-right">Quote #</div>
-                    <div class="col-lg-8"> <input class="form-control" placeholder="????" /> </div>
+                    <div class="col-lg-8"> <input class="form-control" /> </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Expedite</div>
@@ -93,11 +113,18 @@
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Acct #</div>
-                    <div class="col-lg-8"> <input class="form-control" placeholder="123456789" /> </div>
+                    <div class="col-lg-8"> <input class="form-control" /> </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Packaging</div>
-                    <div class="col-lg-8"><select class="form-control"><option selected="selected">Drop Down</option></select></div>
+                    <div class="col-lg-8">
+                        <select class="form-control">
+                            @foreach (var packagingCode in Model.PackageCodes)
+                            {
+                                <option value="@packagingCode.PackageId">@packagingCode.PackageCd</option>
+                            }
+                        </select>
+                    </div>
                 </div>
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right">Container</div>
@@ -112,10 +139,15 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-7">
-                                <select class="form-control"><option selected="selected">Drop Down</option></select>
+                                <select class="form-control" onclick="console.log(this.value);">
+                                    @foreach (var container in Model.Containers)
+                                    {
+                                        <option value="@container.ContainerId">@container.Code</option>
+                                    }
+                                </select>
                             </div>
                             <div class="col-lg-5">
-                                <input class="form-control" placeholder="12" />
+                                <input class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -128,7 +160,7 @@
                 <br />
                 <div class="row py-1">
                     <div class="col-lg-4 text-right">Order Date</div>
-                    <div class="col-lg-8"> <input type="date" class="form-control" placeholder="123456789" /> </div>
+                    <div class="col-lg-8"> <input type="date" class="form-control" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" /> </div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-4 text-right">Req Date</div>
@@ -145,7 +177,7 @@
                 <br />
                 <div class="row pb-1">
                     <div class="col-lg-4 text-right"> ROHS Type</div>
-                    <div class="col-lg-8"> <input class="form-control" placeholder="??????" /> </div>
+                    <div class="col-lg-8"> <input class="form-control" /> </div>
                 </div>
             </div>
 
@@ -159,31 +191,31 @@
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">2-Print Rec'd</div>
+                    <div class="col-lg-10">2 - Print Rec'd</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">3-Don't Scan Prints</div>
+                    <div class="col-lg-10">3 - Don't Scan Prints</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">4-ROHS Compliant</div>
+                    <div class="col-lg-10">4 - ROHS Compliant</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">5-Strip & Replate</div>
+                    <div class="col-lg-10">5 - Strip & Replate</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">6-Special Shipping</div>
+                    <div class="col-lg-10">6 - Special Shipping</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">7-Production Hold</div>
+                    <div class="col-lg-10">7 - Production Hold</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">8-Return As Is</div>
+                    <div class="col-lg-10">8 - Return As Is</div>
                 </div>
             </div>
         </div>
@@ -201,85 +233,174 @@
                         <div class="row"><div class="col-lg-4">Lot Charge:</div> <div class="col-lg-8"><input class="form-control w-25" /></div></div>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered" style="        table-layout: fixed
-">
+                <input id="hdnLineItemsCount" type="number" value="0" step="1" hidden />
+                <table class="table table-striped table-bordered" style="table-layout: fixed">
                     <thead>
                         <tr>
                             <th scope="col" style="width:4%">Line</th>
-                            <th scope="col" style="width:8%">Qty</th>
-                            <th scope="col" style="width:12%">Part #</th>
-                            <th scope="col" style="width:4%">Rev</th>
-                            <th scope="col" style="width:20%">Description</th>
-                            <th scope="col" style="width:8%">PO Price</th>
-                            <th scope="col" style="width:8%">U/M</th>
-                            <th scope="col" style="width:8%">Piece Weight</th>
-                            <th scope="col" style="width:8%">Total</th>
-                            <th scope="col" style="width:20%">Part Comments</th>
+                            <th scope="col" style="width:14%">Qty</th>
+                            <th scope="col" style="width:24%"> Part </th>
+                            <th scope="col" style="width:42%">Description</th>
+                            <th scope="col" style="width:16%">Unit Price</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">4</th>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><select style="box-sizing: border-box; width:100%;"><option selected="selected">in</option></select></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                            <td><input style="box-sizing: border-box; width:100%;" /></td>
-                        </tr>
+                    <tbody id="tbodyLineItems">
                     </tbody>
                 </table>
+                <button id="btnOpenCreatePartModal" type="button" class="btn btn-primary float-left" data-toggle="modal" href="#modalPartCreation" disabled>Create New Part</button>
+                <button type="button" class="btn btn-primary float-right" onclick="addLineItem()">Add Line Item</button>
             </div>
 
-            <div class="col-lg-3 border-left">
-                <div class="row my-1">
-                    <div class="col-lg">
-                        <h5>Order Comments</h5>
-                    </div>
-                    <div class="col-lg">
-                        <select class="form-control"><option selected="selected">Add Code</option></select>
-                    </div>
+            <div class="col-lg-3 border-left pb-2 text-center">
+                <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" href="#modalOrderComments">Order Comments</button>
+            </div>
+        </div>
+    </div>
+
+    @*Create Part Modal*@
+    <div id="modalPartCreation" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create Part</h3>
                 </div>
-                <textarea class="form-control h-75">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+                <div class="modal-body">
+                    <div class="form-inline row">
+                        <label class="col-lg-2 justify-content-end">Name:</label>
+                        <input id="inputCreatePart-Name" type="text" maxlength="30" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row">
+                        <label class="col-lg-2 justify-content-end">Rev: </label>
+                        <input id="inputCreatePart-Rev" type="text" maxlength="10" class="form-control col-lg-3" />
+                        <div class="col-lg-6"></div>@*this fills out the rest of the line*@
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Description: </label>
+                        <input id="inputCreatePart-Description" type="text" maxlength="50" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Dimensions: </label>
+                        <input id="inputCreatePart-Dimensions" type="text" maxlength="20" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Rack: </label>
+                        <select id="selectCreatePart-Rack" class="form-control col-lg-8">
+                            <option value="">No racks in system</option>
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">SurfaceArea: </label>
+                        <input id="inputCreatePart-SurfaceArea" type="number" class="form-control col-lg-6" step=".000001" max="9999999999999999999.999999" />
+                        <select id="selectCreatePart-UoM" class="form-control col-lg-2">
+                            @foreach (var uom in Model.UoMs)
+                            {
+                                <option value="@uom.UoMid">@uom.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Piece Weight: </label>
+                        <input id="inputCreatePart-PieceWeight" type="number" class="form-control col-lg-8" step=".000001" max="9999999999999999999.999999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Standard Dept: </label>
+                        <select id="selectCreatePart-StandardDept" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var dept in Model.Departments)
+                            {
+                                <option value="@dept.DepartmentId">@dept.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Bake: </label>
+                        <input id="inputCreatePart-Bake" type="text" class="form-control col-lg-8" maxlength="20" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Base Price: </label>
+                        <input id="inputCreatePart-BasePrices" type="number" class="form-control col-lg-8" step=".000001" max="9999999999999999999.999999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Min Lot Charge: </label>
+                        <input id="inputCreatePart-MinLotCharge" type="number" class="form-control col-lg-8" step=".0001" max="9999999999999999999.9999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Parts Per Load: </label>
+                        <input id="inputCreatePart-PartsPerLoad" type="number" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Mask Pieces Per Hour: </label>
+                        <input id="inputCreatePart-MaskPiecesPerHour" type="number" class="form-control col-lg-8" step="0.0001" max="999999999.9999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Notify When Masking: </label>
+                        <input id="inputCreatePart-NotifyWhenMasking" type="checkbox" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Alloy: </label>
+                        <select id="selectCreatePart-Alloy" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var alloy in Model.Alloys)
+                            {
+                                <option value="@alloy.MaterialAlloyId" data-series="@alloy.MaterialSeriesId">@alloy.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Series: </label>
+                        <select id="selectCreatePart-Series" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var series in Model.Series)
+                            {
+                                <option value="@series.MaterialSeriesId">@series.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-success float-right mr-5 mt-2" onclick="postPart()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Order Comments Modal*@
+    <div id="modalOrderComments" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Order Comments</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Order</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Internal</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Return As Is</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Credit Authorization</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Void</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Job Hold</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" data-dismiss="modal" href="#modalOrderComments" class="btn btn-primary float-right mt-2">Ok</button>
+                </div>
             </div>
         </div>
     </div>
@@ -294,11 +415,9 @@
                     </div>
                     <div class="col-lg-4">
                         <select class="form-control">
-                            @foreach (var qualityStd in Model.QualityStandards)
-                            {
-                                <option>@qualityStd.QualStdCode</option>
-                            }
-
+                            <option>None</option>
+                            <option>Normal Cert</option>
+                            <option>Nadcap Cert</option>
                         </select>
                     </div>
                 </div>
@@ -402,3 +521,7 @@
         <div class="col-lg text-right"><button class="btn btn-lg btn-primary p-1 m-3 ">Create Order</button></div>
     </div>
 </div>
+
+<script>
+    var apiAddress = '@Model._apiAddress';
+</script>

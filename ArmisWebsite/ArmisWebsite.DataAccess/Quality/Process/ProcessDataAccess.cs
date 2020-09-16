@@ -68,11 +68,16 @@ namespace ArmisWebsite.DataAccess.Quality
 
         public async Task<ProcessRevisionModel> GetHydratedCurrentProcessRev(int aProcessId)
         {
-            return await DataAccessGeneric.HttpGetRequest<ProcessRevisionModel>(Config["APIAddress"] + "api/Processes/GetHydratedProcessRevision/" + aProcessId, _httpContextAccessor.HttpContext);
+            return await DataAccessGeneric.HttpGetRequest<ProcessRevisionModel>(Config["APIAddress"] + "api/Processes/GetProcessCurrentHydratedRev/" + aProcessId, _httpContextAccessor.HttpContext);
         }
 
-    //UPDATE
-    public async Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel)
+        public async Task<bool> CheckIfNameIsUnique(string aProcessName)
+        {
+            return await DataAccessGeneric.HttpGetRequest<bool>(Config["APIAddress"] + "api/Processes/CheckIfNameIsUnique/" + aProcessName, _httpContextAccessor.HttpContext);
+        }
+
+        //UPDATE
+        public async Task<ProcessRevisionModel> LockRevision(PassBackProcessRevStepSeqModel aPassBackModel)
         {
             return await DataAccessGeneric.HttpPostRequest<ProcessRevisionModel, PassBackProcessRevStepSeqModel>(Config["APIAddress"] + "api/processes/UpdateRevSaveAndLock/", aPassBackModel, _httpContextAccessor.HttpContext);
         }

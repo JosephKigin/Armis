@@ -29,20 +29,23 @@ namespace ArmisWebsite
         //Web properties
         public string HelpMessage { get; set; }
 
-        [BindProperty]
+        [BindProperty, MaxLength(50)]
         [Required]
+        [Display(Name = "Name")]
         public string StepName { get; set; }
 
         [BindProperty]
         [Required]
-        public int IsSignOffRequired { get; set; } //0 is no selection, 1 is Yes, 2 is No.  No and no selection will both mean false.
+        public bool IsSignOffRequired { get; set; } //0 is no selection, 1 is Yes, 2 is No.  No and no selection will both mean false.
 
         [BindProperty]
         [Required]
+        [Display(Name = "Category")]
         public short StepCategoryId { get; set; }
 
-        [BindProperty]
+        [BindProperty, MaxLength(500)]
         [Required]
+        [Display(Name = "Instructions")]
         public string StepInstructions { get; set; }
 
         [BindProperty]
@@ -92,7 +95,7 @@ namespace ArmisWebsite
 
             if (Step == null) { Step = new StepModel(); }
             Step.Instructions = StepInstructions;
-            Step.SignOffIsRequired = (IsSignOffRequired == 1) ? true : false;
+            Step.SignOffIsRequired = IsSignOffRequired;
             Step.StepName = StepName;
             Step.StepCategory = await StepDataAccess.GetStepCategoryById(StepCategoryId);
 

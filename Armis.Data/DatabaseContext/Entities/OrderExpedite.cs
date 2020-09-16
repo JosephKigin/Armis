@@ -13,13 +13,9 @@ namespace Armis.Data.DatabaseContext.Entities
         public decimal? FeeAmount { get; set; }
         public int? ExpeditedByEmp { get; set; }
         public DateTime? ExpeditedDate { get; set; }
-        public int? ReworkOrder { get; set; }
-        public short? DepartmentId { get; set; }
 
         public virtual Employee ApprovedByEmpNavigation { get; set; }
-        public virtual Department Department { get; set; }
         public virtual Employee ExpeditedByEmpNavigation { get; set; }
         public virtual OrderHead Order { get; set; }
-        public virtual OrderHead ReworkOrderNavigation { get; set; }
     }
 }

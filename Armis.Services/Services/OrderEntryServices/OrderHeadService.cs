@@ -23,7 +23,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
         }
 
         //Get
-        public async Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads() //TODO: This should return a model, not an entity.  This was created like this initially for testing purposes.
+        public async Task<IEnumerable<OrderHeadModel>> GetAllOrderHeads()
         {
             Context.OrderDetail.Load();
             var orderHeadEntities = await Context.OrderHead.ToListAsync();
@@ -44,11 +44,9 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.JobHoldToEmpNavigation)
                                                            .IncludeOptimized(i => i.Package)
                                                            .IncludeOptimized(i => i.PriceStatus)
-                                                           .IncludeOptimized(i => i.QualStd)
                                                            .IncludeOptimized(i => i.ShipVia)
                                                            .IncludeOptimized(i => i.Spec)
                                                            .IncludeOptimized(i => i.OrderComment)
-                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
                                                            .IncludeOptimized(i => i.OrderDetail).ToListAsync();
 
@@ -58,6 +56,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
         public async Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId)
         {
             await Context.TernaryCode.LoadAsync();
+            await Context.Container.LoadAsync();
             var orderHeadEntity = await Context.OrderHead.Where(i => i.OrderId == anOrderId)
                                                            .IncludeOptimized(i => i.CertCharge)
                                                            .IncludeOptimized(i => i.CreditAuthByEmpNavigation)
@@ -70,10 +69,8 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.JobHoldToEmpNavigation)
                                                            .IncludeOptimized(i => i.Package)
                                                            .IncludeOptimized(i => i.PriceStatus)
-                                                           .IncludeOptimized(i => i.QualStd)
                                                            .IncludeOptimized(i => i.ShipVia)
                                                            .IncludeOptimized(i => i.OrderComment)
-                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
                                                            .FirstOrDefaultAsync();
 
@@ -92,6 +89,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
 
             return orderHeadEntity.ToHydratedModel();
         }
+
 
 
         //Post

@@ -22,6 +22,7 @@ namespace ArmisWebsite.Pages.Part
         //Front-End Models
         [BindProperty]
         [Required, StringLength(8)]
+        [Display(Name = "Short Name")]
         public string ShortName { get; set; }
 
         [BindProperty]
@@ -72,12 +73,6 @@ namespace ArmisWebsite.Pages.Part
             }
             else
             {
-                Message = new PopUpMessageModel()
-                {
-                    Text = "Material Series creation failed",
-                    IsMessageGood = false
-                };
-
                 await SetUpProperties();
 
                 return Page();

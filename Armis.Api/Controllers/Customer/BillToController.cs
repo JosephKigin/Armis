@@ -24,18 +24,18 @@ namespace Armis.Api.Controllers.Customer
             _logger = aLogger;
         }
 
-        [HttpGet("{customerId}")]
-        public async Task<ActionResult<BillToModel>> GetAllBillToByCustId(int customerId)
+        [HttpGet("{aCustomerId}")]
+        public async Task<ActionResult<BillToModel>> GetBillToByCustId(int aCustomerId)
         {
             try
             {
-                var data = await BillToService.GetBillToByCustId(customerId);
+                var data = await BillToService.GetBillToByCustId(aCustomerId);
 
                 return Ok(JsonSerializer.Serialize(data));
             }
             catch (Exception ex)
             {
-                _logger.LogError("BillToController.GetAllBillToByCustId(int customerId) Not able to pull BillTo for customer with id {customerId}. | Message: {exMessage} | StackTrace: {stackTrace}", customerId, ex.Message, ex.StackTrace);
+                _logger.LogError("BillToController.GetAllBillToByCustId(int customerId) Not able to pull BillTo for customer with id {customerId}. | Message: {exMessage} | StackTrace: {stackTrace}", aCustomerId, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

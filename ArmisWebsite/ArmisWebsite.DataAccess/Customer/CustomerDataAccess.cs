@@ -31,7 +31,7 @@ namespace ArmisWebsite.DataAccess.Customer
 
         public async Task<IEnumerable<CustomerModel>> GetAllCurrentAndProspectCustomers()
         {
-            return await DataAccessGeneric.HttpGetRequest<IEnumerable<CustomerModel>>(Config["APIAddress"] + "api/Customers/GetAllCurrentAndProspectCustomers", _httpContextAccessor.HttpContext);
+            return await DataAccessGeneric.HttpGetRequest<IEnumerable<CustomerModel>>(Config["APIAddress"] + "api/Customers/GetAllCurrentAndProspectCustomersWithBillTo", _httpContextAccessor.HttpContext);
         }
     }
 }

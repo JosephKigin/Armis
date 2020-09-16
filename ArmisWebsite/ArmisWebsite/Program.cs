@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json;
 
 namespace ArmisWebsite
 {
@@ -27,7 +28,7 @@ namespace ArmisWebsite
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails()
                 .MinimumLevel.Warning()
-                .WriteTo.File(Configuration["LoggingLocation"],
+                .WriteTo.File(new JsonFormatter(), Configuration["LoggingLocation"],
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true)
                 .CreateLogger();

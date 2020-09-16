@@ -41,6 +41,22 @@ namespace Armis.Api.Controllers.Part
             }
         }
 
+        [HttpGet("{anAlloyDescription}")]
+        public async Task<ActionResult<bool>> CheckIfDescriptionIsUnique(string anAlloyDescription)
+        {
+            try
+            {
+                var data = await MaterialAlloyService.CheckIfDescriptionIsUnique(anAlloyDescription);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("MaterialAlloyController.GetAllMaterialAlloys() Not able to get all material alloys. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<MaterialAlloyModel>> CreateMaterialAlloy(MaterialAlloyModel aMaterialAlloyModel)
         {

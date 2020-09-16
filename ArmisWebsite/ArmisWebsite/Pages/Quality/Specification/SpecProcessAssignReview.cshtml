@@ -47,7 +47,7 @@
                             Rev: <b>@spec.ExternalRev</b>
                             @if (theNewSpec != null)
                             {<i class="fa fa-arrow-right" style="color:goldenrod"></i><b style="color:goldenrod"> @theNewSpec.ExternalRev</b>}
-
+                            <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i>
                         </a>
 
                         @foreach (var specProcessAssign in allSpasForSpecId)
@@ -55,8 +55,8 @@
                             var theNewProcess = Model.AllNewProcessRevModel.FirstOrDefault(i => i.ProcessId == specProcessAssign.ProcessId); //This will have a value if the process reving up is the reason for review.
 
                             <div id="specGroup_@specProcessAssign.SpecId" class="collapse">
-                                <div class="row h-50 border-bottom my-2">
-                                    <div class="col-lg-11 h-50">
+                                <div class="row">
+                                    <div class="col-lg-11 h-50 h-50 my-2">
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a data-toggle="collapse" href="#specProcAssign_@specProcessAssign.SpecId-@specProcessAssign.SpecRevId-@specProcessAssign.SpecAssignId">
                                             @specProcessAssign.SpecAssignId.
@@ -64,6 +64,7 @@
                                             Rev: <b>@specProcessAssign.ProcessRevId</b>
                                             @if (theNewProcess != null)
                                             {<i class="fa fa-arrow-right"></i><b> @theNewProcess.ProcessRevId</b>}
+                                            <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i>
                                         </a>
                                     </div>
 

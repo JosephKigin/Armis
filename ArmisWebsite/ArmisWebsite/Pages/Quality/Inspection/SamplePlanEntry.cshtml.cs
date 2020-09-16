@@ -68,6 +68,16 @@ namespace ArmisWebsite.Pages.Quality.Inspection
 
         public async Task<IActionResult> OnPost()
         {
+            if(!(await SamplePlanDataAccess.CheckIfNameIsUnique(SamplePlanName))) 
+            {
+                Message = new PopUpMessageModel()
+                {
+                    IsMessageGood = false,
+                    Text = "A sameple plan with that name already exists."
+                };
+                return Page(); 
+            }
+
             var newSamplePlan = new SamplePlanModel()
             {
                 PlanName = SamplePlanName,

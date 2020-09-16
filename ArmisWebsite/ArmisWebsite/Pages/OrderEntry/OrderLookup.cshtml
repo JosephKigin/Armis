@@ -132,7 +132,7 @@
                                 <h5 class="modal-title">Order Comments</h5>
                             </div>
                             <div class="modal-body">
-                                <p><b>@Model.OrderHead.</b></p>
+                                <p><b>@Model.OrderHead.OrderComment.OrderComments</b></p>
                             </div>
                         </div>
                     </div>
@@ -216,8 +216,10 @@
                     <div class="row border-bottom mb-2">
                         <span class="col-lg-6">Quality Standard</span>
                         <span class="col-lg-6 flex-align-right">
-                            @if (Model.OrderHead.QualityStandard != null)
-                            {<text>@Model.OrderHead.QualityStandard.QualStdCode</text>}
+                            @if (Model.OrderHead.IsNadcap == true)
+                            {<text>Nadcap Cert</text>}
+                            else 
+                            {<text>Normal Cert</text> }
                         </span>
                     </div>
                     <div class="row border-bottom mb-2">
@@ -262,10 +264,9 @@
                             {<text>@orderDetail.Part.ExternalRev</text>}
                         </div>
                         <div class="col-lg-1 border-right border-bottom">@orderDetail.Quantity</div>
-                        <div class="col-lg-1 border-right border-bottom">@orderDetail.Poprice</div>
-                        <div class="col-lg-1 border-right border-bottom">@orderDetail.CalcPrice</div>
-                        <div class="col-lg-1 border-right border-bottom">@orderDetail.AssignPrice</div>
-                        <div class="col-lg-1 border-right border-bottom">@orderDetail.LotCharge</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.CalcUnitPrice</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.AssignUnitPrice</div>
+                        <div class="col-lg-1 border-right border-bottom">@orderDetail.ExtPrice</div>
                         <div class="col-lg-1 border-bottom"><p data-toggle="tooltip" data-placement="right" title="@orderDetail.PriceCode.Description">@orderDetail.PriceCode.LongCode</p></div>
                     </div>
                 }

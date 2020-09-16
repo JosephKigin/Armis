@@ -26,7 +26,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public string Name { get; set; }
         public byte? PriorityId { get; set; }
         public int? SalesPerson { get; set; }
-        public byte StatusId { get; set; }
+        public bool Inactive { get; set; }
+        public bool IsProspect { get; set; }
         public DateTime? CreatedDate { get; set; }
         public bool? IsInspectAll { get; set; }
         public bool? IsPrePriceAll { get; set; }
@@ -38,11 +39,11 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? IsChargeHandling { get; set; }
         public byte CredStatusId { get; set; }
         public DateTime? LeaveOffCredHoldUntil { get; set; }
-        public short? CertChargeId { get; set; }
+        public short? DefaultCertCharge { get; set; }
         public bool? IsKioskValid { get; set; }
         public string Source { get; set; }
         public byte? TermsId { get; set; }
-        public bool? IsBillRework { get; set; }
+        public bool? IsBilledRework { get; set; }
         public bool? IsTmcustomer { get; set; }
         public bool? SendReminderComp { get; set; }
         public bool? IsBillPartialShipments { get; set; }
@@ -56,15 +57,14 @@ namespace Armis.Data.DatabaseContext.Entities
         public short? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
 
-        public virtual CertificationCharge CertCharge { get; set; }
         public virtual CreditStatus CredStatus { get; set; }
+        public virtual CertificationCharge DefaultCertChargeNavigation { get; set; }
         public virtual Contact DefaultContactNumNavigation { get; set; }
         public virtual ShipViaCode DefaultShipVia { get; set; }
         public virtual Priority Priority { get; set; }
         public virtual Employee SalesPersonNavigation { get; set; }
         public virtual ShipAccount ShipAccount { get; set; }
         public virtual ShipTo ShipTo { get; set; }
-        public virtual CustomerStatus Status { get; set; }
         public virtual TaxJurisdiction TaxJurisd { get; set; }
         public virtual Terms Terms { get; set; }
         public virtual CustBillTo CustBillTo { get; set; }

@@ -8,6 +8,6 @@ namespace Armis.DataLogic.Services.ShippingService.Interfaces
 {
     public interface IShipToService
     {
-        Task<IEnumerable<ShipToModel>> GetAllShipToByCust(int aCustomerId);
+        Task<IEnumerable<ShipToModel>> GetShipTosByCust(int aCustomerId);
     }
 }

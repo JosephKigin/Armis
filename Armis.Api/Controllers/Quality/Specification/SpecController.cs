@@ -27,7 +27,7 @@ namespace Armis.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllSpecsWithCurrentRev() 
+        public async Task<ActionResult<IEnumerable<SpecModel>>> GetAllSpecsWithCurrentRev()
         {
             try
             {
@@ -118,6 +118,22 @@ namespace Armis.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("SpecController.GetHydratedCurrentRevOfSpec(int aSpecId) Not able to get hydrated current revision for specId ({specId}). | Message: {exMessage} | StackTrace: {stackTrace}", aSpecId, ex.Message, ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{aSpecCode}")]
+        public async Task<ActionResult<bool>> CheckIfCodeIsUnique(string aSpecCode)
+        {
+            try
+            {
+                var data = await SpecService.CheckIfCodeIsUnique(aSpecCode);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SpecController.CheckIfCodeIsUnique(string aSpecCode) Not able to check if code is unique ({specCode}). | Message: {exMessage} | StackTrace: {stackTrace}", aSpecCode, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
         }

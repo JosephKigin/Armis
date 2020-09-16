@@ -7,6 +7,7 @@ namespace Armis.Data.DatabaseContext.Entities
     {
         public Rack()
         {
+            Part = new HashSet<Part>();
             ProcessLoad = new HashSet<ProcessLoad>();
             SpecProcessAssignHist = new HashSet<SpecProcessAssignHist>();
         }
@@ -22,6 +23,7 @@ namespace Armis.Data.DatabaseContext.Entities
 
         public virtual Area Area { get; set; }
         public virtual MaterialAlloy MaterialAlloy { get; set; }
+        public virtual ICollection<Part> Part { get; set; }
         public virtual ICollection<ProcessLoad> ProcessLoad { get; set; }
         public virtual ICollection<SpecProcessAssignHist> SpecProcessAssignHist { get; set; }
     }

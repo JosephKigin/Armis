@@ -398,7 +398,7 @@ function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
 
         var divStepElements = divStep.children;
         //0. Button
-        divStepElements[0].data.choiceNumber = i;
+        divStepElements[0].dataset.choiceNumber = i;
         //1. Step name input
         divStepElements[1].id = "inputStepOutput" + aCardNumber + "-" + i;
         //2. Hidden step id input
@@ -518,12 +518,12 @@ function validateChoiceCard(aChoiceCard) {
     }
 
     if ((isSubLevelNameFilled == isChoiceFilled) && areAllChoicesFilled) {
-        aChoiceCard.classList = "card p-3";
+        aChoiceCard.classList = "card p-3 mb-3";
         aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = true;
         return true;
     }
     else {
-        aChoiceCard.classList = "card p-3 border-danger";
+        aChoiceCard.classList = "card p-3 mb-3 border-danger";
         aChoiceCard.getElementsByClassName("fa fa-times-circle")[0].hidden = false;
         return false;
     }
@@ -559,6 +559,21 @@ function searchSamplePlanList(searchTerm) {
             }
         }
 
+    }
+}
+
+function searchStepList(searchTerm) {
+    var steps = document.getElementById("slctAllSteps").getElementsByTagName("option");
+
+    for (var i = 0; i < steps.length; i++) {
+        if (steps[i] != undefined) {
+            if (!steps[i].innerHTML.toLowerCase().includes(searchTerm.toLowerCase())) {
+                steps[i].hidden = true
+            }
+            else {
+                steps[i].hidden = false;
+            }
+        }
     }
 }
 
@@ -636,3 +651,16 @@ function UpdateStepCategorySelect(aCardNumber, aCategoryId) {
         }
     }
 }
+
+//Turns the rotate on as soon as the document is loaded.
+$(document).ready(function () {
+    //Little script to flip the arrow icon when collapsing/uncollapsing
+    $(".collapse").on('show.bs.collapse', function () {
+        var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+        $(iconElement).toggleClass('down');
+    });
+    $(".collapse").on('hide.bs.collapse', function () {
+        var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+        $(iconElement).toggleClass('down');
+    });
+}); 

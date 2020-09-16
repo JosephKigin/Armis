@@ -1,4 +1,4 @@
-﻿@page "{aSpecId:int?}/{aMessage?}"
+﻿@page "{aSpecId:int?}/{aMessage?}/{isMessageGood:bool?}"
 @model ArmisWebsite.Pages.ProcessMaintenance.SpecificationMaintenanceModel
 @{
     ViewData["Title"] = "Spec Maint";
@@ -11,7 +11,10 @@
     <h1>Specification Maintenance</h1>
 
     @*Preloaded message.*@
-    <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+    @if (Model.Message != null)
+    {
+        <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+    }
 
     @*Placeholder for a spec id only if one is passed in*@
     <input id="hdnCurrentSpecId" form="mainForm" asp-for="CurrentSpecId" value="@Model.CurrentSpecId" hidden />
@@ -126,12 +129,12 @@
 
                     <div class="card">
                         <ul id="listAllSamplePlans" class="list-group" style="height:42em; overflow-y:scroll;">
-                            <li class="list-group-item" data-sample-plan-name="none"><input type="radio" data-plan-name="" value="0" />NONE</li>
+                            <li class="list-group-item" data-sample-plan-name="none"><input type="radio" name="samplePlanRadios" data-plan-name="" value="0" />NONE</li>
                             @foreach (var samplePlan in Model.AllSamplePlans)
                             {
                                 <li class="list-group-item" data-sample-plan-name="@samplePlan.PlanName">
                                     <input type="radio" id="radioSamplePlan-@samplePlan.SamplePlanId" value="@samplePlan.SamplePlanId" name="samplePlanRadios" data-plan-name="@samplePlan.PlanName" />
-                                    <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+                                    <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i></a>
                                     <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card collapse">
                                         <partial name="/Pages/Quality/Inspection/Partials/SamplePlanTablePartial.cshtml" model="samplePlan" />
                                     </div>
@@ -157,7 +160,7 @@
                     <input id="hdnModalStepChoiceToUpdate" type="hidden" />
                     @*Search Bar*@
                     <div class="input-group my-1">
-                        <input class="form-control border-right-0" placeholder="Search..." onkeyup="" />
+                        <input class="form-control border-right-0" placeholder="Search..." onkeyup="searchStepList(this.value)" />
                         <span class="input-group-append bg-white border-left-0">
                             <span class="input-group-text bg-transparent"><i class="fa fa-search"></i></span>
                         </span>

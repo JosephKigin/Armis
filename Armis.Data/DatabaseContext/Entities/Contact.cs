@@ -27,7 +27,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public string PhoneNum { get; set; }
         public string FaxNum { get; set; }
         public short? TitleId { get; set; }
-        public bool? Inactive { get; set; }
+        public bool Inactive { get; set; }
         public string Comments { get; set; }
 
         public virtual Customer Cust { get; set; }

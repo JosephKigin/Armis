@@ -24,9 +24,9 @@
 
                             <li id="@spec.Code" class="list-group-item">
                                 <a data-toggle="collapse" href="#specDetails-@spec.Id-@theCurrentSpecRev.InternalRev">
-                                    @spec.Id. 
+                                    @spec.Id.
                                     @spec.Code
-                                    <b>Rev:</b>
+                                    <b>Current Rev:</b>
                                     @if (theCurrentSpecRev.ExternalRev.Trim() != "")
                                     {<text>@theCurrentSpecRev.ExternalRev</text>}
                                 else
@@ -60,11 +60,60 @@
                             <li id="specDetails-@spec.Id-@theCurrentSpecRev.InternalRev" class="collapse" data-parent="#collapseGroup" style="list-style-type:none;">
                                 <div class="list-group-item">
                                     <p><b>Code: </b>@theCurrentSpecRev.Description </p>
-                                    <p><b>Rev: </b>@theCurrentSpecRev.ExternalRev </p>
+                                    <p><b>Current Rev: </b>@theCurrentSpecRev.ExternalRev </p>
+                                    @if (spec.SpecRevModels.Count() > 1)
+                                    {
+                                        <b>Past Rev(s): </b>
+                                        @foreach (var pastRev in spec.SpecRevModels)
+                                        {
+                                            if (pastRev != theCurrentSpecRev)
+                                            {
+                                                <a data-toggle="modal" href="#modalPastRev-@pastRev.SpecId-@pastRev.InternalRev">@pastRev.ExternalRev</a>
+
+                                                <div id="modalPastRev-@pastRev.SpecId-@pastRev.InternalRev" class="modal fade">
+                                                    <div class="modal-dialog modal-xl">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5>@pastRev.Description - <b>Rev: </b> @pastRev.ExternalRev</h5>
+                                                                <h5 class="modal-title">Past Rev Details</h5>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="card p-3">
+                                                                    <b>Sublevels</b>
+                                                                    <ul>
+                                                                        @foreach (var subLevel in pastRev.SubLevels)
+                                                                        {
+                                                                            <li>
+                                                                                @subLevel.Name
+                                                                                <ul class="nested">
+                                                                                    @foreach (var choice in subLevel.Choices)
+                                                                                    {
+                                                                                        <li>
+                                                                                            @choice.Description
+                                                                                        </li>
+                                                                                    }
+                                                                                </ul>
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                    <br />
+                                                                    <b>Sample Plan</b>
+                                                                    <partial name="/Pages/Quality/Inspection/Partials/SamplePlanTablePartial.cshtml" model="pastRev.SamplePlan" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            }
+                                        }
+                                    }
+                                    <br />
                                     @*If there is a sample plan for the current spec rev, an anchor tag and modal will be created that opens and contains sample plan info.*@
                                     @if (theCurrentSpecRev.SamplePlan != null)
                                     {
-                                        <a data-toggle="modal" href="#modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">Sample Plan</a><br />
+                                        <br />
+                                        <a data-toggle="modal" href="#modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">Sample Plan</a>
 
                                         <div class="modal fade" id="modalSamplePlan-@spec.Id-@theCurrentSpecRev.InternalRev">
                                             <div class="modal-dialog modal-lg" style="max-width:90%">
@@ -81,8 +130,9 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <br />
                                     }
-
+                                    <br />
                                     <b>Sublevels</b>
                                     <ul class="nested">
                                         @foreach (var subLevel in theCurrentSpecRev.SubLevels)

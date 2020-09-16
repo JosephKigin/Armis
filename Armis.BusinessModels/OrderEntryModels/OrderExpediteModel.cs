@@ -15,8 +15,6 @@ namespace Armis.BusinessModels.OrderEntryModels
         public decimal? FeeAmount { get; set; }
         public int? ExpeditedByEmp { get; set; }
         public DateTime? ExpeditedDate { get; set; }
-        public int? ReworkOrder { get; set; }
-        public short? DepartmentId { get; set; }
 
         public EmployeeModel ApprovedByEmployee { get; set; }
         public DepartmentModel Department { get; set; }

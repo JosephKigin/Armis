@@ -7,7 +7,7 @@ namespace Armis.BusinessModels.ARModels
     public class CertificationChargeModel
     {
         public short CertChargeId { get; set; }
-        public decimal? DefaultChargeAmt { get; set; }
-        public decimal? NadcapChargeAmt { get; set; }
+        public decimal DefaultChargeAmt { get; set; }
+        public decimal NadcapChargeAmt { get; set; }
     }
 }

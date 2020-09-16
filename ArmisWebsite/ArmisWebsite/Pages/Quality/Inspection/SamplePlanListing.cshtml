@@ -18,7 +18,7 @@
         @foreach (var samplePlan in Model.AllSamplePlans)
         {
             <li class="list-group-item" data-sample-plan-name="@samplePlan.PlanName">
-                <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description</a>
+                <a href="#samplePlanDetails-@samplePlan.SamplePlanId" data-toggle="collapse">@samplePlan.PlanName - @samplePlan.Description <i class="fa fa-chevron-down rotate" style="color:#0366d6;"></i></a>
                 <div id="samplePlanDetails-@samplePlan.SamplePlanId" class="card border border-dark collapse">
                     <partial name="/Pages/Quality/Inspection/Partials/SamplePlanTablePartial.cshtml" model="samplePlan" />
                 </div>
@@ -42,4 +42,17 @@
             }
         }
     }
+
+    //Turns the rotate on as soon as the document is loaded.
+    $(document).ready(function () {
+        //Little script to flip the arrow icon when collapsing/uncollapsing
+        $(".collapse").on('show.bs.collapse', function () {
+            var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+            $(iconElement).toggleClass('down');
+        });
+        $(".collapse").on('hide.bs.collapse', function () {
+            var iconElement = this.parentNode.getElementsByClassName("fa-chevron-down")[0]; //There is only one icon that is a chevron per li.
+            $(iconElement).toggleClass('down');
+        });
+    });
 </script>

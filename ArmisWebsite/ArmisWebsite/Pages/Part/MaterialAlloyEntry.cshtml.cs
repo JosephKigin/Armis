@@ -29,6 +29,7 @@ namespace ArmisWebsite.Pages.Part
 
         [BindProperty]
         [Required]
+        [Display(Name = "Series")]
         public int SeriesId { get; set; }
 
         public PopUpMessageModel Message { get; set; }
@@ -40,8 +41,17 @@ namespace ArmisWebsite.Pages.Part
             MaterialSeriesDataAccess = aMaterialSeriesDataAccess;
         }
 
-        public async Task<ActionResult> OnGet()
+        public async Task<ActionResult> OnGet(string aMessage, bool? isMessageGood)
         {
+            if (aMessage != null)
+            {
+                Message = new PopUpMessageModel()
+                {
+                    IsMessageGood = isMessageGood,
+                    Text = aMessage
+                };
+            }
+
             await SetUpProperties();
             return Page();
         }
@@ -50,6 +60,19 @@ namespace ArmisWebsite.Pages.Part
         {
             if (ModelState.IsValid)
             {
+                if (!(await MaterialAlloyDataAccess.CheckIfDescriptionIsUnique(Description)))
+                {
+                    Message = new PopUpMessageModel()
+                    {
+                        IsMessageGood = false,
+                        Text = "A material alloy already exists with that description."
+                    };
+
+                    await SetUpProperties();
+
+                    return Page();
+                }
+
                 var alloyToAdd = new MaterialAlloyModel()
                 {
                     Description = Description,
@@ -57,15 +80,8 @@ namespace ArmisWebsite.Pages.Part
                 };
 
                 var result = await MaterialAlloyDataAccess.CreateMaterialAlloy(alloyToAdd); //Not sure what to do with the result.  It will just be the alloy passed in but with an updated alloyId.
-                await SetUpProperties();
 
-                Message = new PopUpMessageModel()
-                {
-                    Text = "Alloy saved successfully",
-                    IsMessageGood = true
-                };
-
-                return Page();
+                return RedirectToPage("MaterialAlloyEntry", new { aMessage = "Alloy saved successfully", isMessageGood = true });
             }
             else
             {
