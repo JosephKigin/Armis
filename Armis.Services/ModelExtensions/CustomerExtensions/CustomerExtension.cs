@@ -32,11 +32,11 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
                 IsChargeHandling = aCustomer.IsChargeHandling,
                 CredStatusId = aCustomer.CredStatusId,
                 LeaveOffCredHoldUntil = aCustomer.LeaveOffCredHoldUntil,
-                CertChargeId = aCustomer.CertChargeId,
+                DefaultCertCharge = aCustomer.DefaultCertCharge,
                 IsKioskValid = aCustomer.IsKioskValid,
                 Source = aCustomer.Source,
                 TermsId = aCustomer.TermsId,
-                IsBillRework = aCustomer.IsBillRework,
+                IsBilledRework = aCustomer.IsBilledRework,
                 IsTmcustomer = aCustomer.IsTmcustomer,
                 SendReminderComp = aCustomer.SendReminderComp,
                 IsBillPartialShipments = aCustomer.IsBillPartialShipments,
@@ -71,7 +71,7 @@ namespace Armis.DataLogic.ModelExtensions.CustomerExtensions
         {
             var result = aCustomer.ToModel();
 
-            result.CertCharge = (aCustomer.CertCharge != null) ? aCustomer.CertCharge.ToModel() : null;
+            result.CertCharge = (aCustomer.DefaultCertChargeNavigation != null) ? aCustomer.DefaultCertChargeNavigation.ToModel() : null;
             result.CreditStatus = (aCustomer.CredStatus != null) ? aCustomer.CredStatus.ToModel() : null;
             result.DefaultContact = (aCustomer.DefaultContactNumNavigation != null) ? aCustomer.DefaultContactNumNavigation.ToModel() : null;
             result.DefaultShipVia = (aCustomer.DefaultShipVia != null) ? aCustomer.DefaultShipVia.ToModel() : null;

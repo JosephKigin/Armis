@@ -1,7 +1,7 @@
 ﻿@page
 @model ArmisWebsite.Pages.OrderEntry.OrderEntryIndexModel
 @{
-    ViewData["Title"] = "OrderEntryIndex";
+    ViewData["Title"] = "OrderEntry";
 }
 
 <head>
@@ -16,6 +16,8 @@
             <option value="@uom.UoMid">@uom.Label</option>
         }
     </select>
+
+    <datalist id="datalistParts"></datalist>
 </div>
 
 <div class="container-fluid" style="width: 100%; font-size:14px;">
@@ -41,6 +43,7 @@
 
                             }
                         </datalist>
+                        <input id="hdnCustomerId" type="number" hidden />
                     </div>
                 </div>
                 <div class="row pb-1">
@@ -136,7 +139,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-7">
-                                <select class="form-control">
+                                <select class="form-control" onclick="console.log(this.value);">
                                     @foreach (var container in Model.Containers)
                                     {
                                         <option value="@container.ContainerId">@container.Code</option>
@@ -157,7 +160,7 @@
                 <br />
                 <div class="row py-1">
                     <div class="col-lg-4 text-right">Order Date</div>
-                    <div class="col-lg-8"> <input type="date" class="form-control" placeholder="123456789" /> </div>
+                    <div class="col-lg-8"> <input type="date" class="form-control" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" /> </div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-4 text-right">Req Date</div>
@@ -188,31 +191,31 @@
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">2-Print Rec'd</div>
+                    <div class="col-lg-10">2 - Print Rec'd</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">3-Don't Scan Prints</div>
+                    <div class="col-lg-10">3 - Don't Scan Prints</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">4-ROHS Compliant</div>
+                    <div class="col-lg-10">4 - ROHS Compliant</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">5-Strip & Replate</div>
+                    <div class="col-lg-10">5 - Strip & Replate</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">6-Special Shipping</div>
+                    <div class="col-lg-10">6 - Special Shipping</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">7-Production Hold</div>
+                    <div class="col-lg-10">7 - Production Hold</div>
                 </div>
                 <div class="row py-1">
                     <div class="col-lg-1"> <input type="checkbox" class="" /> </div>
-                    <div class="col-lg-10">8-Return As Is</div>
+                    <div class="col-lg-10">8 - Return As Is</div>
                 </div>
             </div>
         </div>
@@ -235,33 +238,169 @@
                     <thead>
                         <tr>
                             <th scope="col" style="width:4%">Line</th>
-                            <th scope="col" style="width:8%">Qty</th>
-                            <th scope="col" style="width:12%">Part #</th>
-                            <th scope="col" style="width:4%">Rev</th>
-                            <th scope="col" style="width:20%">Description</th>
-                            <th scope="col" style="width:8%">PO Price</th>
-                            <th scope="col" style="width:8%">U/M</th>
-                            <th scope="col" style="width:8%">Piece Weight</th>
-                            <th scope="col" style="width:8%">Total</th>
-                            <th scope="col" style="width:20%">Part Comments</th>
+                            <th scope="col" style="width:14%">Qty</th>
+                            <th scope="col" style="width:24%"> Part </th>
+                            <th scope="col" style="width:42%">Description</th>
+                            <th scope="col" style="width:16%">Unit Price</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyLineItems">
                     </tbody>
                 </table>
+                <button id="btnOpenCreatePartModal" type="button" class="btn btn-primary float-left" data-toggle="modal" href="#modalPartCreation" disabled>Create New Part</button>
                 <button type="button" class="btn btn-primary float-right" onclick="addLineItem()">Add Line Item</button>
             </div>
 
-            <div class="col-lg-3 border-left">
-                <div class="row my-1">
-                    <div class="col-lg">
-                        <h5>Order Comments</h5>
-                    </div>
-                    <div class="col-lg">
-                        <select class="form-control"><option selected="selected">Add Code</option></select>
-                    </div>
+            <div class="col-lg-3 border-left pb-2 text-center">
+                <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" href="#modalOrderComments">Order Comments</button>
+            </div>
+        </div>
+    </div>
+
+    @*Create Part Modal*@
+    <div id="modalPartCreation" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create Part</h3>
                 </div>
-                <textarea class="form-control h-75">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+                <div class="modal-body">
+                    <div class="form-inline row">
+                        <label class="col-lg-2 justify-content-end">Name:</label>
+                        <input id="inputCreatePart-Name" type="text" maxlength="30" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row">
+                        <label class="col-lg-2 justify-content-end">Rev: </label>
+                        <input id="inputCreatePart-Rev" type="text" maxlength="10" class="form-control col-lg-3" />
+                        <div class="col-lg-6"></div>@*this fills out the rest of the line*@
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Description: </label>
+                        <input id="inputCreatePart-Description" type="text" maxlength="50" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Dimensions: </label>
+                        <input id="inputCreatePart-Dimensions" type="text" maxlength="20" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Rack: </label>
+                        <select id="selectCreatePart-Rack" class="form-control col-lg-8">
+                            <option value="">No racks in system</option>
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">SurfaceArea: </label>
+                        <input id="inputCreatePart-SurfaceArea" type="number" class="form-control col-lg-6" step=".000001" max="9999999999999999999.999999" />
+                        <select id="selectCreatePart-UoM" class="form-control col-lg-2">
+                            @foreach (var uom in Model.UoMs)
+                            {
+                                <option value="@uom.UoMid">@uom.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Piece Weight: </label>
+                        <input id="inputCreatePart-PieceWeight" type="number" class="form-control col-lg-8" step=".000001" max="9999999999999999999.999999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Standard Dept: </label>
+                        <select id="selectCreatePart-StandardDept" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var dept in Model.Departments)
+                            {
+                                <option value="@dept.DepartmentId">@dept.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Bake: </label>
+                        <input id="inputCreatePart-Bake" type="text" class="form-control col-lg-8" maxlength="20" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Base Price: </label>
+                        <input id="inputCreatePart-BasePrices" type="number" class="form-control col-lg-8" step=".000001" max="9999999999999999999.999999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Min Lot Charge: </label>
+                        <input id="inputCreatePart-MinLotCharge" type="number" class="form-control col-lg-8" step=".0001" max="9999999999999999999.9999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Parts Per Load: </label>
+                        <input id="inputCreatePart-PartsPerLoad" type="number" class="form-control col-lg-8" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Mask Pieces Per Hour: </label>
+                        <input id="inputCreatePart-MaskPiecesPerHour" type="number" class="form-control col-lg-8" step="0.0001" max="999999999.9999" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Notify When Masking: </label>
+                        <input id="inputCreatePart-NotifyWhenMasking" type="checkbox" />
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Alloy: </label>
+                        <select id="selectCreatePart-Alloy" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var alloy in Model.Alloys)
+                            {
+                                <option value="@alloy.MaterialAlloyId" data-series="@alloy.MaterialSeriesId">@alloy.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-inline row mt-2">
+                        <label class="col-lg-2 justify-content-end">Series: </label>
+                        <select id="selectCreatePart-Series" class="form-control col-lg-8">
+                            <option></option>
+                            @foreach (var series in Model.Series)
+                            {
+                                <option value="@series.MaterialSeriesId">@series.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-success float-right mr-5 mt-2" onclick="postPart()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Order Comments Modal*@
+    <div id="modalOrderComments" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Order Comments</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Order</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Internal</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Return As Is</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label>Credit Authorization</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Void</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Job Hold</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" data-dismiss="modal" href="#modalOrderComments" class="btn btn-primary float-right mt-2">Ok</button>
+                </div>
             </div>
         </div>
     </div>
@@ -276,11 +415,9 @@
                     </div>
                     <div class="col-lg-4">
                         <select class="form-control">
-                            @foreach (var qualityStd in Model.QualityStandards)
-                            {
-                                <option>@qualityStd.QualStdCode</option>
-                            }
-
+                            <option>None</option>
+                            <option>Normal Cert</option>
+                            <option>Nadcap Cert</option>
                         </select>
                     </div>
                 </div>
@@ -386,147 +523,5 @@
 </div>
 
 <script>
-    //Globals for the selected customer
-    var _shipToModels;
-    var _partModels;
-
-    //Datalists do not have a good way of checking which option was selected.  Datalist will load the input with the value of the selected option.  Throughout this script section, string comparisons will need to be done in order to figure out which option was selected.  This seems to be the best way to do it according to everything I have seen oneline. ~Joe
-    function updateCustomerSelection(inputCustomer) {
-        var customerName = inputCustomer.value;
-
-        var dataListOptions = document.getElementById("datalistCustomers").getElementsByTagName("option");
-        var theSelectedOption = undefined;
-        for (var i = 0; i < dataListOptions.length; i++) {
-            if (dataListOptions[i].value == customerName) {
-                theSelectedOption = dataListOptions[i];
-            }
-        }
-
-        if (theSelectedOption != undefined) {
-            var custId = theSelectedOption.dataset.custId;
-            loadBillTo(custId);
-            loadContacts(custId);
-            document.getElementById("datalistShipTo").innerHTML = ""; //The ShipTo datalist needs to be cleared out before adding a new set of options to it
-            loadShipTos(custId);
-        }
-        else {
-            clearData();
-        }
-    }
-
-    function loadBillTo(aCustId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '@Model._apiAddress' + 'api/BillTo/GetBillToByCustId/' + aCustId, true);
-        xhr.send();
-
-        xhr.onload = function () {
-            var billTo = JSON.parse(xhr.responseText);
-            var textAreaBillTo = document.getElementById("textareaBillTo");
-            if (xhr.status == 200) {
-                textAreaBillTo.value = "";
-
-                //Formatting the bill to text area text
-                var billToText = billTo.Address1 + "\r\n";
-                if (billTo.Address2 != "") { billToText += billTo.Address2 + "\r\n"; }
-                if (billTo.Address3 != "") { billToText += billTo.Address3 + "\r\n"; }
-                billToText += billTo.City + ", " + billTo.State + " " + billTo.Zip + " " + billTo.Country;
-                if (billTo.PhoneNum != "") { billToText += "\r\nPhone: " + billTo.PhoneNum; }
-                if (billTo.FaxNum != "") { billToText += "\r\nFax: " + billTo.FaxNum; }
-
-                textAreaBillTo.value = billToText;
-                textAreaBillTo.style.height = textAreaBillTo.scrollHeight + 3 + "px";
-            }
-        }
-    }
-
-    function loadContacts(aCustId) {
-         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '@Model._apiAddress' + 'api/Contact/GetAllHydratedContactsByCust/' + aCustId, true);
-        xhr.send();
-
-        xhr.onload = function () {
-            var contacts = JSON.parse(xhr.responseText);
-
-            var datalistContacts = document.getElementById("datalistContact");
-            if (contacts != null) {
-                for (var i = 0; i < contacts.length; i++) {
-                    var optionContact = document.createElement("option");
-                    optionContact.innerHTML = contacts[i].PhoneNum;
-                    optionContact.value = contacts[i].LastName + ", " + contacts[i].FirstName;
-                    datalistContacts.appendChild(optionContact);
-                }
-            }
-
-        }
-    }
-
-    function loadShipTos(aCustId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '@Model._apiAddress' + 'api/ShipTo/GetShipTosByCust/' + aCustId, true);
-        xhr.send();
-
-        xhr.onload = function () {
-            var shipTos = JSON.parse(xhr.responseText);
-            _shipToModels = shipTos;
-
-            var datalistShipTo = document.getElementById("datalistShipTo");
-            if (shipTos != null) {
-                for (var i = 0; i < shipTos.length; i++) {
-                    var optionShipTo = document.createElement("option");
-                    optionShipTo.value = shipTos[i].ShipToId + ". " + shipTos[i].Address1;
-                    optionShipTo.innerHTML = shipTos[i].City + ", " + shipTos[i].State + " " + shipTos[i].Zip;
-                    datalistShipTo.appendChild(optionShipTo);
-                }
-            }
-            else {
-                var blankOption = document.createElement("option");
-                blankOption.value = "No Ship Tos";
-                datalistShipTo.append(blankOption);
-            }
-        }
-    }
-
-    function loadParts(aCustId) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '@Model._apiAddress' + 'api/Part/GetPartsForCustId/' + aCustId, true);
-        xhr.send();
-
-        xhr.onload = function () {
-            var parts = JSON.parse(xhr.responseText);
-            _partModels = parts;
-
-            
-        }
-    }
-
-    function udpateShipToTextArea(shipToInput) {
-        var shipToText = "";  //If the ship to in the input matches an option, this variable will be populated by the appropriate text.
-        if (_shipToModels != undefined) {
-            for (var i = 0; i < _shipToModels.length; i++) {
-                if ((_shipToModels[i].ShipToId + ". " + _shipToModels[i].Address1) == shipToInput.value) {
-                    shipToText = _shipToModels[i].Address1 + "\r\n";
-                    if (_shipToModels[i].Address2 != "" && _shipToModels[i].Address2 != null) { shipToText += _shipToModels[i].Address2 + "\r\n"; }
-                    if (_shipToModels[i].Address3 != "" && _shipToModels[i].Address3 != null) { shipToText += _shipToModels[i].Address3 + "\r\n"; }
-                    shipToText += _shipToModels[i].City + ", " + _shipToModels[i].State + _shipToModels[i].Zip + _shipToModels[i].Country;
-                    if (_shipToModels[i].EmailAddress != "" && _shipToModels[i].EmailAddress != null) { shipToText += "\r\nEmail: " + _shipToModels[i].EmailAddress; }
-                    if (_shipToModels[i].PhoneNum != "" && shipToModels[i].PhoneNum != null) { shipToText += "\r\nPhone: " + _shipToModels[i].PhoneNum; }
-                    if (_shipToModels[i].FaxNum != "" && _shipToModels[i].FaxNum != null) { shipToText += "\r\nFax: " + _shipToModels[i].FaxNum; }
-                }
-            }
-
-            var textareaShipTo = document.getElementById("textareaShipTo");
-            textareaShipTo.value = shipToText;
-            textareaShipTo.style.height = textareaShipTo.scrollHeight + 3 + "px";
-        }
-    }
-
-    function clearData() {
-        document.getElementById("textareaBillTo").value = "";
-        document.getElementById("inputContact").value = "";
-        document.getElementById("datalistContact").innerHTML = "";
-        document.getElementById("inputShipTo").value = "";
-        document.getElementById("datalistShipTo").innerHTML = "";
-        document.getElementById("textareaShipTo").value = "";
-        _shipToModels = undefined;
-    }
+    var apiAddress = '@Model._apiAddress';
 </script>

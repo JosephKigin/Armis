@@ -35,7 +35,7 @@ namespace Armis.DataLogic.Services.CustomerServices
 
         public async Task<IEnumerable<CustomerModel>> GetAllHydratedCustomers()
         {
-            var entities = await context.Customer.IncludeOptimized(i => i.CertCharge)
+            var entities = await context.Customer.IncludeOptimized(i => i.DefaultCertChargeNavigation)
                                                  .IncludeOptimized(i => i.CredStatus)
                                                  .Include(i => i.DefaultContactNumNavigation).ThenInclude(i => i.Title)
                                                  .IncludeOptimized(i => i.DefaultShipVia)

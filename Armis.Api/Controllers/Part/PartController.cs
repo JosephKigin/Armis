@@ -16,11 +16,11 @@ namespace Armis.Api.Controllers.Part
     [ApiController]
     public class PartController : ControllerBase
     {
-        private readonly ILogger<HardnessController> _logger;
+        private readonly ILogger<PartController> _logger;
 
         public IPartService PartService { get; set; }
 
-        public PartController(IPartService aPartService, ILogger<HardnessController> aLogger)
+        public PartController(IPartService aPartService, ILogger<PartController> aLogger)
         {
             PartService = aPartService;
             _logger = aLogger;
@@ -71,6 +71,22 @@ namespace Armis.Api.Controllers.Part
             {
                 _logger.LogError("PartController.CreatePart(PartModel aPartModel) Not able to create part {aPartModel}. | Message: {exMessage} | StackTrace: {stackTrace}", aPartModel, ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{aCustId}")]
+        public async Task<ActionResult<PartModel>> CreatePartWithCustomerPart([FromBody] PartModel aPartModel, int aCustId)
+        {
+            try
+            {
+                var data = await PartService.CreatePartWithCustomerPart(aPartModel, aCustId);
+
+                return Ok(JsonSerializer.Serialize(data));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("PartController.CreatePart(PartModel aPartModel) Not able to create part {aPartModel} Customer: {aCustomerId}. | Message: {exMessage} | StackTrace: {stackTrace}", aPartModel, aCustId, ex.Message, ex.StackTrace);
+                throw;
             }
         }
     }

@@ -9,7 +9,7 @@ namespace Armis.BusinessModels.OrderEntryModels
         public int OrderId { get; set; }
         public string OrderComments { get; set; }
         public string InternalComments { get; set; }
-        public string Raicomments { get; set; } // Return As Is Comments
+        public string RaiComments { get; set; } // Return As Is Comments
         public string CredAuthComments { get; set; }
         public string VoidComments { get; set; }
         public string JobHoldComments { get; set; }

@@ -1,0 +1,95 @@
+﻿@page
+
+@model ArmisWebsite.Pages.OrderEntry.OrderReceivedEntryModel
+@{
+    ViewData["Title"] = "OrderReceived";
+}
+
+<head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="~/js/OrderEntry/OrderReceivedEntry.js"></script>
+</head>
+
+<div class="container-fluid w-75">
+    <h3>Order Received Entry</h3>
+
+    @if (Model.Message != null)
+    {
+        @*Preloaded message.*@
+        <p><partial name="/Pages/shared/partials/popupmessagepartial.cshtml" model="Model.Message" /></p>
+    }
+
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6 card p-3">
+            <form method="get">
+                <div class="form-group">
+                    <label>Order Number</label>
+                    <input class="form-control" asp-for="OrderNumber" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm">Find Order</button>
+            </form>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+    @if (Model.OrderHead != null)
+    {
+        <div class="row mt-3">
+            <div class="col-lg-6">
+                <h5>Enter New Order Received</h5>
+                <div class="card p-3">
+                    <form method="post">
+                        <div class="form-group mt-2">
+                            <label>Container Type</label>
+                            <select class="form-control" asp-for="OrderReceived.ReceivedContainerId">
+                                @foreach (var container in Model.Containers)
+                                {
+                                    <option value="@container.ContainerId">@container.Code</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Container Qty</label>
+                            <input class="form-control" asp-for="OrderReceived.ReceivedContainerQty" value="1" data-val-containerQty="Test error message."/>
+                            <span class="text-danger" asp-validation-for="OrderReceived.ReceivedContainerQty"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Received</label>
+                            <input type="date" class="form-control" asp-for="OrderReceived.ReceivedDate" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")"/>
+                            <span class="text-danger" asp-validation-for="OrderReceived.ReceivedDate"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Time Received</label>
+                            <input type="time" class="form-control" asp-for="OrderReceived.ReceivedTime" value="" />
+                        </div>
+                        <button type="submit" class="btn btn-primary float-right">Submit</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <h5>Current Orders Received</h5>
+                <ul class="list-group">
+                    @if (Model.OrderHead.OrderReceiveds.Any())
+                    {
+                        @foreach (var orderReceived in Model.OrderHead.OrderReceiveds)
+                        {
+
+                            <li class="list-group-item">
+                                @orderReceived.ReceivedNum.  @orderReceived.ReceivedContainer.Description - @orderReceived.ReceivedContainerQty
+                                @orderReceived.ReceivedDate.ToString("MM/dd/yyyy") @orderReceived.ReceivedTimeString
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            No Orders have been received yet.
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>

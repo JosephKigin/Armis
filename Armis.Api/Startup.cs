@@ -1,4 +1,6 @@
 using Armis.Data.DatabaseContext;
+using Armis.DataLogic.Services.ARServices;
+using Armis.DataLogic.Services.ARServices.Interfaces;
 using Armis.DataLogic.Services.CustomerServices;
 using Armis.DataLogic.Services.CustomerServices.Interfaces;
 using Armis.DataLogic.Services.OrderEntryServices;
@@ -47,11 +49,21 @@ namespace Armis.Api
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins(Configuration.GetSection("SectionCORS:AllowedSites").Value);
+                    builder.WithOrigins(Configuration.GetSection("SectionCORS:AllowedSites").Value)
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .AllowAnyHeader();
                 });
+
+                //options.AddPolicy("CorsAllowSpecific",
+                //    p => p.WithHeaders("Content-Type", "Accept", "Auth-Token")
+                //        .WithMethods("POST"));
             });
 
             //Setting up dependency injection
+            //AR
+            services.AddScoped<ICertificationChargeService, CertificationChargeService>();
+
             //Coop
             services.AddScoped<IEmployeeService, EmployeeService>();
 
@@ -63,7 +75,6 @@ namespace Armis.Api
             //Inspection
             services.AddScoped<ISamplePlanService, SamplePlanService>();
             services.AddScoped<IInspectTestTypeService, InspectTestTypeService>();
-            services.AddScoped<IQualityStandardService, QualityStandardService>();
 
             //Order Entry
             services.AddScoped<IOrderHeadService, OrderHeadService>();
@@ -86,6 +97,7 @@ namespace Armis.Api
             services.AddScoped<IPackageCodeService, PackageCodeService>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<ICommentCodeService, CommentCodeService>();
+            services.AddScoped<IOrderReceivedService, OrderReceivedService>();
 
             //Shop Floor
             services.AddScoped<IDepartmentService, DepartmentService>();

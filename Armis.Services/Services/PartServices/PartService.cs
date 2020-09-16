@@ -39,6 +39,18 @@ namespace Armis.DataLogic.Services.PartServices
             return entityToAdd.ToModel();
         }
 
+        public async Task<PartModel> CreatePartWithCustomerPart(PartModel aPartModel, int aCustomerId)
+        {
+            var createdPart = await CreatePart(aPartModel);
+
+            var customerPartEntity = new CustomerPart() { CustId = aCustomerId, PartId = createdPart.PartId, LastUsedDate = DateTime.Now };
+
+            Context.CustomerPart.Add(customerPartEntity);
+            await Context.SaveChangesAsync();
+
+            return createdPart;
+        }
+
         //READ
         //Will only ever pull parts that are active
         public async Task<IEnumerable<PartModel>> GetAllParts()
@@ -75,10 +87,12 @@ namespace Armis.DataLogic.Services.PartServices
             var partEntities = new List<Part>();
             foreach (var entity in entities)
             {
-                var partEntity = await Context.Part.IncludeOptimized(i => i.CreatedByEmpNavigation)
+                var partEntity = await Context.Part.IncludeOptimized(i => i.SurfaceAreaUoMNavigation)
                                                    .IncludeOptimized(i => i.MaterialAlloy)
+                                                   .IncludeOptimized(i => i.CreatedByEmpNavigation)
                                                    .IncludeOptimized(i => i.MaterialSeries)
-
+                                                   .IncludeOptimized(i => i.StandardDeptNavigation)
+                                                   .IncludeOptimized(i => i.Rack)
                                                    .FirstOrDefaultAsync(i => i.PartId == entity.PartId);
                 partEntities.Add(partEntity);
             }

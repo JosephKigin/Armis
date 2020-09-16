@@ -44,11 +44,9 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.JobHoldToEmpNavigation)
                                                            .IncludeOptimized(i => i.Package)
                                                            .IncludeOptimized(i => i.PriceStatus)
-                                                           .IncludeOptimized(i => i.QualStd)
                                                            .IncludeOptimized(i => i.ShipVia)
                                                            .IncludeOptimized(i => i.Spec)
                                                            .IncludeOptimized(i => i.OrderComment)
-                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
                                                            .IncludeOptimized(i => i.OrderDetail).ToListAsync();
 
@@ -58,6 +56,7 @@ namespace Armis.DataLogic.Services.OrderEntryServices
         public async Task<OrderHeadModel> GetHydratedOrderHeadById(int anOrderId)
         {
             await Context.TernaryCode.LoadAsync();
+            await Context.Container.LoadAsync();
             var orderHeadEntity = await Context.OrderHead.Where(i => i.OrderId == anOrderId)
                                                            .IncludeOptimized(i => i.CertCharge)
                                                            .IncludeOptimized(i => i.CreditAuthByEmpNavigation)
@@ -70,10 +69,8 @@ namespace Armis.DataLogic.Services.OrderEntryServices
                                                            .IncludeOptimized(i => i.JobHoldToEmpNavigation)
                                                            .IncludeOptimized(i => i.Package)
                                                            .IncludeOptimized(i => i.PriceStatus)
-                                                           .IncludeOptimized(i => i.QualStd)
                                                            .IncludeOptimized(i => i.ShipVia)
                                                            .IncludeOptimized(i => i.OrderComment)
-                                                           .IncludeOptimized(i => i.OrderExpediteOrder)
                                                            .IncludeOptimized(i => i.OrderShipToOverride)
                                                            .FirstOrDefaultAsync();
 

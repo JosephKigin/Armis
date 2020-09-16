@@ -59,7 +59,7 @@ namespace Armis.DataLogic.ModelExtensions.PartExtensions
             result.CreatedByEmp = aPartEntity.CreatedByEmpNavigation.ToModel();
             result.Alloy = (aPartEntity.MaterialAlloy != null)? aPartEntity.MaterialAlloy.ToModel() : null;
             result.Series = (aPartEntity.MaterialSeries != null)? aPartEntity.MaterialSeries.ToModel() : null;
-            result.StandardDept = aPartEntity.StandardDeptNavigation.ToModel();
+            result.StandardDept = (aPartEntity.StandardDeptNavigation != null)? aPartEntity.StandardDeptNavigation.ToModel() : null;
             result.SurfaceAreaUnitOfMeasure = (aPartEntity.SurfaceAreaUoMNavigation != null) ? aPartEntity.SurfaceAreaUoMNavigation.ToModel() : null;
             result.Rack = (aPartEntity.Rack != null) ? aPartEntity.Rack.ToModel() : null;
 

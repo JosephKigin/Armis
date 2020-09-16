@@ -63,7 +63,7 @@
                     <input class="form-control col-lg-8" asp-for="Bake" />
                 </div>
                 <div class="form-inline row mt-2">
-                    <label class="col-lg-3 justify-content-end">Base Prices: </label>
+                    <label class="col-lg-3 justify-content-end">Base Price: </label>
                     <input class="form-control col-lg-8" step="0.000001" asp-for="BasePrice" />
                 </div>
                 <div class="form-inline row mt-2">
@@ -144,7 +144,7 @@
                                     <b>Material Series: </b> @if (part.Series != null)
                                     {@part.Series.Description} <br />
                                     <b>Created By Employee: </b> @part.CreatedByEmp <br />
-                                    <b>Date Created: </b> @part.DateCreated.ToString("MM/dd/yyyy")
+                                    <b>Date Created: </b> <text>@{((DateTime)part.DateCreated).ToString("MM/dd/yyyy");}</text>
                                 </div>
                             </li>
                         }

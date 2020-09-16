@@ -20,11 +20,10 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 Quantity = anOrderDetailEntity.Quantity,
                 PartId = anOrderDetailEntity.PartId,
                 PartRevId = anOrderDetailEntity.PartId,
-                Poprice = anOrderDetailEntity.Poprice,
-                CalcPrice = anOrderDetailEntity.CalcPrice,
-                AssignPrice = anOrderDetailEntity.AssignPrice,
+                CalcUnitPrice = anOrderDetailEntity.CalcUnitPrice,
+                AssignUnitPrice = anOrderDetailEntity.AssignUnitPrice,
                 PriceCodeId = anOrderDetailEntity.PriceCodeId,
-                LotCharge = anOrderDetailEntity.LotCharge,
+                ExtPrice = anOrderDetailEntity.ExtPrice,
                 Description = anOrderDetailEntity.Description
             };
         }
@@ -72,11 +71,10 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 OrderLine = anOrderDetailModel.OrderLine,
                 Quantity = anOrderDetailModel.Quantity,
                 PartId = anOrderDetailModel.PartId,
-                Poprice = anOrderDetailModel.Poprice,
-                CalcPrice = anOrderDetailModel.CalcPrice,
-                AssignPrice = anOrderDetailModel.AssignPrice,
+                CalcUnitPrice = anOrderDetailModel.CalcUnitPrice,
+                AssignUnitPrice = anOrderDetailModel.AssignUnitPrice,
                 PriceCodeId = anOrderDetailModel.PriceCodeId,
-                LotCharge = anOrderDetailModel.LotCharge
+                ExtPrice = anOrderDetailModel.ExtPrice
             };
         }
 

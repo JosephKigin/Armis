@@ -29,8 +29,8 @@ namespace Armis.BusinessModels.PartModels
         public int? MaterialAlloyId { get; set; }
         public int? MaterialSeriesId { get; set; }
         public int CreatedByEmpId { get; set; }
-        public DateTime DateCreated { get; set; }
-        public TimeSpan TimeCreated { get; set; }
+        public DateTime? DateCreated { get; set; } //Needs to be null so a model can be passed in to post with a null datetime to be filled in the service
+        public TimeSpan? TimeCreated { get; set; } //See comment above
 
         public RackModel Rack { get; set; }
         public UnitOfMeasureModel SurfaceAreaUnitOfMeasure { get; set; }

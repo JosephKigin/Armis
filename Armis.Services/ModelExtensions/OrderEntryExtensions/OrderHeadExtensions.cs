@@ -3,7 +3,6 @@ using Armis.Data.DatabaseContext.Entities;
 using Armis.DataLogic.ModelExtensions.ARExtensions;
 using Armis.DataLogic.ModelExtensions.CustomerExtensions;
 using Armis.DataLogic.ModelExtensions.EmployeeExtensions;
-using Armis.DataLogic.ModelExtensions.QualityExtensions.InspectionExtensions;
 using Armis.DataLogic.ModelExtensions.QualityExtensions.SpecExtensions;
 using Armis.DataLogic.ModelExtensions.ShippingExtensions;
 using System;
@@ -35,7 +34,6 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 IsJobHold = anOrderHeadEntity.IsJobHold,
                 JobHoldToEmp = anOrderHeadEntity.JobHoldToEmp,
                 JobHoldByEmp = anOrderHeadEntity.JobHoldByEmp,
-                QualStdId = anOrderHeadEntity.QualStdId,
                 CertChargeId = anOrderHeadEntity.CertChargeId,
                 LastCompleteRemSentDt = anOrderHeadEntity.LastCompleteRemSentDt,
                 SuppressCompNotify = anOrderHeadEntity.SuppressCompNotify,
@@ -47,7 +45,10 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 IsReturnAsIs = anOrderHeadEntity.IsReturnAsIs,
                 CreditAuthByEmp = anOrderHeadEntity.CreditAuthByEmp,
                 SubTotal = anOrderHeadEntity.SubTotal,
-                ExpediteStatus = anOrderHeadEntity.ExpediteStatus
+                ExpediteStatus = anOrderHeadEntity.ExpediteStatus,
+                IsNadcap = anOrderHeadEntity.IsNadCap,
+                ReworkFromOrder = anOrderHeadEntity.ReworkFromOrder,
+                ReworkDeptId = anOrderHeadEntity.ReworkDeptId
             };
         }
 
@@ -70,21 +71,19 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
             result.CreditAuthByEmployee = (anOrderHeadEntity.CreditAuthByEmpNavigation != null)? anOrderHeadEntity.CreditAuthByEmpNavigation.ToModel() : null;
             result.Customer = (anOrderHeadEntity.Cust != null)? anOrderHeadEntity.Cust.ToModel() : null;
             result.IsInspected = anOrderHeadEntity.IsInspectedNavigation.ToModel(); 
-            result.IsMaskingNotify = anOrderHeadEntity.IsMaskingNotifyNavigation.ToModel();
+            result.IsMaskingNotify = anOrderHeadEntity.IsMaskingNotifyNavigation.TernaryCodeId;
             result.IsPrePrice = anOrderHeadEntity.IsPrePriceNavigation.ToModel();
             result.IsPriceApproval = anOrderHeadEntity.IsPriceApprovalNavigation.ToModel();
             result.JobHoldByEmployee = (anOrderHeadEntity.JobHoldByEmpNavigation != null)? anOrderHeadEntity.JobHoldByEmpNavigation.ToModel() : null;
             result.JobHoldToEmployee = (anOrderHeadEntity.JobHoldToEmpNavigation != null)? anOrderHeadEntity.JobHoldToEmpNavigation.ToModel() : null;
             result.Package = (anOrderHeadEntity.Package != null)? anOrderHeadEntity.Package.ToModel() : null;
-            result.PriceStatus = anOrderHeadEntity.PriceStatus.ToModel(); 
-            result.QualityStandard = (anOrderHeadEntity.QualStd != null)? anOrderHeadEntity.QualStd.ToModel() : null;
+            result.PriceStatus = anOrderHeadEntity.PriceStatus.ToModel();
             result.ShipVia = (anOrderHeadEntity.ShipVia != null)? anOrderHeadEntity.ShipVia.ToModel() : null;
             result.Spec = anOrderHeadEntity.Spec.ToHydratedModel(); //Spec will be hydrated because much of the information is needed when an OrderHead is pulled.
-            result.OrderComment = (anOrderHeadEntity.OrderComment != null)? anOrderHeadEntity.OrderComment.ToModel() : null; 
-            result.OrderExpedite = (anOrderHeadEntity.OrderExpediteOrder != null)? anOrderHeadEntity.OrderExpediteOrder.ToModel() : null;
+            result.OrderComment = (anOrderHeadEntity.OrderComment != null)? anOrderHeadEntity.OrderComment.ToModel() : null;
             result.OrderShipToOverride = (anOrderHeadEntity.OrderShipToOverride != null)? anOrderHeadEntity.OrderShipToOverride.ToModel() : null;
-            result.OrderReceiveds = anOrderHeadEntity.OrderReceived.ToHydratedModels(); //Just a basic ToModel, no hydrated
-            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToHydratedModels(); //Just a basic ToModel, no hydrated
+            result.OrderReceiveds = anOrderHeadEntity.OrderReceived.ToHydratedModels(); 
+            result.OrderDetails = anOrderHeadEntity.OrderDetail.ToHydratedModels();
 
             return result;
         }
@@ -120,11 +119,10 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 IsJobHold = anOrderHeadModel.IsJobHold,
                 JobHoldToEmp = anOrderHeadModel.JobHoldToEmp,
                 JobHoldByEmp = anOrderHeadModel.JobHoldByEmp,
-                QualStdId = anOrderHeadModel.QualStdId,
                 CertChargeId = anOrderHeadModel.CertChargeId,
                 LastCompleteRemSentDt = anOrderHeadModel.LastCompleteRemSentDt,
                 SuppressCompNotify = anOrderHeadModel.SuppressCompNotify,
-                IsMaskingNotify = anOrderHeadModel.IsMaskingNotify.TernaryCodeId,
+                IsMaskingNotify = anOrderHeadModel.IsMaskingNotify,
                 PackageId = anOrderHeadModel.PackageId,
                 SpecId = anOrderHeadModel.SpecId,
                 SpecRevId = anOrderHeadModel.SpecRevId,
@@ -136,7 +134,10 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 CreditAuthByEmp = anOrderHeadModel.CreditAuthByEmp,
                 IsInspected = anOrderHeadModel.IsInspected.TernaryCodeId,
                 SubTotal = anOrderHeadModel.SubTotal,
-                ExpediteStatus = anOrderHeadModel.ExpediteStatus
+                ExpediteStatus = anOrderHeadModel.ExpediteStatus,
+                IsNadCap = anOrderHeadModel.IsNadcap,
+                ReworkFromOrder = anOrderHeadModel.ReworkFromOrder,
+                ReworkDeptId = anOrderHeadModel.ReworkDeptId
             };
         }
     }

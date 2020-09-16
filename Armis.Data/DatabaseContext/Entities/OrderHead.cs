@@ -8,12 +8,12 @@ namespace Armis.Data.DatabaseContext.Entities
         public OrderHead()
         {
             BakeResult = new HashSet<BakeResult>();
+            InverseReworkFromOrderNavigation = new HashSet<OrderHead>();
             Memo = new HashSet<Memo>();
             OrderAddlCharge = new HashSet<OrderAddlCharge>();
             OrderCommentStatic = new HashSet<OrderCommentStatic>();
             OrderDetail = new HashSet<OrderDetail>();
             OrderDetailComment = new HashSet<OrderDetailComment>();
-            OrderExpediteReworkOrderNavigation = new HashSet<OrderExpedite>();
             OrderReceived = new HashSet<OrderReceived>();
             PartTran = new HashSet<PartTran>();
             PlateResult = new HashSet<PlateResult>();
@@ -36,7 +36,7 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool IsJobHold { get; set; }
         public int? JobHoldToEmp { get; set; }
         public int? JobHoldByEmp { get; set; }
-        public short? QualStdId { get; set; }
+        public bool IsNadCap { get; set; }
         public short? CertChargeId { get; set; }
         public DateTime? LastCompleteRemSentDt { get; set; }
         public bool SuppressCompNotify { get; set; }
@@ -53,6 +53,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public byte IsInspected { get; set; }
         public decimal SubTotal { get; set; }
         public string ExpediteStatus { get; set; }
+        public int? ReworkFromOrder { get; set; }
+        public short? ReworkDeptId { get; set; }
 
         public virtual CertificationCharge CertCharge { get; set; }
         public virtual Employee CreditAuthByEmpNavigation { get; set; }
@@ -65,19 +67,20 @@ namespace Armis.Data.DatabaseContext.Entities
         public virtual Employee JobHoldToEmpNavigation { get; set; }
         public virtual PackageCode Package { get; set; }
         public virtual PriceStatusCode PriceStatus { get; set; }
-        public virtual QualityStandard QualStd { get; set; }
+        public virtual Department ReworkDept { get; set; }
+        public virtual OrderHead ReworkFromOrderNavigation { get; set; }
         public virtual ShipViaCode ShipVia { get; set; }
         public virtual SpecProcessAssign Spec { get; set; }
         public virtual OrderComment OrderComment { get; set; }
-        public virtual OrderExpedite OrderExpediteOrder { get; set; }
+        public virtual OrderExpedite OrderExpedite { get; set; }
         public virtual OrderShipToOverride OrderShipToOverride { get; set; }
         public virtual ICollection<BakeResult> BakeResult { get; set; }
+        public virtual ICollection<OrderHead> InverseReworkFromOrderNavigation { get; set; }
         public virtual ICollection<Memo> Memo { get; set; }
         public virtual ICollection<OrderAddlCharge> OrderAddlCharge { get; set; }
         public virtual ICollection<OrderCommentStatic> OrderCommentStatic { get; set; }
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
         public virtual ICollection<OrderDetailComment> OrderDetailComment { get; set; }
-        public virtual ICollection<OrderExpedite> OrderExpediteReworkOrderNavigation { get; set; }
         public virtual ICollection<OrderReceived> OrderReceived { get; set; }
         public virtual ICollection<PartTran> PartTran { get; set; }
         public virtual ICollection<PlateResult> PlateResult { get; set; }

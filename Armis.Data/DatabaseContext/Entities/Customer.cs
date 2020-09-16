@@ -39,11 +39,11 @@ namespace Armis.Data.DatabaseContext.Entities
         public bool? IsChargeHandling { get; set; }
         public byte CredStatusId { get; set; }
         public DateTime? LeaveOffCredHoldUntil { get; set; }
-        public short? CertChargeId { get; set; }
+        public short? DefaultCertCharge { get; set; }
         public bool? IsKioskValid { get; set; }
         public string Source { get; set; }
         public byte? TermsId { get; set; }
-        public bool? IsBillRework { get; set; }
+        public bool? IsBilledRework { get; set; }
         public bool? IsTmcustomer { get; set; }
         public bool? SendReminderComp { get; set; }
         public bool? IsBillPartialShipments { get; set; }
@@ -57,8 +57,8 @@ namespace Armis.Data.DatabaseContext.Entities
         public short? DefaultShipAccount { get; set; }
         public decimal? CreditLimit { get; set; }
 
-        public virtual CertificationCharge CertCharge { get; set; }
         public virtual CreditStatus CredStatus { get; set; }
+        public virtual CertificationCharge DefaultCertChargeNavigation { get; set; }
         public virtual Contact DefaultContactNumNavigation { get; set; }
         public virtual ShipViaCode DefaultShipVia { get; set; }
         public virtual Priority Priority { get; set; }

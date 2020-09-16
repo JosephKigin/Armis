@@ -28,11 +28,9 @@ namespace Armis.BusinessModels.Customer
         public bool? IsChargeHandling { get; set; }
         public byte CredStatusId { get; set; }
         public DateTime? LeaveOffCredHoldUntil { get; set; }
-        public short? CertChargeId { get; set; }
         public bool? IsKioskValid { get; set; }
         public string Source { get; set; }
         public byte? TermsId { get; set; }
-        public bool? IsBillRework { get; set; }
         public bool? IsTmcustomer { get; set; }
         public bool? SendReminderComp { get; set; }
         public bool? IsBillPartialShipments { get; set; }
@@ -47,6 +45,8 @@ namespace Armis.BusinessModels.Customer
         public decimal? CreditLimit { get; set; }
         public bool Inactive { get; set; }
         public bool IsProspect { get; set; }
+        public short? DefaultCertCharge { get; set; }
+        public bool? IsBilledRework { get; set; }
 
         //TODO: The properties that are commented out need models created for the type
         public BillToModel BillTo { get; set; }

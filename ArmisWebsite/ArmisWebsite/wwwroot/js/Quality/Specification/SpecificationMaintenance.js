@@ -398,7 +398,7 @@ function DeleteChoiceInput(aCardNumber, aGroupChoiceNum) {
 
         var divStepElements = divStep.children;
         //0. Button
-        divStepElements[0].data.choiceNumber = i;
+        divStepElements[0].dataset.choiceNumber = i;
         //1. Step name input
         divStepElements[1].id = "inputStepOutput" + aCardNumber + "-" + i;
         //2. Hidden step id input

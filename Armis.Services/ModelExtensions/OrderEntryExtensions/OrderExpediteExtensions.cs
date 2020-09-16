@@ -19,8 +19,6 @@ namespace Armis.DataLogic.ModelExtensions.OrderEntryExtensions
                 FeeAmount = anOrderExpediteEntity.FeeAmount,
                 ExpeditedByEmp = anOrderExpediteEntity.ExpeditedByEmp,
                 ExpeditedDate = anOrderExpediteEntity.ExpeditedDate,
-                ReworkOrder = anOrderExpediteEntity.ReworkOrder,
-                DepartmentId = anOrderExpediteEntity.DepartmentId
             };
         }
     }

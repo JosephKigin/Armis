@@ -11,5 +11,6 @@ namespace Armis.DataLogic.Services.PartServices.Interfaces
         Task<IEnumerable<PartModel>> GetAllParts();
         Task<IEnumerable<PartModel>> GetPartsForCustId(int aCustId);
         Task<PartModel> CreatePart(PartModel aPart);
+        Task<PartModel> CreatePartWithCustomerPart(PartModel aPartModel, int aCustomerId);
     }
 }
