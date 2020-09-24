@@ -38,7 +38,7 @@ namespace Armis.Api.Controllers.AR
             }
             catch (Exception ex)
             {
-                _logger.LogError("CertificationChargesController.GetAllCertCharges() Not able to get all Certification Charges. | Message: {exMessage} | StackTrace: {stackTrace}", ex.Message, ex.StackTrace);
+                _logger.LogError("Not able to get all Certification Charges. | {ExMessage} | {StackTrace} | {InnerException}", ex.Message, ex.StackTrace, ex.InnerException);
                 return BadRequest(ex.Message);
             }
         }

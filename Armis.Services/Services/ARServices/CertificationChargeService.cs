@@ -25,7 +25,7 @@ namespace Armis.DataLogic.Services.ARServices
         {
             var entities = await Context.CertificationCharge.ToListAsync();
 
-            if(entities == null || !entities.Any()) { throw new Exception("No Certification Charges were returned."); }
+            if(entities == null || entities.Count < 1) { throw new Exception("No Certification Charges were returned."); }
 
             return entities.ToModels();
         }
